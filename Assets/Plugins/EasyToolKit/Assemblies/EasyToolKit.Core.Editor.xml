@@ -1,0 +1,657 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EasyToolKit.Core.Editor</name>
+    </assembly>
+    <members>
+        <member name="T:EasyToolKit.Core.Editor.DragAndDropManager">
+            <summary>
+            <para>This class is due to undergo refactoring. Use the new DragAndDropUtilities instead.</para>
+            </summary>
+            <seealso cref="!:DragAndDropUtilities"/>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragAndDropManager.CurrentDraggingHandle">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragAndDropManager.CurrentHoveringDropZone">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragAndDropManager.IsDragInProgress">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragAndDropManager.IsHoveringDropZone">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DragAndDropManager.AllowDrop">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.DragAndDropManager.BeginDropZone``1(System.Object)">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.DragAndDropManager.BeginDropZone``1(System.Object,System.Boolean)">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.DragAndDropManager.BeginDropZone(System.Object,System.Type,System.Boolean)">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.DragAndDropManager.EndDropZone">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.DragAndDropManager.BeginDragHandle(System.Object,System.Object,EasyToolKit.Core.Editor.DragAndDropMethods)">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.DragAndDropManager.BeginDragHandle(System.Object,System.Object,System.Boolean,EasyToolKit.Core.Editor.DragAndDropMethods)">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.DragAndDropManager.EndDragHandle">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DragAndDropManager.guiState">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DragAndDropMethods.Reference">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DragAndDropMethods.Move">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DragAndDropMethods.Copy">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Editor.DragHandle">
+            <summary>
+            This class is due to undergo refactoring.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DragHandle.SourceWindow">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.IsCrossWindowDrag">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.Rect">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.DraggingScreenRect">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.Object">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.DragAndDropMethod">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.OnDragStarted">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.OnDragFinnished">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.IsDragging">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.IsHovering">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.CurrentMethod">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.MouseDownPostionOffset">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DragHandle.DragHandleRect">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DragHandle.Enabled">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DropEvents.None">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DropEvents.Referenced">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DropEvents.Moved">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DropEvents.Copied">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DropEvents.Canceled">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Editor.DropZoneHandle">
+            <summary>
+            This class is due to undergo refactoring.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DropZoneHandle.IsAccepted">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DropZoneHandle.IsBeingHovered">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DropZoneHandle.SourceWindow">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DropZoneHandle.Rect">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DropZoneHandle.Type">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DropZoneHandle.LayoutDepth">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DropZoneHandle.CanAcceptMove">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DropZoneHandle.IsCrossWindowDrag">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.DropZoneHandle.IsReadyToClaim">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.DropZoneHandle.Enabled">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.DropZoneHandle.ClaimObject">
+            <summary>
+            Not yet documented.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Editor.OnDragFinnished">
+            <summary>
+            This class is due to undergo refactoring.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.BeginIndentedVertical(UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
+            <summary>
+            Begins a vertical indentation. Remember to end with <see cref="M:EasyToolKit.Core.Editor.EasyEditorGUI.EndIndentedVertical"/>.
+            </summary>
+            <param name="style">The style of the indentation.</param>
+            <param name="options">The GUI layout options.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.EndIndentedVertical">
+            <summary>
+            Ends a identation vertical layout group started by <see cref="M:EasyToolKit.Core.Editor.EasyEditorGUI.BeginIndentedVertical(UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.IndentSpace">
+            <summary>
+            Indents by the current indent value, <see cref="P:EasyToolKit.Core.Editor.EasyGUIHelper.CurrentIndentAmount"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.BeginBox(UnityEngine.GUILayoutOption[])">
+            <summary>
+            Begins drawing a box with toolbar style header. Remember to end with <seealso cref="M:EasyToolKit.Core.Editor.EasyEditorGUI.EndBox"/>.
+            </summary>
+            <param name="options">GUILayout options.</param>
+            <returns>The rect of the box.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.EndBox">
+            <summary>
+            Ends the drawing a box with a toolbar style header started by <see cref="M:EasyToolKit.Core.Editor.EasyEditorGUI.BeginBox(UnityEngine.GUILayoutOption[])"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.EndBoxHeader">
+            <summary>
+            Ends drawing a box header started by <see cref="M:EasyToolKit.Core.Editor.EasyEditorGUI.BeginBoxHeader"/>,
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.Foldout(System.Boolean,UnityEngine.GUIContent,UnityEngine.GUIStyle)">
+            <summary>
+            Draws a foldout field where clicking on the label toggles to the foldout too.
+            </summary>
+            <param name="isVisible">The current state of the foldout.</param>
+            <param name="label">The label of the foldout.</param>
+            <param name="style">The GUI style.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.Foldout(System.Boolean,UnityEngine.GUIContent,UnityEngine.Rect@,UnityEngine.GUIStyle)">
+            <summary>
+            Draws a foldout field where clicking on the label toggles to the foldout too.
+            </summary>
+            <param name="isVisible">The current state of the foldout.</param>
+            <param name="label">The label of the foldout.</param>
+            <param name="valueRect">The value rect.</param>
+            <param name="style">The GUI style.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.Foldout(UnityEngine.Rect,System.Boolean,UnityEngine.GUIContent,UnityEngine.GUIStyle)">
+            <summary>
+            Draws a foldout field where clicking on the label toggles to the foldout too.
+            </summary>
+            <param name="rect">The rect to draw the foldout field in.</param>
+            <param name="isVisible">The current state of the foldout.</param>
+            <param name="label">The label of the foldout.</param>
+            <param name="style">The style.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyEditorGUI.HorizontalLineSeparator(UnityEngine.Color,System.Int32)">
+            <summary>
+            Draws a horizontal line separator.
+            </summary>
+            <param name="color">The color of the line.</param>
+            <param name="lineWidth">The size of the line.</param>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.CurrentWindow">
+            <summary>
+            Gets the current editor window.
+            </summary>
+            <value>
+            The current editor window.
+            </value>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.CurrentWindowHasFocus">
+            <summary>
+            Gets a value indicating whether the current editor window is focused.
+            </summary>
+            <value>
+            <c>true</c> if the current window has focus. Otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.MouseScreenPosition">
+            <summary>
+            Gets the mouse screen position.
+            </summary>
+            <value>
+            The mouse screen position.
+            </value>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.CurrentIndentAmount">
+            <summary>
+            Gets the current indent amount.
+            </summary>
+            <value>
+            The current indent amount.
+            </value>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.EditorScreenPointOffset">
+            <summary>
+            Gets the editor screen point offset.
+            </summary>
+            <value>
+            The editor screen point offset.
+            </value>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.ContextWidth">
+            <summary>
+            Gets the current editor gui context width. Only set these if you know what it does.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.BetterLabelWidth">
+            <summary>
+            Unity EditorGUIUtility.labelWidth only works reliablly in Repaint events.
+            BetterLabelWidth does a better job at giving you the correct LabelWidth in non-repaint events.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.BetterContextWidth">
+            <summary>
+            Odin will set this for you whenever an Odin property tree is drawn.
+            But if you're using BetterLabelWidth and BetterContextWidth without Odin, then
+            you need to set BetterContextWidth in the beginning of each GUIEvent.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIHelper.ActualLabelWidth">
+            <summary>
+            Gets or sets the actual EditorGUIUtility.LabelWidth, regardless of the current hierarchy mode or context width.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.BeginLayoutMeasuring">
+            <summary>
+            Begins the layout measuring. Remember to end with <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.EndLayoutMeasuring"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.EndLayoutMeasuring">
+            <summary>
+            Ends the layout measuring started by <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.BeginLayoutMeasuring"/>
+            </summary>
+            <returns>The measured rect.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushGUIEnabled(System.Boolean)">
+            <summary>
+            Pushes a state to the GUI enabled stack. Remember to pop the state with <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopGUIEnabled"/>.
+            </summary>
+            <param name="enabled">If set to <c>true</c> GUI will be enabled. Otherwise GUI will be disabled.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopGUIEnabled">
+            <summary>
+            Pops the GUI enabled pushed by <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushGUIEnabled(System.Boolean)"/>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.BeginIgnoreInput">
+            <summary>
+            Ignores input on following GUI calls. Remember to end with <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.EndIgnoreInput"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.EndIgnoreInput">
+            <summary>
+            Ends the ignore input started by <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.BeginIgnoreInput"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushEventType(UnityEngine.EventType)">
+            <summary>
+            Pushes the event type to the stack. Remember to pop with <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopEventType"/>.
+            </summary>
+            <param name="eventType">The type of event to push.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopEventType">
+            <summary>
+            Pops the event type pushed by <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopEventType"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushHierarchyMode(System.Boolean,System.Boolean)">
+            <summary>
+            Pushes the hierarchy mode to the stack. Remember to pop the state with <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopHierarchyMode"/>.
+            </summary>
+            <param name="hierarchyMode">The hierachy mode state to push.</param>
+            <param name="preserveCurrentLabelWidth">Changing hierachy mode also changes how label-widths are calcualted. By default, we try to keep the current label width.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopHierarchyMode">
+            <summary>
+            Pops the hierarchy mode pushed by <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushHierarchyMode(System.Boolean,System.Boolean)"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushLabelWidth(System.Single)">
+            <summary>
+            Pushes the width to the editor GUI label width to the stack. Remmeber to Pop with <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopLabelWidth"/>.
+            </summary>
+            <param name="labelWidth">The editor GUI label width to push.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopLabelWidth">
+            <summary>
+            Pops editor gui label widths pushed by <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushLabelWidth(System.Single)"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushContextWidth(System.Single)">
+            <summary>
+            Pushes a context width to the context width stack.
+            Remember to pop the value again with <see cref="M:Sirenix.Utilities.Editor.GUIHelper.PopContextWidth" />.
+            </summary>
+            <param name="width">The width to push.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopContextWidth">
+            <summary>
+            Pops a value pushed by <see cref="M:Sirenix.Utilities.Editor.GUIHelper.PushContextWidth(System.Single)" />.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushLabelColor(UnityEngine.Color)">
+            <summary>
+            Pushes the label color to the stack. Remember to pop with <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopLabelColor"/>.
+            </summary>
+            <param name="color">The label color to push.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EasyGUIHelper.PopLabelColor">
+            <summary>
+            Pops the label color pushed by <see cref="M:EasyToolKit.Core.Editor.EasyGUIHelper.PushLabelColor(UnityEngine.Color)"/>.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Editor.EasyGUIStyles.LightBorderColor">
+            <summary>
+            A light border color.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.BoxContainer">
+            <summary>
+            Box container style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.BoxHeaderStyle">
+            <summary>
+            Box header style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.PropertyPadding">
+            <summary>
+            Property padding.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.Title">
+            <summary>
+            Title style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.BoldTitle">
+            <summary>
+            Bold title style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.BoldTitleCentered">
+            <summary>
+            Centered bold title style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.BoldTitleRight">
+            <summary>
+            Right aligned bold title style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.TitleCentered">
+            <summary>
+            Centered title style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.TitleRight">
+            <summary>
+            Right aligned title style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.Subtitle">
+            <summary>
+            Subtitle style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.SubtitleCentered">
+            <summary>
+            Centered sub-title style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.SubtitleRight">
+            <summary>
+            Right aligned sub-title style.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.EasyGUIStyles.MessageBox">
+            <summary>
+            Message box style.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Editor.GUIFrameCounter">
+            <summary>
+            A utility class for properly counting frames and helps determine when a frame has started in an editor window.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.GUIFrameCounter.FrameCount">
+            <summary>
+            Gets the frame count.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Editor.GUIFrameCounter.IsNewFrame">
+            <summary>
+            Gets a value indicating whether this instance is new frame.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.GUIFrameCounter.Update">
+            <summary>
+            Updates the frame counter and returns itself.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.AssemblyUtility.IsDependentOn(System.Reflection.Assembly,System.Reflection.Assembly)">
+            <summary>
+            Determines whether an assembly is depended on another assembly.
+            </summary>
+            <param name="assembly">The assembly.</param>
+            <param name="otherAssembly">The other assembly.</param>
+            <returns>
+              <c>true</c> if <paramref name="assembly" /> has a reference in <paramref name="otherAssembly" /> or <paramref name="assembly" /> is the same as <paramref name="otherAssembly" />.
+            </returns>
+            <exception cref="T:System.NullReferenceException"><paramref name="assembly" /> is null.</exception>
+            <exception cref="T:System.NullReferenceException"><paramref name="otherAssembly" /> is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.AssemblyUtility.IsDynamic(System.Reflection.Assembly)">
+            <summary>
+            Determines whether the assembly module is a of type <see cref="T:System.Reflection.Emit.ModuleBuilder" />.
+            </summary>
+            <param name="assembly">The assembly.</param>
+            <returns>
+              <c>true</c> if the specified assembly of type <see cref="T:System.Reflection.Emit.ModuleBuilder" />; otherwise, <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">assembly</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.AssemblyUtility.GetAssemblyDirectory(System.Reflection.Assembly)">
+            <summary>
+            Gets the full file path to a given assembly's containing directory.
+            </summary>
+            <param name="assembly">The assembly.</param>
+            <returns>The full file path to a given assembly's containing directory, or <c>Null</c> if no file path was found.</returns>
+            <exception cref="T:System.NullReferenceException"><paramref name="assembly" /> is Null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.AssemblyUtility.GetAssemblyFilePath(System.Reflection.Assembly)">
+            <summary>Gets the full directory path to a given assembly.</summary>
+            <param name="assembly">The assembly.</param>
+            <returns>The full directory path in which a given assembly is located, or <c>Null</c> if no file path was found.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.AssemblyUtility.GetTypeByFullName(System.String)">
+            <summary>Gets the type.</summary>
+            <param name="fullName">The full name of the type, with or without any assembly information.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.AssemblyUtility.GetTypes(EasyToolKit.Core.Editor.AssemblyCategory)">
+            <summary>
+            Get types from the current AppDomain with a specified <see cref="T:Sirenix.Utilities.AssemblyCategory" /> filter.
+            </summary>
+            <param name="assemblyFlags">The <see cref="T:Sirenix.Utilities.AssemblyCategory" /> filters.</param>
+            <returns>Types from the current AppDomain with the specified <see cref="T:Sirenix.Utilities.AssemblyCategory" /> filters.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.Editor.UnityEditorEventUtility">
+            <summary>
+            This class contains utility methods for subscribing to various UnityEditor events reliably and safely across all Odin-supported versions of Unity.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.UnityEditorEventUtility.DelayActionThreadSafe(System.Action)">
+            <summary>
+            Sometimes, someone accidentally overrides a delay action subscription to <see cref="F:UnityEditor.EditorApplication.delayCall" />
+            by setting the value instead of using the += operator as should be done,
+            which can be done because in many versions of Unity it is a field, and not an event.
+            (In some versions of Unity it is an event, though, and in this case, this method acts as a wrapper
+            to subscribe reliably, no matter the nature of the backing event.)
+            This method subscribes to a lot of different callbacks, in the hopes of catching at least one.
+            <para />
+            As opposed to <see cref="M:Sirenix.OdinInspector.Editor.UnityEditorEventUtility.DelayAction(System.Action)" />, this method is safe to call from any thread, and will
+            delay the actual subscription to a safe time.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.UnityEditorEventUtility.DelayAction(System.Action)">
+            <summary>
+            Sometimes, an idiot overrides a delay action subscription to <see cref="F:UnityEditor.EditorApplication.delayCall" />,
+            which can be done because the people at Unity didn't know what events were once upon a time.
+            This method subscribes to a lot of different callbacks, in the hopes of catching at least one.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.UnityEditorEventUtility.DelayAction(System.Action,System.Boolean)">
+            <summary>
+            Sometimes, an idiot overrides a delay action subscription to <see cref="F:UnityEditor.EditorApplication.delayCall" />,
+            which can be done because the people at Unity didn't know what events were once upon a time.
+            This method subscribes to a lot of different callbacks, in the hopes of catching at least one.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Core.Editor.UnityEditorEventUtility.DuringSceneGUI">
+            <summary>
+            In 2019.1+, this event subscribes to SceneView.duringSceneGui. In 2018.4 and lower, it subscribes to SceneView.onSceneGUIDelegate.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Core.Editor.UnityEditorEventUtility.EditorApplication_delayCall">
+            <summary>
+            In 2020.1, Unity changed EditorApplication.delayCall from a field to an event, meaning
+            we now have to use reflection to access it consistently across all versions of Unity.
+            </summary>
+        </member>
+    </members>
+</doc>

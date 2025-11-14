@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EasyToolKit.Inspector</name>
+    </assembly>
+    <members>
+        <member name="F:EasyToolKit.Inspector.MessageBoxType.None">
+            <summary>
+              <para>Neutral message.</para>
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.MessageBoxType.Info">
+            <summary>
+              <para>Info message.</para>
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.MessageBoxType.Warning">
+            <summary>
+              <para>Warning message.</para>
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.MessageBoxType.Error">
+            <summary>
+              <para>Error message.</para>
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.MetroFoldoutGroupAttribute.RightLabelColorGetter">
+            <summary>
+            The right label color getter.
+            Default value is <see cref="P:UnityEngine.Color.white"/>.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.MetroFoldoutGroupAttribute.SideLineColorGetter">
+            <summary>
+            The side line color getter.
+            Default value is <see cref="P:UnityEngine.Color.green"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

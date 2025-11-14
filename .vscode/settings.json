@@ -1,0 +1,35 @@
+{
+    "files.exclude": {
+        "**/*.meta": true,
+        "**/Library": true,
+        "**/Temp": true,
+        "**/obj": true,
+        "**/Logs": true,
+        "**/Build": true,
+        "**/.vs": true
+    },
+    "search.exclude": {
+        "**/*.meta": true,
+        "**/*.csproj": true,
+        "**/*.sln": true,
+        "**/Library": true,
+        "**/Temp": true,
+        "**/obj": true,
+        "**/Logs": true,
+        "**/Build": true,
+        "**/.vs": true
+    },
+    "files.watcherExclude": {
+        "**/Library/**": true,
+        "**/Temp/**": true,
+        "**/obj/**": true,
+        "**/Logs/**": true,
+        "**/Build/**": true
+    },
+    "dotrush.roslyn.projectOrSolutionFiles": [
+        "e:\\Code\\Unity\\EasyToolKit\\TileWorldPro\\TileWorldPro.sln",
+        "e:\\Code\\Unity\\EasyToolKit\\TileWorldPro\\EasyToolKit.TileWorldPro.csproj",
+        "e:\\Code\\Unity\\EasyToolKit\\TileWorldPro\\EasyToolKit.TileWorldPro.Editor.csproj"
+    ],
+    "dotnet.defaultSolution": "TileWorldPro.sln"
+}

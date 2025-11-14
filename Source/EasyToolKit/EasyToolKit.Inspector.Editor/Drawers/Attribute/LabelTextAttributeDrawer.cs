@@ -1,0 +1,33 @@
+using EasyToolKit.Core;
+using EasyToolKit.Core.Editor;
+using UnityEditor;
+using UnityEngine;
+
+namespace EasyToolKit.Inspector.Editor
+{
+    [DrawerPriority(DrawerPriorityLevel.Super)]
+    public class LabelTextAttributeDrawer : EasyAttributeDrawer<LabelTextAttribute>
+    {
+        private ICodeValueResolver<string> _labelResolver;
+
+        protected override void Initialize()
+        {
+            var targetType = this.GetTargetTypeForResolver();
+
+            _labelResolver = CodeValueResolver.Create<string>(Attribute.Label, targetType, true);
+        }
+
+        protected override void DrawProperty(GUIContent label)
+        {
+            if (_labelResolver.HasError(out var error))
+            {
+                EasyEditorGUI.MessageBox(error, MessageType.Error);
+                return;
+            }
+
+            var resolveTarget = this.GetTargetForResolver();
+            label.text = _labelResolver.Resolve(resolveTarget);
+            CallNextDrawer(label);
+        }
+    }
+}

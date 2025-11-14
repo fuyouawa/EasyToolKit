@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e53ce3b2e106a7c4bb199dd911b1620c, type: 3}
+  m_Name: DemoDirtRoadRuleSet
+  m_EditorClassIdentifier: 
+  _fillRule:
+    _fillTileDefinition:
+      _prefab: {fileID: 2725928081125228089, guid: 86c4d52441f8b5c41a4051e7755261db, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+  _edgeRule:
+    _useFullDefinition: 1
+    _topTileDefinition:
+      _prefab: {fileID: 1115782739896639131, guid: d3e34f9d4cd0a8f4fbc014f83f4f0e91, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _bottomTileDefinition:
+      _prefab: {fileID: 1565660306843164159, guid: da5559c5336a8f244bc32e0c642e5f67, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _leftTileDefinition:
+      _prefab: {fileID: 4390494664355881622, guid: f962a0315986ee04eb357385db5e64a8, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _rightTileDefinition:
+      _prefab: {fileID: 2885704578471953442, guid: cd29995d07b1e3649b6f24a2e26f3a17, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+  _exteriorCornerRule:
+    _useFullDefinition: 1
+    _topLeftTileDefinition:
+      _prefab: {fileID: 2065436410435336752, guid: 1cc6903886ba5c34e87f8461d125fc33, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _topRightTileDefinition:
+      _prefab: {fileID: 4957887833390893552, guid: e221db3f7035b654d91f04a74d5cdca6, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _bottomLeftTileDefinition:
+      _prefab: {fileID: 8286983068862568615, guid: 457bd451cb9862b4894e8ce011f85cce, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _bottomRightTileDefinition:
+      _prefab: {fileID: 4958824552880165992, guid: a44d430fd780a6f4f8221520a6cf7fc5, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: 90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+  _interiorCornerRule:
+    _useFullDefinition: 1
+    _topLeftTileDefinition:
+      _prefab: {fileID: 3225424749316360315, guid: d07cc9568766faa4abda0b51826169ba, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: -90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _topRightTileDefinition:
+      _prefab: {fileID: 1125284219718466049, guid: 0027387d9b7243149939a0682f9fcb55, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: -90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _bottomLeftTileDefinition:
+      _prefab: {fileID: 212540215712384390, guid: 4cc1d7aab39fcde4ba1656a55869e48a, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: -90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}
+    _bottomRightTileDefinition:
+      _prefab: {fileID: 574341368219838119, guid: 1968471e013335249bedac9d4f66a510, type: 3}
+      _positionOffset: {x: 0.5, y: 0.55, z: 0.5}
+      _rotationOffset: {x: 0, y: -90, z: 0}
+      _scaleOffset: {x: 0, y: 0, z: 0}

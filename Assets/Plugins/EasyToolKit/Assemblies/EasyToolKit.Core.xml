@@ -1,0 +1,968 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EasyToolKit.Core</name>
+    </assembly>
+    <members>
+        <member name="M:EasyToolKit.Core.AnimationCurveExtensions.EvaluateWithRemap(UnityEngine.AnimationCurve,System.Single,System.Single)">
+            <summary>
+            <para>将给定的time从[0-maxTime]映射到[0-1]</para>
+            <para>然后传给AnimationCurve.Evaluate</para>
+            </summary>
+            <param name="curve"></param>
+            <param name="time"></param>
+            <param name="maxTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EasyToolKit.Core.AnimationCurveExtensions.EvaluateWithRemap(UnityEngine.AnimationCurve,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            <para>将给定的time从[0-maxTime]映射到[0-1]</para>
+            <para>然后传给AnimationCurve.Evaluate</para>
+            <para>之后将结果从[0-1]映射到[minValue-maxValue]</para>
+            <para>注意：AnimationCurve.Evaluate的结果必须在[0-1]区间</para>
+            </summary>
+            <param name="curve"></param>
+            <param name="time"></param>
+            <param name="maxTime"></param>
+            <param name="minValue"></param>
+            <param name="maxValue"></param>
+            <returns>[minValue-maxValue]区间的数值</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.GradientExtensions.EvaluateWithRemap(UnityEngine.Gradient,System.Single,System.Single)">
+            <summary>
+            <para>将给定的time从[0-maxTime]映射到[0-1]</para>
+            <para>然后传给Gradient.Evaluate</para>
+            </summary>
+            <param name="gradient"></param>
+            <param name="time"></param>
+            <param name="maxTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetWidth(UnityEngine.Rect,System.Single)">
+            <summary>Returns a Rect with the specified width.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="width">The desired width of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetHeight(UnityEngine.Rect,System.Single)">
+            <summary>Returns a Rect with the specified height.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="height">The desired height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetSize(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>Returns a Rect with the specified size.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="width">The desired width of the new Rect.</param>
+            <param name="height">The desired height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetSize(UnityEngine.Rect,System.Single)">
+            <summary>Returns a Rect with the specified size.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="widthAndHeight">The desired width and height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetSize(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Returns a Rect with the specified size.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="size">The desired size of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.HorizontalPadding(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect that has been inserted by the specified amount on the X-axis.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="padding">The desired padding.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.HorizontalPadding(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>
+            Returns a Rect that has been inserted by the specified amount on the X-axis.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="left">Desired padding on the left side.</param>
+            <param name="right">Desired padding on the right side.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.VerticalPadding(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect that has been inserted by the specified amount on the Y-axis.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="padding">The desired padding.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.VerticalPadding(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>
+            Returns a Rect that has been inserted by the specified amount on the Y-axis.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="top">The desired padding on the top.</param>
+            <param name="bottom">The desired padding on the bottom.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.Padding(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect that has been inserted by the specified amount.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="padding">The desired padding.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.Padding(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>
+            Returns a Rect that has been inserted by the specified amount.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="horizontal">The desired horizontal padding.</param>
+            <param name="vertical">The desired vertical padding.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.Padding(UnityEngine.Rect,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns a Rect that has been inserted by the specified amount.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="left">The desired padding on the left.</param>
+            <param name="right">The desired padding on the right.</param>
+            <param name="top">The desired padding on the top.</param>
+            <param name="bottom">The desired padding on the bottom.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignLeft(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified width, that has been aligned to the left of the original Rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="width">The desired width of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignCenter(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified width, that has been aligned to horizontal center of the original Rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="width">The desired width of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignCenter(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>
+            Returns a Rect, with the specified width and height in the center of the provided rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="width">The desired width of the new Rect.</param>
+            <param name="height">The desired height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignRight(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified width, that has been aligned to the right of the original Rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="width">The desired width of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignRight(UnityEngine.Rect,System.Single,System.Boolean)">
+            <summary>
+            Returns a Rect, with the specified width, that has been aligned to the right of the original Rect.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignTop(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified height, that has been aligned to the top of the original Rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="height">The desired height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignMiddle(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified height, that has been aligned to the vertical middle of the original Rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="height">The desired height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignBottom(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified height, that has been aligned to the bottom of the original Rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="height">The desired height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignCenterX(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified width, that has been aligned horizontally to the center of the original rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="width">The desired width of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignCenterY(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified height, that has been aligned vertically to the center of the original rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="height">The desired height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignCenterXY(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect, with the specified width and height, that has been aligned horizontally and vertically to the center of the original rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="size">The desired width and height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AlignCenterXY(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>
+            Returns a Rect, with the specified width and height, that has been aligned horizontally and vertically to the center of the original rect.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="width">The desired width of the new Rect.</param>
+            <param name="height">The desired height of the new Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.Expand(UnityEngine.Rect,System.Single)">
+            <summary>
+            Returns a Rect that has been expanded by the specified amount.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="expand">The desired expansion.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.Expand(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>
+            Returns a Rect that has been expanded by the specified amount.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="horizontal">The desired expansion on the X-axis.</param>
+            <param name="vertical">The desired expansion on the Y-axis.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.Expand(UnityEngine.Rect,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns a Rect that has been expanded by the specified amount.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="left">The desired expansion on the left.</param>
+            <param name="right">The desired expansion on the right.</param>
+            <param name="top">The desired expansion on the top.</param>
+            <param name="bottom">The desired expansion on the bottom.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.Split(UnityEngine.Rect,System.Int32,System.Int32)">
+            <summary>
+            Splits a Rect horizontally into the specified number of sub-rects, and returns a sub-rect for the specified index.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="index">The index for the subrect. Includes 0, and excludes count.</param>
+            <param name="count">The amount of subrects the Rect should be split into.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SplitVertical(UnityEngine.Rect,System.Int32,System.Int32)">
+            <summary>
+            Splits a Rect vertically into the specified number of sub-rects, and returns a sub-rect for the specified index.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="index">The index for the subrect. Includes 0, and excludes count.</param>
+            <param name="count">The amount of subrects the Rect should be split into.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SplitGrid(UnityEngine.Rect,System.Single,System.Single,System.Int32)">
+            <summary>
+            Splits a Rect into a grid from left to right and then down.
+            </summary>
+            <param name="rect">The original rect.</param>
+            <param name="width">The width of a grid cell.</param>
+            <param name="height">The height of a grid cell.</param>
+            <param name="index">The index of the grid cell.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SplitTableGrid(UnityEngine.Rect,System.Int32,System.Single,System.Int32)">
+            <summary>
+            Splits a Rect into a grid from left to right and then down.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetCenterX(UnityEngine.Rect,System.Single)">
+            <summary>Moves a Rect to the specified center X position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="x">The desired center x position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetCenterY(UnityEngine.Rect,System.Single)">
+            <summary>Moves a Rect to the specified center Y position.</summary>
+            <param name="rect">The desired original Rect.</param>
+            <param name="y">The desired desired center y position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetCenter(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>Moves a Rect to the specified center position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="x">The desired center X position.</param>
+            <param name="y">The desired center Y position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetCenter(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Moves a Rect to the specified center position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="center">The desired center position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetPosition(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Moves a Rect to the specified position.</summary>
+            <param name="rect">The orignal Rect.</param>
+            <param name="position">The desired position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.ResetPosition(UnityEngine.Rect)">
+            <summary>Resets a Rect's position to zero.</summary>
+            <param name="rect">The original Rect.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddPosition(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Moves a Rect's position by the specified amount.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="move">The change in position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddPosition(UnityEngine.Rect,System.Single,System.Single)">
+            <summary>Moves a Rect's position by the specified amount.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="x">The x.</param>
+            <param name="y">The y.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetX(UnityEngine.Rect,System.Single)">
+            <summary>Sets a Rect's X position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="x">The desired X position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddX(UnityEngine.Rect,System.Single)">
+            <summary>Adds to a Rect's X position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="x">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SubX(UnityEngine.Rect,System.Single)">
+            <summary>Subtracts from a Rect's X position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="x">The value to subtract.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetY(UnityEngine.Rect,System.Single)">
+            <summary>Sets a Rect's Y position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="y">The desired Y position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddY(UnityEngine.Rect,System.Single)">
+            <summary>Adds to a Rect's Y position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="y">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SubY(UnityEngine.Rect,System.Single)">
+            <summary>Subtracts a Rect's Y position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="y">The value to subtract.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetMin(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Sets the min position of a Rect.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="min">The desired min position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddMin(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Adds to a Rect's min position.</summary>
+            <param name="rect">The original rect.</param>
+            <param name="value">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SubMin(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Subtracts a Rect's min position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The vlaue to subtract.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetMax(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Sets a Rect's max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="max">The desired max position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddMax(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Adds to a Rect's max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SubMax(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Subtracts a Rect's max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetXMin(UnityEngine.Rect,System.Single)">
+            <summary>Sets a Rect's X min position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="xMin">The desired min X position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddXMin(UnityEngine.Rect,System.Single)">
+            <summary>Adds to a Rect's X min position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SubXMin(UnityEngine.Rect,System.Single)">
+            <summary>Subtracts from a Rect's X min position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to subtract.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetXMax(UnityEngine.Rect,System.Single)">
+            <summary>Sets a Rect's X max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="xMax">The desired X max position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddXMax(UnityEngine.Rect,System.Single)">
+            <summary>Adds to a Rect's X max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SubXMax(UnityEngine.Rect,System.Single)">
+            <summary>Subtracts a Rect's X max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to subtract.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetYMin(UnityEngine.Rect,System.Single)">
+            <summary>Sets a Rect's Y min position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="yMin">The desired Y min.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddYMin(UnityEngine.Rect,System.Single)">
+            <summary>Adds to a Rect's Y min position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SubYMin(UnityEngine.Rect,System.Single)">
+            <summary>Subtracts a Rect's Y min position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to subtract.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SetYMax(UnityEngine.Rect,System.Single)">
+            <summary>Sets a Rect's Y max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="yMax">The desired Y max position.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.AddYMax(UnityEngine.Rect,System.Single)">
+            <summary>Adds to a Rect's Y max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.SubYMax(UnityEngine.Rect,System.Single)">
+            <summary>Subtracts from a Rect's Y max position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="value">The value to subtract.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.MinWidth(UnityEngine.Rect,System.Single)">
+            <summary>
+            Sets a Rect's width, if it is less than the specified value.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="minWidth">The desired min width.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.MaxWidth(UnityEngine.Rect,System.Single)">
+            <summary>
+            Sets a Rect's width, if it is greater than the specified value.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="maxWidth">The desired max width.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.MinHeight(UnityEngine.Rect,System.Single)">
+            <summary>
+            Sets a Rect's height, if it is less than the specified value.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="minHeight">The desired min height.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.MaxHeight(UnityEngine.Rect,System.Single)">
+            <summary>
+            Sets a Rect's height, if it is greater than the specified value.
+            </summary>
+            <param name="rect">The original Rect.</param>
+            <param name="maxHeight">The desired max height.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.ExpandTo(UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>Expands a rect to contain a given position.</summary>
+            <param name="rect">The original Rect.</param>
+            <param name="pos">The position to expand the rect towards.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.RectExtensions.IsPlaceholder(UnityEngine.Rect)">
+            <summary>
+            Determines if an <see cref="T:UnityEngine.Rect" /> is a placeholder; usually (0, 0, 1, 1) in Layout.
+            </summary>
+            <param name="rect">The original <see cref="T:UnityEngine.Rect" />.</param>
+            <returns><c>true</c> if the <see cref="T:UnityEngine.Rect" /> is equal to (0, 0, 0, 0) or (0, 0, 1, 1); otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeExtensions.ResolveMissingGenericTypeArguments(System.Type,System.Type,System.Boolean)">
+            <summary>
+            <para>根据源类型（可能包含泛型参数）和目标类型，从目标类型中提取出原类型缺失的泛型参数类型。</para>
+            <para>如果源类型是个泛型参数，则直接返回目标类型。</para>
+            </summary>
+            <param name="sourceType"></param>
+            <param name="targetType"></param>
+            <param name="allowInheritance">是否允许通过继承关系匹配泛型定义。</param>
+            <returns></returns>
+        </member>
+        <member name="T:EasyToolKit.Core.EasyEventHandler`1">
+            <summary>
+            事件处理器
+            </summary>
+            <typeparam name="TEvent"></typeparam>
+            <param name="sender">发送者</param>
+            <param name="e">事件参数</param>
+        </member>
+        <member name="T:EasyToolKit.Core.EventTriggerWrapper">
+            <summary>
+            <para>事件处理器的触发行为扩展</para>
+            <para>可以使用该委托实现例如：确保在UI线程调用事件处理器</para>
+            </summary>
+            <param name="triggerInvoker">事件处理器的触发调用对象</param>
+        </member>
+        <member name="M:EasyToolKit.Core.EasyEventManager.Register``1(System.Object,EasyToolKit.Core.EasyEventHandler{``0})">
+            <summary>
+            注册事件处理器
+            </summary>
+            <typeparam name="TEvent"></typeparam>
+            <param name="target"></param>
+            <param name="handler"></param>
+        </member>
+        <member name="M:EasyToolKit.Core.EasyEventManager.UnregisterSubscriber(System.Object,System.Boolean)">
+            <summary>
+            取消注册target中所有事件处理器
+            </summary>
+            <param name="target"></param>
+            <param name="includeBaseClass">包含基类的事件处理器</param>
+            <returns></returns>
+        </member>
+        <member name="M:EasyToolKit.Core.EasyEventManager.Unregister``1(System.Object,EasyToolKit.Core.EasyEventHandler{``0})">
+            <summary>
+            取消注册事件处理器
+            </summary>
+            <typeparam name="TEvent"></typeparam>
+            <param name="target"></param>
+            <param name="handler"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EasyToolKit.Core.EasyEventManager.TriggerEvent``1(System.Object,``0)">
+            <summary>
+            <para>触发事件</para>
+            <para>注意：在事件处理器中触发事件要谨慎，处理不当可能会死锁</para>
+            <para>如果出现死锁了，检查以下情况</para>
+            <para>1、是否事件处理器中再次触发处理的事件（包括整个触发栈）</para>
+            <para>2、待补充。。。。。。</para>
+            </summary>
+            <typeparam name="TEvent"></typeparam>
+            <param name="target"></param>
+            <param name="eventArg">事件</param>
+            <returns></returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IFromRegisterEvent.InUnityThread">
+            <summary>
+            <para>确保会在Unity线程触发</para>
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.PooledGameObject.Target">
+            <summary>
+            目标实例
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.PooledGameObject.OwningPool">
+            <summary>
+            所属池
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.PooledGameObject.ActiveLifetime">
+            <summary>
+            激活中对象的回收时间，小于0则无限制
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.PooledGameObject.IdleLifetime">
+            <summary>
+            空闲中对象的销毁时间，小于0则无限制
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.PooledGameObject.ElapsedTime">
+            <summary>
+            <para>获取当前计时器累计时间（单位：秒）。</para>
+            <para>- 激活状态时：表示已激活时长</para>
+            <para>- 空闲状态时：表示已空闲时长</para>
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.GameObjectPool">
+            <summary>
+            游戏对象池实现，用于管理游戏对象的对象池
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.GameObjectPool.TickInterval">
+            <summary>
+            更新间隔
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.GameObjectPool.Original">
+            <summary>
+            对象池中对象的原始预制体
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.GameObjectPool.Transform">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectPool.OnTick(System.Single)">
+            <summary>
+            定时更新所有活跃对象的状态
+            </summary>
+            <param name="interval">更新间隔（秒）</param>
+        </member>
+        <member name="T:EasyToolKit.Core.GameObjectPoolManager">
+            <summary>
+            游戏对象池管理器，负责创建和管理多个游戏对象池
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectPoolManager.CreatePool(System.String,UnityEngine.GameObject)">
+            <summary>
+            创建游戏对象池
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <param name="original">原始预制体</param>
+            <exception cref="T:System.InvalidOperationException">当已存在同名同类型的池时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectPoolManager.GetPool(System.String)">
+            <summary>
+            获取指定名称和类型的游戏对象池
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <returns>找到的对象池</returns>
+            <exception cref="T:System.InvalidOperationException">当找不到指定的对象池时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectPoolManager.CreateUnityObjectPool(System.String,UnityEngine.GameObject)">
+            <summary>
+            创建新的游戏对象池实例
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <param name="original">原始预制体</param>
+            <returns></returns>
+        </member>
+        <member name="T:EasyToolKit.Core.IGameObjectPool">
+            <summary>
+            游戏对象池接口，将GameObject实例池化，并通过缓存Component引用，提供快速访问组件的接口
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPool.Original">
+            <summary>
+            对象池中对象的原始预制体（用于实例化复制）
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPool.Transform">
+            <summary>
+            对象池的Transform组件，用于管理池中对象的层级关系
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IGameObjectPool.GetLifetimeAccessor(UnityEngine.GameObject)">
+            <summary>
+            获取指定对象的生命周期访问器（包含激活时长、空闲时长与计时器控制）
+            </summary>
+            <param name="instance">池中 Unity 实例对象</param>
+            <returns>生命周期访问器接口</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IGameObjectPool.Update(System.Single)">
+            <summary>
+            更新对象池状态，处理对象生命周期和回收
+            </summary>
+            <param name="deltaTime">距离上次更新的时间间隔（秒）</param>
+        </member>
+        <member name="M:EasyToolKit.Core.IGameObjectPoolManager.CreatePool(System.String,UnityEngine.GameObject)">
+            <summary>
+            创建对象池
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <param name="original">用于实例化的原始游戏对象</param>
+            <exception cref="T:System.InvalidOperationException">当已存在同名同类型的池时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.IGameObjectPoolManager.GetPool(System.String)">
+            <summary>
+            获取指定名称和类型的对象池
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <returns>找到的对象池</returns>
+            <exception cref="T:System.InvalidOperationException">当找不到指定的对象池时抛出</exception>
+        </member>
+        <member name="T:EasyToolKit.Core.IObjectPool">
+            <summary>
+            对象池接口，定义了对象池的基本操作和属性
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IObjectPool.Name">
+            <summary>
+            对象池的名称
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IObjectPool.ObjectType">
+            <summary>
+            对象池中存储的对象类型
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IObjectPool.Capacity">
+            <summary>
+            对象池的容量上限
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPool.Release(System.Object)">
+            <summary>
+            将对象实例释放回对象池
+            </summary>
+            <param name="instance">要释放的对象实例</param>
+            <returns>
+            如果对象成功释放回对象池，则返回true；
+            如果对象已经处于空闲状态或不属于此对象池，则返回false
+            </returns>
+            <exception cref="T:System.ArgumentNullException">当实例为null时抛出</exception>
+            <exception cref="T:System.InvalidOperationException">当因其他原因无法释放对象时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPool.Remove(System.Object)">
+            <summary>
+            从对象池中移除对象实例
+            </summary>
+            <param name="instance">要移除的对象实例</param>
+            <returns>
+            如果对象成功从对象池中移除，则返回true；
+            如果对象已经不在对象池中，则返回false
+            </returns>
+            <exception cref="T:System.ArgumentNullException">当实例为null时抛出</exception>
+            <exception cref="T:System.InvalidOperationException">当因其他原因无法移除对象时抛出</exception>
+        </member>
+        <member name="T:EasyToolKit.Core.IObjectPoolExtension">
+            <summary>
+            对象池扩展方法类，提供了一系列便捷的对象池操作方法
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPoolExtension.OnRent``1(``0,System.Action{System.Object})">
+            <summary>
+            添加对象生成时的回调函数
+            </summary>
+            <typeparam name="TObjectPool">对象池类型</typeparam>
+            <param name="objectPool">目标对象池</param>
+            <param name="callback">对象生成时的回调函数</param>
+            <returns>对象池实例，支持链式调用</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPoolExtension.OnRelease``1(``0,System.Action{System.Object})">
+            <summary>
+            添加对象回收时的回调函数
+            </summary>
+            <typeparam name="TObjectPool">对象池类型</typeparam>
+            <param name="objectPool">目标对象池</param>
+            <param name="callback">对象回收时的回调函数</param>
+            <returns>对象池实例，支持链式调用</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPoolExtension.SetCapacity``1(``0,System.Int32)">
+            <summary>
+            设置对象池的容量
+            </summary>
+            <typeparam name="TObjectPool">对象池类型</typeparam>
+            <param name="objectPool">目标对象池</param>
+            <param name="newCapacity">新的容量值</param>
+            <returns>对象池实例，支持链式调用</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPoolExtension.Rent``1(EasyToolKit.Core.IObjectPool)">
+            <summary>
+            从对象池中获取指定类型的对象
+            </summary>
+            <typeparam name="T">期望的对象类型</typeparam>
+            <param name="objectPool">目标对象池</param>
+            <returns>获取到的对象</returns>
+            <exception cref="T:System.ArgumentException">当期望的类型与对象池中的对象类型不兼容时抛出</exception>
+        </member>
+        <member name="T:EasyToolKit.Core.IObjectPoolManager">
+            <summary>
+            对象池管理器接口，负责管理多个对象池的创建和访问
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPoolManager.CreatePool(System.String,System.Type)">
+            <summary>
+            创建对象池
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <param name="objectType">对象池中存储的对象类型</param>
+            <exception cref="T:System.InvalidOperationException">当已存在同名同类型的池时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPoolManager.GetPool(System.String,System.Type)">
+            <summary>
+            获取指定名称和类型的对象池
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <param name="objectType">对象池中存储的对象类型</param>
+            <returns>找到的对象池</returns>
+            <exception cref="T:System.InvalidOperationException">当找不到指定的对象池时抛出</exception>
+        </member>
+        <member name="T:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor">
+            <summary>
+            <para>提供对池化游戏对象的生命周期属性（激活/空闲时长、当前计时器）的访问接口。</para>
+            <para>主要用于内部机制获取或设置如下属性：</para>
+            <para>- 激活状态下的最大存活时间（超时将回收）</para>
+            <para>- 空闲状态下的最大存活时间（超时将销毁）</para>
+            <para>- 当前计时器（根据状态不同表示距离回收或销毁的时间）</para>
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor.ActiveLifetime">
+            <summary>
+            激活中对象的回收时间，小于0则无限制
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor.IdleLifetime">
+            <summary>
+            空闲中对象的销毁时间，小于0则无限制
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor.ElapsedTime">
+            <summary>
+            <para>获取当前计时器累计时间（单位：秒）。</para>
+            <para>- 激活状态时：表示已激活时长</para>
+            <para>- 空闲状态时：表示已空闲时长</para>
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IPooledUnityObjectLifetimeAccessorExtension">
+            <summary>
+            为 <see cref="T:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor"/> 提供链式调用的扩展方法。
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IPooledUnityObjectLifetimeAccessorExtension.SetActiveLifetime(EasyToolKit.Core.IPooledGameObjectLifetimeAccessor,System.Single)">
+            <summary>
+            设置激活状态下的最大存活时间。
+            </summary>
+            <param name="accessor">生命周期访问器。</param>
+            <param name="lifetime">存活时间（秒），小于0表示无限制。</param>
+            <returns>配置后的访问器实例，支持链式调用。</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IPooledUnityObjectLifetimeAccessorExtension.SetIdleLifetime(EasyToolKit.Core.IPooledGameObjectLifetimeAccessor,System.Single)">
+            <summary>
+            设置空闲状态下的最大存活时间。
+            </summary>
+            <param name="accessor">生命周期访问器。</param>
+            <param name="lifetime">存活时间（秒），小于0表示无限制。</param>
+            <returns>配置后的访问器实例，支持链式调用。</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IPooledUnityObjectLifetimeAccessorExtension.SetElapsedTime(EasyToolKit.Core.IPooledGameObjectLifetimeAccessor,System.Single)">
+            <summary>
+            设置当前计时器累计时间。
+            </summary>
+            <param name="accessor">生命周期访问器。</param>
+            <param name="elapsedTime">累计时间（秒）。</param>
+            <returns>配置后的访问器实例，支持链式调用。</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.IPoolItem">
+             <summary>
+             对象元素接口。
+            
+             <para>若该接口由普通类实现，则在对象被取出/回收时会直接调用该实例的方法。</para>
+             <para>若由 Unity 组件实现，则在对象池操作时，会调用该 GameObject 上所有实现该接口的组件。</para>
+             <para>该接口为可选实现，仅在需要监听池事件时实现。</para>
+             </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IPoolItem.Rent(EasyToolKit.Core.IObjectPool)">
+            <summary>
+            对象从对象池中被取出时调用。
+            </summary>
+            <param name="owningPool">所属的对象池</param>
+        </member>
+        <member name="M:EasyToolKit.Core.IPoolItem.Release(EasyToolKit.Core.IObjectPool)">
+            <summary>
+            对象被回收到对象池中时调用。
+            </summary>
+            <param name="owningPool">所属的对象池</param>
+        </member>
+        <member name="T:EasyToolKit.Core.ObjectPool">
+            <summary>
+            通用对象池实现，用于管理实现了IPooledObject接口的对象
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ObjectPoolBase">
+            <summary>
+            对象池的基类，实现了IObjectPool接口的基本功能
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ObjectPoolBase.EasyToolKit#Core#IObjectPool#Name">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.ObjectPoolBase.EasyToolKit#Core#IObjectPool#ObjectType">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.ObjectPoolBase.Name">
+            <summary>
+            对象池的名称
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ObjectPoolBase.ObjectType">
+            <summary>
+            对象池中存储的对象类型
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ObjectPoolBase.Capacity">
+            <summary>
+            <para>对象池的容量上限。设置小于0表示无限制</para>
+            <para>当设置新的容量时，如果新容量小于当前活跃对象数量，将抛出异常。</para>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolBase.RentFromIdle">
+            <summary>
+            从空闲对象池中获取一个对象实例
+            </summary>
+            <returns>获取到的对象实例</returns>
+            <exception cref="T:System.InvalidOperationException">当无法获取对象实例时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolBase.ReleaseToIdle(System.Object)">
+            <summary>
+            将对象实例释放回空闲对象池
+            </summary>
+            <param name="instance">要释放的对象实例</param>
+            <returns>如果对象成功释放，则返回true；如果对象已经在空闲池中或不属于此对象池，则返回false</returns>
+            <exception cref="T:System.InvalidOperationException">当因其他原因无法释放对象时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolBase.RemoveFromActive(System.Object)">
+            <summary>
+            从活跃对象列表中移除对象实例
+            </summary>
+            <param name="instance">要移除的对象实例</param>
+            <returns>如果对象成功移除，则返回true；如果对象不在活跃列表中，则返回false</returns>
+            <exception cref="T:System.InvalidOperationException">当因其他原因无法移除对象时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolBase.ShrinkIdleObjectsToFitCapacity(System.Int32)">
+            <summary>
+            根据容量限制收缩
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ObjectPoolManager">
+            <summary>
+            对象池管理器，负责创建和管理多个对象池
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ObjectPoolManager.PoolType">
+            <summary>
+            对象池类型，用于创建对象池实例
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            当value为null、是抽象类或接口、没有继承自IObjectPool时抛出
+            </exception>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolManager.CreatePool(System.String,System.Type)">
+            <summary>
+            创建对象池
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <param name="objectType">对象池中存储的对象类型</param>
+            <exception cref="T:System.InvalidOperationException">当已存在同名同类型的池时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolManager.GetPool(System.String,System.Type)">
+            <summary>
+            获取指定名称和类型的对象池
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <param name="objectType">对象池中存储的对象类型</param>
+            <returns>找到的对象池</returns>
+            <exception cref="T:System.InvalidOperationException">当找不到指定的对象池时抛出</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolManager.CreateObjectPool(System.String,System.Type)">
+            <summary>
+            创建新的对象池实例
+            </summary>
+            <param name="poolName">对象池名称</param>
+            <param name="objectType">对象池中存储的对象类型</param>
+            <returns></returns>
+        </member>
+        <member name="T:EasyToolKit.Core.StateChangedHandler`1">
+            <summary>
+            当状态更改完成的回调
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="stateId">当前状态</param>
+        </member>
+        <member name="E:EasyToolKit.Core.StateMachine`1.OnStateChanged">
+            <summary>
+            当状态更改完的的回调
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MathUtility.Remap(System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            将一个在[A, B]区间的x, 映射到[C, D]区间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EasyToolKit.Core.MathUtility.GetVerticesOfRotatedRectangle(UnityEngine.Rect,System.Single)">
+            <summary>
+            获取旋转后矩形的四个顶点
+            </summary>
+            <returns>[左下角, 左上角, 右上角, 右下角]</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.MathUtility.GetVerticesOfRotatedRectangle(UnityEngine.Vector2,UnityEngine.Vector2,System.Single)">
+            <summary>
+            获取旋转后矩形的四个顶点
+            </summary>
+            <returns>[左下角, 左上角, 右上角, 右下角]</returns>
+        </member>
+    </members>
+</doc>
