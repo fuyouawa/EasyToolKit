@@ -8,24 +8,56 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
+    /// <summary>
+    /// Represents a hierarchical tree structure for managing and drawing inspector properties.
+    /// This class handles property updates, change tracking, and rendering in the Unity Inspector.
+    /// </summary>
     public class PropertyTree
     {
         private readonly HashSet<InspectorProperty> _dirtyProperties = new HashSet<InspectorProperty>();
         private Action _pendingCallbacks;
         private Action _pendingCallbacksUntilRepaint;
 
+        /// <summary>
+        /// Gets the current update identifier used for tracking property updates.
+        /// </summary>
         public int UpdateId { get; private set; }
+
+        /// <summary>
+        /// Gets the SerializedObject associated with this property tree.
+        /// </summary>
         public SerializedObject SerializedObject { get; }
+
+        /// <summary>
+        /// Gets the root property of the property tree hierarchy.
+        /// </summary>
         public InspectorProperty LogicRootProperty { get; }
 
+        /// <summary>
+        /// Gets the target objects associated with this property tree.
+        /// </summary>
         public UnityEngine.Object[] Targets => SerializedObject.targetObjects;
+
+        /// <summary>
+        /// Gets the type of the target object.
+        /// </summary>
         public Type TargetType => LogicRootProperty.Info.PropertyType;
 
+        /// <summary>
+        /// Gets or sets whether to draw the MonoScript object field in the inspector.
+        /// </summary>
         public bool DrawMonoScriptObjectField { get; set; }
 
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
         public event Action<InspectorProperty, int> OnPropertyValueChanged;
 
-
+        /// <summary>
+        /// Initializes a new instance of the PropertyTree class with the specified SerializedObject.
+        /// </summary>
+        /// <param name="serializedObject">The SerializedObject to create the property tree for.</param>
+        /// <exception cref="ArgumentNullException">Thrown when serializedObject is null.</exception>
         public PropertyTree([NotNull] SerializedObject serializedObject)
         {
             if (serializedObject == null)
@@ -36,6 +68,11 @@ namespace EasyToolKit.Inspector.Editor
                 InspectorPropertyInfo.CreateForLogicRoot(serializedObject), 0);
         }
 
+        /// <summary>
+        /// Enumerates all properties in the tree.
+        /// </summary>
+        /// <param name="includeChildren">Whether to include child properties in the enumeration.</param>
+        /// <returns>An enumerable collection of InspectorProperty objects.</returns>
         public IEnumerable<InspectorProperty> EnumerateTree(bool includeChildren)
         {
             for (var i = 0; i < LogicRootProperty.Children!.Count; i++)
@@ -53,26 +90,46 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
+        /// <summary>
+        /// Gets a Unity SerializedProperty by its property path.
+        /// </summary>
+        /// <param name="propertyPath">The path of the property to find.</param>
+        /// <returns>The SerializedProperty at the specified path, or null if not found.</returns>
         public SerializedProperty GetUnityPropertyByPath(string propertyPath)
         {
             return SerializedObject.FindProperty(propertyPath);
         }
 
+        /// <summary>
+        /// Marks a property as dirty, indicating it needs to be updated.
+        /// </summary>
+        /// <param name="property">The property to mark as dirty.</param>
         public void SetPropertyDirty(InspectorProperty property)
         {
             _dirtyProperties.Add(property);
         }
 
+        /// <summary>
+        /// Queues a callback to be executed during the next update cycle.
+        /// </summary>
+        /// <param name="action">The callback action to queue.</param>
         public void QueueCallback(Action action)
         {
             _pendingCallbacks += action;
         }
 
+        /// <summary>
+        /// Queues a callback to be executed until the next repaint event.
+        /// </summary>
+        /// <param name="action">The callback action to queue.</param>
         public void QueueCallbackUntilRepaint(Action action)
         {
             _pendingCallbacksUntilRepaint += action;
         }
 
+        /// <summary>
+        /// Draws the entire property tree in the inspector.
+        /// </summary>
         public void Draw()
         {
             BeginDraw();
@@ -80,6 +137,10 @@ namespace EasyToolKit.Inspector.Editor
             EndDraw();
         }
 
+        /// <summary>
+        /// Begins the drawing process for the property tree.
+        /// This method updates the serialized object and prepares the tree for drawing.
+        /// </summary>
         public void BeginDraw()
         {
             SerializedObject.UpdateIfRequiredOrScript();
@@ -106,6 +167,9 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
+        /// <summary>
+        /// Draws all properties in the tree.
+        /// </summary>
         public void DrawProperties()
         {
             foreach (var property in EnumerateTree(false))
@@ -126,6 +190,10 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
+        /// <summary>
+        /// Ends the drawing process for the property tree.
+        /// This method applies modified properties and processes pending callbacks.
+        /// </summary>
         public void EndDraw()
         {
             DoPendingCallbacks();
@@ -243,6 +311,12 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
+        /// <summary>
+        /// Creates a new PropertyTree instance from a SerializedObject.
+        /// </summary>
+        /// <param name="serializedObject">The SerializedObject to create the property tree for.</param>
+        /// <returns>A new PropertyTree instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when serializedObject is null.</exception>
         public static PropertyTree Create([NotNull] SerializedObject serializedObject)
         {
             if (serializedObject == null)
@@ -251,6 +325,14 @@ namespace EasyToolKit.Inspector.Editor
             return Create(serializedObject.targetObjects, serializedObject);
         }
 
+        /// <summary>
+        /// Creates a new PropertyTree instance from target objects and an optional SerializedObject.
+        /// </summary>
+        /// <param name="targets">The target objects to create the property tree for.</param>
+        /// <param name="serializedObject">An optional existing SerializedObject to use.</param>
+        /// <returns>A new PropertyTree instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when targets is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when the provided SerializedObject is not valid for the targets.</exception>
         public static PropertyTree Create([NotNull] UnityEngine.Object[] targets,
             SerializedObject serializedObject)
         {

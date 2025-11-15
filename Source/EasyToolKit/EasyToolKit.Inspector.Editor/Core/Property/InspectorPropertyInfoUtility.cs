@@ -5,8 +5,17 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
+    /// <summary>
+    /// Utility class providing helper methods for inspecting and determining property information
+    /// related to Unity serialization and inspector display.
+    /// </summary>
     public static class InspectorPropertyInfoUtility
     {
+        /// <summary>
+        /// Determines if a type is either a Unity Object subclass or has a defined Unity property drawer.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is a Unity Object subclass or has a defined property drawer; otherwise false.</returns>
         public static bool IsUnityObjectTypeOrDefinedUnityPropertyDrawer(Type type)
         {
             if (type.IsSubclassOf(typeof(UnityEngine.Object)))
@@ -17,6 +26,11 @@ namespace EasyToolKit.Inspector.Editor
             return isDefinedUnityPropertyDrawer;
         }
 
+        /// <summary>
+        /// Determines if a type is serializable by Unity's serialization system.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is serializable; otherwise false.</returns>
         public static bool IsSerializableType(Type type)
         {
             if (type.IsInterface || type.IsAbstract)
@@ -27,6 +41,11 @@ namespace EasyToolKit.Inspector.Editor
                    type.IsDefined<SerializableAttribute>();
         }
 
+        /// <summary>
+        /// Determines if a field is serializable by Unity's serialization system.
+        /// </summary>
+        /// <param name="fieldInfo">The field to check.</param>
+        /// <returns>True if the field is serializable; otherwise false.</returns>
         public static bool IsSerializableField(FieldInfo fieldInfo)
         {
             if (!IsSerializableType(fieldInfo.FieldType))
@@ -43,6 +62,12 @@ namespace EasyToolKit.Inspector.Editor
             return !nonSerialized && fieldInfo.IsDefined<SerializeField>();
         }
 
+        /// <summary>
+        /// Determines if a type can have child properties in the inspector.
+        /// Uses lenient criteria that excludes basic value types, delegates, and Unity Object types.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type can have children; otherwise false.</returns>
         public static bool IsAllowChildrenTypeLeniently(Type type)
         {
             return !type.IsBasicValueType() &&
