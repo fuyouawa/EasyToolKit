@@ -17,7 +17,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Indicates whether the value type can be instantiated (i.e., has a parameterless constructor).
         /// </summary>
-        public static readonly bool IsInstiatableType = typeof(TValue).IsInstantiable();
+        public static readonly bool IsInstantiableType = typeof(TValue).IsInstantiable();
 
         /// <summary>
         /// Gets the inspector property associated with this value collection.
@@ -159,7 +159,7 @@ namespace EasyToolKit.Inspector.Editor
                         continue;
                     }
                     var value = (TValue)Property.Info.ValueAccessor.GetWeakValue(owner);
-                    if (value == null && IsInstiatableType)
+                    if (value == null && IsInstantiableType)
                     {
                         if (typeof(TValue).TryCreateInstance<TValue>(out _values[i]))
                         {

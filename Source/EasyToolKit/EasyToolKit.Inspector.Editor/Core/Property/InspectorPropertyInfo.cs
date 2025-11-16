@@ -56,7 +56,7 @@ namespace EasyToolKit.Inspector.Editor
 
         /// <summary>
         /// Gets a value indicating whether this property represents an array element.
-        /// This is determined by checking if the property's owner type implements ICollection<T>.
+        /// This is determined by checking if the property's owner type implements ICollection$T.
         /// </summary>
         public bool IsArrayElement
         {

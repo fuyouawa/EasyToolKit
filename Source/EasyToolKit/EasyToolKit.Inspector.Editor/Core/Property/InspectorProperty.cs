@@ -34,7 +34,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the parent property in the inspector hierarchy, or null if this is a root property.
         /// </summary>
-        public InspectorProperty Parent { get; private set; }
+        [CanBeNull] public InspectorProperty Parent { get; private set; }
 
         /// <summary>
         /// Gets the property tree that this property belongs to, which manages the entire inspector property hierarchy.
@@ -173,7 +173,7 @@ namespace EasyToolKit.Inspector.Editor
         public string Name => Info.PropertyName;
 
         /// <summary>
-        /// Gets the Unity serialization path for this property, excluding the root prefix.
+        /// Gets the Unity serialization path for this property.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when accessed on a logic root property</exception>
         public string UnityPath

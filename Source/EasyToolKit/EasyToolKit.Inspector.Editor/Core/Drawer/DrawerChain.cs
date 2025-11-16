@@ -5,11 +5,21 @@ using System.Linq;
 
 namespace EasyToolKit.Inspector.Editor
 {
+    /// <summary>
+    /// Represents a chain of drawers that can be iterated over during property drawing.
+    /// This class implements both IEnumerable and IEnumerator interfaces to allow
+    /// sequential iteration through drawers while automatically skipping drawers
+    /// that should be skipped during the drawing process.
+    /// </summary>
     public class DrawerChain : IEnumerable<IEasyDrawer>, IEnumerator<IEasyDrawer>
     {
         private readonly IEasyDrawer[] _drawers;
         private int _index = -1;
 
+        /// <summary>
+        /// Gets the current drawer in the iteration.
+        /// Returns null if the iteration is before the first drawer or after the last drawer.
+        /// </summary>
         public IEasyDrawer Current
         {
             get
@@ -22,10 +32,21 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
+        /// <summary>
+        /// Gets all drawers in this chain, including those that may be skipped during iteration.
+        /// </summary>
         public IEasyDrawer[] Drawers => _drawers;
 
+        /// <summary>
+        /// Gets the inspector property associated with this drawer chain.
+        /// </summary>
         public InspectorProperty Property { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the DrawerChain class.
+        /// </summary>
+        /// <param name="property">The inspector property this drawer chain is associated with.</param>
+        /// <param name="drawers">The collection of drawers to include in the chain.</param>
         public DrawerChain(InspectorProperty property, IEnumerable<IEasyDrawer> drawers)
         {
             Property = property;
@@ -34,6 +55,11 @@ namespace EasyToolKit.Inspector.Editor
 
         object IEnumerator.Current => Current;
 
+        /// <summary>
+        /// Advances the enumerator to the next drawer in the chain.
+        /// Automatically skips drawers that have SkipWhenDrawing set to true.
+        /// </summary>
+        /// <returns>true if the enumerator was successfully advanced to the next drawer; false if the enumerator has passed the end of the collection.</returns>
         public bool MoveNext()
         {
             do
@@ -44,22 +70,37 @@ namespace EasyToolKit.Inspector.Editor
             return Current != null;
         }
 
+        /// <summary>
+        /// Sets the enumerator to its initial position, which is before the first drawer in the chain.
+        /// </summary>
         public void Reset()
         {
             _index = -1;
         }
 
-
+        /// <summary>
+        /// Returns an enumerator that iterates through all drawers in the chain.
+        /// This includes drawers that would normally be skipped during drawing.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate through all drawers.</returns>
         public IEnumerator<IEasyDrawer> GetEnumerator()
         {
             return ((IEnumerable<IEasyDrawer>)_drawers).GetEnumerator();
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through all drawers in the chain.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate through all drawers.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Resets the enumerator position.
+        /// </summary>
         void IDisposable.Dispose()
         {
             Reset();
