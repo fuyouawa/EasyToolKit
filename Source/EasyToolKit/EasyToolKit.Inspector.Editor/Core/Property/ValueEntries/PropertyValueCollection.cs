@@ -33,7 +33,7 @@ namespace EasyToolKit.Inspector.Editor
         public bool Dirty { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the PropertyValueCollection class.
+        /// Initializes a new instance of the <see cref="PropertyValueCollection{TValue}"/> class.
         /// </summary>
         /// <param name="property">The inspector property associated with this value collection.</param>
         public PropertyValueCollection(InspectorProperty property)

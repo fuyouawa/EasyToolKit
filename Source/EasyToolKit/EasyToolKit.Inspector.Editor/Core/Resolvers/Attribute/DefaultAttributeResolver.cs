@@ -5,13 +5,21 @@ using System.Reflection;
 
 namespace EasyToolKit.Inspector.Editor
 {
+    /// <summary>
+    /// Default implementation of attribute resolution for <see cref="InspectorProperty"/>
+    /// </summary>
     public class DefaultAttributeResolver : AttributeResolver
     {
         private Attribute[] _attributes;
         private Dictionary<Attribute, AttributeSource> _attributeSources;
 
+        /// <summary>
+        /// Gets all attributes associated with the property from member, type, and list element sources
+        /// </summary>
+        /// <returns>Array of attributes</returns>
         public override Attribute[] GetAttributes()
         {
+            // Return cached attributes if available
             if (_attributes != null)
             {
                 return _attributes;
@@ -50,13 +58,21 @@ namespace EasyToolKit.Inspector.Editor
             return _attributes;
         }
 
+        /// <summary>
+        /// Gets the source of an attribute to determine where it was originally defined
+        /// </summary>
+        /// <param name="attribute">The attribute to check</param>
+        /// <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
+        /// <exception cref="ArgumentException">Thrown when the attribute is not found</exception>
         public override AttributeSource GetAttributeSource(Attribute attribute)
         {
+            // Ensure attributes are loaded
             if (_attributeSources == null)
             {
                 GetAttributes();
             }
 
+            // Return the source if found
             if (_attributeSources.TryGetValue(attribute, out var source))
             {
                 return source;

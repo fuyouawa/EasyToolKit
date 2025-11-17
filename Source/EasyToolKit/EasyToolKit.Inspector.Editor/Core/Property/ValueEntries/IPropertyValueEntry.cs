@@ -11,7 +11,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         /// <summary>
         /// Gets the actual type of the property value.
-        /// This may differ from BaseValueType if the runtime type is more specific.
+        /// This may differ from <see cref="BaseValueType"/> if the runtime type is more specific.
         /// </summary>
         Type ValueType { get; }
 

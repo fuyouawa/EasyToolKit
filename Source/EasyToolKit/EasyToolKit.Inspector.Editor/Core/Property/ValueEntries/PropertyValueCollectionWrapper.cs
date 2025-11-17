@@ -16,7 +16,7 @@ namespace EasyToolKit.Inspector.Editor
         private readonly IPropertyValueCollection<TBaseValue> _collection;
 
         /// <summary>
-        /// Initializes a new instance of the PropertyValueCollectionWrapper class.
+        /// Initializes a new instance of the <see cref="PropertyValueCollectionWrapper{TValue,TBaseValue}"/> class.
         /// </summary>
         /// <param name="collection">The base value collection to wrap.</param>
         public PropertyValueCollectionWrapper(IPropertyValueCollection<TBaseValue> collection)

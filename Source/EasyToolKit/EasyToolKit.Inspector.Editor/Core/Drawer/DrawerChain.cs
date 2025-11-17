@@ -7,7 +7,7 @@ namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
     /// Represents a chain of drawers that can be iterated over during property drawing.
-    /// This class implements both IEnumerable and IEnumerator interfaces to allow
+    /// This class implements both <see cref="IEnumerable{T}"/> and <see cref="IEnumerator{T}"/> interfaces to allow
     /// sequential iteration through drawers while automatically skipping drawers
     /// that should be skipped during the drawing process.
     /// </summary>

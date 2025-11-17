@@ -28,7 +28,7 @@ namespace EasyToolKit.Inspector.Editor
         public IPropertyValueCollection<TValue> Values { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the PropertyValueEntry class.
+        /// Initializes a new instance of the <see cref="PropertyValueEntry{TValue}"/> class.
         /// </summary>
         /// <param name="property">The inspector property associated with this value entry.</param>
         public PropertyValueEntry(InspectorProperty property)
@@ -88,7 +88,7 @@ namespace EasyToolKit.Inspector.Editor
 
         /// <summary>
         /// Gets the actual type of the property value.
-        /// This may differ from BaseValueType if the runtime type is more specific.
+        /// This may differ from <see cref="BaseValueType"/> if the runtime type is more specific.
         /// </summary>
         public Type ValueType
         {

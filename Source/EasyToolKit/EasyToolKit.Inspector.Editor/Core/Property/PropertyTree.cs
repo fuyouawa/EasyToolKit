@@ -24,7 +24,7 @@ namespace EasyToolKit.Inspector.Editor
         public int UpdateId { get; private set; }
 
         /// <summary>
-        /// Gets the SerializedObject associated with this property tree.
+        /// Gets the <see cref="SerializedObject"/> associated with this property tree.
         /// </summary>
         public SerializedObject SerializedObject { get; }
 
@@ -44,7 +44,7 @@ namespace EasyToolKit.Inspector.Editor
         public Type TargetType => LogicRootProperty.Info.PropertyType;
 
         /// <summary>
-        /// Gets or sets whether to draw the MonoScript object field in the inspector.
+        /// Gets or sets whether to draw the <see cref="MonoScript"/> object field in the inspector.
         /// </summary>
         public bool DrawMonoScriptObjectField { get; set; }
 
@@ -54,10 +54,10 @@ namespace EasyToolKit.Inspector.Editor
         public event Action<InspectorProperty, int> OnPropertyValueChanged;
 
         /// <summary>
-        /// Initializes a new instance of the PropertyTree class with the specified SerializedObject.
+        /// Initializes a new instance of the <see cref="PropertyTree"/> class with the specified <see cref="SerializedObject"/>.
         /// </summary>
-        /// <param name="serializedObject">The SerializedObject to create the property tree for.</param>
-        /// <exception cref="ArgumentNullException">Thrown when serializedObject is null.</exception>
+        /// <param name="serializedObject">The <see cref="SerializedObject"/> to create the property tree for.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <see cref="serializedObject"/> is null.</exception>
         public PropertyTree([NotNull] SerializedObject serializedObject)
         {
             if (serializedObject == null)
@@ -72,7 +72,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Enumerates all properties in the tree.
         /// </summary>
         /// <param name="includeChildren">Whether to include child properties in the enumeration.</param>
-        /// <returns>An enumerable collection of InspectorProperty objects.</returns>
+        /// <returns>An enumerable collection of <see cref="InspectorProperty"/> objects.</returns>
         public IEnumerable<InspectorProperty> EnumerateTree(bool includeChildren)
         {
             for (var i = 0; i < LogicRootProperty.Children!.Count; i++)
@@ -91,10 +91,10 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Gets a Unity SerializedProperty by its property path.
+        /// Gets a Unity <see cref="SerializedProperty"/> by its property path.
         /// </summary>
         /// <param name="propertyPath">The path of the property to find.</param>
-        /// <returns>The SerializedProperty at the specified path, or null if not found.</returns>
+        /// <returns>The <see cref="SerializedProperty"/> at the specified path, or null if not found.</returns>
         public SerializedProperty GetUnityPropertyByPath(string propertyPath)
         {
             return SerializedObject.FindProperty(propertyPath);
@@ -312,11 +312,11 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates a new PropertyTree instance from a SerializedObject.
+        /// Creates a new <see cref="PropertyTree"/> instance from a <see cref="SerializedObject"/>.
         /// </summary>
-        /// <param name="serializedObject">The SerializedObject to create the property tree for.</param>
-        /// <returns>A new PropertyTree instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when serializedObject is null.</exception>
+        /// <param name="serializedObject">The <see cref="SerializedObject"/> to create the property tree for.</param>
+        /// <returns>A new <see cref="PropertyTree"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <see cref="serializedObject"/> is null.</exception>
         public static PropertyTree Create([NotNull] SerializedObject serializedObject)
         {
             if (serializedObject == null)
@@ -326,13 +326,13 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates a new PropertyTree instance from target objects and an optional SerializedObject.
+        /// Creates a new <see cref="PropertyTree"/> instance from target objects and an optional <see cref="SerializedObject"/>.
         /// </summary>
         /// <param name="targets">The target objects to create the property tree for.</param>
-        /// <param name="serializedObject">An optional existing SerializedObject to use.</param>
-        /// <returns>A new PropertyTree instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when targets is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when the provided SerializedObject is not valid for the targets.</exception>
+        /// <param name="serializedObject">An optional existing <see cref="SerializedObject"/> to use.</param>
+        /// <returns>A new <see cref="PropertyTree"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <see cref="targets"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when the provided <see cref="serializedObject"/> is not valid for the targets.</exception>
         public static PropertyTree Create([NotNull] UnityEngine.Object[] targets,
             SerializedObject serializedObject)
         {

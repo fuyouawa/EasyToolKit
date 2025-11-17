@@ -87,7 +87,7 @@ namespace EasyToolKit.Inspector.Editor
         public int SkipDrawCount { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the InspectorProperty class.
+        /// Initializes a new instance of the <see cref="InspectorProperty"/> class.
         /// </summary>
         /// <param name="tree">The property tree this property belongs to</param>
         /// <param name="parent">The parent property, or null if this is a root property</param>

@@ -56,7 +56,7 @@ namespace EasyToolKit.Inspector.Editor
 
         /// <summary>
         /// Gets a value indicating whether this property represents an array element.
-        /// This is determined by checking if the property's owner type implements ICollection$T.
+        /// This is determined by checking if the property's owner type implements <see cref="ICollection{T}"/>.
         /// </summary>
         public bool IsArrayElement
         {
@@ -79,12 +79,12 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates an InspectorPropertyInfo for a Unity serialized property.
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a Unity serialized property.
         /// </summary>
         /// <param name="serializedProperty">The Unity serialized property to create info for.</param>
         /// <param name="parentType">The type of the parent object containing this property.</param>
         /// <param name="valueType">The type of the property value.</param>
-        /// <returns>A new InspectorPropertyInfo instance configured for the Unity serialized property.</returns>
+        /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the Unity serialized property.</returns>
         public static InspectorPropertyInfo CreateForUnityProperty(
             SerializedProperty serializedProperty,
             Type parentType, Type valueType)
@@ -125,10 +125,10 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates an InspectorPropertyInfo for a member (field, property, or method).
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a member (field, property, or method).
         /// </summary>
         /// <param name="memberInfo">The member info to create property info for.</param>
-        /// <returns>A new InspectorPropertyInfo instance configured for the member.</returns>
+        /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the member.</returns>
         /// <exception cref="NotSupportedException">Thrown when the member type is not supported.</exception>
         public static InspectorPropertyInfo CreateForMember(MemberInfo memberInfo)
         {
@@ -148,10 +148,10 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates an InspectorPropertyInfo for a property.
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a property.
         /// </summary>
         /// <param name="propertyInfo">The property info to create property info for.</param>
-        /// <returns>A new InspectorPropertyInfo instance configured for the property.</returns>
+        /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the property.</returns>
         /// <remarks>This method is not yet implemented.</remarks>
         public static InspectorPropertyInfo CreateForProperty(PropertyInfo propertyInfo)
         {
@@ -159,10 +159,10 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates an InspectorPropertyInfo for a method.
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a method.
         /// </summary>
         /// <param name="methodInfo">The method info to create property info for.</param>
-        /// <returns>A new InspectorPropertyInfo instance configured for the method.</returns>
+        /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the method.</returns>
         public static InspectorPropertyInfo CreateForMethod(MethodInfo methodInfo)
         {
             var info = new InspectorPropertyInfo()
@@ -176,10 +176,10 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates an InspectorPropertyInfo for a field.
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a field.
         /// </summary>
         /// <param name="fieldInfo">The field info to create property info for.</param>
-        /// <returns>A new InspectorPropertyInfo instance configured for the field.</returns>
+        /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the field.</returns>
         public static InspectorPropertyInfo CreateForField(FieldInfo fieldInfo)
         {
             var info = new InspectorPropertyInfo()
@@ -199,12 +199,12 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates an InspectorPropertyInfo for a custom value with a specified accessor.
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a custom value with a specified accessor.
         /// </summary>
         /// <param name="valueType">The type of the property value.</param>
         /// <param name="valueName">The name of the property.</param>
         /// <param name="valueAccessor">The value accessor that provides read/write access to the value.</param>
-        /// <returns>A new InspectorPropertyInfo instance configured for the custom value.</returns>
+        /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the custom value.</returns>
         public static InspectorPropertyInfo CreateForValue(Type valueType, string valueName, IValueAccessor valueAccessor)
         {
             var info = new InspectorPropertyInfo()
@@ -220,11 +220,11 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Creates an InspectorPropertyInfo for a logic root in the inspector hierarchy.
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a logic root in the inspector hierarchy.
         /// This represents the root object being inspected.
         /// </summary>
         /// <param name="serializedObject">The serialized object representing the root.</param>
-        /// <returns>A new InspectorPropertyInfo instance configured as a logic root.</returns>
+        /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured as a logic root.</returns>
         internal static InspectorPropertyInfo CreateForLogicRoot(SerializedObject serializedObject)
         {
             var iterator = serializedObject.GetIterator();

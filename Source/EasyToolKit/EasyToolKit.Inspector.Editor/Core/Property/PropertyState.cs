@@ -1,21 +1,21 @@
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Manages the state of an InspectorProperty, including persistent state like expansion state.
+    /// Manages the state of an <see cref="InspectorProperty"/>, including persistent state like expansion state.
     /// </summary>
     public class PropertyState
     {
         /// <summary>
-        /// Gets the InspectorProperty associated with this state.
+        /// Gets the <see cref="InspectorProperty"/> associated with this state.
         /// </summary>
         public InspectorProperty Property { get; }
 
         private LocalPersistentContext<bool> _expanded;
 
         /// <summary>
-        /// Initializes a new instance of the PropertyState class.
+        /// Initializes a new instance of the <see cref="PropertyState"/> class.
         /// </summary>
-        /// <param name="property">The InspectorProperty to manage state for.</param>
+        /// <param name="property">The <see cref="InspectorProperty"/> to manage state for.</param>
         public PropertyState(InspectorProperty property)
         {
             Property = property;

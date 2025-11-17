@@ -7,7 +7,7 @@ using UnityEditor;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a collection of child properties for an InspectorProperty.
+    /// Represents a collection of child properties for an <see cref="InspectorProperty"/>.
     /// Provides access to child properties by index or name and supports recursive traversal.
     /// </summary>
     public class PropertyChildren : IDisposable
@@ -36,7 +36,7 @@ namespace EasyToolKit.Inspector.Editor
         public InspectorProperty this[string name] => Get(name);
 
         /// <summary>
-        /// Initializes a new instance of the PropertyChildren class.
+        /// Initializes a new instance of the <see cref="PropertyChildren"/> class.
         /// </summary>
         /// <param name="property">The parent property whose children are being managed.</param>
         internal PropertyChildren(InspectorProperty property)

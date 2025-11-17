@@ -99,6 +99,28 @@ EasyToolKit is a Unity tooling framework organized as a Visual Studio solution w
 - **Compute**: Algorithmic derivation with complex logic
 - **Calculate**: Mathematical formula-based calculation
 
+### XML Documentation Comments
+When writing XML documentation comments, use `<see cref=""/>` blocks to reference other types, methods, properties, or fields:
+
+**Basic Usage Examples**:
+- `<see cref="IList{T}"/>` - Reference a generic interface
+- `<see cref="GameObject"/>` - Reference a class
+- `<see cref="Transform.position"/>` - Reference a property
+- `<see cref="MonoBehaviour.Start()"/>` - Reference a method
+
+**Generic Type References**:
+- `<see cref="List{T}"/>` - Generic type with type parameter
+- `<see cref="Dictionary{TKey, TValue}"/>` - Multiple type parameters
+
+**Cross-Project References**:
+- When referencing types across different projects, ensure the target assembly is referenced
+- Use fully qualified names when necessary for clarity
+
+**Best Practices**:
+- Always use `<see cref=""/>` instead of plain text for type references
+- This enables IDE navigation and documentation generation
+- Improves code maintainability and developer experience
+
 ## Development Workflow
 
 1. **Build**: Build solution in Visual Studio/Rider

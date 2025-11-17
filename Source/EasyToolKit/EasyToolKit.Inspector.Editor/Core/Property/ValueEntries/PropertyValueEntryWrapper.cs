@@ -15,7 +15,7 @@ namespace EasyToolKit.Inspector.Editor
         private IPropertyValueCollectionWrapper<TValue, TBaseValue> _valuesWrapper;
 
         /// <summary>
-        /// Initializes a new instance of the PropertyValueEntryWrapper class.
+        /// Initializes a new instance of the <see cref="PropertyValueEntryWrapper{TValue,TBaseValue}"/> class.
         /// </summary>
         /// <param name="valueEntry">The base value entry to wrap.</param>
         public PropertyValueEntryWrapper(IPropertyValueEntry<TBaseValue> valueEntry)
@@ -69,7 +69,7 @@ namespace EasyToolKit.Inspector.Editor
 
         /// <summary>
         /// Gets the actual type of the property value.
-        /// This may differ from BaseValueType if the runtime type is more specific.
+        /// This may differ from <see cref="BaseValueType"/> if the runtime type is more specific.
         /// </summary>
         public Type ValueType => typeof(TValue);
 

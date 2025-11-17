@@ -5,14 +5,24 @@ using EasyToolKit.Core;
 
 namespace EasyToolKit.Inspector.Editor
 {
+    /// <summary>
+    /// Default implementation of group property resolver for <see cref="InspectorProperty"/>
+    /// </summary>
     public class DefaultGroupResolver : GroupResolver
     {
         private readonly Dictionary<Type, InspectorProperty[]> _groupPropertiesCache = new Dictionary<Type, InspectorProperty[]>();
 
+        /// <summary>
+        /// Gets all properties that belong to the same group as the current property
+        /// </summary>
+        /// <param name="beginGroupAttributeType">The type of the begin group attribute</param>
+        /// <returns>Array of properties in the group</returns>
         public override InspectorProperty[] GetGroupProperties(Type beginGroupAttributeType)
         {
+            // Return cached properties if available
             if (_groupPropertiesCache.TryGetValue(beginGroupAttributeType, out var properties))
             {
+                // Update all properties in the group before returning
                 foreach (var property in properties)
                 {
                     property.Update();
