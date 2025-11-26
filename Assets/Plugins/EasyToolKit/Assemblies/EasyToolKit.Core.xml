@@ -4,29 +4,355 @@
         <name>EasyToolKit.Core</name>
     </assembly>
     <members>
+        <member name="T:EasyToolKit.Core.AnimationCurveExtensions">
+            <summary>
+            Provides extension methods for Unity's AnimationCurve class
+            to simplify working with arbitrary time and value ranges.
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Core.AnimationCurveExtensions.EvaluateWithRemap(UnityEngine.AnimationCurve,System.Single,System.Single)">
             <summary>
-            <para>将给定的time从[0-maxTime]映射到[0-1]</para>
-            <para>然后传给AnimationCurve.Evaluate</para>
+            Evaluates the animation curve by remapping the input time from [0, maxTime] to [0, 1] range.
+            This allows using the curve with arbitrary time ranges while maintaining the curve's original behavior.
             </summary>
-            <param name="curve"></param>
-            <param name="time"></param>
-            <param name="maxTime"></param>
-            <returns></returns>
+            <param name="curve">The animation curve to evaluate</param>
+            <param name="time">The current time value in the [0, maxTime] range</param>
+            <param name="maxTime">The maximum time value that defines the input range</param>
+            <returns>The evaluated curve value at the remapped time position</returns>
         </member>
         <member name="M:EasyToolKit.Core.AnimationCurveExtensions.EvaluateWithRemap(UnityEngine.AnimationCurve,System.Single,System.Single,System.Single,System.Single)">
             <summary>
-            <para>将给定的time从[0-maxTime]映射到[0-1]</para>
-            <para>然后传给AnimationCurve.Evaluate</para>
-            <para>之后将结果从[0-1]映射到[minValue-maxValue]</para>
-            <para>注意：AnimationCurve.Evaluate的结果必须在[0-1]区间</para>
+            Evaluates the animation curve with double remapping: first remaps input time from [0, maxTime] to [0, 1],
+            then remaps the curve output from [0, 1] to [minValue, maxValue].
+            This allows using the curve with arbitrary time and value ranges.
             </summary>
-            <param name="curve"></param>
-            <param name="time"></param>
-            <param name="maxTime"></param>
-            <param name="minValue"></param>
-            <param name="maxValue"></param>
-            <returns>[minValue-maxValue]区间的数值</returns>
+            <param name="curve">The animation curve to evaluate</param>
+            <param name="time">The current time value in the [0, maxTime] range</param>
+            <param name="maxTime">The maximum time value that defines the input range</param>
+            <param name="minValue">The minimum output value for the remapped result</param>
+            <param name="maxValue">The maximum output value for the remapped result</param>
+            <returns>The evaluated curve value remapped to the [minValue, maxValue] range</returns>
+            <remarks>
+            Note: The AnimationCurve.Evaluate result must be in the [0, 1] range for proper remapping.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.AnimatorExtensions">
+            <summary>
+            Provides extension methods for Unity's Animator component
+            to simplify parameter validation and management.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.AnimatorExtensions.HasParam(UnityEngine.Animator,System.String)">
+            <summary>
+            Checks if the Animator has a parameter with the specified name.
+            This is useful for safely setting parameters without causing runtime errors.
+            </summary>
+            <param name="animator">The Animator component to check</param>
+            <param name="name">The name of the parameter to check for</param>
+            <returns>True if the Animator has a parameter with the specified name, false otherwise</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.AnimatorExtensions.HasParam(UnityEngine.Animator,System.String,UnityEngine.AnimatorControllerParameterType)">
+            <summary>
+            Checks if the Animator has a parameter with the specified name and type.
+            This provides type-safe parameter validation for Animator operations.
+            </summary>
+            <param name="animator">The Animator component to check</param>
+            <param name="name">The name of the parameter to check for</param>
+            <param name="typeCheck">The expected parameter type (Float, Int, Bool, or Trigger)</param>
+            <returns>True if the Animator has a parameter with the specified name and type, false otherwise</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.AppDomainExtensions">
+            <summary>
+            Provides extension methods for AppDomain to filter and retrieve specific assembly types
+            commonly used in Unity development environments.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.AppDomainExtensions.GetProjectAssemblies(System.AppDomain)">
+            <summary>
+            Retrieves all assemblies that belong to the current Unity project.
+            These assemblies typically start with "Assembly." prefix.
+            </summary>
+            <param name="domain">The AppDomain instance</param>
+            <returns>An enumerable collection of project assemblies</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.AppDomainExtensions.GetUnityEngineAssemblies(System.AppDomain)">
+            <summary>
+            Retrieves all assemblies that belong to the Unity Engine runtime.
+            These assemblies typically start with "UnityEngine." prefix.
+            </summary>
+            <param name="domain">The AppDomain instance</param>
+            <returns>An enumerable collection of Unity Engine assemblies</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.AppDomainExtensions.GetUnityEditorAssemblies(System.AppDomain)">
+            <summary>
+            Retrieves all assemblies that belong to the Unity Editor.
+            These assemblies typically start with "UnityEditor." prefix.
+            Note: These assemblies are only available in the Unity Editor environment.
+            </summary>
+            <param name="domain">The AppDomain instance</param>
+            <returns>An enumerable collection of Unity Editor assemblies</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.AppDomainExtensions.GetUnityAssemblies(System.AppDomain)">
+            <summary>
+            Retrieves all assemblies that belong to the Unity framework.
+            These assemblies typically start with "Unity." prefix.
+            </summary>
+            <param name="domain">The AppDomain instance</param>
+            <returns>An enumerable collection of Unity framework assemblies</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.AppDomainExtensions.GetSystemAssemblies(System.AppDomain)">
+            <summary>
+            Retrieves all assemblies that belong to the .NET System framework.
+            These assemblies typically start with "System." prefix.
+            </summary>
+            <param name="domain">The AppDomain instance</param>
+            <returns>An enumerable collection of System framework assemblies</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.AudioExtensions">
+            <summary>
+            Provides extension methods for AudioSource to enhance audio playback functionality
+            in Unity applications.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.AudioExtensions.PlayWithChildren(UnityEngine.AudioSource)">
+            <summary>
+            Plays the audio source and all AudioSource components found in its children.
+            This is useful for playing hierarchical audio setups where multiple audio sources
+            are organized under a parent object.
+            </summary>
+            <param name="audioSource">The parent AudioSource component</param>
+            <example>
+            <code>
+            // Plays the parent audio source and all child audio sources
+            audioSource.PlayWithChildren();
+            </code>
+            </example>
+        </member>
+        <member name="T:EasyToolKit.Core.CollectionExtensions">
+            <summary>
+            Provides extension methods for collections and enumerables to enhance functionality
+            with common operations like validation, transformation, and iteration.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.IsAllSame``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether all elements in the sequence are equal using the default equality comparer.
+            </summary>
+            <typeparam name="T">The type of elements in the sequence</typeparam>
+            <param name="enumerator">The sequence to check</param>
+            <returns>true if all elements are equal; otherwise, false</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.IsAllSame``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,System.Boolean})">
+            <summary>
+            Determines whether all elements in the sequence are equal using a custom comparison function.
+            </summary>
+            <typeparam name="T">The type of elements in the sequence</typeparam>
+            <param name="enumerator">The sequence to check</param>
+            <param name="comparison">The custom comparison function</param>
+            <returns>true if all elements are equal according to the comparison function; otherwise, false</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when enumerator is null</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            Performs the specified action on each element of the sequence.
+            </summary>
+            <typeparam name="T">The type of elements in the sequence</typeparam>
+            <param name="enumerator">The sequence to iterate</param>
+            <param name="callback">The action to perform on each element</param>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.HasDuplicate``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Determines whether the sequence contains any duplicate elements based on a selector function.
+            </summary>
+            <typeparam name="T">The type of elements in the sequence</typeparam>
+            <typeparam name="E">The type of the selected value to check for duplicates</typeparam>
+            <param name="enumerator">The sequence to check</param>
+            <param name="selector">The function to select the value to check for duplicates</param>
+            <returns>true if any duplicate elements are found; otherwise, false</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.HasDuplicate``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether the sequence contains any duplicate elements using the default equality comparer.
+            </summary>
+            <typeparam name="T">The type of elements in the sequence</typeparam>
+            <param name="enumerator">The sequence to check</param>
+            <returns>true if any duplicate elements are found; otherwise, false</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.IsNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether the sequence is null or contains no elements.
+            </summary>
+            <typeparam name="T">The type of elements in the sequence</typeparam>
+            <param name="source">The sequence to check</param>
+            <returns>true if the sequence is null or empty; otherwise, false</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.IsNotNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether the sequence is not null and contains at least one element.
+            </summary>
+            <typeparam name="T">The type of elements in the sequence</typeparam>
+            <param name="source">The sequence to check</param>
+            <returns>true if the sequence is not null and contains elements; otherwise, false</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.To2dArray``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32)">
+            <summary>
+            Converts a one-dimensional list to a two-dimensional array with specified dimensions.
+            </summary>
+            <typeparam name="T">The type of elements in the list</typeparam>
+            <param name="source">The source list to convert</param>
+            <param name="rows">The number of rows in the resulting 2D array</param>
+            <param name="columns">The number of columns in the resulting 2D array</param>
+            <returns>A two-dimensional array with the specified dimensions</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when source length doesn't match rows * columns</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.ToJaggedArray``1(System.Collections.Generic.IList{``0},System.Int32,System.Int32)">
+            <summary>
+            Converts a one-dimensional list to a jagged array with specified dimensions.
+            </summary>
+            <typeparam name="T">The type of elements in the list</typeparam>
+            <param name="source">The source list to convert</param>
+            <param name="rows">The number of rows in the resulting jagged array</param>
+            <param name="columns">The number of columns in the resulting jagged array</param>
+            <returns>A jagged array with the specified dimensions</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when source length doesn't match rows * columns</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.RemoveAt``1(``0[],System.Int32)">
+            <summary>
+            Creates a new array with the element at the specified index removed.
+            </summary>
+            <typeparam name="T">The type of elements in the array</typeparam>
+            <param name="array">The source array</param>
+            <param name="index">The zero-based index of the element to remove</param>
+            <returns>A new array with the specified element removed</returns>
+            <exception cref="T:System.IndexOutOfRangeException">Thrown when index is out of range</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.CollectionExtensions.Resize``1(System.Collections.Generic.IList{``0},System.Int32)">
+            <summary>
+            Resizes the list to the specified length by adding default values or removing elements.
+            Note: This method cannot be used on arrays - use Array.Resize instead.
+            </summary>
+            <typeparam name="T">The type of elements in the list</typeparam>
+            <param name="list">The list to resize</param>
+            <param name="length">The target length of the list</param>
+            <exception cref="T:System.InvalidOperationException">Thrown when attempting to resize an array</exception>
+        </member>
+        <member name="T:EasyToolKit.Core.ColorExtensions">
+            <summary>
+            Provides extension methods for Unity's Color struct to enable fluent API operations
+            for color manipulation and modification.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.SetR(UnityEngine.Color,System.Single)">
+            <summary>
+            Sets the red component of the color and returns the modified color for fluent chaining.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="r">The new red value (0-1)</param>
+            <returns>The modified color with updated red component</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.SetG(UnityEngine.Color,System.Single)">
+            <summary>
+            Sets the green component of the color and returns the modified color for fluent chaining.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="g">The new green value (0-1)</param>
+            <returns>The modified color with updated green component</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.SetB(UnityEngine.Color,System.Single)">
+            <summary>
+            Sets the blue component of the color and returns the modified color for fluent chaining.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="b">The new blue value (0-1)</param>
+            <returns>The modified color with updated blue component</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.SetA(UnityEngine.Color,System.Single)">
+            <summary>
+            Sets the alpha component of the color and returns the modified color for fluent chaining.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="a">The new alpha value (0-1)</param>
+            <returns>The modified color with updated alpha component</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.MulR(UnityEngine.Color,System.Single)">
+            <summary>
+            Multiplies the red component by the specified ratio and returns the modified color for fluent chaining.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="ratio">The multiplication ratio</param>
+            <returns>The modified color with red component multiplied</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.MulG(UnityEngine.Color,System.Single)">
+            <summary>
+            Multiplies the green component by the specified ratio and returns the modified color for fluent chaining.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="ratio">The multiplication ratio</param>
+            <returns>The modified color with green component multiplied</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.MulB(UnityEngine.Color,System.Single)">
+            <summary>
+            Multiplies the blue component by the specified ratio and returns the modified color for fluent chaining.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="ratio">The multiplication ratio</param>
+            <returns>The modified color with blue component multiplied</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.MulA(UnityEngine.Color,System.Single)">
+            <summary>
+            Multiplies the alpha component by the specified ratio and returns the modified color for fluent chaining.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="ratio">The multiplication ratio</param>
+            <returns>The modified color with alpha component multiplied</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ColorExtensions.MulRGB(UnityEngine.Color,System.Single)">
+            <summary>
+            Multiplies the RGB components (red, green, blue) by the specified ratio and returns the modified color for fluent chaining.
+            The alpha component remains unchanged.
+            </summary>
+            <param name="color">The source color</param>
+            <param name="ratio">The multiplication ratio for RGB components</param>
+            <returns>The modified color with RGB components multiplied</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.GameObjectExtensions">
+            <summary>
+            Provides extension methods for Unity's GameObject to simplify common component operations
+            and enhance developer productivity.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectExtensions.GetOrAddComponent``1(UnityEngine.GameObject)">
+            <summary>
+            Gets an existing component of type T from the GameObject, or adds one if it doesn't exist.
+            This is useful for ensuring a component is present without checking existence separately.
+            </summary>
+            <typeparam name="T">The type of component to get or add</typeparam>
+            <param name="target">The target GameObject</param>
+            <returns>The existing or newly added component of type T</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectExtensions.GetOrAddComponent(UnityEngine.GameObject,System.Type)">
+            <summary>
+            Gets an existing component of the specified type from the GameObject, or adds one if it doesn't exist.
+            </summary>
+            <param name="target">The target GameObject</param>
+            <param name="componentType">The type of component to get or add</param>
+            <returns>The existing or newly added component</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectExtensions.HasComponent``1(UnityEngine.GameObject)">
+            <summary>
+            Determines whether the GameObject has a component of type T.
+            </summary>
+            <typeparam name="T">The type of component to check for</typeparam>
+            <param name="target">The target GameObject</param>
+            <returns>true if the GameObject has the component; otherwise, false</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectExtensions.HasComponent(UnityEngine.GameObject,System.Type)">
+            <summary>
+            Determines whether the GameObject has a component of the specified type.
+            </summary>
+            <param name="target">The target GameObject</param>
+            <param name="componentType">The type of component to check for</param>
+            <returns>true if the GameObject has the component; otherwise, false</returns>
         </member>
         <member name="M:EasyToolKit.Core.GradientExtensions.EvaluateWithRemap(UnityEngine.Gradient,System.Single,System.Single)">
             <summary>
@@ -946,6 +1272,191 @@
             当状态更改完的的回调
             </summary>
         </member>
+        <member name="T:EasyToolKit.Core.DefaultTypeMatchRules">
+            <summary>
+            Provides default type matching rules for the TypeMatcher system.
+            These rules handle common type matching scenarios including exact matches,
+            generic type matching, type inference, and nested type matching.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.ExactMatch(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+            <summary>
+            Matches types exactly - both the type and all target types must match exactly.
+            </summary>
+            <param name="matchIndex">The type match index to evaluate.</param>
+            <param name="targets">The target types to match against.</param>
+            <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+            <returns>The matched type if successful; otherwise, null.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.GenericSingleTargetMatch(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+            <summary>
+            Matches generic type definitions against single generic target types.
+            The target type must have the same generic type definition as the match index target.
+            </summary>
+            <param name="matchIndex">The type match index to evaluate.</param>
+            <param name="targets">The target types to match against.</param>
+            <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+            <returns>The constructed generic type if successful; otherwise, null.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.TargetsSatisfyGenericParameterConstraints(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+            <summary>
+            Matches when all target types are generic parameters and satisfy the generic constraints
+            of the match index type.
+            </summary>
+            <param name="matchIndex">The type match index to evaluate.</param>
+            <param name="targets">The target types to match against.</param>
+            <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+            <returns>The constructed generic type if successful; otherwise, null.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.GenericParameterInference(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+            <summary>
+            Performs generic parameter inference to match types.
+            Infers generic parameters from the target types and constructs the appropriate generic type.
+            </summary>
+            <param name="matchIndex">The type match index to evaluate.</param>
+            <param name="targets">The target types to match against.</param>
+            <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+            <returns>The inferred generic type if successful; otherwise, null.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.NestedInSameGenericType(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+            <summary>
+            Matches nested types that are declared within the same generic type definition.
+            The declaring types must have the same generic type definition.
+            </summary>
+            <param name="matchIndex">The type match index to evaluate.</param>
+            <param name="targets">The target types to match against.</param>
+            <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+            <returns>The constructed generic type if successful; otherwise, null.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.TypeMatchIndex">
+            <summary>
+            Represents a type matching index that defines a type and its target types for matching.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.TypeMatchIndex.Type">
+            <summary>
+            Gets or sets the type to be matched.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.TypeMatchIndex.Priority">
+            <summary>
+            Gets or sets the priority of this match index (higher values have higher priority).
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.TypeMatchIndex.Targets">
+            <summary>
+            Gets or sets the target types that this index should match against.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatchIndex.#ctor(System.Type,System.Int32,System.Type[])">
+            <summary>
+            Initializes a new instance of the TypeMatchIndex class.
+            </summary>
+            <param name="type">The type to be matched.</param>
+            <param name="priority">The priority of this match index.</param>
+            <param name="targets">The target types to match against.</param>
+        </member>
+        <member name="T:EasyToolKit.Core.TypeMatchResult">
+            <summary>
+            Represents the result of a type matching operation.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.TypeMatchResult.MatchIndex">
+            <summary>
+            Gets the match index that was used for this match.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.TypeMatchResult.MatchedType">
+            <summary>
+            Gets the actual type that was matched.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.TypeMatchResult.MatchTargets">
+            <summary>
+            Gets the target types that were matched against.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.TypeMatchResult.MatchRule">
+            <summary>
+            Gets the match rule that produced this result.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatchResult.#ctor(EasyToolKit.Core.TypeMatchIndex,System.Type,System.Type[],EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Initializes a new instance of the TypeMatchResult class.
+            </summary>
+            <param name="matchIndex">The match index that was used.</param>
+            <param name="matchedType">The actual type that was matched.</param>
+            <param name="matchTargets">The target types that were matched against.</param>
+            <param name="matchRule">The match rule that produced this result.</param>
+        </member>
+        <member name="T:EasyToolKit.Core.TypeMatchRule">
+            <summary>
+            Represents a method that determines if a type match index matches against target types.
+            </summary>
+            <param name="matchIndex">The type match index to evaluate.</param>
+            <param name="targets">The target types to match against.</param>
+            <param name="stopMatch">When set to true by the rule, stops further rule evaluation for this match index.</param>
+            <returns>The matched type if successful; otherwise, null.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.TypeMatcher">
+            <summary>
+            Provides a flexible type matching system that can match types against target types using configurable rules.
+            Supports exact matching, generic type matching, type inference, and custom matching rules.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcher.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the TypeMatcher class.
+            </summary>
+            <param name="addDefaultMatchRules">Whether to add the default type matching rules.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcher.AddTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+            <summary>
+            Adds type match indices to the current collection.
+            </summary>
+            <param name="matchIndices">The type match indices to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcher.SetTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+            <summary>
+            Replaces the current type match indices with the specified collection.
+            </summary>
+            <param name="matchIndices">The new type match indices to use.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcher.AddMatchRule(EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Adds a custom match rule to the type matcher.
+            </summary>
+            <param name="rule">The match rule to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcher.RemoveMatchRule(EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Removes a match rule from the type matcher.
+            </summary>
+            <param name="rule">The match rule to remove.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcher.GetCachedMatches(System.Type[])">
+            <summary>
+            Gets cached type matches for the specified target types.
+            Results are cached based on the target types to improve performance.
+            </summary>
+            <param name="targets">The target types to match against.</param>
+            <returns>An array of type match results, ordered by priority (highest first).</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcher.GetCachedMergedResults(System.Collections.Generic.IReadOnlyList{EasyToolKit.Core.TypeMatchResult[]})">
+            <summary>
+            Gets cached merged results from multiple type match result arrays.
+            Results are merged and cached based on the input arrays to improve performance.
+            </summary>
+            <param name="resultsList">The list of type match result arrays to merge.</param>
+            <returns>A merged array of type match results, ordered by priority (highest first).</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcher.AddDefaultMatchRules">
+            <summary>
+            Adds the default type matching rules to the matcher.
+            These include exact matching, generic type matching, type inference, and nested type matching.
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Core.MathUtility.Remap(System.Single,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             将一个在[A, B]区间的x, 映射到[C, D]区间
@@ -963,6 +1474,105 @@
             获取旋转后矩形的四个顶点
             </summary>
             <returns>[左下角, 左上角, 右上角, 右下角]</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.ReflectionUtility">
+            <summary>
+            Provides utility methods for runtime reflection operations, including creating value getters
+            for accessing members through deep reflection paths.
+            </summary>
+            <remarks>
+            <para>
+            This utility enables dynamic access to object members using string-based paths that can include
+            fields, properties, methods, and collection/array elements. Supports both static and instance
+            member access with type safety validation.
+            </para>
+            <para>
+            Path syntax examples:
+            <list type="bullet">
+            <item>
+            <description>Field access: "MyField"</description>
+            </item>
+            <item>
+            <description>Property access: "MyProperty"</description>
+            </item>
+            <item>
+            <description>Method call: "GetValue()"</description>
+            </item>
+            <item>
+            <description>Array element: "MyArray[0]"</description>
+            </item>
+            <item>
+            <description>List element: "MyList[1]"</description>
+            </item>
+            <item>
+            <description>Nested access: "MyField.NestedProperty[2].GetValue()"</description>
+            </item>
+            </list>
+            </para>
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.ReflectionUtility.PathStepType">
+            <summary>
+            Represents the type of step in a reflection path.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ReflectionUtility.PathStepType.Member">
+            <summary>A field, property, or method member access.</summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ReflectionUtility.PathStepType.WeakListElement">
+            <summary>An element access in a non-generic IList collection.</summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ReflectionUtility.PathStepType.StrongListElement">
+            <summary>An element access in a generic IList&lt;T&gt; collection.</summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ReflectionUtility.PathStepType.ArrayElement">
+            <summary>An element access in an array.</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ReflectionUtility.PathStep">
+            <summary>
+            Represents a single step in a reflection path, containing information about how to access
+            the next value in the path traversal.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ReflectionUtility.PathStep.#ctor(System.Reflection.MemberInfo)">
+            <summary>
+            Creates a member access path step.
+            </summary>
+            <param name="member">The field, property, or method to access.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.ReflectionUtility.PathStep.#ctor(System.Int32)">
+            <summary>
+            Creates a weak list element access path step (non-generic IList).
+            </summary>
+            <param name="elementIndex">The index of the element to access.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.ReflectionUtility.PathStep.#ctor(System.Int32,System.Type,System.Boolean)">
+            <summary>
+            Creates a strong list or array element access path step.
+            </summary>
+            <param name="elementIndex">The index of the element to access.</param>
+            <param name="strongListElementType">The element type of the list or array.</param>
+            <param name="isArray">True if this is an array access, false for generic list access.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.ReflectionUtility.CreateStaticValueGetter(System.Type,System.Type,System.String)">
+            <summary>
+            Creates a delegate that gets a value from a static member path.
+            </summary>
+            <param name="resultType">The expected type of the result, or null to infer from the path.</param>
+            <param name="rootType">The type containing the static member path root.</param>
+            <param name="path">The member path to traverse (e.g., "MyClass.StaticField.NestedProperty").</param>
+            <returns>A delegate that returns the value at the specified static path.</returns>
+            <exception cref="T:System.ArgumentException">Thrown when the path root is not static or the path is invalid.</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.ReflectionUtility.CreateInstanceValueGetter(System.Type,System.Type,System.String)">
+            <summary>
+            Creates a delegate that gets a value from an instance member path.
+            </summary>
+            <param name="targetType">The type of the instance to get the value from.</param>
+            <param name="resultType">The expected type of the result, or null to infer from the path.</param>
+            <param name="path">The member path to traverse (e.g., "MyField.NestedProperty[0]").</param>
+            <returns>A delegate that takes an instance and returns the value at the specified path.</returns>
+            <exception cref="T:System.ArgumentException">Thrown when the path root is static or the path is invalid.</exception>
         </member>
     </members>
 </doc>
