@@ -122,6 +122,8 @@ namespace EasyToolKit.Inspector.Editor
         public void Dispose()
         {
             _valuesWrapper.Dispose();
+            _valueEntry = null;
+            _valuesWrapper = null;
         }
     }
 }

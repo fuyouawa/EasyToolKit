@@ -401,7 +401,7 @@ namespace EasyToolKit.Inspector.Editor
                         (!(ValueEntry is IPropertyValueEntryWrapper) &&
                          ValueEntry.RuntimeValueType != ValueEntry.BaseValueType))
                     {
-                        if (ValueEntry != null)
+                        if (ValueEntry != null && ValueEntry != BaseValueEntry)
                         {
                             ValueEntry.Dispose();
                         }
