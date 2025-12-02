@@ -18,7 +18,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if the type is a Unity Object subclass or has a defined property drawer; otherwise false.</returns>
         public static bool IsUnityObjectTypeOrDefinedUnityPropertyDrawer(Type type)
         {
-            if (type.IsSubclassOf(typeof(UnityEngine.Object)))
+            if (typeof(UnityEngine.Object).IsAssignableFrom(type))
             {
                 return true;
             }

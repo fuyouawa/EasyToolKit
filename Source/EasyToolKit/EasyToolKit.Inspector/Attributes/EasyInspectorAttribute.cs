@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace EasyToolKit.Inspector
 {
     [Conditional("UNITY_EDITOR")]
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class EasyInspectorAttribute : Attribute
     {
     }

@@ -30,7 +30,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             var drawnTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => type.IsDefined<EasyInspectorAttribute>(true))
+                .Where(type => type.IsDefined<EasyInspectorAttribute>(inherit: true, includeInterface: true))
                 .Where(type => type.IsSubclassOf(typeof(Component)) ||
                                type.IsSubclassOf(typeof(ScriptableObject)));
 
