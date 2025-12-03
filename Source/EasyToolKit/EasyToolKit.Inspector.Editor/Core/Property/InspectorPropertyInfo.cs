@@ -152,10 +152,22 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="propertyInfo">The property info to create property info for.</param>
         /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the property.</returns>
-        /// <remarks>This method is not yet implemented.</remarks>
         public static InspectorPropertyInfo CreateForProperty(PropertyInfo propertyInfo)
         {
-            throw new NotImplementedException();
+            var info = new InspectorPropertyInfo()
+            {
+                PropertyType = propertyInfo.PropertyType,
+                PropertyName = propertyInfo.Name,
+                IsUnityProperty = false,
+                _memberInfo = propertyInfo,
+                PropertyResolverLocator = new GenericPropertyResolverLocator()
+            };
+
+            var accessorType = typeof(MemberValueAccessor<,>)
+                .MakeGenericType(propertyInfo.DeclaringType, propertyInfo.PropertyType);
+            info.ValueAccessor = accessorType.CreateInstance<IValueAccessor>(propertyInfo);
+
+            return info;
         }
 
         /// <summary>

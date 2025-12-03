@@ -21,7 +21,15 @@ namespace EasyToolKit.Inspector.Editor
                     break;
                 case PropertyInfo propertyInfo:
                     _getter = propertyInfo.GetInstanceValueGetter<TOwner, TValue>();
-                    _setter = propertyInfo.GetInstanceValueSetter<TOwner, TValue>();
+                    try
+                    {
+                        _setter = propertyInfo.GetInstanceValueSetter<TOwner, TValue>();
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
+
                     break;
                 default:
                     throw new NotSupportedException($"MemberInfo '{memberInfo.Name}' is not supported.");
@@ -32,6 +40,10 @@ namespace EasyToolKit.Inspector.Editor
 
         public override void SetValue(ref TOwner target, TValue collection)
         {
+            if (_setter == null)
+            {
+                throw new NotSupportedException($"Member '{_memberInfo.Name}' is not support set value.");
+            }
             _setter(ref target, collection);
         }
 

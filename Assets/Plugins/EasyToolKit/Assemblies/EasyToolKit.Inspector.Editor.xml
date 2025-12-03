@@ -662,7 +662,6 @@
             </summary>
             <param name="propertyInfo">The property info to create property info for.</param>
             <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> instance configured for the property.</returns>
-            <remarks>This method is not yet implemented.</remarks>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.CreateForMethod(System.Reflection.MethodInfo)">
             <summary>

@@ -66,8 +66,10 @@ namespace EasyToolKit.Inspector.Editor
                 }
                 else if (memberInfo is PropertyInfo propertyInfo)
                 {
-                    //TODO support property
-                    continue;
+                    if (!showInInspector)
+                    {
+                        continue;
+                    }
                 }
                 else if (memberInfo is MethodInfo methodInfo)
                 {
