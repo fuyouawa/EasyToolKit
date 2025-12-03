@@ -11,15 +11,36 @@ namespace EasyToolKit.Core
 {
     public static class ReflectionExtensions
     {
-        public static bool IsDefined<T>(this MemberInfo member) where T : Attribute
-        {
-            return member.IsDefined(typeof(T));
-        }
-
-        public static bool IsDefined<T>(this MemberInfo member, bool inherit) where T : Attribute
+        public static bool IsDefined<T>(this MemberInfo member, bool inherit = false) where T : Attribute
         {
             return member.IsDefined(typeof(T), inherit);
         }
+
+        public static bool IsDefined<T>(this Type type, bool inherit = false, bool includeInterface = false)
+            where T : Attribute
+        {
+            if (type.IsDefined(typeof(T), inherit))
+                return true;
+
+            if (!includeInterface)
+                return false;
+
+            var queue = new Queue<Type>(type.GetInterfaces());
+
+            while (queue.Count > 0)
+            {
+                var iface = queue.Dequeue();
+
+                if (iface.IsDefined(typeof(T)))
+                    return true;
+
+                foreach (var sub in iface.GetInterfaces())
+                    queue.Enqueue(sub);
+            }
+
+            return false;
+        }
+
 
         public static IEnumerable<Type> GetAllTypes(this IEnumerable<Assembly> assemblies)
         {
@@ -206,22 +227,26 @@ namespace EasyToolKit.Core
             return EmitUtilities.CreateStaticPropertySetter<T>(propertyInfo);
         }
 
-        public static ValueGetter<TInstance, TValue> GetInstanceValueGetter<TInstance, TValue>([NotNull] this FieldInfo fieldInfo)
+        public static ValueGetter<TInstance, TValue> GetInstanceValueGetter<TInstance, TValue>(
+            [NotNull] this FieldInfo fieldInfo)
         {
             return EmitUtilities.CreateInstanceFieldGetter<TInstance, TValue>(fieldInfo);
         }
 
-        public static ValueGetter<TInstance, TValue> GetInstanceValueGetter<TInstance, TValue>([NotNull] this PropertyInfo propertyInfo)
+        public static ValueGetter<TInstance, TValue> GetInstanceValueGetter<TInstance, TValue>(
+            [NotNull] this PropertyInfo propertyInfo)
         {
             return EmitUtilities.CreateInstancePropertyGetter<TInstance, TValue>(propertyInfo);
         }
 
-        public static ValueSetter<TInstance, TValue> GetInstanceValueSetter<TInstance, TValue>([NotNull] this FieldInfo fieldInfo)
+        public static ValueSetter<TInstance, TValue> GetInstanceValueSetter<TInstance, TValue>(
+            [NotNull] this FieldInfo fieldInfo)
         {
             return EmitUtilities.CreateInstanceFieldSetter<TInstance, TValue>(fieldInfo);
         }
 
-        public static ValueSetter<TInstance, TValue> GetInstanceValueSetter<TInstance, TValue>([NotNull] this PropertyInfo propertyInfo)
+        public static ValueSetter<TInstance, TValue> GetInstanceValueSetter<TInstance, TValue>(
+            [NotNull] this PropertyInfo propertyInfo)
         {
             return EmitUtilities.CreateInstancePropertySetter<TInstance, TValue>(propertyInfo);
         }

@@ -209,7 +209,7 @@ namespace EasyToolKit.Core
 
         public static MethodInfo GetMethodEx(this Type type, string methodName, BindingFlags flags, params Type[] argTypes)
         {
-            return type.GetMethods(flags).FirstOrDefault(m =>
+            var method = type.GetMethods(flags).FirstOrDefault(m =>
             {
                 if (m.Name != methodName)
                 {
@@ -237,6 +237,12 @@ namespace EasyToolKit.Core
 
                 return true;
             });
+            if (method == null)
+            {
+                throw new ArgumentException($"Cannot find method '{methodName}'");
+            }
+
+            return method;
         }
 
         public static Type[] GetAllBaseTypes(this Type type, bool includeInterface = true,

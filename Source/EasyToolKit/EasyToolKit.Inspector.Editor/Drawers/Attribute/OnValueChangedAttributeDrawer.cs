@@ -25,7 +25,14 @@ namespace EasyToolKit.Inspector.Editor
                 var targetType = this.GetTargetTypeForResolver();
                 try
                 {
-                    _methodInfo = targetType.GetMethodEx(Attribute.Method, BindingFlagsHelper.All, Property.ValueEntry.ValueType);
+                    try
+                    {
+                        _methodInfo = targetType.GetMethodEx(Attribute.Method, BindingFlagsHelper.All, Property.ValueEntry.ValueType);
+                    }
+                    catch (Exception e)
+                    {
+                        _methodInfo = targetType.GetMethodEx(Attribute.Method, BindingFlagsHelper.All);
+                    }
 
                     Property.ValueEntry.OnValueChanged += OnValueChanged;
                 }
@@ -40,15 +47,16 @@ namespace EasyToolKit.Inspector.Editor
 
         private void OnValueChanged(int targetIndex)
         {
-            var target = this.GetTargetForResolver(targetIndex);
             var value = Property.ValueEntry.WeakValues[targetIndex];
+            var args = _methodInfo.GetParameters().Length == 0 ? null : new object[] { value };
             if (_methodInfo.IsStatic)
             {
-                _methodInfo.Invoke(null, new object[] { value });
+                _methodInfo.Invoke(null, args);
             }
             else
             {
-                _methodInfo.Invoke(target, new object[] { value });
+                var target = this.GetTargetForResolver(targetIndex);
+                _methodInfo.Invoke(target, args);
             }
         }
     }
