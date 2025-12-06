@@ -714,12 +714,19 @@
             related to Unity serialization and inspector display.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfoUtility.IsUnityObjectTypeOrDefinedUnityPropertyDrawer(System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfoUtility.IsSatisfiedByUnityPropertyDrawer(System.Type)">
             <summary>
-            Determines if a type is either a Unity Object subclass or has a defined Unity property drawer.
+            Determines if a type is satisfied by unity property drawer.
             </summary>
             <param name="type">The type to check.</param>
-            <returns>True if the type is a Unity Object subclass or has a defined property drawer; otherwise false.</returns>
+            <returns>True if the type is satisfied by unity property drawer; otherwise false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfoUtility.IsSatisfiedByEasyValueDrawer(System.Type)">
+            <summary>
+            Determines if a type is satisfied by easy value drawer.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>True if the type is satisfied by easy value drawer.; otherwise false.</returns>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfoUtility.IsSerializableType(System.Type)">
             <summary>

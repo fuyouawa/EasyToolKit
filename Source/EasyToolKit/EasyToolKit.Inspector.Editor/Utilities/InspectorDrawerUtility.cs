@@ -14,6 +14,9 @@ namespace EasyToolKit.Inspector.Editor
 
         private static readonly TypeMatcher TypeMatcher = new TypeMatcher();
 
+        private static readonly Dictionary<Type, Type> EasyValueDrawerTypesByDrawnType =
+            new Dictionary<Type, Type>();
+
         private static readonly Dictionary<Type, Type> UnityPropertyDrawerTypesByDrawnType =
             new Dictionary<Type, Type>();
 
@@ -54,6 +57,7 @@ namespace EasyToolKit.Inspector.Editor
                     if (type.IsImplementsOpenGenericType(typeof(EasyValueDrawer<>)))
                     {
                         index.Targets = type.GetArgumentsOfInheritedOpenGenericType(typeof(EasyValueDrawer<>));
+                        EasyValueDrawerTypesByDrawnType[index.Targets[0]] = type;
                     }
                     else if (type.IsImplementsOpenGenericType(typeof(EasyAttributeDrawer<>)))
                     {
@@ -117,6 +121,24 @@ namespace EasyToolKit.Inspector.Editor
             foreach (var drawnType in UnityPropertyDrawerTypesByDrawnType.Keys)
             {
                 if (drawnType.IsAssignableFrom(targetType))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsDefinedEasyValueDrawer(Type targetType)
+        {
+            if (EasyValueDrawerTypesByDrawnType.ContainsKey(targetType))
+            {
+                return true;
+            }
+
+            foreach (var (drawnType, drawerType) in EasyValueDrawerTypesByDrawnType)
+            {
+                if (drawnType.IsGenericParameter && drawerType.AreGenericConstraintsSatisfiedBy(targetType))
                 {
                     return true;
                 }

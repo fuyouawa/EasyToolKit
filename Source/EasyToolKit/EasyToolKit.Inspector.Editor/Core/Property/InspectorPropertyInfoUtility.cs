@@ -12,18 +12,33 @@ namespace EasyToolKit.Inspector.Editor
     public static class InspectorPropertyInfoUtility
     {
         /// <summary>
-        /// Determines if a type is either a Unity Object subclass or has a defined Unity property drawer.
+        /// Determines if a type is satisfied by unity property drawer.
         /// </summary>
         /// <param name="type">The type to check.</param>
-        /// <returns>True if the type is a Unity Object subclass or has a defined property drawer; otherwise false.</returns>
-        public static bool IsUnityObjectTypeOrDefinedUnityPropertyDrawer(Type type)
+        /// <returns>True if the type is satisfied by unity property drawer; otherwise false.</returns>
+        public static bool IsSatisfiedByUnityPropertyDrawer(Type type)
+        {
+            if (IsSatisfiedByEasyValueDrawer(type))
+            {
+                return false;
+            }
+
+            return InspectorDrawerUtility.IsDefinedUnityPropertyDrawer(type);
+        }
+
+        /// <summary>
+        /// Determines if a type is satisfied by easy value drawer.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is satisfied by easy value drawer.; otherwise false.</returns>
+        public static bool IsSatisfiedByEasyValueDrawer(Type type)
         {
             if (typeof(UnityEngine.Object).IsAssignableFrom(type))
             {
-                return true;
+                return false;
             }
-            var isDefinedUnityPropertyDrawer = InspectorDrawerUtility.IsDefinedUnityPropertyDrawer(type);
-            return isDefinedUnityPropertyDrawer;
+
+            return InspectorDrawerUtility.IsDefinedEasyValueDrawer(type);
         }
 
         /// <summary>
@@ -72,7 +87,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             return !type.IsBasicValueType() &&
                    !typeof(Delegate).IsAssignableFrom(type) &&
-                !IsUnityObjectTypeOrDefinedUnityPropertyDrawer(type);
+                   !IsSatisfiedByUnityPropertyDrawer(type);
         }
 
         // public static bool IsAllowChildrenField(FieldInfo fieldInfo)
