@@ -87,5 +87,29 @@ namespace EasyToolKit.Core
         {
             Condition(cond == false, message);
         }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void IsNotNullOrEmpty(string value, string message = "Assert not null or empty failed.")
+        {
+            Condition(value.IsNotNullOrEmpty(), message);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void IsNotNullOrEmpty<T>(IList<T> value, string message = "Assert not null or empty failed.")
+        {
+            Condition(value.IsNotNullOrEmpty(), message);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void IsNullOrEmpty(string value, string message = "Assert not null or empty failed.")
+        {
+            Condition(value.IsNullOrEmpty(), message);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void IsNullOrEmpty<T>(IList<T> value, string message = "Assert not null or empty failed.")
+        {
+            Condition(value.IsNullOrEmpty(), message);
+        }
     }
 }

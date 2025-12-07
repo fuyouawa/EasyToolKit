@@ -12,13 +12,13 @@ namespace EasyToolKit.Inspector.Editor
     public static class InspectorPropertyInfoUtility
     {
         /// <summary>
-        /// Determines if a type is satisfied by unity property drawer.
+        /// Determines if a type is satisfied of unity property drawer.
         /// </summary>
         /// <param name="type">The type to check.</param>
-        /// <returns>True if the type is satisfied by unity property drawer; otherwise false.</returns>
-        public static bool IsSatisfiedByUnityPropertyDrawer(Type type)
+        /// <returns>True if the type is satisfied of unity property drawer.; otherwise false.</returns>
+        public static bool IsUnityPropertyDrawerSatisfiedBy(Type type)
         {
-            if (IsSatisfiedByEasyValueDrawer(type))
+            if (IsEasyValueDrawerSatisfiedBy(type))
             {
                 return false;
             }
@@ -27,11 +27,11 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Determines if a type is satisfied by easy value drawer.
+        /// Determines if a type is satisfied of easy value drawer.
         /// </summary>
         /// <param name="type">The type to check.</param>
-        /// <returns>True if the type is satisfied by easy value drawer.; otherwise false.</returns>
-        public static bool IsSatisfiedByEasyValueDrawer(Type type)
+        /// <returns>True if the type is satisfied of easy value drawer.; otherwise false.</returns>
+        public static bool IsEasyValueDrawerSatisfiedBy(Type type)
         {
             if (typeof(UnityEngine.Object).IsAssignableFrom(type))
             {
@@ -87,7 +87,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             return !type.IsBasicValueType() &&
                    !typeof(Delegate).IsAssignableFrom(type) &&
-                   !IsSatisfiedByUnityPropertyDrawer(type);
+                   !IsUnityPropertyDrawerSatisfiedBy(type);
         }
 
         // public static bool IsAllowChildrenField(FieldInfo fieldInfo)

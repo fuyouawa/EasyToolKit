@@ -529,9 +529,14 @@ namespace EasyToolKit.Core.Editor
             return ValueDropdown(rect, label, selectedIndex, values, optionContentGetter, style);
         }
 
+        public static int ValueDropdown<T>(GUIContent label, GUIContent display, int selectedIndex, IList<T> values, Func<int, T, GUIContent> optionContentGetter, GUIStyle style = null, params GUILayoutOption[] options)
+        {
+            var rect = EditorGUILayout.GetControlRect(label != null, EditorGUIUtility.singleLineHeight, style ?? EditorStyles.numberField, options);
+            return ValueDropdown(rect, label, display, selectedIndex, values, optionContentGetter, style);
+        }
+
         public static int ValueDropdown<T>(Rect rect, GUIContent label, int selectedIndex, IList<T> values, Func<int, T, GUIContent> optionContentGetter, GUIStyle style = null)
         {
-            var controlID = GUIUtility.GetControlID(FocusType.Keyboard, rect);
             GUIContent display;
             if (selectedIndex < 0)
             {
@@ -542,6 +547,12 @@ namespace EasyToolKit.Core.Editor
                 var selected = values[selectedIndex];
                 display = EditorGUI.showMixedValue ? MixedValueContent : optionContentGetter(selectedIndex, selected);
             }
+            return ValueDropdown(rect, label, display, selectedIndex, values, optionContentGetter, style);
+        }
+
+        public static int ValueDropdown<T>(Rect rect, GUIContent label, GUIContent display, int selectedIndex, IList<T> values, Func<int, T, GUIContent> optionContentGetter, GUIStyle style = null)
+        {
+            var controlID = GUIUtility.GetControlID(FocusType.Keyboard, rect);
             var buttonRect = label == null ? rect : EditorGUI.PrefixLabel(rect, controlID, label);
             style ??= EditorStyles.popup;
             if (label == null)
