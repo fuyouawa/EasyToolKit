@@ -18,6 +18,11 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if the type is satisfied of unity property drawer.; otherwise false.</returns>
         public static bool IsUnityPropertyDrawerSatisfiedBy(Type type)
         {
+            if (typeof(UnityEngine.Object).IsAssignableFrom(type))
+            {
+                return false;
+            }
+
             if (IsEasyValueDrawerSatisfiedBy(type))
             {
                 return false;
@@ -87,6 +92,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             return !type.IsBasicValueType() &&
                    !typeof(Delegate).IsAssignableFrom(type) &&
+                   !typeof(UnityEngine.Object).IsAssignableFrom(type) &&
                    !IsUnityPropertyDrawerSatisfiedBy(type);
         }
 
