@@ -2662,76 +2662,71 @@
             Gets the default preview height for Unity editors.
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetModule``1">
+            <summary>
+            Gets a module of the specified type
+            </summary>
+            <typeparam name="T">The module type</typeparam>
+            <returns>The module instance or null if not found</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.SetSerializedTarget(UnityEngine.Object)">
+            <summary>
+            Internal method to set the serialized target
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.SetTargetObject(System.Object)">
+            <summary>
+            Internal method to set the target object
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget">
             <summary>
-            Gets the target which which the window is supposed to draw. By default it simply returns the editor window instance itself. By default, this method is called by <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets"/>().
+            Gets the target which the window is supposed to draw.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets">
             <summary>
-            Gets the targets to be drawn by the editor window. By default this simply yield returns the <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget"/> method.
+            Gets the targets to be drawn by the editor window.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets">
             <summary>
-            At the start of each OnGUI event when in the Layout event, the GetTargets() method is called and cached into a list which you can access from here.
+            At the start of each OnGUI event when in the Layout event, the GetTargets() method is called and cached into a list.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Rect,System.Single)">
             <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            This particular overload uses a few frames to calculate the height of the content before showing the window with a height that matches its content.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            Pops up an editor window for the given object in a drop-down window.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            Pops up an editor window for the given object in a drop-down window.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Vector2)">
             <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            Pops up an editor window for the given object in a drop-down window.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,System.Single)">
             <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            Pops up an editor window for the given object in a drop-down window.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Vector2,System.Single)">
             <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            Pops up an editor window for the given object in a drop-down window.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,System.Single,System.Single)">
             <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            Pops up an editor window for the given object in a drop-down window.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object)">
             <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            Pops up an editor window for the given object in a drop-down window.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObject(System.Object)">
@@ -2749,50 +2744,307 @@
             Creates an editor window instance for the specified object, without opening the window.
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.SetWindowTitle(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Object,UnityEngine.Object)">
+            <summary>
+            Sets the window title based on the object type
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnGUI">
             <summary>
             Draws the Easy Editor Window.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditors">
-            <summary>
-            Calls DrawEditor(index) for each of the currently drawing targets.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.Initialize">
-            <summary>
-            Initialize get called by OnEnable and by OnGUI after assembly reloads
-            which often happens when you recompile or enter and exit play mode.
-            </summary>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEnable">
             <summary>
-            Called when the window is enabled. Remember to call base.OnEnable();
+            Called when the window is enabled.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditor(System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnDisable">
             <summary>
-            Draws the editor for the CurrentDrawingTargets[index].
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditorPreview(System.Int32,System.Single)">
-            <summary>
-            Uses the <see cref="M:UnityEditor.Editor.DrawPreview(UnityEngine.Rect)"/> method to draw a preview for the CurrentDrawingTargets[index].
+            Called when the window is disabled/destroyed.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnDestroy">
             <summary>
-            Called when the window is destroyed. Remember to call base.OnDestroy();
+            Called when the window is destroyed.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEndDrawEditors">
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InitializeIfNeeded">
             <summary>
-            Called before starting to draw all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/>.
+            Initializes the window and its modules.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InitializeModules">
+            <summary>
+            Initializes all modules
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.UpdateModuleProperties">
+            <summary>
+            Updates module properties with current serialized values
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.Initialize">
+            <summary>
+            Initialize get called by OnEnable and by OnGUI after assembly reloads.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnBeginDrawEditors">
             <summary>
-            Called after all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/> has been drawn.
+            Called before starting to draw all editors.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEndDrawEditors">
+            <summary>
+            Called after all editors have been drawn.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule">
+            <summary>
+            Manages Unity editors and property trees creation/destruction
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.UpdateEditors">
+            <summary>
+            Updates the editors and property trees based on current targets
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CleanupExcessEditors(System.Int32)">
+            <summary>
+            Cleans up excess editors when target count decreases
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.ResizeArrays(System.Int32)">
+            <summary>
+            Resizes all arrays to match the new target count
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.UpdateSingleTarget(System.Int32,System.Object)">
+            <summary>
+            Updates a single target at the specified index
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CleanupTargetAt(System.Int32)">
+            <summary>
+            Cleans up the editor and property tree at the specified index
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CreateEditorForTarget(System.Int32,System.Object)">
+            <summary>
+            Creates an appropriate editor for the target object
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CreateUnityEditor(System.Int32,System.Object)">
+            <summary>
+            Creates a Unity editor for Unity objects
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CreatePropertyTree(System.Int32,System.Object)">
+            <summary>
+            Creates a property tree for non-Unity objects
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.DrawEditor(System.Int32)">
+            <summary>
+            Draws the editor for the target at the specified index
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.DrawEditorPreview(System.Int32,System.Single)">
+            <summary>
+            Draws the editor preview for the target at the specified index
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.Dispose">
+            <summary>
+            Disposes all editors and property trees
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule">
+            <summary>
+            Handles scrolling, layout, and drawing logic
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.BeginLayoutArea">
+            <summary>
+            Begins the wrapped area if content expansion is prevented
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.EndLayoutArea">
+            <summary>
+            Ends the wrapped area if content expansion is prevented
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.BeginVerticalLayout">
+            <summary>
+            Begins the scroll view and vertical layout
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.EndVerticalLayout">
+            <summary>
+            Ends the vertical layout
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.UpdateContentSize(UnityEngine.Vector2)">
+            <summary>
+            Updates the content size if needed
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.ConfigureGUILayout">
+            <summary>
+            Configures GUI helper settings for layout
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.DrawContent">
+            <summary>
+            Draws the main content area
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.DrawEditors">
+            <summary>
+            Draws all editors
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule">
+            <summary>
+            Base interface for editor window modules
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.Initialize(EasyToolKit.Inspector.Editor.EasyEditorWindow)">
+            <summary>
+            Initialize the module with the parent window
+            </summary>
+            <param name="window">The parent editor window</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.Dispose">
+            <summary>
+            Called when the module is being destroyed
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.OnGUI">
+            <summary>
+            Called during OnGUI to handle module-specific GUI logic
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.OnEnable">
+            <summary>
+            Called when the window is enabled
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.OnDisable">
+            <summary>
+            Called when the window is disabled/destroyed
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Modules.EditorWindowModuleBase">
+            <summary>
+            Abstract base class for editor window modules providing common functionality
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule">
+            <summary>
+            Manages mouse/keyboard interactions and focus control
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.HandleInputEvents">
+            <summary>
+            Handles mouse and keyboard input events
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.RemoveFocusFromEmptyAreaClick">
+            <summary>
+            Removes focus from controls when clicking on empty areas
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.HandleRepaintLogic">
+            <summary>
+            Handles repaint logic based on various conditions
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.HandleWarmupRepaints">
+            <summary>
+            Handles warmup repaints for proper initialization
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.OnSelectionChanged">
+            <summary>
+            Called when Unity selection changes
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule">
+            <summary>
+            Handles editor preview drawing
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.DrawEditorPreview(System.Int32,System.Single)">
+            <summary>
+            Draws the editor preview for the target at the specified index
+            </summary>
+            <param name="index">The index of the target</param>
+            <param name="height">The height of the preview area</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.HasPreviewGUI(System.Int32)">
+            <summary>
+            Checks if the target at the specified index has a preview available
+            </summary>
+            <param name="index">The index of the target</param>
+            <returns>True if preview is available, false otherwise</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.GetDefaultPreviewHeight">
+            <summary>
+            Gets the default preview height
+            </summary>
+            <returns>The default preview height in pixels</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.SetDrawUnityEditorPreview(System.Boolean)">
+            <summary>
+            Sets whether Unity editor previews should be drawn
+            </summary>
+            <param name="draw">True to draw previews, false otherwise</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.SetDefaultPreviewHeight(System.Single)">
+            <summary>
+            Sets the default preview height
+            </summary>
+            <param name="height">The height in pixels</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule">
+            <summary>
+            Handles window creation, positioning, and popup functionality
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.InspectObjectInDropDown(System.Object,UnityEngine.Rect,System.Single)">
+            <summary>
+            Pops up an editor window for the given object in a drop-down window
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.InspectObjectInDropDown(System.Object,UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>
+            Pops up an editor window for the given object in a drop-down window with automatic height adjustment
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.SetupAutomaticHeightAdjustment(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Int32)">
+            <summary>
+            Sets up automatic height adjustment for dropdown windows
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.InspectObjectInDropDown(System.Object,UnityEngine.Vector2)">
+            <summary>
+            Additional InspectObjectInDropDown overloads
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.InspectObject(System.Object)">
+            <summary>
+            Pops up a regular editor window for the given object
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.CreateEasyEditorWindowInstanceForObject(System.Object)">
+            <summary>
+            Creates an editor window instance for the specified object, without opening the window
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.SetWindowTitle(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Object,UnityEngine.Object)">
+            <summary>
+            Sets the window title based on the object type
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.GlobalPersistentContext">
