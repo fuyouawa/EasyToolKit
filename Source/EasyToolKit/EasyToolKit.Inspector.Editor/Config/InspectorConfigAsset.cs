@@ -17,6 +17,8 @@ namespace EasyToolKit.Inspector.Editor
         public bool DrawMonoScriptInEditor => _drawMonoScriptInEditor;
         public bool TryInstantiateReferenceObjectIfNull => _instantiateReferenceObjectIfNull;
 
+        private bool _hasUpdatedEditorsOnce;
+
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
         }
@@ -66,6 +68,16 @@ namespace EasyToolKit.Inspector.Editor
                     }
                 }
             };
+            _hasUpdatedEditorsOnce = true;
+        }
+
+        public void EnsureEditorsHaveBeenUpdated()
+        {
+            if (!_hasUpdatedEditorsOnce)
+            {
+                UpdateEditors();
+                _hasUpdatedEditorsOnce = true;
+            }
         }
     }
 }

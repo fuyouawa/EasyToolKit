@@ -24,6 +24,8 @@ namespace EasyToolKit.Core.Editor
             ? new Color(0.11f * 1.0f, 0.11f * 1.0f, 0.11f * 1.0f, 0.8f)
             : new Color(0.38f, 0.38f, 0.38f, 0.6f);
 
+        public static readonly Color MenuBackgroundColor = EditorGUIUtility.isProSkin ? new Color(1, 1, 1, 0.035f) : new Color(0.870f, 0.870f, 0.870f, 1);
+
         public static readonly Color ListItemDragBgColor = EditorGUIUtility.isProSkin
             ? new Color(0.1f, 0.1f, 0.1f, 1f)
             : new Color(0.338f, 0.338f, 0.338f, 1.000f);

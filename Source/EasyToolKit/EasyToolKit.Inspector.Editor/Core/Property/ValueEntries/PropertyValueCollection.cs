@@ -39,7 +39,7 @@ namespace EasyToolKit.Inspector.Editor
         public PropertyValueCollection(InspectorProperty property)
         {
             Property = property;
-            _values = new TValue[property.Tree.Targets.Length];
+            _values = new TValue[property.Tree.Targets.Count];
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace EasyToolKit.Inspector.Editor
             {
                 if (!_firstUpdated)
                 {
-                    for (int i = 0; i < Property.Tree.Targets.Length; i++)
+                    for (int i = 0; i < Property.Tree.Targets.Count; i++)
                     {
                         _values[i] = (TValue)(object)Property.Tree.Targets[i];
                     }
@@ -150,7 +150,7 @@ namespace EasyToolKit.Inspector.Editor
                 Assert.IsNotNull(Property.Parent.ValueEntry);
                 Assert.IsNotNull(Property.Info.ValueAccessor);
 
-                for (int i = 0; i < Property.Tree.Targets.Length; i++)
+                for (int i = 0; i < Property.Tree.Targets.Count; i++)
                 {
                     var owner = Property.Parent.ValueEntry.WeakValues[i];
                     if (owner == null)

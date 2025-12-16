@@ -14,6 +14,11 @@ namespace EasyToolKit.Inspector.Editor
             //     return false;
             // }
 
+            if (property.Tree.SerializedObject == null)
+            {
+                return false;
+            }
+
             var propertyType = property.Info.PropertyType;
             var unityProperty = property.Tree.GetUnityPropertyByPath(property.UnityPath);
             if (propertyType == null || unityProperty == null)

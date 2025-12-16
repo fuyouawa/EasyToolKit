@@ -77,7 +77,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     foreach (var obj in droppedObjects)
                     {
-                        object[] values = new object[Property.Tree.Targets.Length];
+                        object[] values = new object[Property.Tree.Targets.Count];
 
                         for (int i = 0; i < values.Length; i++)
                         {

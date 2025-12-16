@@ -4,21 +4,64 @@ using System;
 using System.Reflection;
 using System.Collections;
 using System.Linq;
-using static UnityEngine.GraphicsBuffer;
 
 namespace EasyToolKit.Core
 {
-    //TODO 版权问题
+    /// <summary>
+    /// Provides utility methods for runtime reflection operations, including creating value getters
+    /// for accessing members through deep reflection paths.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This utility enables dynamic access to object members using string-based paths that can include
+    /// fields, properties, methods, and collection/array elements. Supports both static and instance
+    /// member access with type safety validation.
+    /// </para>
+    /// <para>
+    /// Path syntax examples:
+    /// <list type="bullet">
+    /// <item>
+    /// <description>Field access: "MyField"</description>
+    /// </item>
+    /// <item>
+    /// <description>Property access: "MyProperty"</description>
+    /// </item>
+    /// <item>
+    /// <description>Method call: "GetValue()"</description>
+    /// </item>
+    /// <item>
+    /// <description>Array element: "MyArray[0]"</description>
+    /// </item>
+    /// <item>
+    /// <description>List element: "MyList[1]"</description>
+    /// </item>
+    /// <item>
+    /// <description>Nested access: "MyField.NestedProperty[2].GetValue()"</description>
+    /// </item>
+    /// </list>
+    /// </para>
+    /// </remarks>
     public class ReflectionUtility
     {
+        /// <summary>
+        /// Represents the type of step in a reflection path.
+        /// </summary>
         private enum PathStepType
         {
+            /// <summary>A field, property, or method member access.</summary>
             Member,
+            /// <summary>An element access in a non-generic IList collection.</summary>
             WeakListElement,
+            /// <summary>An element access in a generic IList&lt;T&gt; collection.</summary>
             StrongListElement,
+            /// <summary>An element access in an array.</summary>
             ArrayElement
         }
 
+        /// <summary>
+        /// Represents a single step in a reflection path, containing information about how to access
+        /// the next value in the path traversal.
+        /// </summary>
         private struct PathStep
         {
             public readonly PathStepType StepType;
@@ -27,6 +70,10 @@ namespace EasyToolKit.Core
             public readonly Type ElementType;
             public readonly MethodInfo StrongListGetItemMethod;
 
+            /// <summary>
+            /// Creates a member access path step.
+            /// </summary>
+            /// <param name="member">The field, property, or method to access.</param>
             public PathStep(MemberInfo member)
             {
                 this.StepType = PathStepType.Member;
@@ -36,6 +83,10 @@ namespace EasyToolKit.Core
                 this.StrongListGetItemMethod = null;
             }
 
+            /// <summary>
+            /// Creates a weak list element access path step (non-generic IList).
+            /// </summary>
+            /// <param name="elementIndex">The index of the element to access.</param>
             public PathStep(int elementIndex)
             {
                 this.StepType = PathStepType.WeakListElement;
@@ -45,6 +96,12 @@ namespace EasyToolKit.Core
                 this.StrongListGetItemMethod = null;
             }
 
+            /// <summary>
+            /// Creates a strong list or array element access path step.
+            /// </summary>
+            /// <param name="elementIndex">The index of the element to access.</param>
+            /// <param name="strongListElementType">The element type of the list or array.</param>
+            /// <param name="isArray">True if this is an array access, false for generic list access.</param>
             public PathStep(int elementIndex, Type strongListElementType, bool isArray)
             {
                 this.StepType = isArray ? PathStepType.ArrayElement : PathStepType.StrongListElement;
@@ -55,6 +112,14 @@ namespace EasyToolKit.Core
             }
         }
 
+        /// <summary>
+        /// Creates a delegate that gets a value from a static member path.
+        /// </summary>
+        /// <param name="resultType">The expected type of the result, or null to infer from the path.</param>
+        /// <param name="rootType">The type containing the static member path root.</param>
+        /// <param name="path">The member path to traverse (e.g., "MyClass.StaticField.NestedProperty").</param>
+        /// <returns>A delegate that returns the value at the specified static path.</returns>
+        /// <exception cref="ArgumentException">Thrown when the path root is not static or the path is invalid.</exception>
         public static Func<object> CreateStaticValueGetter(Type resultType, Type rootType, string path)
         {
             var memberPath = GetMemberPath(rootType, ref resultType, path, out bool rootIsStatic);
@@ -68,6 +133,14 @@ namespace EasyToolKit.Core
             return slowDelegate;
         }
 
+        /// <summary>
+        /// Creates a delegate that gets a value from an instance member path.
+        /// </summary>
+        /// <param name="targetType">The type of the instance to get the value from.</param>
+        /// <param name="resultType">The expected type of the result, or null to infer from the path.</param>
+        /// <param name="path">The member path to traverse (e.g., "MyField.NestedProperty[0]").</param>
+        /// <returns>A delegate that takes an instance and returns the value at the specified path.</returns>
+        /// <exception cref="ArgumentException">Thrown when the path root is static or the path is invalid.</exception>
         public static Func<object, object> CreateInstanceValueGetter(Type targetType, Type resultType, string path)
         {
             var memberPath = GetMemberPath(targetType, ref resultType, path, out var rootIsStatic);

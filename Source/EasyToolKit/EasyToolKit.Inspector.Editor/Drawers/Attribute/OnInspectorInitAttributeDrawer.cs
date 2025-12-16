@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         protected override void Initialize()
         {
-            Action<object, UnityEngine.Object> action;
+            Action<object, object> action;
             var parameters = MethodInfo.GetParameters();
             if (parameters.Length == 0)
             {
@@ -14,10 +14,6 @@ namespace EasyToolKit.Inspector.Editor
             }
             else if (parameters.Length == 1)
             {
-                if (!typeof(UnityEngine.Object).IsAssignableFrom(parameters[0].ParameterType))
-                {
-                    throw new Exception($"The OnInspectorInit method '{MethodInfo}' only supports unity object parameters.");
-                }
                 action = (target, referencedObject) => MethodInfo.Invoke(target, new object[] { referencedObject });
             }
             else
@@ -25,7 +21,7 @@ namespace EasyToolKit.Inspector.Editor
                 throw new Exception($"The OnInspectorInit method '{MethodInfo}' only supports 0 or 1 parameters.");
             }
 
-            for (int i = 0; i < Property.Tree.Targets.Length; i++)
+            for (int i = 0; i < Property.Tree.Targets.Count; i++)
             {
                 var target = Property.Parent.ValueEntry.WeakValues[i];
                 if (target == null)

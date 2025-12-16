@@ -235,15 +235,13 @@ namespace EasyToolKit.Inspector.Editor
         /// Creates an <see cref="InspectorPropertyInfo"/> for a logic root in the inspector hierarchy.
         /// This represents the root object being inspected.
         /// </summary>
-        /// <param name="serializedObject">The serialized object representing the root.</param>
+        /// <param name="targets">The target objects representing the root.</param>
         /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured as a logic root.</returns>
-        internal static InspectorPropertyInfo CreateForLogicRoot(SerializedObject serializedObject)
+        internal static InspectorPropertyInfo CreateForLogicRoot(IList targets)
         {
-            var iterator = serializedObject.GetIterator();
-
             var info = new InspectorPropertyInfo()
             {
-                PropertyType = serializedObject.targetObject.GetType(),
+                PropertyType = targets[0].GetType(),
                 PropertyName = "$ROOT$",
                 IsLogicRoot = true,
                 PropertyResolverLocator = new GenericPropertyResolverLocator()
@@ -252,7 +250,7 @@ namespace EasyToolKit.Inspector.Editor
             info.ValueAccessor = new GenericValueAccessor(
                 typeof(int),
                 info.PropertyType,
-                (ref object index) => serializedObject.targetObjects[(int)index],
+                (ref object index) => targets[(int)index],
                 null);
 
             return info;

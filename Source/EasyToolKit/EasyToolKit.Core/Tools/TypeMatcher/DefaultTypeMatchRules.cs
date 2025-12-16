@@ -2,8 +2,20 @@ using System;
 
 namespace EasyToolKit.Core
 {
+    /// <summary>
+    /// Provides default type matching rules for the TypeMatcher system.
+    /// These rules handle common type matching scenarios including exact matches,
+    /// generic type matching, type inference, and nested type matching.
+    /// </summary>
     public static class DefaultTypeMatchRules
     {
+        /// <summary>
+        /// Matches types exactly - both the type and all target types must match exactly.
+        /// </summary>
+        /// <param name="matchIndex">The type match index to evaluate.</param>
+        /// <param name="targets">The target types to match against.</param>
+        /// <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+        /// <returns>The matched type if successful; otherwise, null.</returns>
         public static Type ExactMatch(TypeMatchIndex matchIndex, Type[] targets, ref bool stopMatch)
         {
             if (matchIndex.Type.IsGenericTypeDefinition) return null;
@@ -17,6 +29,14 @@ namespace EasyToolKit.Core
             return matchIndex.Type;
         }
 
+        /// <summary>
+        /// Matches generic type definitions against single generic target types.
+        /// The target type must have the same generic type definition as the match index target.
+        /// </summary>
+        /// <param name="matchIndex">The type match index to evaluate.</param>
+        /// <param name="targets">The target types to match against.</param>
+        /// <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+        /// <returns>The constructed generic type if successful; otherwise, null.</returns>
         public static Type GenericSingleTargetMatch(TypeMatchIndex matchIndex, Type[] targets, ref bool stopMatch)
         {
             if (!matchIndex.Type.IsGenericTypeDefinition) return null;
@@ -36,6 +56,14 @@ namespace EasyToolKit.Core
         }
 
 
+        /// <summary>
+        /// Matches when all target types are generic parameters and satisfy the generic constraints
+        /// of the match index type.
+        /// </summary>
+        /// <param name="matchIndex">The type match index to evaluate.</param>
+        /// <param name="targets">The target types to match against.</param>
+        /// <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+        /// <returns>The constructed generic type if successful; otherwise, null.</returns>
         public static Type TargetsSatisfyGenericParameterConstraints(TypeMatchIndex matchIndex, Type[] targets,
             ref bool stopMatch)
         {
@@ -52,6 +80,14 @@ namespace EasyToolKit.Core
             return null;
         }
 
+        /// <summary>
+        /// Performs generic parameter inference to match types.
+        /// Infers generic parameters from the target types and constructs the appropriate generic type.
+        /// </summary>
+        /// <param name="matchIndex">The type match index to evaluate.</param>
+        /// <param name="targets">The target types to match against.</param>
+        /// <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+        /// <returns>The inferred generic type if successful; otherwise, null.</returns>
         public static Type GenericParameterInference(TypeMatchIndex matchIndex, Type[] targets,
             ref bool stopMatch)
         {
@@ -106,6 +142,14 @@ namespace EasyToolKit.Core
             return null;
         }
 
+        /// <summary>
+        /// Matches nested types that are declared within the same generic type definition.
+        /// The declaring types must have the same generic type definition.
+        /// </summary>
+        /// <param name="matchIndex">The type match index to evaluate.</param>
+        /// <param name="targets">The target types to match against.</param>
+        /// <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+        /// <returns>The constructed generic type if successful; otherwise, null.</returns>
         public static Type NestedInSameGenericType(TypeMatchIndex matchIndex, Type[] targets,
             ref bool stopMatch)
         {

@@ -686,12 +686,12 @@
             <param name="valueAccessor">The value accessor that provides read/write access to the value.</param>
             <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> instance configured for the custom value.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.CreateForLogicRoot(UnityEditor.SerializedObject)">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.CreateForLogicRoot(System.Collections.IList)">
             <summary>
             Creates an <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> for a logic root in the inspector hierarchy.
             This represents the root object being inspected.
             </summary>
-            <param name="serializedObject">The serialized object representing the root.</param>
+            <param name="targets">The target objects representing the root.</param>
             <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> instance configured as a logic root.</returns>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.GetMemberInfo">
@@ -894,12 +894,31 @@
             Occurs when a property value changes.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyTree.#ctor(UnityEditor.SerializedObject)">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyTree.#ctor(System.Object[],UnityEditor.SerializedObject)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> class with the specified <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/>.
             </summary>
+            <param name="targets">The target objects to create the property tree for.</param>
             <param name="serializedObject">The <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/> to create the property tree for.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <see cref="!:serializedObject"/> is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyTree.Create(UnityEditor.SerializedObject)">
+            <summary>
+            Creates a new <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> instance from a <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/>.
+            </summary>
+            <param name="serializedObject">The <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/> to create the property tree for.</param>
+            <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> instance.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <see cref="!:serializedObject"/> is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyTree.Create(System.Object[],UnityEditor.SerializedObject)">
+            <summary>
+            Creates a new <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> instance from target objects and an optional <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/>.
+            </summary>
+            <param name="targets">The target objects to create the property tree for.</param>
+            <param name="serializedObject">An optional existing <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/> to use.</param>
+            <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> instance.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <see cref="!:targets"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the provided <see cref="!:serializedObject"/> is not valid for the targets.</exception>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.PropertyTree.EnumerateTree(System.Boolean)">
             <summary>
@@ -954,24 +973,6 @@
             Ends the drawing process for the property tree.
             This method applies modified properties and processes pending callbacks.
             </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyTree.Create(UnityEditor.SerializedObject)">
-            <summary>
-            Creates a new <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> instance from a <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/>.
-            </summary>
-            <param name="serializedObject">The <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/> to create the property tree for.</param>
-            <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> instance.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when <see cref="!:serializedObject"/> is null.</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyTree.Create(UnityEngine.Object[],UnityEditor.SerializedObject)">
-            <summary>
-            Creates a new <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> instance from target objects and an optional <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/>.
-            </summary>
-            <param name="targets">The target objects to create the property tree for.</param>
-            <param name="serializedObject">An optional existing <see cref="P:EasyToolKit.Inspector.Editor.PropertyTree.SerializedObject"/> to use.</param>
-            <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.PropertyTree"/> instance.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when <see cref="!:targets"/> is null.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when the provided <see cref="!:serializedObject"/> is not valid for the targets.</exception>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IPropertyValueCollection">
             <summary>
@@ -2620,6 +2621,179 @@
             </summary>
             <param name="property">The InspectorProperty to check.</param>
             <returns>True if this drawer can handle the value property, false otherwise.</returns>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.WindowClosed">
+            <summary>
+            Occurs when the window is closed.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.GuiBegun">
+            <summary>
+            Occurs at the beginning the OnGUI method.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.GuiEnded">
+            <summary>
+            Occurs at the end the OnGUI method.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DefaultLabelWidth">
+            <summary>
+            Gets the label width to be used. Values between 0 and 1 are treated as percentages, and values above as pixels.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.WindowPadding">
+            <summary>
+            Gets or sets the window padding. x = left, y = right, z = top, w = bottom.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.UseScrollView">
+            <summary>
+            Gets a value indicating whether the window should draw a scroll view.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawUnityEditorPreview">
+            <summary>
+            Gets a value indicating whether the window should draw a Unity editor preview, if possible.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DefaultEditorPreviewHeight">
+            <summary>
+            Gets the default preview height for Unity editors.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget">
+            <summary>
+            Gets the target which which the window is supposed to draw. By default it simply returns the editor window instance itself. By default, this method is called by <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets"/>().
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets">
+            <summary>
+            Gets the targets to be drawn by the editor window. By default this simply yield returns the <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget"/> method.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets">
+            <summary>
+            At the start of each OnGUI event when in the Layout event, the GetTargets() method is called and cached into a list which you can access from here.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Rect,System.Single)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            This particular overload uses a few frames to calculate the height of the content before showing the window with a height that matches its content.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Vector2)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,System.Single)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Vector2,System.Single)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,System.Single,System.Single)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObject(System.Object)">
+            <summary>
+            Pops up an editor window for the given object.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObject(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Object)">
+            <summary>
+            Inspects the object using an existing EasyEditorWindow.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.CreateEasyEditorWindowInstanceForObject(System.Object)">
+            <summary>
+            Creates an editor window instance for the specified object, without opening the window.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnGUI">
+            <summary>
+            Draws the Easy Editor Window.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditors">
+            <summary>
+            Calls DrawEditor(index) for each of the currently drawing targets.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.Initialize">
+            <summary>
+            Initialize get called by OnEnable and by OnGUI after assembly reloads
+            which often happens when you recompile or enter and exit play mode.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEnable">
+            <summary>
+            Called when the window is enabled. Remember to call base.OnEnable();
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditor(System.Int32)">
+            <summary>
+            Draws the editor for the CurrentDrawingTargets[index].
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditorPreview(System.Int32,System.Single)">
+            <summary>
+            Uses the <see cref="M:UnityEditor.Editor.DrawPreview(UnityEngine.Rect)"/> method to draw a preview for the CurrentDrawingTargets[index].
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnDestroy">
+            <summary>
+            Called when the window is destroyed. Remember to call base.OnDestroy();
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEndDrawEditors">
+            <summary>
+            Called before starting to draw all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnBeginDrawEditors">
+            <summary>
+            Called after all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/> has been drawn.
+            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.GlobalPersistentContext">
             <summary>

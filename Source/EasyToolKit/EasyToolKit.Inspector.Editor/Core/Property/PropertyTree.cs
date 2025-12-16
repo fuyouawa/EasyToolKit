@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using EasyToolKit.Core;
 using EasyToolKit.Core.Editor;
 using JetBrains.Annotations;
@@ -17,6 +19,7 @@ namespace EasyToolKit.Inspector.Editor
         private readonly HashSet<InspectorProperty> _dirtyProperties = new HashSet<InspectorProperty>();
         private Action _pendingCallbacks;
         private Action _pendingCallbacksUntilRepaint;
+        private readonly object[] _targets;
 
         /// <summary>
         /// Gets the current update identifier used for tracking property updates.
@@ -26,7 +29,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the <see cref="SerializedObject"/> associated with this property tree.
         /// </summary>
-        public SerializedObject SerializedObject { get; }
+        [CanBeNull] public SerializedObject SerializedObject { get; }
 
         /// <summary>
         /// Gets the root property of the property tree hierarchy.
@@ -36,7 +39,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the target objects associated with this property tree.
         /// </summary>
-        public UnityEngine.Object[] Targets => SerializedObject.targetObjects;
+        public IReadOnlyList<object> Targets => _targets;
 
         /// <summary>
         /// Gets the type of the target object.
@@ -56,16 +59,98 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyTree"/> class with the specified <see cref="SerializedObject"/>.
         /// </summary>
+        /// <param name="targets">The target objects to create the property tree for.</param>
         /// <param name="serializedObject">The <see cref="SerializedObject"/> to create the property tree for.</param>
         /// <exception cref="ArgumentNullException">Thrown when <see cref="serializedObject"/> is null.</exception>
-        public PropertyTree([NotNull] SerializedObject serializedObject)
+        public PropertyTree([NotNull] object[] targets, [CanBeNull] SerializedObject serializedObject)
+        {
+            if (targets.IsNullOrEmpty())
+                throw new ArgumentException(nameof(targets));
+
+            _targets = targets;
+            SerializedObject = serializedObject;
+            LogicRootProperty = new InspectorProperty(this, null,
+                InspectorPropertyInfo.CreateForLogicRoot(targets), 0);
+        }
+
+
+        /// <summary>
+        /// Creates a new <see cref="PropertyTree"/> instance from a <see cref="SerializedObject"/>.
+        /// </summary>
+        /// <param name="serializedObject">The <see cref="SerializedObject"/> to create the property tree for.</param>
+        /// <returns>A new <see cref="PropertyTree"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <see cref="serializedObject"/> is null.</exception>
+        public static PropertyTree Create([NotNull] SerializedObject serializedObject)
         {
             if (serializedObject == null)
                 throw new ArgumentNullException(nameof(serializedObject));
 
-            SerializedObject = serializedObject;
-            LogicRootProperty = new InspectorProperty(this, null,
-                InspectorPropertyInfo.CreateForLogicRoot(serializedObject), 0);
+            return Create(serializedObject.targetObjects, serializedObject);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="PropertyTree"/> instance from target objects and an optional <see cref="SerializedObject"/>.
+        /// </summary>
+        /// <param name="targets">The target objects to create the property tree for.</param>
+        /// <param name="serializedObject">An optional existing <see cref="SerializedObject"/> to use.</param>
+        /// <returns>A new <see cref="PropertyTree"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <see cref="targets"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when the provided <see cref="serializedObject"/> is not valid for the targets.</exception>
+        public static PropertyTree Create([NotNull] object[] targets,
+            [CanBeNull] SerializedObject serializedObject)
+        {
+            if (targets == null) throw new ArgumentNullException(nameof(targets));
+
+            if (serializedObject != null)
+            {
+                bool valid = true;
+                var targetObjects = serializedObject.targetObjects;
+
+                if (targets.Length != targetObjects.Length)
+                {
+                    valid = false;
+                }
+                else
+                {
+                    for (int i = 0; i < targets.Length; i++)
+                    {
+                        if (!object.ReferenceEquals(targets[i], targetObjects[i]))
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!valid)
+                {
+                    throw new ArgumentException($"SerializedObject is not valid for targets.");
+                }
+            }
+            else
+            {
+                // Check if all targets have the same type
+                if (targets.Length > 0)
+                {
+                    Type firstTargetType = targets[0].GetType();
+                    bool allSameType = targets.All(t => t.GetType() == firstTargetType);
+
+                    if (!allSameType)
+                    {
+                        throw new ArgumentException($"All targets must have the same type.");
+                    }
+
+                    // Check if the type inherits from UnityEngine.Object
+                    if (typeof(UnityEngine.Object).IsAssignableFrom(firstTargetType))
+                    {
+                        // Convert targets to UnityEngine.Object array
+                        var unityObjects = targets.Cast<UnityEngine.Object>().ToArray();
+                        serializedObject = new SerializedObject(unityObjects);
+                    }
+                }
+            }
+
+            return new PropertyTree(targets, serializedObject);
         }
 
         /// <summary>
@@ -97,6 +182,10 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>The <see cref="SerializedProperty"/> at the specified path, or null if not found.</returns>
         public SerializedProperty GetUnityPropertyByPath(string propertyPath)
         {
+            if (SerializedObject == null)
+            {
+                throw new InvalidOperationException("SerializedObject is null.");
+            }
             return SerializedObject.FindProperty(propertyPath);
         }
 
@@ -143,10 +232,10 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public void BeginDraw()
         {
-            SerializedObject.UpdateIfRequiredOrScript();
+            SerializedObject?.UpdateIfRequiredOrScript();
             Update();
 
-            if (DrawMonoScriptObjectField)
+            if (DrawMonoScriptObjectField && SerializedObject != null)
             {
                 var scriptProperty = SerializedObject.FindProperty("m_Script");
 
@@ -197,15 +286,21 @@ namespace EasyToolKit.Inspector.Editor
         public void EndDraw()
         {
             DoPendingCallbacks();
-            SerializedObject.ApplyModifiedProperties();
+            SerializedObject?.ApplyModifiedProperties();
 
             var changed = ApplyChanges();
             if (changed)
             {
                 EasyGUIHelper.RequestRepaint();
             }
+
             DoPendingCallbacks();
             Undo.FlushUndoRecordObjects();
+        }
+
+        public void Dispose()
+        {
+            LogicRootProperty.Dispose();
         }
 
         private void DoPendingCallbacks()
@@ -277,14 +372,18 @@ namespace EasyToolKit.Inspector.Editor
                         }
                     }
                 }
+
                 restDirtyPropertiesCount = _dirtyProperties.Count;
             } while (restDirtyPropertiesCount > 0);
 
             if (changed)
             {
-                foreach (var targetObject in SerializedObject.targetObjects)
+                if (SerializedObject != null)
                 {
-                    EasyEditorUtility.SetUnityObjectDirty(targetObject);
+                    foreach (var targetObject in SerializedObject.targetObjects)
+                    {
+                        EasyEditorUtility.SetUnityObjectDirty(targetObject);
+                    }
                 }
             }
 
@@ -309,67 +408,6 @@ namespace EasyToolKit.Inspector.Editor
                     Debug.LogException(e);
                 }
             }
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="PropertyTree"/> instance from a <see cref="SerializedObject"/>.
-        /// </summary>
-        /// <param name="serializedObject">The <see cref="SerializedObject"/> to create the property tree for.</param>
-        /// <returns>A new <see cref="PropertyTree"/> instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <see cref="serializedObject"/> is null.</exception>
-        public static PropertyTree Create([NotNull] SerializedObject serializedObject)
-        {
-            if (serializedObject == null)
-                throw new ArgumentNullException(nameof(serializedObject));
-
-            return Create(serializedObject.targetObjects, serializedObject);
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="PropertyTree"/> instance from target objects and an optional <see cref="SerializedObject"/>.
-        /// </summary>
-        /// <param name="targets">The target objects to create the property tree for.</param>
-        /// <param name="serializedObject">An optional existing <see cref="SerializedObject"/> to use.</param>
-        /// <returns>A new <see cref="PropertyTree"/> instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <see cref="targets"/> is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when the provided <see cref="serializedObject"/> is not valid for the targets.</exception>
-        public static PropertyTree Create([NotNull] UnityEngine.Object[] targets,
-            SerializedObject serializedObject)
-        {
-            if (targets == null) throw new ArgumentNullException(nameof(targets));
-
-            if (serializedObject != null)
-            {
-                bool valid = true;
-                var targetObjects = serializedObject.targetObjects;
-
-                if (targets.Length != targetObjects.Length)
-                {
-                    valid = false;
-                }
-                else
-                {
-                    for (int i = 0; i < targets.Length; i++)
-                    {
-                        if (!object.ReferenceEquals(targets[i], targetObjects[i]))
-                        {
-                            valid = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (!valid)
-                {
-                    throw new ArgumentException($"SerializedObject is not valid for targets.");
-                }
-            }
-            else
-            {
-                serializedObject = new SerializedObject(targets);
-            }
-
-            return new PropertyTree(serializedObject);
         }
     }
 }

@@ -135,16 +135,19 @@ namespace EasyToolKit.Inspector.Editor
             bool changed = false;
             if (Values.Dirty)
             {
-                foreach (var target in Property.Tree.Targets)
+                if (Property.Tree.Targets[0] is UnityEngine.Object)
                 {
-                    Undo.RecordObject(target, $"Change {Property.Path} on {target.name}");
+                    foreach (UnityEngine.Object target in Property.Tree.Targets)
+                    {
+                        Undo.RecordObject(target, $"Change {Property.Path} on {target.name}");
+                    }
                 }
 
                 changed = Values.ApplyChanges();
 
                 if (changed)
                 {
-                    for (int i = 0; i < Property.Tree.Targets.Length; i++)
+                    for (int i = 0; i < Property.Tree.Targets.Count; i++)
                     {
                         TriggerValueChanged(i);
                     }

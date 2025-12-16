@@ -178,7 +178,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            for (int i = 0; i < Property.Tree.Targets.Length; i++)
+            for (int i = 0; i < Property.Tree.Targets.Count; i++)
             {
                 DoAddElement(GetValueToAdd(i));
             }
@@ -186,7 +186,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private void DoAddElement(object valueToAdd)
         {
-            for (int i = 0; i < Property.Tree.Targets.Length; i++)
+            for (int i = 0; i < Property.Tree.Targets.Count; i++)
             {
                 DoAddElement(i, valueToAdd);
             }
@@ -200,7 +200,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private void DoInsertElement(int index, object valueToAdd)
         {
-            for (int i = 0; i < Property.Tree.Targets.Length; i++)
+            for (int i = 0; i < Property.Tree.Targets.Count; i++)
             {
                 DoInsertElement(i, index, valueToAdd);
             }
@@ -220,7 +220,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected virtual void DoRemoveElementAt(int index)
         {
-            for (int i = 0; i < Property.Tree.Targets.Length; i++)
+            for (int i = 0; i < Property.Tree.Targets.Count; i++)
             {
                 DoRemoveElementAt(i, index);
             }
@@ -245,7 +245,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected virtual void DoRemoveElement(InspectorProperty propertyToRemove)
         {
-            for (int i = 0; i < Property.Tree.Targets.Length; i++)
+            for (int i = 0; i < Property.Tree.Targets.Count; i++)
             {
                 DoRemoveElement(i, propertyToRemove);
             }
@@ -259,7 +259,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private void DoRemoveElement(object[] values)
         {
-            for (int i = 0; i < Property.Tree.Targets.Length; i++)
+            for (int i = 0; i < Property.Tree.Targets.Count; i++)
             {
                 DoRemoveElement(i, values[i]);
             }
