@@ -11,7 +11,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="property">The inspector property to find a resolver for.</param>
         /// <returns>An IPropertyResolver instance suitable for handling the property.</returns>
-        IPropertyResolver GetResolver(InspectorProperty property);
+        IPropertyStructureResolver GetResolver(InspectorProperty property);
     }
 
     /// <summary>
@@ -26,6 +26,6 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="property">The inspector property to find a resolver for.</param>
         /// <returns>An IPropertyResolver instance suitable for handling the property.</returns>
-        public abstract IPropertyResolver GetResolver(InspectorProperty property);
+        public abstract IPropertyStructureResolver GetResolver(InspectorProperty property);
     }
 }

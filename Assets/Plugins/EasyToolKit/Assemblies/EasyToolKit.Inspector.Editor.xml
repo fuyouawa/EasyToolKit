@@ -282,26 +282,44 @@
         <member name="T:EasyToolKit.Inspector.Editor.GenericPropertyResolverLocator">
             <summary>
             Property resolver locator that handles generic collection types and provides
-            specialized resolvers for different collection interfaces.
+            specialized resolvers using the new composition-based architecture.
             </summary>
             <remarks>
             This locator specifically handles:
-            - <see cref="T:System.Collections.Generic.IList`1"/> collections with IListResolver
-            - <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> collections with IReadOnlyListResolver
-            - <see cref="T:System.Collections.Generic.IEnumerable`1"/> types with GenericPropertyResolver
+            - <see cref="T:System.Collections.Generic.IList`1"/> collections with composition-based resolvers
+            - <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> collections with composition-based resolvers
+            - Other types with GenericPropertyStructureResolver
             </remarks>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolverLocator.GetResolver(EasyToolKit.Inspector.Editor.InspectorProperty)">
             <summary>
-            Gets the appropriate property resolver for generic collection types.
+            Gets the appropriate property resolver for generic collection types using composition.
             </summary>
             <param name="property">The inspector property to find a resolver for.</param>
             <returns>
             An IPropertyResolver instance based on the collection type:
-            - IListResolver for <see cref="T:System.Collections.Generic.IList`1"/> collections
-            - IReadOnlyListResolver for <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> collections
-            - GenericPropertyResolver for other types
+            - CollectionPropertyResolver for <see cref="T:System.Collections.Generic.IList`1"/> collections
+            - CollectionPropertyResolver for <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> collections
+            - GenericPropertyStructureResolver for other types
             </returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolverLocator.CreateListCollectionResolver(EasyToolKit.Inspector.Editor.InspectorProperty,System.Type,System.Type)">
+            <summary>
+            Creates a composition-based collection resolver for IList{T} collections
+            </summary>
+            <param name="property">The inspector property</param>
+            <param name="collectionType">The collection type</param>
+            <param name="elementType">The element type</param>
+            <returns>A composition-based collection resolver</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolverLocator.CreateReadOnlyListCollectionResolver(EasyToolKit.Inspector.Editor.InspectorProperty,System.Type,System.Type)">
+            <summary>
+            Creates a composition-based collection resolver for IReadOnlyList{T} collections
+            </summary>
+            <param name="property">The inspector property</param>
+            <param name="collectionType">The collection type</param>
+            <param name="elementType">The element type</param>
+            <returns>A composition-based collection resolver</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IPropertyResolverLocator">
             <summary>
@@ -337,8 +355,8 @@
             </summary>
             <remarks>
             This locator handles:
-            - Unity collections (<see cref="T:System.Collections.Generic.ICollection`1"/>) with UnityCollectionResolver
-            - Regular Unity properties with UnityPropertyResolver
+            - Unity collections with composite CollectionPropertyResolver
+            - Regular Unity properties with UnityPropertyStructureResolver
             It leverages Unity's SerializedProperty system for proper serialization support.
             </remarks>
         </member>
@@ -348,10 +366,33 @@
             </summary>
             <param name="property">The inspector property to find a resolver for.</param>
             <returns>
-            An IPropertyResolver instance based on the property type:
-            - UnityCollectionResolver for <see cref="T:System.Collections.Generic.ICollection`1"/> types
-            - UnityPropertyResolver for other property types
+            An IPropertyStructureResolver instance based on the property type:
+            - CollectionPropertyResolver for collection types
+            - UnityPropertyStructureResolver for other property types
             </returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolverLocator.IsUnityCollectionType(System.Type,UnityEditor.SerializedProperty)">
+            <summary>
+            Determines if the type represents a Unity collection type
+            </summary>
+            <param name="valueType">The value type to check</param>
+            <param name="serializedProperty">The serialized property for additional context</param>
+            <returns>True if this is a Unity collection type</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolverLocator.CreateCollectionResolver(EasyToolKit.Inspector.Editor.InspectorProperty,System.Type)">
+            <summary>
+            Creates a composite collection resolver for Unity collections
+            </summary>
+            <param name="property">The inspector property</param>
+            <param name="valueType">The value type of the collection</param>
+            <returns>A configured CollectionPropertyResolver instance</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolverLocator.GetElementType(System.Type)">
+            <summary>
+            Determines the element type for a collection
+            </summary>
+            <param name="valueType">The collection value type</param>
+            <returns>The element type of the collection</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.InspectorProperty">
              <summary>
@@ -1624,374 +1665,175 @@
             <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
             <exception cref="T:System.ArgumentException">Thrown when the attribute is not found</exception>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.CollectionResolverBase`2">
+        <member name="T:EasyToolKit.Inspector.Editor.IChangeManager">
             <summary>
-            Base class for resolving collection properties in the inspector.
-            Provides common functionality for handling collections with deferred change operations.
-            </summary>
-            <typeparam name="TCollection">The type of the collection (must implement <see cref="T:System.Collections.Generic.IEnumerable`1"/>).</typeparam>
-            <typeparam name="TElement">The type of elements in the collection.</typeparam>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.ValueEntry">
-            <summary>
-            Gets the property value entry for the collection, with lazy initialization.
+            Interface for managing property changes in the inspector system.
+            Handles change queuing, application, and undo/redo operations.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.IsReadOnly">
+        <member name="M:EasyToolKit.Inspector.Editor.IChangeManager.EnqueueChange(System.Action)">
             <summary>
-            Gets whether the collection is read-only, with caching for performance.
+            Enqueues a change action to be applied later
+            </summary>
+            <param name="action">The action representing the change to be applied</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IChangeManager.ApplyChanges">
+            <summary>
+            Applies all queued changes
+            </summary>
+            <returns>True if changes were applied successfully, false if there were no pending changes</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IChangeManager.RecordUndo(System.String)">
+            <summary>
+            Records an undo operation for the given action
+            </summary>
+            <param name="operationName">The name of the operation for undo/redo tracking</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.NullChangeManager">
+            <summary>
+            Null implementation of change management for testing purposes.
+            Does nothing when changes are queued or applied.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.CollectionType">
+        <member name="M:EasyToolKit.Inspector.Editor.NullChangeManager.EnqueueChange(System.Action)">
             <summary>
-            Gets the type of the collection.
+            Enqueues a change action to be applied later (no-op in null implementation)
+            </summary>
+            <param name="action">The action representing the change to be applied</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.NullChangeManager.ApplyChanges">
+            <summary>
+            Applies all queued changes (always returns false in null implementation)
+            </summary>
+            <returns>False - no changes applied in null implementation</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.NullChangeManager.RecordUndo(System.String)">
+            <summary>
+            Records an undo operation (no-op in null implementation)
+            </summary>
+            <param name="operationName">The name of the operation for undo/redo tracking</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.UnityChangeManager">
+            <summary>
+            Unity-specific implementation of change management for the inspector system.
+            Integrates with Unity's Undo system and handles multi-object selection.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.ElementType">
+        <member name="M:EasyToolKit.Inspector.Editor.UnityChangeManager.#ctor(EasyToolKit.Inspector.Editor.InspectorProperty)">
             <summary>
-            Gets the type of elements in the collection.
+            Initializes a new instance of the UnityChangeManager
+            </summary>
+            <param name="property">The inspector property associated with this change manager</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.UnityChangeManager.Property">
+            <summary>
+            Gets or sets the associated inspector property
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.QueueAddElement(System.Int32,System.Object)">
+        <member name="M:EasyToolKit.Inspector.Editor.UnityChangeManager.EnqueueChange(System.Action)">
             <summary>
-            Queues an element to be added to the collection at the specified target index.
+            Enqueues a change action to be applied later
             </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to add to the collection.</param>
+            <param name="action">The action representing the change to be applied</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.QueueRemoveElement(System.Int32,System.Object)">
+        <member name="M:EasyToolKit.Inspector.Editor.UnityChangeManager.ApplyChanges">
             <summary>
-            Queues an element to be removed from the collection at the specified target index.
+            Applies all queued changes
             </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to remove from the collection.</param>
+            <returns>True if changes were applied successfully, false if there were no pending changes</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.AddElement(System.Int32,`1)">
+        <member name="M:EasyToolKit.Inspector.Editor.UnityChangeManager.RecordUndo(System.String)">
             <summary>
-            Abstract method to add an element to the collection at the specified target index.
-            Must be implemented by derived classes.
+            Records an undo operation for the given action
             </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to add to the collection.</param>
+            <param name="operationName">The name of the operation for undo/redo tracking</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.RemoveElement(System.Int32,`1)">
+        <member name="T:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2">
             <summary>
-            Abstract method to remove an element from the collection at the specified target index.
-            Must be implemented by derived classes.
+            Core collection structure resolver that handles property structure resolution for collections
+            without any collection operations or change management concerns.
             </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to remove from the collection.</param>
+            <typeparam name="TCollection">The type of the collection</typeparam>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.EnqueueChange(System.Action)">
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.#ctor(EasyToolKit.Inspector.Editor.ICollectionOperationResolver,EasyToolKit.Inspector.Editor.IChangeManager)">
             <summary>
-            Enqueues a change action to be applied during the next repaint cycle.
+            Initializes a new instance of the CollectionStructureCore
             </summary>
-            <param name="action">The action to execute when changes are applied.</param>
+            <param name="operationResolver">The collection operation resolver for metadata (read-only status, types)</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.ApplyChanges">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.ValueEntry">
             <summary>
-            Applies all queued changes to the collection.
+            Gets the property value entry for the collection, with lazy initialization
             </summary>
-            <returns>True if changes were applied, false if there were no pending changes.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionResolverBase`2.IsReadOnlyCollection(`0)">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.IsReadOnly">
             <summary>
-            Determines if a specific collection instance is read-only.
-            Can be overridden by derived classes to provide custom read-only detection.
+            Gets whether the collection is read-only
             </summary>
-            <param name="collection">The collection instance to check.</param>
-            <returns>True if the collection is read-only, false otherwise.</returns>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ICollectionResolver">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.CollectionType">
+            <summary>
+            Gets the type of the collection
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.ElementType">
+            <summary>
+            Gets the type of elements in the collection
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.GetChildInfo(System.Int32)">
+            <summary>
+            Gets information about a child property at the specified index
+            </summary>
+            <param name="childIndex">The index of the child property</param>
+            <returns>Information about the child property</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.ChildNameToIndex(System.String)">
+            <summary>
+            Converts a child property name to its index (not supported for collections)
+            </summary>
+            <param name="name">The name of the child property</param>
+            <returns>Throws NotSupportedException</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.CalculateChildCount">
+            <summary>
+            Calculates the number of child properties in the collection
+            </summary>
+            <returns>The number of elements in the collection</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.Deinitialize">
+            <summary>
+            Clears cached property information when the resolver is deinitialized
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.GetElementCount(`0)">
+            <summary>
+            Gets the element count for a collection
+            </summary>
+            <param name="collection">The collection to count</param>
+            <returns>The number of elements in the collection</returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ICollectionStructureResolver">
             <summary>
             Interface for resolving collection properties in the inspector.
             Provides basic collection operations and metadata for collection types.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionResolver.IsReadOnly">
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionStructureResolver.IsReadOnly">
             <summary>
             Gets whether the collection is read-only.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionResolver.CollectionType">
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionStructureResolver.CollectionType">
             <summary>
             Gets the type of the collection.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionResolver.ElementType">
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionStructureResolver.ElementType">
             <summary>
             Gets the type of elements in the collection.
             </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ICollectionResolver.QueueAddElement(System.Int32,System.Object)">
-            <summary>
-            Queues an element to be added to the collection at the specified target index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to add to the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ICollectionResolver.QueueRemoveElement(System.Int32,System.Object)">
-            <summary>
-            Queues an element to be removed from the collection at the specified target index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to remove from the collection.</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IListResolver`2">
-            <summary>
-            Resolver for <see cref="T:System.Collections.Generic.IList`1"/> collections in the inspector.
-            Provides implementation for list-specific operations like indexed access and insertion.
-            </summary>
-            <typeparam name="TCollection">The type of the collection (must implement <see cref="T:System.Collections.Generic.IList`1"/>).</typeparam>
-            <typeparam name="TElement">The type of elements in the collection.</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IListResolver`2.Deinitialize">
-            <summary>
-            Clears cached property information when the resolver is deinitialized.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IListResolver`2.ChildNameToIndex(System.String)">
-            <summary>
-            Converts a child name to an index. Not supported for list resolvers.
-            </summary>
-            <param name="name">The child name to convert.</param>
-            <returns>Throws NotSupportedException.</returns>
-            <exception cref="T:System.NotSupportedException">Always thrown as this operation is not supported.</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IListResolver`2.CalculateChildCount">
-            <summary>
-            Calculates the number of child properties (elements) in the collection.
-            Uses the minimum count across all selected objects in multi-selection.
-            </summary>
-            <returns>The minimum number of elements across all selected collections.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IListResolver`2.GetChildInfo(System.Int32)">
-            <summary>
-            Gets the property information for a child element at the specified index.
-            Uses caching to improve performance for repeated access.
-            </summary>
-            <param name="childIndex">The index of the child element.</param>
-            <returns>The property information for the child element.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IListResolver`2.AddElement(System.Int32,`1)">
-            <summary>
-            Adds an element to the collection at the specified target index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to add to the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IListResolver`2.InsertElementAt(System.Int32,System.Int32,`1)">
-            <summary>
-            Inserts an element into the collection at a specific index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection where the element should be inserted.</param>
-            <param name="value">The value to insert into the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IListResolver`2.RemoveElement(System.Int32,`1)">
-            <summary>
-            Removes an element from the collection at the specified target index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to remove from the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IListResolver`2.RemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Removes an element from the collection at a specific index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection from which to remove the element.</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IOrderedCollectionResolver">
-            <summary>
-            Interface for resolving ordered collection properties in the inspector.
-            Extends <see cref="T:EasyToolKit.Inspector.Editor.ICollectionResolver"/> with position-based operations for ordered collections.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionResolver.QueueInsertElementAt(System.Int32,System.Int32,System.Object)">
-            <summary>
-            Queues an element to be inserted into the collection at a specific index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection where the element should be inserted.</param>
-            <param name="value">The value to insert into the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionResolver.QueueRemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Queues an element to be removed from the collection at a specific index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection from which to remove the element.</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IReadOnlyListResolver`2">
-            <summary>
-            Resolver for <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> collections in the inspector.
-            Provides read-only access to collection elements and prevents modifications.
-            </summary>
-            <typeparam name="TCollection">The type of the collection (must implement <see cref="T:System.Collections.Generic.IReadOnlyList`1"/>).</typeparam>
-            <typeparam name="TElement">The type of elements in the collection.</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IReadOnlyListResolver`2.Deinitialize">
-            <summary>
-            Clears cached property information when the resolver is deinitialized.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IReadOnlyListResolver`2.ChildNameToIndex(System.String)">
-            <summary>
-            Converts a child name to an index. Not supported for read-only list resolvers.
-            </summary>
-            <param name="name">The child name to convert.</param>
-            <returns>Throws NotSupportedException.</returns>
-            <exception cref="T:System.NotSupportedException">Always thrown as this operation is not supported.</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IReadOnlyListResolver`2.CalculateChildCount">
-            <summary>
-            Calculates the number of child properties (elements) in the collection.
-            Uses the minimum count across all selected objects in multi-selection.
-            </summary>
-            <returns>The minimum number of elements across all selected collections.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IReadOnlyListResolver`2.GetChildInfo(System.Int32)">
-            <summary>
-            Gets the property information for a child element at the specified index.
-            Provides read-only access to collection elements.
-            </summary>
-            <param name="childIndex">The index of the child element.</param>
-            <returns>The property information for the child element.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IReadOnlyListResolver`2.AddElement(System.Int32,`1)">
-            <summary>
-            Attempts to add an element to the collection. Always throws NotSupportedException.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to add to the collection.</param>
-            <exception cref="T:System.NotSupportedException">Always thrown as read-only lists cannot be modified.</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IReadOnlyListResolver`2.RemoveElement(System.Int32,`1)">
-            <summary>
-            Attempts to remove an element from the collection. Always throws NotSupportedException.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to remove from the collection.</param>
-            <exception cref="T:System.NotSupportedException">Always thrown as read-only lists cannot be modified.</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IReadOnlyListResolver`2.IsReadOnlyCollection(`0)">
-            <summary>
-            Determines if the collection is read-only. Always returns true for <see cref="T:System.Collections.Generic.IReadOnlyList`1"/>.
-            </summary>
-            <param name="collection">The collection instance to check.</param>
-            <returns>Always returns true.</returns>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.OrderedCollectionResolverBase`2">
-            <summary>
-            Base class for resolving ordered collection properties in the inspector.
-            Extends <see cref="T:EasyToolKit.Inspector.Editor.CollectionResolverBase`2"/> with position-based operations for ordered collections.
-            </summary>
-            <typeparam name="TCollection">The type of the collection (must implement <see cref="T:System.Collections.Generic.IEnumerable`1"/>).</typeparam>
-            <typeparam name="TElement">The type of elements in the collection.</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionResolverBase`2.QueueInsertElementAt(System.Int32,System.Int32,System.Object)">
-            <summary>
-            Queues an element to be inserted into the collection at a specific index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection where the element should be inserted.</param>
-            <param name="value">The value to insert into the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionResolverBase`2.QueueRemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Queues an element to be removed from the collection at a specific index.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection from which to remove the element.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionResolverBase`2.InsertElementAt(System.Int32,System.Int32,`1)">
-            <summary>
-            Abstract method to insert an element into the collection at a specific index.
-            Must be implemented by derived classes.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection where the element should be inserted.</param>
-            <param name="value">The value to insert into the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionResolverBase`2.RemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Abstract method to remove an element from the collection at a specific index.
-            Must be implemented by derived classes.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection from which to remove the element.</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1">
-            <summary>
-            Resolver for Unity serialized collections in the inspector.
-            Provides integration with Unity's <see cref="T:UnityEditor.SerializedProperty"/> system for array/list operations.
-            </summary>
-            <remarks>
-            TODO: UnityCollectionResolver has issues with multi-selection scenarios.
-            </remarks>
-            <typeparam name="TElement">The type of elements in the collection.</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1.Initialize">
-            <summary>
-            Initializes the resolver by obtaining the <see cref="T:UnityEditor.SerializedProperty"/> for the collection.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1.GetChildInfo(System.Int32)">
-            <summary>
-            Gets the property information for a child element at the specified index.
-            Creates <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> based on Unity's <see cref="T:UnityEditor.SerializedProperty"/> system.
-            </summary>
-            <param name="childIndex">The index of the child element.</param>
-            <returns>The property information for the child element.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1.ChildNameToIndex(System.String)">
-            <summary>
-            Converts a child name to an index. Not supported for Unity collection resolvers.
-            </summary>
-            <param name="name">The child name to convert.</param>
-            <returns>Throws NotSupportedException.</returns>
-            <exception cref="T:System.NotSupportedException">Always thrown as this operation is not supported.</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1.CalculateChildCount">
-            <summary>
-            Calculates the number of child properties (elements) in the collection.
-            Uses Unity's <see cref="T:UnityEditor.SerializedProperty"/> arraySize property.
-            </summary>
-            <returns>The number of elements in the serialized array.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1.AddElement(System.Int32,`0)">
-            <summary>
-            Adds an element to the collection at the specified target index.
-            Implementation adds the element at the end of the array.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to add to the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1.RemoveElement(System.Int32,`0)">
-            <summary>
-            Removes an element from the collection at the specified target index.
-            Searches for the element by value and removes the first occurrence.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="value">The value to remove from the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1.InsertElementAt(System.Int32,System.Int32,`0)">
-            <summary>
-            Inserts an element into the collection at a specific index.
-            Uses Unity's <see cref="T:UnityEditor.SerializedProperty"/>.InsertArrayElementAtIndex method.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection where the element should be inserted.</param>
-            <param name="value">The value to insert into the collection.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionResolver`1.RemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Removes an element from the collection at a specific index.
-            Uses Unity's <see cref="T:UnityEditor.SerializedProperty"/>.DeleteArrayElementAtIndex method.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context.</param>
-            <param name="index">The position in the collection from which to remove the element.</param>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.DefaultDrawerChainResolver">
             <summary>
@@ -2125,170 +1967,541 @@
             and provides access to the property being resolved.
             </remarks>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.GenericPropertyResolver">
+        <member name="T:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2">
             <summary>
-            Generic property resolver implementation using reflection to discover properties
+            Abstract base class for collection operation resolvers in the inspector system.
+            Provides common functionality for collection manipulation without property structure concerns.
+            </summary>
+            <typeparam name="TCollection">The type of the collection</typeparam>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.IsReadOnly">
+            <summary>
+            Gets whether the collection is read-only
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolver.Initialize">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.CollectionType">
+            <summary>
+            Gets the type of the collection
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.ElementType">
+            <summary>
+            Gets the type of elements in the collection
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.Property">
+            <summary>
+            Gets or sets the associated inspector property
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.AddElement(System.Int32,`1)">
+            <summary>
+            Actually adds an element to the collection at the specified target index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to add to the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.RemoveElement(System.Int32,`1)">
+            <summary>
+            Actually removes an element from the collection at the specified target index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to remove from the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.GetElementAt(`0,System.Int32)">
+            <summary>
+            Gets an element at the specified index from a collection
+            </summary>
+            <param name="collection">The collection to get the element from</param>
+            <param name="elementIndex">The index of the element</param>
+            <returns>The element at the specified index</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.SetElementAt(`0,System.Int32,`1)">
+            <summary>
+            Sets an element at the specified index in a collection
+            </summary>
+            <param name="collection">The collection to set the element in</param>
+            <param name="elementIndex">The index of the element to set</param>
+            <param name="value">The value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ICollectionOperationResolver">
+            <summary>
+            Interface for handling collection operations in the inspector system.
+            Focuses purely on collection manipulation without property structure concerns.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.IsReadOnly">
+            <summary>
+            Gets whether the collection is read-only
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.CollectionType">
+            <summary>
+            Gets the type of the collection
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.ElementType">
+            <summary>
+            Gets the type of elements in the collection
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.AddElement(System.Int32,System.Object)">
+            <summary>
+            Actually adds an element to the collection at the specified target index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to add to the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.RemoveElement(System.Int32,System.Object)">
+            <summary>
+            Actually removes an element from the collection at the specified target index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to remove from the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.GetElementAt(System.Object,System.Int32)">
+            <summary>
+            Gets an element at the specified index from a collection
+            </summary>
+            <param name="collection">The collection to get the element from</param>
+            <param name="elementIndex">The index of the element</param>
+            <returns>The element at the specified index</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.SetElementAt(System.Object,System.Int32,System.Object)">
+            <summary>
+            Sets an element at the specified index in a collection
+            </summary>
+            <param name="collection">The collection to set the element in</param>
+            <param name="elementIndex">The index of the element to set</param>
+            <param name="value">The value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.IOrderedCollectionOperationResolver">
+            <summary>
+            Interface for handling ordered collection operations in the inspector system.
+            Extends <see cref="T:EasyToolKit.Inspector.Editor.ICollectionOperationResolver"/> with position-based operations.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionOperationResolver.InsertElementAt(System.Int32,System.Int32,System.Object)">
+            <summary>
+            Actually inserts an element into the collection at the specified index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="index">The position in the collection where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionOperationResolver.RemoveElementAt(System.Int32,System.Int32)">
+            <summary>
+            Actually removes an element from the collection at the specified index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="index">The position in the collection from which to remove the element</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ListOperationResolver`2">
+            <summary>
+            Operation resolver for IList{T} collections in the inspector system.
+            Handles list-specific operations like indexed access, insertion, and removal.
+            Implements IOrderedCollectionOperationResolver for position-based operations.
+            </summary>
+            <typeparam name="TCollection">The type of the collection (must implement IList{TElement})</typeparam>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.#ctor(EasyToolKit.Inspector.Editor.IPropertyValueEntry{`0})">
+            <summary>
+            Initializes a new instance of the ListOperationResolver
+            </summary>
+            <param name="valueEntry">The property value entry for the collection</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ListOperationResolver`2.IsReadOnly">
+            <summary>
+            Gets whether the collection is read-only
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ListOperationResolver`2.CollectionType">
+            <summary>
+            Gets the type of the collection
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.AddElement(System.Int32,`1)">
+            <summary>
+            Actually adds an element to the collection at the specified target index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to add to the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.RemoveElement(System.Int32,`1)">
+            <summary>
+            Actually removes an element from the collection at the specified target index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to remove from the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.InsertElementAt(System.Int32,System.Int32,`1)">
+            <summary>
+            Actually inserts an element into the collection at the specified index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="index">The position in the collection where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.RemoveElementAt(System.Int32,System.Int32)">
+            <summary>
+            Actually removes an element from the collection at the specified index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="index">The position in the collection from which to remove the element</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.GetElementAt(`0,System.Int32)">
+            <summary>
+            Gets an element at the specified index from a collection
+            </summary>
+            <param name="collection">The collection to get the element from</param>
+            <param name="elementIndex">The index of the element</param>
+            <returns>The element at the specified index</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.SetElementAt(`0,System.Int32,`1)">
+            <summary>
+            Sets an element at the specified index in a collection
+            </summary>
+            <param name="collection">The collection to set the element in</param>
+            <param name="elementIndex">The index of the element to set</param>
+            <param name="value">The value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.OrderedCollectionOperationResolver`2">
+            <summary>
+            Abstract base class for ordered collection operation resolvers.
+            Provides position-based collection operations with index-based insertion and removal.
+            </summary>
+            <typeparam name="TCollection">The type of the collection</typeparam>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionOperationResolver`2.InsertElementAt(System.Int32,System.Int32,`1)">
+            <summary>
+            Actually inserts an element into the collection at the specified index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="index">The position in the collection where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionOperationResolver`2.RemoveElementAt(System.Int32,System.Int32)">
+            <summary>
+            Actually removes an element from the collection at the specified index
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="index">The position in the collection from which to remove the element</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2">
+            <summary>
+            Operation resolver for IReadOnlyList{T} collections in the inspector system.
+            Provides read-only access to collection elements and prevents modifications.
+            </summary>
+            <typeparam name="TCollection">The type of the collection (must implement IReadOnlyList{TElement})</typeparam>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.#ctor(EasyToolKit.Inspector.Editor.IPropertyValueEntry{`0})">
+            <summary>
+            Initializes a new instance of the ReadOnlyListOperationResolver
+            </summary>
+            <param name="valueEntry">The property value entry for the collection</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.IsReadOnly">
+            <summary>
+            Gets whether the collection is read-only (always returns true)
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.CollectionType">
+            <summary>
+            Gets the type of the collection
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.AddElement(System.Int32,`1)">
+            <summary>
+            Attempts to add an element to the collection. Always throws NotSupportedException.
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to add to the collection</param>
+            <exception cref="T:System.NotSupportedException">Always thrown as read-only lists cannot be modified</exception>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.RemoveElement(System.Int32,`1)">
+            <summary>
+            Attempts to remove an element from the collection. Always throws NotSupportedException.
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to remove from the collection</param>
+            <exception cref="T:System.NotSupportedException">Always thrown as read-only lists cannot be modified</exception>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.GetElementCount">
+            <summary>
+            Gets the element count for a read-only list
+            </summary>
+            <returns>The minimum number of elements across all selected collections</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.GetElement(System.Int32,System.Int32)">
+            <summary>
+            Gets an element at the specified index from the read-only list
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="elementIndex">The index of the element within the collection</param>
+            <returns>The element at the specified index</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.GetElementAt(`0,System.Int32)">
+            <summary>
+            Gets an element at the specified index from a collection
+            </summary>
+            <param name="collection">The collection to get the element from</param>
+            <param name="elementIndex">The index of the element</param>
+            <returns>The element at the specified index</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.SetElementAt(`0,System.Int32,`1)">
+            <summary>
+            Sets an element at the specified index in a collection. Always throws NotSupportedException.
+            </summary>
+            <param name="collection">The collection to set the element in</param>
+            <param name="elementIndex">The index of the element to set</param>
+            <param name="value">The value to set</param>
+            <exception cref="T:System.NotSupportedException">Always thrown as read-only lists cannot be modified</exception>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1">
+            <summary>
+            Operation resolver for Unity serialized collections in the inspector system.
+            Handles Unity-specific collection operations using SerializedProperty system.
+            </summary>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.#ctor(EasyToolKit.Inspector.Editor.InspectorProperty)">
+            <summary>
+            Initializes a new instance of the UnityCollectionOperationResolver
+            </summary>
+            <param name="property">The inspector property associated with this resolver</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.IsReadOnly">
+            <summary>
+            Gets whether the collection is read-only based on SerializedProperty
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.CollectionType">
+            <summary>
+            Gets the type of the collection (System.Collections.Generic.List{T})
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.InitializeSerializedProperty">
+            <summary>
+            Initializes the SerializedProperty for Unity collection access
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.AddElement(System.Int32,`0)">
+            <summary>
+            Actually adds an element to the Unity collection
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to add to the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.RemoveElement(System.Int32,`0)">
+            <summary>
+            Actually removes an element from the Unity collection
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="value">The value to remove from the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.InsertElementAt(System.Int32,System.Int32,`0)">
+            <summary>
+            Inserts an element at a specific index in the Unity collection
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="insertIndex">The position where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.RemoveElementAt(System.Int32,System.Int32)">
+            <summary>
+            Removes an element at a specific index from the Unity collection
+            </summary>
+            <param name="targetIndex">The index of the target object in a multi-selection context</param>
+            <param name="removeIndex">The index of the element to remove</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.GetElementCount">
+            <summary>
+            Gets the element count from the SerializedProperty
+            </summary>
+            <returns>The number of elements in the Unity collection</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.GetElementAt(System.Collections.Generic.IList{`0},System.Int32)">
+            <summary>
+            Gets an element at the specified index from a collection
+            </summary>
+            <param name="collection">The collection to get the element from</param>
+            <param name="elementIndex">The index of the element</param>
+            <returns>The element at the specified index</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.SetElementAt(System.Collections.Generic.IList{`0},System.Int32,`0)">
+            <summary>
+            Sets an element at the specified index in a collection
+            </summary>
+            <param name="collection">The collection to set the element in</param>
+            <param name="elementIndex">The index of the element to set</param>
+            <param name="value">The value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver">
+            <summary>
+            Generic property structure resolver implementation using reflection to discover properties.
+            Focuses purely on property structure without collection operations.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver.Initialize">
             <summary>
             Initializes the resolver by discovering properties, fields, and methods using reflection
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolver.Deinitialize">
-            <summary>
-            Deinitializes the resolver by clearing the property info cache
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolver.ChildNameToIndex(System.String)">
-            <summary>
-            Converts a child property name to its index
-            </summary>
-            <param name="name">The name of the child property</param>
-            <returns>The index of the child property, or -1 if not found</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolver.CalculateChildCount">
-            <summary>
-            Calculates the number of child properties
-            </summary>
-            <returns>The number of child properties</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolver.GetChildInfo(System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver.GetChildInfo(System.Int32)">
             <summary>
             Gets information about a child property at the specified index
             </summary>
             <param name="childIndex">The index of the child property</param>
             <returns>Information about the child property</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolver.Order(System.Reflection.MemberInfo)">
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver.ChildNameToIndex(System.String)">
+            <summary>
+            Converts a child property name to its index
+            </summary>
+            <param name="name">The name of the child property</param>
+            <returns>The index of the child property, or -1 if not found</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver.CalculateChildCount">
+            <summary>
+            Calculates the number of child properties
+            </summary>
+            <returns>The number of child properties</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver.Order(System.Reflection.MemberInfo)">
             <summary>
             Orders members by priority for display in the inspector
             </summary>
             <param name="memberInfo">The member to order</param>
             <returns>The priority value (lower values appear first)</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolver.Filter(System.Reflection.MemberInfo)">
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver.Filter(System.Reflection.MemberInfo)">
             <summary>
             Filters members to determine which should be displayed in the inspector
             </summary>
             <param name="memberInfo">The member to filter</param>
             <returns>True if the member should be included in the inspector</returns>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IPropertyResolver">
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver.Deinitialize">
             <summary>
-            Interface for resolving child properties in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
+            Clears cached property information when the resolver is deinitialized
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IPropertyResolver.ChildCount">
+        <member name="T:EasyToolKit.Inspector.Editor.IPropertyStructureResolver">
+            <summary>
+            Interface for resolving property structure information in the inspector system.
+            Focuses purely on property structure without collection operations or change management.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IPropertyStructureResolver.ChildCount">
             <summary>
             Gets the number of child properties
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IPropertyResolver.GetChildInfo(System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.IPropertyStructureResolver.GetChildInfo(System.Int32)">
             <summary>
             Gets information about a child property at the specified index
             </summary>
             <param name="childIndex">The index of the child property</param>
             <returns>Information about the child property</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IPropertyResolver.ChildNameToIndex(System.String)">
+        <member name="M:EasyToolKit.Inspector.Editor.IPropertyStructureResolver.ChildNameToIndex(System.String)">
             <summary>
             Converts a child property name to its index
             </summary>
             <param name="name">The name of the child property</param>
             <returns>The index of the child property, or -1 if not found</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IPropertyResolver.ApplyChanges">
+        <member name="T:EasyToolKit.Inspector.Editor.PropertyStructureResolver">
             <summary>
-            Applies any changes made to the property
-            </summary>
-            <returns>True if changes were applied successfully</returns>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.PropertyResolver">
-            <summary>
-            Abstract base class for property resolver in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
+            Abstract base class for property structure resolvers in the inspector system.
+            Provides common functionality for property structure resolution without collection operations.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.PropertyResolver.Property">
+        <member name="P:EasyToolKit.Inspector.Editor.PropertyStructureResolver.Property">
             <summary>
             Gets the InspectorProperty associated with this resolver
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.PropertyResolver.IsInitialized">
+        <member name="P:EasyToolKit.Inspector.Editor.PropertyStructureResolver.IsInitialized">
             <summary>
             Gets whether this resolver has been initialized
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyResolver.Initialize">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.Initialize">
             <summary>
             Initializes the resolver (can be overridden by derived classes)
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyResolver.Deinitialize">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.Deinitialize">
             <summary>
             Deinitializes the resolver (can be overridden by derived classes)
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyResolver.GetChildInfo(System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.GetChildInfo(System.Int32)">
             <summary>
             Gets information about a child property at the specified index
             </summary>
             <param name="childIndex">The index of the child property</param>
             <returns>Information about the child property</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyResolver.ChildNameToIndex(System.String)">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.ChildNameToIndex(System.String)">
             <summary>
             Converts a child property name to its index
             </summary>
             <param name="name">The name of the child property</param>
             <returns>The index of the child property, or -1 if not found</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyResolver.CalculateChildCount">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.CalculateChildCount">
             <summary>
             Calculates the number of child properties
             </summary>
             <returns>The number of child properties</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyResolver.ApplyChanges">
+        <member name="T:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver">
             <summary>
-            Applies any changes made to the property (can be overridden by derived classes)
-            </summary>
-            <returns>True if changes were applied successfully</returns>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.UnityPropertyResolver">
-            <summary>
-            Property resolver implementation for Unity's <see cref="T:UnityEditor.SerializedProperty"/> system
+            Property structure resolver implementation for Unity's SerializedProperty system.
+            Focuses purely on property structure discovery without collection operations.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolver.Initialize">
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver.Initialize">
             <summary>
             Initializes the resolver by discovering Unity serialized properties
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolver.Deinitialize">
-            <summary>
-            Deinitializes the resolver by clearing the property info cache
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolver.GetChildInfo(System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver.GetChildInfo(System.Int32)">
             <summary>
             Gets information about a child property at the specified index
             </summary>
             <param name="childIndex">The index of the child property</param>
             <returns>Information about the child property</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolver.ChildNameToIndex(System.String)">
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver.ChildNameToIndex(System.String)">
             <summary>
             Converts a child property name to its index
             </summary>
             <param name="name">The name of the child property</param>
             <returns>The index of the child property, or -1 if not found</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolver.CalculateChildCount">
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver.CalculateChildCount">
             <summary>
             Calculates the number of child properties
             </summary>
             <returns>The number of child properties</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver.GetSerializedProperty">
+            <summary>
+            Gets the SerializedProperty for this resolver
+            </summary>
+            <returns>The SerializedProperty associated with this resolver</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver.Deinitialize">
+            <summary>
+            Clears cached property information when the resolver is deinitialized
+            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.EasyAttributeDrawer`1">
             <summary>

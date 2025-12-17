@@ -82,7 +82,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            if (_settings?.HideFoldout == true || Property.ChildrenResolver is ICollectionResolver)
+            if (_settings?.HideFoldout == true || Property.ChildrenResolver is ICollectionStructureResolver)
             {
                 CallNextDrawer(label);
                 return;

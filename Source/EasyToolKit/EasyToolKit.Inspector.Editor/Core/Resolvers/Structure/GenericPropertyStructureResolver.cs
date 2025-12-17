@@ -10,9 +10,10 @@ using UnityEngine;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Generic property resolver implementation using reflection to discover properties
+    /// Generic property structure resolver implementation using reflection to discover properties.
+    /// Focuses purely on property structure without collection operations.
     /// </summary>
-    public class GenericPropertyResolver : PropertyResolver
+    public class GenericPropertyStructureResolver : PropertyStructureResolver
     {
         private readonly List<InspectorPropertyInfo> _propertyInfos = new List<InspectorPropertyInfo>();
 
@@ -84,11 +85,16 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Deinitializes the resolver by clearing the property info cache
+        /// Gets information about a child property at the specified index
         /// </summary>
-        protected override void Deinitialize()
+        /// <param name="childIndex">The index of the child property</param>
+        /// <returns>Information about the child property</returns>
+        public override InspectorPropertyInfo GetChildInfo(int childIndex)
         {
-            _propertyInfos.Clear();
+            if (childIndex < 0 || childIndex >= _propertyInfos.Count)
+                throw new ArgumentOutOfRangeException(nameof(childIndex));
+
+            return _propertyInfos[childIndex];
         }
 
         /// <summary>
@@ -98,7 +104,15 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>The index of the child property, or -1 if not found</returns>
         public override int ChildNameToIndex(string name)
         {
-            return _propertyInfos.FindIndex(info => info.PropertyName == name);
+            for (int i = 0; i < _propertyInfos.Count; i++)
+            {
+                if (_propertyInfos[i].PropertyName == name)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         /// <summary>
@@ -111,26 +125,17 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Gets information about a child property at the specified index
-        /// </summary>
-        /// <param name="childIndex">The index of the child property</param>
-        /// <returns>Information about the child property</returns>
-        public override InspectorPropertyInfo GetChildInfo(int childIndex)
-        {
-            return _propertyInfos[childIndex];
-        }
-
-        /// <summary>
         /// Orders members by priority for display in the inspector
         /// </summary>
         /// <param name="memberInfo">The member to order</param>
         /// <returns>The priority value (lower values appear first)</returns>
-        private int Order(MemberInfo memberInfo)
+        private static int Order(MemberInfo memberInfo)
         {
             if (InspectorAttributeUtility.TryGetMemberDefinedAttributePropertyPriority(memberInfo, out var priority))
             {
                 return -priority.Priority;
             }
+
             if (memberInfo is FieldInfo) return -AttributePropertyPriorityLevel.Field;
             if (memberInfo is PropertyInfo) return -AttributePropertyPriorityLevel.Property;
             if (memberInfo is MethodInfo) return -AttributePropertyPriorityLevel.Method;
@@ -157,6 +162,14 @@ namespace EasyToolKit.Inspector.Editor
             if (memberInfo.IsDefined<CompilerGeneratedAttribute>()) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Clears cached property information when the resolver is deinitialized
+        /// </summary>
+        protected override void Deinitialize()
+        {
+            _propertyInfos.Clear();
         }
     }
 }

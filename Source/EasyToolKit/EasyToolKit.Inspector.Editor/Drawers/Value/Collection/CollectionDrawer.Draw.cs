@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using EasyToolKit.Core;
 using EasyToolKit.Core.Editor;
 using EasyToolKit.Inspector.Editor.Internal;
-using EasyToolKit.ThirdParty.OdinSerializer;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
@@ -388,7 +386,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     if (DrawItemRemoveButton(itemContext.RemoveBtnRect))
                     {
-                        if (_orderedCollectionResolver != null)
+                        if (_orderedCollectionOperationResolver != null)
                         {
                             if (index >= 0)
                             {

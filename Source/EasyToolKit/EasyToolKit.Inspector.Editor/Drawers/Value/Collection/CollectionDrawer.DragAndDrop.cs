@@ -29,10 +29,11 @@ namespace EasyToolKit.Inspector.Editor
 
         private DropZoneHandle BeginDropZone()
         {
-            if (_orderedCollectionResolver == null) return null;
+            // Check for the new ordered collection operation interface
+            if (_orderedCollectionOperationResolver == null) return null;
 
             var dropZone = DragAndDropManager.BeginDropZone(Property.Tree.GetHashCode() + "-" + Property.Path,
-                _collectionResolver.ElementType, true);
+                _collectionStructureResolver.ElementType, true);
 
             if (Event.current.type == EventType.Repaint && DragAndDropManager.IsDragInProgress)
             {
@@ -48,7 +49,8 @@ namespace EasyToolKit.Inspector.Editor
 
         private void EndDropZone()
         {
-            if (_orderedCollectionResolver == null) return;
+            // Check for the new ordered collection operation interface
+            if (_orderedCollectionOperationResolver == null) return;
 
             if (_dropZone.IsReadyToClaim)
             {
@@ -108,19 +110,19 @@ namespace EasyToolKit.Inspector.Editor
                 UnityEngine.Object[] objReferences = null;
 
                 if (DragAndDrop.objectReferences.Any(n =>
-                        n != null && _collectionResolver.ElementType.IsAssignableFrom(n.GetType())))
+                        n != null && _collectionStructureResolver.ElementType.IsAssignableFrom(n.GetType())))
                 {
                     objReferences = DragAndDrop.objectReferences
-                        .Where(x => x != null && _collectionResolver.ElementType.IsAssignableFrom(x.GetType()))
+                        .Where(x => x != null && _collectionStructureResolver.ElementType.IsAssignableFrom(x.GetType()))
                         .Reverse().ToArray();
                 }
-                else if (_collectionResolver.ElementType.IsInheritsFrom(typeof(Component)))
+                else if (_collectionStructureResolver.ElementType.IsInheritsFrom(typeof(Component)))
                 {
                     objReferences = DragAndDrop.objectReferences.OfType<GameObject>()
-                        .Select(x => x.GetComponent(_collectionResolver.ElementType)).Where(x => x != null).Reverse()
+                        .Select(x => x.GetComponent(_collectionStructureResolver.ElementType)).Where(x => x != null).Reverse()
                         .ToArray();
                 }
-                else if (_collectionResolver.ElementType.IsInheritsFrom(typeof(Sprite)) &&
+                else if (_collectionStructureResolver.ElementType.IsInheritsFrom(typeof(Sprite)) &&
                          DragAndDrop.objectReferences.Any(n => n is Texture2D && AssetDatabase.Contains(n)))
                 {
                     objReferences = DragAndDrop.objectReferences.OfType<Texture2D>().Select(x =>

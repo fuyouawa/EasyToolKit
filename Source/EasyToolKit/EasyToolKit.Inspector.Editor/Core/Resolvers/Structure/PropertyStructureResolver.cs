@@ -1,43 +1,12 @@
 using System;
-using UnityEditor;
 
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Interface for resolving child properties in the <see cref="InspectorProperty"/> system
+    /// Abstract base class for property structure resolvers in the inspector system.
+    /// Provides common functionality for property structure resolution without collection operations.
     /// </summary>
-    public interface IPropertyResolver : IInitializableResolver
-    {
-        /// <summary>
-        /// Gets the number of child properties
-        /// </summary>
-        int ChildCount { get; }
-
-        /// <summary>
-        /// Gets information about a child property at the specified index
-        /// </summary>
-        /// <param name="childIndex">The index of the child property</param>
-        /// <returns>Information about the child property</returns>
-        InspectorPropertyInfo GetChildInfo(int childIndex);
-
-        /// <summary>
-        /// Converts a child property name to its index
-        /// </summary>
-        /// <param name="name">The name of the child property</param>
-        /// <returns>The index of the child property, or -1 if not found</returns>
-        int ChildNameToIndex(string name);
-
-        /// <summary>
-        /// Applies any changes made to the property
-        /// </summary>
-        /// <returns>True if changes were applied successfully</returns>
-        bool ApplyChanges();
-    }
-
-    /// <summary>
-    /// Abstract base class for property resolver in the <see cref="InspectorProperty"/> system
-    /// </summary>
-    public abstract class PropertyResolver : IPropertyResolver
+    public abstract class PropertyStructureResolver : IPropertyStructureResolver
     {
         private int? _lastChildCountUpdateId;
         private int _childCount;
@@ -116,16 +85,5 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <returns>The number of child properties</returns>
         public abstract int CalculateChildCount();
-
-        bool IPropertyResolver.ApplyChanges()
-        {
-            return ApplyChanges();
-        }
-
-        /// <summary>
-        /// Applies any changes made to the property (can be overridden by derived classes)
-        /// </summary>
-        /// <returns>True if changes were applied successfully</returns>
-        protected virtual bool ApplyChanges() => false;
     }
 }

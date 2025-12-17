@@ -25,7 +25,7 @@ namespace EasyToolKit.Inspector.Editor
         private long _lastAllowChildrenUpdateId;
         private string _unityPath;
 
-        private IPropertyResolver _childrenResolver;
+        private IPropertyStructureResolver _childrenResolver;
         private IGroupResolver _groupResolver;
         private IDrawerChainResolver _drawerChainResolver;
         private IAttributeResolver _attributeResolver;
@@ -292,7 +292,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Setting this value triggers a refresh of the property tree.
         /// </summary>
         [CanBeNull]
-        public IPropertyResolver ChildrenResolver
+        public IPropertyStructureResolver ChildrenResolver
         {
             get => _childrenResolver;
             set

@@ -27,7 +27,7 @@ namespace EasyToolKit.Inspector.Editor
 
             _attributeSources = new Dictionary<Attribute, AttributeSource>();
 
-            if (!Property.Info.IsLogicRoot && Property.Parent.ChildrenResolver is ICollectionResolver)
+            if (!Property.Info.IsLogicRoot && Property.Parent.ChildrenResolver is ICollectionStructureResolver)
             {
                 var passToListElementAttributes = Property.Parent.GetAttributes()
                     .Where(attr => attr is CanPassToListElementAttribute { PassToListElements: true });

@@ -7,9 +7,10 @@ using UnityEngine;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Property resolver implementation for Unity's <see cref="SerializedProperty"/> system
+    /// Property structure resolver implementation for Unity's SerializedProperty system.
+    /// Focuses purely on property structure discovery without collection operations.
     /// </summary>
-    public class UnityPropertyResolver : PropertyResolver
+    public class UnityPropertyStructureResolver : PropertyStructureResolver
     {
         private SerializedProperty _serializedProperty;
         private readonly List<InspectorPropertyInfo> _propertyInfos = new List<InspectorPropertyInfo>();
@@ -19,7 +20,6 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         protected override void Initialize()
         {
-            // Get the appropriate SerializedProperty based on whether this is a logic root
             if (Property.Info.IsLogicRoot)
             {
                 _serializedProperty = Property.Tree.SerializedObject.GetIterator();
@@ -33,7 +33,6 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            // Iterate through all child properties
             var iterator = _serializedProperty.Copy();
             if (!iterator.Next(true))
             {
@@ -92,20 +91,15 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Deinitializes the resolver by clearing the property info cache
-        /// </summary>
-        protected override void Deinitialize()
-        {
-            _propertyInfos.Clear();
-        }
-
-        /// <summary>
         /// Gets information about a child property at the specified index
         /// </summary>
         /// <param name="childIndex">The index of the child property</param>
         /// <returns>Information about the child property</returns>
         public override InspectorPropertyInfo GetChildInfo(int childIndex)
         {
+            if (childIndex < 0 || childIndex >= _propertyInfos.Count)
+                throw new ArgumentOutOfRangeException(nameof(childIndex));
+
             return _propertyInfos[childIndex];
         }
 
@@ -116,7 +110,15 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>The index of the child property, or -1 if not found</returns>
         public override int ChildNameToIndex(string name)
         {
-            return _propertyInfos.FindIndex(info => info.PropertyName == name);
+            for (int i = 0; i < _propertyInfos.Count; i++)
+            {
+                if (_propertyInfos[i].PropertyName == name)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         /// <summary>
@@ -126,6 +128,24 @@ namespace EasyToolKit.Inspector.Editor
         public override int CalculateChildCount()
         {
             return _propertyInfos.Count;
+        }
+
+        /// <summary>
+        /// Gets the SerializedProperty for this resolver
+        /// </summary>
+        /// <returns>The SerializedProperty associated with this resolver</returns>
+        public SerializedProperty GetSerializedProperty()
+        {
+            return _serializedProperty;
+        }
+
+        /// <summary>
+        /// Clears cached property information when the resolver is deinitialized
+        /// </summary>
+        protected override void Deinitialize()
+        {
+            _propertyInfos.Clear();
+            _serializedProperty = null;
         }
     }
 }

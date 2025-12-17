@@ -47,10 +47,10 @@ namespace EasyToolKit.Inspector.Editor
                     }
                     else if (parameters.Length == 1)
                     {
-                        if (!_collectionResolver.ElementType.IsAssignableFrom(parameters[0].ParameterType))
+                        if (!_collectionStructureResolver.ElementType.IsAssignableFrom(parameters[0].ParameterType))
                         {
                             throw new Exception(
-                                $"The parameter type of '{_listDrawerSettings.OnAddedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionResolver.ElementType}'");
+                                $"The parameter type of '{_listDrawerSettings.OnAddedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionStructureResolver.ElementType}'");
                         }
 
                         _onAddedElementCallback = (instance, value) =>
@@ -85,10 +85,10 @@ namespace EasyToolKit.Inspector.Editor
                     }
                     else if (parameters.Length == 1)
                     {
-                        if (!_collectionResolver.ElementType.IsAssignableFrom(parameters[0].ParameterType))
+                        if (!_collectionStructureResolver.ElementType.IsAssignableFrom(parameters[0].ParameterType))
                         {
                             throw new Exception(
-                                $"The parameter type of '{_listDrawerSettings.OnRemovedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionResolver.ElementType}'");
+                                $"The parameter type of '{_listDrawerSettings.OnRemovedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionStructureResolver.ElementType}'");
                         }
 
                         _onRemovedElementCallback = (instance, value) =>
@@ -134,7 +134,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private void UpdateLogic()
         {
-            if (_orderedCollectionResolver != null)
+            if (_orderedCollectionOperationResolver != null)
             {
                 if (_removeAt != null && Event.current.type == EventType.Repaint)
                 {
@@ -194,7 +194,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected virtual void DoAddElement(int targetIndex, object valueToAdd)
         {
-            _collectionResolver.QueueAddElement(targetIndex, valueToAdd);
+            _changeManager.EnqueueChange(() => _collectionOperationResolver.AddElement(targetIndex, valueToAdd));
             _onAddedElementCallback?.Invoke(Property.Parent.ValueEntry.WeakValues[targetIndex], valueToAdd);
         }
 
@@ -208,13 +208,16 @@ namespace EasyToolKit.Inspector.Editor
 
         private void DoInsertElement(int targetIndex, int index, object valueToAdd)
         {
-            if (_orderedCollectionResolver == null)
+            // Use the new ordered collection operation resolver
+            if (_orderedCollectionOperationResolver != null)
+            {
+                _changeManager.EnqueueChange(() => _orderedCollectionOperationResolver.InsertElementAt(targetIndex, index, valueToAdd));
+            }
+            else
             {
                 throw new InvalidOperationException(
                     $"The property '{Property.Path}' is not ordered collection, so you cannot insert elements at a specific index.");
             }
-
-            _orderedCollectionResolver.QueueInsertElementAt(targetIndex, index, valueToAdd);
             _onAddedElementCallback?.Invoke(Property.Parent.ValueEntry.WeakValues[targetIndex], valueToAdd);
         }
 
@@ -235,8 +238,8 @@ namespace EasyToolKit.Inspector.Editor
             }
             else
             {
-                Assert.IsNotNull(_orderedCollectionResolver);
-                _orderedCollectionResolver.QueueRemoveElementAt(targetIndex, index);
+                Assert.IsTrue(_orderedCollectionOperationResolver != null);
+                _changeManager.EnqueueChange(() => _orderedCollectionOperationResolver.RemoveElementAt(targetIndex, index));
             }
 
             var valueToRemove = Property.Children[index].ValueEntry.WeakValues[targetIndex];
@@ -274,7 +277,7 @@ namespace EasyToolKit.Inspector.Editor
             }
             else
             {
-                _collectionResolver.QueueRemoveElement(targetIndex, valueToRemove);
+                _changeManager.EnqueueChange(() => _collectionOperationResolver.RemoveElement(targetIndex, valueToRemove));
             }
 
             _onRemovedElementCallback?.Invoke(parent, valueToRemove);
@@ -288,12 +291,12 @@ namespace EasyToolKit.Inspector.Editor
                 return _customCreateElementFunction.Invoke(parent);
             }
 
-            if (_collectionResolver.ElementType.IsInheritsFrom<UnityEngine.Object>())
+            if (_collectionStructureResolver.ElementType.IsInheritsFrom<UnityEngine.Object>())
             {
                 return null;
             }
 
-            return UnitySerializationUtility.CreateDefaultUnityInitializedObject(_collectionResolver.ElementType);
+            return UnitySerializationUtility.CreateDefaultUnityInitializedObject(_collectionStructureResolver.ElementType);
         }
     }
 }

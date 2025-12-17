@@ -358,9 +358,12 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     if (property.ChildrenResolver != null)
                     {
-                        if (property.ChildrenResolver.ApplyChanges())
+                        if (property.ChildrenResolver is ICollectionStructureResolver collectionStructureResolver)
                         {
-                            changed = true;
+                            if (collectionStructureResolver.ChangeManager.ApplyChanges())
+                            {
+                                changed = true;
+                            }
                         }
                     }
 

@@ -46,7 +46,7 @@ namespace EasyToolKit.Inspector.Editor
                     $"The return type of '{Attribute.OptionsGetter}' must be IEnumerable<IValueDropdownItem> or IEnumerable<object>");
             }
 
-            if (Property.ChildrenResolver is ICollectionResolver)
+            if (Property.ChildrenResolver is ICollectionStructureResolver)
             {
                 CollectionDrawerStaticContext.NextElementDropdownListGetter = () => dropdownItems;
                 CallNextDrawer(label);
