@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Abstract base class for property structure resolvers in the inspector system.
     /// Provides common functionality for property structure resolution without collection operations.
     /// </summary>
-    public abstract class PropertyStructureResolver : IPropertyStructureResolver
+    public abstract class PropertyStructureResolverBase : IPropertyStructureResolver
     {
         private int? _lastChildCountUpdateId;
         private int _childCount;
@@ -66,6 +66,8 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         protected virtual void Deinitialize() { }
 
+        public virtual bool CanResolver(InspectorProperty property) => true;
+
         /// <summary>
         /// Gets information about a child property at the specified index
         /// </summary>
@@ -84,6 +86,57 @@ namespace EasyToolKit.Inspector.Editor
         /// Calculates the number of child properties
         /// </summary>
         /// <returns>The number of child properties</returns>
-        public abstract int CalculateChildCount();
+        protected abstract int CalculateChildCount();
+    }
+
+    public abstract class PropertyStructureResolverBase<T> : PropertyStructureResolverBase
+    {
+        private IPropertyValueEntry<T> _valueEntry;
+
+        /// <summary>
+        /// Gets the strongly-typed value entry for the property.
+        /// The value entry is lazily loaded and will attempt to update the property if not found initially.
+        /// </summary>
+        public IPropertyValueEntry<T> ValueEntry
+        {
+            get
+            {
+                if (_valueEntry == null)
+                {
+                    _valueEntry = Property.ValueEntry as IPropertyValueEntry<T>;
+
+                    if (_valueEntry == null)
+                    {
+                        Property.Update(true);
+                        _valueEntry = Property.ValueEntry as IPropertyValueEntry<T>;
+                    }
+                }
+
+                return _valueEntry;
+            }
+        }
+
+        public override bool CanResolver(InspectorProperty property)
+        {
+            if (property.ValueEntry == null)
+            {
+                return false;
+            }
+
+            var valueType = property.ValueEntry.ValueType;
+            return valueType == typeof(T) &&
+                   CanResolverType(valueType) &&
+                   CanResolverProperty(property);
+        }
+
+        protected virtual bool CanResolverType(Type valueType)
+        {
+            return true;
+        }
+
+        protected virtual bool CanResolverProperty(InspectorProperty property)
+        {
+            return true;
+        }
     }
 }

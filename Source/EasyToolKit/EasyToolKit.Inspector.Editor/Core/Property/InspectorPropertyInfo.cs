@@ -20,20 +20,12 @@ namespace EasyToolKit.Inspector.Editor
         private MemberInfo _memberInfo;
         private bool? _isArrayElement;
 
-        /// <summary>
-        /// Gets the property resolver locator used to find appropriate property resolvers for this property.
-        /// </summary>
-        [CanBeNull] public IPropertyResolverLocator PropertyResolverLocator { get; private set; }
-
-        /// <summary>
-        /// Gets the value accessor that provides read/write access to the property's value.
-        /// </summary>
-        [CanBeNull] public IValueAccessor ValueAccessor { get; private set; }
+        public Type OwnerType { get; private set; }
 
         /// <summary>
         /// Gets the type of the property value.
         /// </summary>
-        [CanBeNull] public Type PropertyType { get; private set; }
+        public Type PropertyType { get; private set; }
 
         /// <summary>
         /// Gets the name of the property.
@@ -64,7 +56,7 @@ namespace EasyToolKit.Inspector.Editor
             {
                 if (_isArrayElement == null)
                 {
-                    if (ValueAccessor == null || !ValueAccessor.OwnerType.IsImplementsOpenGenericType(typeof(ICollection<>)))
+                    if (OwnerType.IsImplementsOpenGenericType(typeof(ICollection<>)))
                     {
                         _isArrayElement = false;
                     }
@@ -92,34 +84,10 @@ namespace EasyToolKit.Inspector.Editor
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = valueType,
+                OwnerType = parentType,
                 PropertyName = serializedProperty.name,
-                IsUnityProperty = true,
-                PropertyResolverLocator = new UnityPropertyResolverLocator()
+                IsUnityProperty = true
             };
-
-            if (valueType.IsImplementsOpenGenericType(typeof(ICollection<>)))
-            {
-                Assert.IsTrue(serializedProperty.isArray);
-                var elementType = valueType.GetArgumentsOfInheritedOpenGenericType(typeof(ICollection<>))[0];
-
-                var accessorType = typeof(UnityCollectionAccessor<,,>)
-                    .MakeGenericType(parentType, valueType, elementType);
-                info.ValueAccessor = accessorType.CreateInstance<IValueAccessor>(serializedProperty);
-            }
-            else
-            {
-                try
-                {
-                    var accessorType = typeof(UnityPropertyAccessor<,>)
-                        .MakeGenericType(parentType, valueType);
-                    info.ValueAccessor = accessorType.CreateInstance<IValueAccessor>(serializedProperty);
-                    info.ValueAccessor.GetWeakValue(FormatterServices.GetUninitializedObject(parentType));
-                }
-                catch (Exception e) //TODO 有的类型无法通过SerializedProperty获取
-                {
-                    info.ValueAccessor = null;
-                }
-            }
 
             return info;
         }
@@ -157,15 +125,11 @@ namespace EasyToolKit.Inspector.Editor
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = propertyInfo.PropertyType,
+                OwnerType = propertyInfo.DeclaringType,
                 PropertyName = propertyInfo.Name,
                 IsUnityProperty = false,
-                _memberInfo = propertyInfo,
-                PropertyResolverLocator = new GenericPropertyResolverLocator()
+                _memberInfo = propertyInfo
             };
-
-            var accessorType = typeof(MemberValueAccessor<,>)
-                .MakeGenericType(propertyInfo.DeclaringType, propertyInfo.PropertyType);
-            info.ValueAccessor = accessorType.CreateInstance<IValueAccessor>(propertyInfo);
 
             return info;
         }
@@ -180,6 +144,7 @@ namespace EasyToolKit.Inspector.Editor
             var info = new InspectorPropertyInfo()
             {
                 PropertyName = methodInfo.Name + "()",
+                OwnerType = methodInfo.DeclaringType,
                 IsUnityProperty = false,
                 _memberInfo = methodInfo
             };
@@ -197,35 +162,29 @@ namespace EasyToolKit.Inspector.Editor
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = fieldInfo.FieldType,
+                OwnerType = fieldInfo.DeclaringType,
                 PropertyName = fieldInfo.Name,
                 IsUnityProperty = false,
-                _memberInfo = fieldInfo,
-                PropertyResolverLocator = new GenericPropertyResolverLocator()
+                _memberInfo = fieldInfo
             };
-
-            var accessorType = typeof(MemberValueAccessor<,>)
-                .MakeGenericType(fieldInfo.DeclaringType, fieldInfo.FieldType);
-            info.ValueAccessor = accessorType.CreateInstance<IValueAccessor>(fieldInfo);
 
             return info;
         }
 
         /// <summary>
-        /// Creates an <see cref="InspectorPropertyInfo"/> for a custom value with a specified accessor.
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a custom value.
         /// </summary>
         /// <param name="valueType">The type of the property value.</param>
         /// <param name="valueName">The name of the property.</param>
-        /// <param name="valueAccessor">The value accessor that provides read/write access to the value.</param>
         /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the custom value.</returns>
-        public static InspectorPropertyInfo CreateForValue(Type valueType, string valueName, IValueAccessor valueAccessor)
+        public static InspectorPropertyInfo CreateForValue(Type valueType, string valueName)
         {
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = valueType,
+                OwnerType = valueType.DeclaringType,
                 PropertyName = valueName,
-                IsUnityProperty = false,
-                ValueAccessor = valueAccessor,
-                PropertyResolverLocator = new GenericPropertyResolverLocator()
+                IsUnityProperty = false
             };
 
             return info;
@@ -243,15 +202,29 @@ namespace EasyToolKit.Inspector.Editor
             {
                 PropertyType = targets[0].GetType(),
                 PropertyName = "$ROOT$",
-                IsLogicRoot = true,
-                PropertyResolverLocator = new GenericPropertyResolverLocator()
+                IsLogicRoot = true
             };
 
-            info.ValueAccessor = new GenericValueAccessor(
-                typeof(int),
-                info.PropertyType,
-                (ref object index) => targets[(int)index],
-                null);
+            return info;
+        }
+
+        /// <summary>
+        /// Creates an <see cref="InspectorPropertyInfo"/> for a collection element.
+        /// </summary>
+        /// <param name="elementType">The type of the element.</param>
+        /// <param name="elementName">The name of the element.</param>
+        /// <param name="elementIndex">The index of the element in the collection.</param>
+        /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the collection element.</returns>
+        internal static InspectorPropertyInfo CreateForCollectionElement(Type elementType, string elementName, int elementIndex, Type collectionType)
+        {
+            var info = new InspectorPropertyInfo()
+            {
+                PropertyType = elementType,
+                PropertyName = elementName,
+                OwnerType = collectionType,
+                IsUnityProperty = false,
+                _isArrayElement = true
+            };
 
             return info;
         }
@@ -285,22 +258,20 @@ namespace EasyToolKit.Inspector.Editor
                 return true;
             }
 
-            if (ValueAccessor == null ||
-                IsArrayElement ||
+            if (IsArrayElement ||
                 PropertyName.IsNullOrEmpty())
             {
                 return false;
             }
 
-            var parentType = ValueAccessor.OwnerType;
-            var fieldInfo = parentType.GetField(PropertyName, BindingFlagsHelper.AllInstance);
+            var fieldInfo = OwnerType.GetField(PropertyName, BindingFlagsHelper.AllInstance);
             if (fieldInfo != null)
             {
                 memberInfo = fieldInfo;
                 return true;
             }
 
-            var propertyInfo = parentType.GetProperty(PropertyName, BindingFlagsHelper.AllInstance);
+            var propertyInfo = OwnerType.GetProperty(PropertyName, BindingFlagsHelper.AllInstance);
             if (propertyInfo != null)
             {
                 memberInfo = propertyInfo;

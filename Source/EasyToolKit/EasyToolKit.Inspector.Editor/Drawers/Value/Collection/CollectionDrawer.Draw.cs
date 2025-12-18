@@ -386,7 +386,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     if (DrawItemRemoveButton(itemContext.RemoveBtnRect))
                     {
-                        if (_orderedCollectionOperationResolver != null)
+                        if (_orderedCollectionOperation != null)
                         {
                             if (index >= 0)
                             {

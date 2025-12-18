@@ -29,6 +29,7 @@ namespace EasyToolKit.Inspector.Editor
         private IGroupResolver _groupResolver;
         private IDrawerChainResolver _drawerChainResolver;
         private IAttributeResolver _attributeResolver;
+        private IPropertyOperation _operation;
         private long _lastUpdateId;
 
         /// <summary>
@@ -143,10 +144,27 @@ namespace EasyToolKit.Inspector.Editor
             _groupResolver = new DefaultGroupResolver();
             Refresh();
 
-            if (info.ValueAccessor != null)
+            if (Operation != null)
             {
-                var entryType = typeof(PropertyValueEntry<>).MakeGenericType(info.ValueAccessor.ValueType);
+                var entryType = typeof(PropertyValueEntry<>).MakeGenericType(Operation.ValueType);
                 BaseValueEntry = (IPropertyValueEntry)entryType.CreateInstance(this);
+            }
+        }
+
+        /// <summary>
+        /// 延迟加载操作实例
+        /// </summary>
+        public IPropertyOperation Operation
+        {
+            get
+            {
+                if (_operation == null)
+                {
+                    var locator = Tree.OperationResolverLocatorFactory.CreateLocator(this);
+                    var resolver = locator?.GetResolver(this);
+                    _operation = resolver?.GetOperation(this);
+                }
+                return _operation;
             }
         }
 
@@ -248,7 +266,7 @@ namespace EasyToolKit.Inspector.Editor
             {
                 if (_lastSelfReadOnlyUpdateId != Tree.UpdateId)
                 {
-                    if (Info.ValueAccessor != null && Info.ValueAccessor.IsReadonly)
+                    if (Operation != null && Operation.IsReadOnly)
                     {
                         _isSelfReadOnly = true;
                     }
@@ -375,7 +393,8 @@ namespace EasyToolKit.Inspector.Editor
 
             if (Children == null && IsAllowChildren)
             {
-                ChildrenResolver = Info.PropertyResolverLocator.GetResolver(this);
+                var locator = Tree.StructureResolverLocatorFactory.CreateLocator(this);
+                ChildrenResolver =  locator.GetResolver(this);
                 Children = new PropertyChildren(this);
             }
 
@@ -443,7 +462,8 @@ namespace EasyToolKit.Inspector.Editor
                     _childrenResolver.Deinitialize();
                 }
 
-                _childrenResolver = Info.PropertyResolverLocator.GetResolver(this);
+                var locator = Tree.StructureResolverLocatorFactory.CreateLocator(this);
+                _childrenResolver =  locator.GetResolver(this);
             }
 
             ReinitializeResolver(_childrenResolver);

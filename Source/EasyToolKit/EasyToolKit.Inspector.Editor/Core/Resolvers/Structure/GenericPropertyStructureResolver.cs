@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,9 +14,14 @@ namespace EasyToolKit.Inspector.Editor
     /// Generic property structure resolver implementation using reflection to discover properties.
     /// Focuses purely on property structure without collection operations.
     /// </summary>
-    public class GenericPropertyStructureResolver : PropertyStructureResolver
+    public class GenericPropertyStructureResolver : PropertyStructureResolverBase
     {
         private readonly List<InspectorPropertyInfo> _propertyInfos = new List<InspectorPropertyInfo>();
+
+        public override bool CanResolver(InspectorProperty property)
+        {
+            return !property.ValueEntry.ValueType.IsInheritsFrom<IEnumerable>();
+        }
 
         /// <summary>
         /// Initializes the resolver by discovering properties, fields, and methods using reflection
@@ -119,7 +125,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Calculates the number of child properties
         /// </summary>
         /// <returns>The number of child properties</returns>
-        public override int CalculateChildCount()
+        protected override int CalculateChildCount()
         {
             return _propertyInfos.Count;
         }

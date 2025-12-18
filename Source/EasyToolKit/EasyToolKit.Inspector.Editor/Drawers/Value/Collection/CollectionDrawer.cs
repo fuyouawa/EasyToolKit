@@ -25,8 +25,8 @@ namespace EasyToolKit.Inspector.Editor
 
         private ICollectionStructureResolver _collectionStructureResolver;
         private IChangeManager _changeManager;
-        private ICollectionOperationResolver _collectionOperationResolver;
-        [CanBeNull] private IOrderedCollectionOperationResolver _orderedCollectionOperationResolver;
+        private ICollectionOperation _collectionOperation;
+        [CanBeNull] private IOrderedCollectionOperation _orderedCollectionOperation;
         [CanBeNull] private ListDrawerSettingsAttribute _listDrawerSettings;
         [CanBeNull] private Type _listDrawerTargetType;
         private bool _isListDrawerClassAttribute;
@@ -40,9 +40,11 @@ namespace EasyToolKit.Inspector.Editor
         protected override void Initialize()
         {
             _collectionStructureResolver = (ICollectionStructureResolver)Property.ChildrenResolver;
-            _changeManager = _collectionStructureResolver.ChangeManager;
-            _collectionOperationResolver = _collectionStructureResolver.OperationResolver;
-            _orderedCollectionOperationResolver = _collectionOperationResolver as IOrderedCollectionOperationResolver;
+            _collectionOperation = Property.Operation as ICollectionOperation;
+            _orderedCollectionOperation = _collectionOperation as IOrderedCollectionOperation;
+
+            // ChangeManager现在需要通过其他方式获取，暂时设为null
+            _changeManager = null;
 
             _listDrawerSettings = Property.GetAttribute<MetroListDrawerSettingsAttribute>();
             if (_listDrawerSettings == null)

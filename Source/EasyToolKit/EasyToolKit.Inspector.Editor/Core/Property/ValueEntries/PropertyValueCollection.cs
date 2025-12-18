@@ -147,8 +147,7 @@ namespace EasyToolKit.Inspector.Editor
             }
             else
             {
-                Assert.IsNotNull(Property.Parent.ValueEntry);
-                Assert.IsNotNull(Property.Info.ValueAccessor);
+                Assert.IsTrue(Property.Parent?.ValueEntry != null);
 
                 for (int i = 0; i < Property.Tree.Targets.Count; i++)
                 {
@@ -158,7 +157,7 @@ namespace EasyToolKit.Inspector.Editor
                         _values[i] = default;
                         continue;
                     }
-                    var value = (TValue)Property.Info.ValueAccessor.GetWeakValue(owner);
+                    var value = (TValue)Property.Operation.GetWeakValue(owner);
                     if (value == null && IsInstantiableType)
                     {
                         if (typeof(TValue).TryCreateInstance<TValue>(out _values[i]))
@@ -188,14 +187,13 @@ namespace EasyToolKit.Inspector.Editor
         {
             if (!Dirty) return false;
 
-            Assert.IsNotNull(Property.Parent.ValueEntry);
-            Assert.IsNotNull(Property.Info.ValueAccessor);
+            Assert.IsTrue(Property.Parent?.ValueEntry != null);
 
             for (int i = 0; i < _values.Length; i++)
             {
                 var owner = Property.Parent.ValueEntry.WeakValues[i];
                 var value = _values[i];
-                Property.Info.ValueAccessor.SetWeakValue(owner, value);
+                Property.Operation.SetWeakValue(owner, value);
             }
 
             ClearDirty();

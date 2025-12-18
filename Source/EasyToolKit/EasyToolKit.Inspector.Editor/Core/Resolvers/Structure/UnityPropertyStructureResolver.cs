@@ -10,10 +10,30 @@ namespace EasyToolKit.Inspector.Editor
     /// Property structure resolver implementation for Unity's SerializedProperty system.
     /// Focuses purely on property structure discovery without collection operations.
     /// </summary>
-    public class UnityPropertyStructureResolver : PropertyStructureResolver
+    [ResolverPriority(-10000.0)]
+    public class UnityPropertyStructureResolver : PropertyStructureResolverBase
     {
         private SerializedProperty _serializedProperty;
         private readonly List<InspectorPropertyInfo> _propertyInfos = new List<InspectorPropertyInfo>();
+
+        public override bool CanResolver(InspectorProperty property)
+        {
+            if (Property.Info.IsLogicRoot)
+            {
+                _serializedProperty = Property.Tree.SerializedObject?.GetIterator();
+            }
+            else
+            {
+                _serializedProperty = Property.Tree.GetUnityPropertyByPath(Property.UnityPath);
+            }
+
+            if (_serializedProperty == null)
+            {
+                return false;
+            }
+
+            return !_serializedProperty.isArray;
+        }
 
         /// <summary>
         /// Initializes the resolver by discovering Unity serialized properties
@@ -125,7 +145,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Calculates the number of child properties
         /// </summary>
         /// <returns>The number of child properties</returns>
-        public override int CalculateChildCount()
+        protected override int CalculateChildCount()
         {
             return _propertyInfos.Count;
         }

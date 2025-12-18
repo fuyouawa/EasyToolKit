@@ -13,6 +13,8 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         int ChildCount { get; }
 
+        bool CanResolver(InspectorProperty property);
+
         /// <summary>
         /// Gets information about a child property at the specified index
         /// </summary>
