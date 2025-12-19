@@ -12,10 +12,10 @@ namespace EasyToolKit.Inspector.Editor
     /// <typeparam name="TOwner">The owner type of the collection</typeparam>
     /// <typeparam name="TCollection">The type of the collection (must implement IList{TElement})</typeparam>
     /// <typeparam name="TElement">The type of elements in the collection</typeparam>
-    public class ListOperation<TOwner, TCollection, TElement> : OrderedCollectionOperation<TOwner, TCollection, TElement>
+    public class ListOperation<TCollection, TElement> : OrderedCollectionOperation<TCollection, TElement>
         where TCollection : IList<TElement>
     {
-        public ListOperation([NotNull] IPropertyOperation<TOwner, TCollection> auxiliaryOperation) : base(auxiliaryOperation)
+        public ListOperation(Type ownerType) : base(ownerType)
         {
         }
 

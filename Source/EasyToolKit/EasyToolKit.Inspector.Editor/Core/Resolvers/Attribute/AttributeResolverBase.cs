@@ -28,7 +28,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Abstract base class for attribute resolver in the <see cref="InspectorProperty"/> system
     /// </summary>
-    public abstract class AttributeResolverBase : InspectorElementBase, IAttributeResolver
+    public abstract class AttributeResolverBase : InspectorResolverBase, IAttributeResolver
     {
         /// <summary>
         /// Gets all attributes associated with the property

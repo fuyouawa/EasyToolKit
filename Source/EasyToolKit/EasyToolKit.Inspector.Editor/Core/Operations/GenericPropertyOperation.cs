@@ -9,11 +9,6 @@ namespace EasyToolKit.Inspector.Editor
     public class GenericPropertyOperation : PropertyOperation
     {
         /// <summary>
-        /// Owner type
-        /// </summary>
-        public override Type OwnerType { get; }
-
-        /// <summary>
         /// Value type
         /// </summary>
         public override Type ValueType { get; }
@@ -27,9 +22,8 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="valueType">Value type</param>
         /// <param name="getter">Value getter delegate</param>
         /// <param name="setter">Value setter delegate</param>
-        public GenericPropertyOperation(Type ownerType, Type valueType, WeakValueGetter getter, WeakValueSetter setter)
+        public GenericPropertyOperation(Type ownerType, Type valueType, WeakValueGetter getter, WeakValueSetter setter) : base(ownerType)
         {
-            OwnerType = ownerType;
             ValueType = valueType;
             _getter = getter;
             _setter = setter;
@@ -69,7 +63,7 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public class GenericPropertyOperation<TOwner, TValue> : PropertyOperation<TOwner, TValue>
+    public class GenericPropertyOperation<TOwner, TValue> : PropertyOperation<TValue>
     {
         private readonly ValueGetter<TOwner, TValue> _getter;
         private readonly ValueSetter<TOwner, TValue> _setter;
@@ -80,6 +74,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="getter">Value getter delegate</param>
         /// <param name="setter">Value setter delegate</param>
         public GenericPropertyOperation(ValueGetter<TOwner, TValue> getter, ValueSetter<TOwner, TValue> setter)
+            : base(typeof(TOwner))
         {
             _getter = getter;
             _setter = setter;
@@ -95,9 +90,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <returns>Property value</returns>
-        public override TValue GetValue(ref TOwner owner)
+        public override TValue GetValue(ref object owner)
         {
-            return _getter(ref owner);
+            var castedOwner = (TOwner)owner;
+            var result = _getter(ref castedOwner);
+            return result;
         }
 
         /// <summary>
@@ -105,12 +102,14 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <param name="value">Value to set</param>
-        public override void SetValue(ref TOwner owner, TValue value)
+        public override void SetValue(ref object owner, TValue value)
         {
             if (_setter == null)
                 throw new NotSupportedException("Property is read-only");
 
-            _setter(ref owner, value);
+            var castedOwner = (TOwner)owner;
+            _setter(ref castedOwner, value);
+            owner = castedOwner;
         }
     }
 }

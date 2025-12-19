@@ -17,7 +17,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         private readonly List<InspectorPropertyInfo> _propertyInfos = new List<InspectorPropertyInfo>();
 
-        public override bool CanResolver(InspectorProperty property)
+        protected override bool CanResolve(InspectorProperty property)
         {
             return !property.ValueEntry.ValueType.IsInheritsFrom<IEnumerable>();
         }

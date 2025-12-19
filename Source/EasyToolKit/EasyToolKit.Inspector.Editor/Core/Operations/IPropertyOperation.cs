@@ -41,22 +41,21 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Generic property operation interface with type safety
     /// </summary>
-    /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public interface IPropertyOperation<TOwner, TValue> : IPropertyOperation
+    public interface IPropertyOperation<TValue> : IPropertyOperation
     {
         /// <summary>
         /// Gets the value with type safety
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <returns>Property value</returns>
-        TValue GetValue(ref TOwner owner);
+        TValue GetValue(ref object owner);
 
         /// <summary>
         /// Sets the value with type safety
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <param name="value">Value to set</param>
-        void SetValue(ref TOwner owner, TValue value);
+        void SetValue(ref object owner, TValue value);
     }
 }

@@ -10,7 +10,7 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public class MemberPropertyOperation<TOwner, TValue> : PropertyOperation<TOwner, TValue>
+    public class MemberPropertyOperation<TOwner, TValue> : PropertyOperation<TValue>
     {
         private readonly MemberInfo _memberInfo;
         private readonly ValueGetter<TOwner, TValue> _getter;
@@ -20,7 +20,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Initializes a new instance of MemberPropertyOperation
         /// </summary>
         /// <param name="memberInfo">Member information</param>
-        public MemberPropertyOperation(MemberInfo memberInfo)
+        public MemberPropertyOperation(MemberInfo memberInfo) : base(typeof(TOwner))
         {
             switch (memberInfo)
             {
@@ -56,9 +56,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <returns>Property value</returns>
-        public override TValue GetValue(ref TOwner owner)
+        public override TValue GetValue(ref object owner)
         {
-            return _getter(ref owner);
+            var castedOwner = (TOwner)owner;
+            var result = _getter(ref castedOwner);
+            return result;
         }
 
         /// <summary>
@@ -66,13 +68,15 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <param name="value">Value to set</param>
-        public override void SetValue(ref TOwner owner, TValue value)
+        public override void SetValue(ref object owner, TValue value)
         {
             if (_setter == null)
             {
                 throw new NotSupportedException($"Member '{_memberInfo.Name}' is read-only.");
             }
-            _setter(ref owner, value);
+            var castedOwner = (TOwner)owner;
+            _setter(ref castedOwner, value);
+            owner = castedOwner;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace EasyToolKit.Inspector.Editor
 
         public override Type ElementType => typeof(TElement);
 
-        protected override bool CanResolverProperty(InspectorProperty property)
+        protected override bool CanResolveProperty(InspectorProperty property)
         {
             if (Property.Info.IsLogicRoot)
             {

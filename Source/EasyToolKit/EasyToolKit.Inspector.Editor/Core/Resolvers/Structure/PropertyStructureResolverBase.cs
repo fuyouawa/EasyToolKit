@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Abstract base class for property structure resolvers in the inspector system.
     /// Provides common functionality for property structure resolution without collection operations.
     /// </summary>
-    public abstract class PropertyStructureResolverBase : InspectorElementBase, IPropertyStructureResolver
+    public abstract class PropertyStructureResolverBase : InspectorResolverBase, IPropertyStructureResolver
     {
         private int? _lastChildCountUpdateId;
         private int _childCount;
@@ -23,8 +23,6 @@ namespace EasyToolKit.Inspector.Editor
                 return _childCount;
             }
         }
-
-        public virtual bool CanResolver(InspectorProperty property) => true;
 
         /// <summary>
         /// Gets information about a child property at the specified index
@@ -76,7 +74,7 @@ namespace EasyToolKit.Inspector.Editor
 
         public override Type MatchedType => typeof(PropertyStructureResolverBase<>);
 
-        public override bool CanResolver(InspectorProperty property)
+        protected override bool CanResolve(InspectorProperty property)
         {
             if (property.ValueEntry == null)
             {
@@ -85,16 +83,16 @@ namespace EasyToolKit.Inspector.Editor
 
             var valueType = property.ValueEntry.ValueType;
             return valueType == typeof(T) &&
-                   CanResolverType(valueType) &&
-                   CanResolverProperty(property);
+                   CanResolveType(valueType) &&
+                   CanResolveProperty(property);
         }
 
-        protected virtual bool CanResolverType(Type valueType)
+        protected virtual bool CanResolveType(Type valueType)
         {
             return true;
         }
 
-        protected virtual bool CanResolverProperty(InspectorProperty property)
+        protected virtual bool CanResolveProperty(InspectorProperty property)
         {
             return true;
         }

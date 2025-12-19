@@ -135,40 +135,30 @@ namespace EasyToolKit.Inspector.Editor
         public void Update()
         {
             bool clearDirty = true;
-            if (Property.Info.IsLogicRoot)
+            for (int i = 0; i < Property.Tree.Targets.Count; i++)
             {
-                if (!_firstUpdated)
-                {
-                    for (int i = 0; i < Property.Tree.Targets.Count; i++)
-                    {
-                        _values[i] = (TValue)Property.Tree.Targets[i];
-                    }
-                }
-            }
-            else
-            {
-                Assert.IsTrue(Property.Parent?.ValueEntry != null);
+                var owner = Property.Info.IsLogicRoot
+                    ? i
+                    : Property.Parent.ValueEntry.WeakValues[i];
 
-                for (int i = 0; i < Property.Tree.Targets.Count; i++)
+                if (owner == null)
                 {
-                    var owner = Property.Parent.ValueEntry.WeakValues[i];
-                    if (owner == null)
+                    _values[i] = default;
+                    continue;
+                }
+
+                var value = (TValue)Property.GetOperation().GetWeakValue(ref owner);
+                if (value == null && IsInstantiableType)
+                {
+                    if (typeof(TValue).TryCreateInstance(out _values[i]))
                     {
-                        _values[i] = default;
+                        MakeDirty();
+                        clearDirty = false;
                         continue;
                     }
-                    var value = (TValue)Property.GetOperation().GetWeakValue(ref owner);
-                    if (value == null && IsInstantiableType)
-                    {
-                        if (typeof(TValue).TryCreateInstance<TValue>(out _values[i]))
-                        {
-                            MakeDirty();
-                            clearDirty = false;
-                            continue;
-                        }
-                    }
-                    _values[i] = value;
                 }
+
+                _values[i] = value;
             }
 
             if (clearDirty)

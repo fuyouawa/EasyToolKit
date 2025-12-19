@@ -27,10 +27,9 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Generic interface for ordered collection operations with type safety
     /// </summary>
-    /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TCollection">Collection type</typeparam>
     /// <typeparam name="TElement">Element type</typeparam>
-    public interface IOrderedCollectionOperation<TOwner, TCollection, TElement> : IOrderedCollectionOperation, ICollectionOperation<TOwner, TCollection, TElement>
+    public interface IOrderedCollectionOperation<TCollection, TElement> : IOrderedCollectionOperation, ICollectionOperation<TCollection, TElement>
     {
         /// <summary>
         /// Inserts an element into the collection at the specified index with type safety

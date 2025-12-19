@@ -8,11 +8,9 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public abstract class CollectionOperation : ICollectionOperation
     {
-        private readonly IPropertyOperation _auxiliaryOperation;
-
-        protected CollectionOperation([NotNull] IPropertyOperation auxiliaryOperation)
+        protected CollectionOperation(Type ownerType)
         {
-            _auxiliaryOperation = auxiliaryOperation ?? throw new ArgumentNullException(nameof(auxiliaryOperation));
+            OwnerType = ownerType;
         }
 
         /// <summary>
@@ -23,7 +21,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Owner type
         /// </summary>
-        public abstract Type OwnerType { get; }
+        public virtual Type OwnerType { get; }
 
         /// <summary>
         /// Value type (collection type)
@@ -47,7 +45,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>Collection value</returns>
         public virtual object GetWeakValue(ref object owner)
         {
-            return _auxiliaryOperation.GetWeakValue(ref owner);
+            throw new NotSupportedException("Getting values is not supported for collection operations.");
         }
 
         /// <summary>
@@ -57,7 +55,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="value">Collection to set</param>
         public virtual void SetWeakValue(ref object owner, object value)
         {
-            _auxiliaryOperation.SetWeakValue(ref owner, value);
+            throw new NotSupportedException("Setting values is not supported for collection operations.");
         }
 
         /// <summary>
@@ -78,22 +76,13 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Generic abstract base class for collection operations with type safety
     /// </summary>
-    /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TCollection">Collection type</typeparam>
     /// <typeparam name="TElement">Element type</typeparam>
-    public abstract class CollectionOperation<TOwner, TCollection, TElement> : CollectionOperation, ICollectionOperation<TOwner, TCollection, TElement>
+    public abstract class CollectionOperation<TCollection, TElement> : CollectionOperation, ICollectionOperation<TCollection, TElement>
     {
-        private readonly IPropertyOperation<TOwner, TCollection> _auxiliaryOperation;
-
-        protected CollectionOperation([NotNull] IPropertyOperation<TOwner, TCollection> auxiliaryOperation) : base(auxiliaryOperation)
+        protected CollectionOperation(Type ownerType) : base(ownerType)
         {
-            _auxiliaryOperation = auxiliaryOperation;
         }
-
-        /// <summary>
-        /// Owner type
-        /// </summary>
-        public override Type OwnerType => typeof(TOwner);
 
         /// <summary>
         /// Value type (collection type)
@@ -115,9 +104,9 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <returns>Collection value</returns>
-        public virtual TCollection GetValue(ref TOwner owner)
+        public virtual TCollection GetValue(ref object owner)
         {
-            return _auxiliaryOperation.GetValue(ref owner);
+            throw new NotSupportedException("Getting values is not supported for collection operations.");
         }
 
         /// <summary>
@@ -125,9 +114,9 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <param name="value">Collection to set</param>
-        public virtual void SetValue(ref TOwner owner, TCollection value)
+        public virtual void SetValue(ref object owner, TCollection value)
         {
-            _auxiliaryOperation.SetValue(ref owner, value);
+            throw new NotSupportedException("Setting values is not supported for collection operations.");
         }
 
         /// <summary>
@@ -151,8 +140,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>Collection value</returns>
         public override object GetWeakValue(ref object owner)
         {
-            var castOwner = (TOwner)owner;
-            return GetValue(ref castOwner);
+            return GetValue(ref owner);
         }
 
         /// <summary>
@@ -162,10 +150,8 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="value">Collection to set</param>
         public override void SetWeakValue(ref object owner, object value)
         {
-            var castOwner = (TOwner)owner;
             var castValue = (TCollection)value;
-            SetValue(ref castOwner, castValue);
-            owner = castOwner;
+            SetValue(ref owner, castValue);
         }
 
         /// <summary>

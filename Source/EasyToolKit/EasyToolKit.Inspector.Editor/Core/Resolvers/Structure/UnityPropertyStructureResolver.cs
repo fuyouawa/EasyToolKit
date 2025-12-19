@@ -16,7 +16,7 @@ namespace EasyToolKit.Inspector.Editor
         private SerializedProperty _serializedProperty;
         private readonly List<InspectorPropertyInfo> _propertyInfos = new List<InspectorPropertyInfo>();
 
-        public override bool CanResolver(InspectorProperty property)
+        protected override bool CanResolve(InspectorProperty property)
         {
             if (Property.Info.IsLogicRoot)
             {

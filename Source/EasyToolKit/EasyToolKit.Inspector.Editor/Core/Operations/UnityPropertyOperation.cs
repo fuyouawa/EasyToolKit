@@ -7,9 +7,8 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Property operation implementation for Unity serialized properties
     /// </summary>
-    /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public class UnityPropertyOperation<TOwner, TValue> : PropertyOperation<TOwner, TValue>
+    public class UnityPropertyOperation<TValue> : PropertyOperation<TValue>
     {
         private static readonly Func<SerializedProperty, TValue> ValueGetter = SerializedPropertyUtility.GetValueGetter<TValue>();
         private static readonly Action<SerializedProperty, TValue> ValueSetter = SerializedPropertyUtility.GetValueSetter<TValue>();
@@ -20,7 +19,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Initializes a new instance of UnityPropertyOperation
         /// </summary>
         /// <param name="serializedProperty">Unity serialized property</param>
-        public UnityPropertyOperation(SerializedProperty serializedProperty)
+        public UnityPropertyOperation(Type ownerType, SerializedProperty serializedProperty) : base(ownerType)
         {
             _serializedProperty = serializedProperty.Copy();
         }
@@ -35,7 +34,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <returns>Property value</returns>
-        public override TValue GetValue(ref TOwner owner)
+        public override TValue GetValue(ref object owner)
         {
             return ValueGetter(_serializedProperty);
         }
@@ -45,7 +44,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <param name="value">Value to set</param>
-        public override void SetValue(ref TOwner owner, TValue value)
+        public override void SetValue(ref object owner, TValue value)
         {
             if (ValueSetter == null)
                 throw new NotSupportedException("Unity serialized property is read-only");

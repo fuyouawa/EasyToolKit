@@ -7,6 +7,11 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public abstract class PropertyOperation : IPropertyOperation
     {
+        protected PropertyOperation(Type ownerType)
+        {
+            OwnerType = ownerType;
+        }
+
         /// <summary>
         /// Whether the property is read-only
         /// </summary>
@@ -15,7 +20,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Owner type
         /// </summary>
-        public abstract Type OwnerType { get; }
+        public virtual Type OwnerType { get; }
 
         /// <summary>
         /// Value type
@@ -40,14 +45,12 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Generic abstract base class for property operations with type safety
     /// </summary>
-    /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public abstract class PropertyOperation<TOwner, TValue> : PropertyOperation, IPropertyOperation<TOwner, TValue>
+    public abstract class PropertyOperation<TValue> : PropertyOperation, IPropertyOperation<TValue>
     {
-        /// <summary>
-        /// Owner type
-        /// </summary>
-        public override Type OwnerType => typeof(TOwner);
+        protected PropertyOperation(Type ownerType) : base(ownerType)
+        {
+        }
 
         /// <summary>
         /// Value type
@@ -59,14 +62,14 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <returns>Property value</returns>
-        public abstract TValue GetValue(ref TOwner owner);
+        public abstract TValue GetValue(ref object owner);
 
         /// <summary>
         /// Sets the value with type safety
         /// </summary>
         /// <param name="owner">Owner object</param>
         /// <param name="value">Value to set</param>
-        public abstract void SetValue(ref TOwner owner, TValue value);
+        public abstract void SetValue(ref object owner, TValue value);
 
         /// <summary>
         /// Gets the value
@@ -75,8 +78,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>Property value</returns>
         public override object GetWeakValue(ref object owner)
         {
-            var castOwner = (TOwner)owner;
-            return GetValue(ref castOwner);
+            return GetValue(ref owner);
         }
 
         /// <summary>
@@ -86,10 +88,8 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="value">Value to set</param>
         public override void SetWeakValue(ref object owner, object value)
         {
-            var castOwner = (TOwner)owner;
             var castValue = (TValue)value;
-            SetValue(ref castOwner, castValue);
-            owner = castOwner;
+            SetValue(ref owner, castValue);
         }
     }
 }

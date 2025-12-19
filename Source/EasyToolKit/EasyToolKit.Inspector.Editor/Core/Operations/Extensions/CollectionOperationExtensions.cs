@@ -7,11 +7,6 @@ namespace EasyToolKit.Inspector.Editor
     {
         public static void AddWeakElement(this ICollectionOperation collectionOperation, InspectorProperty property, int targetIndex, object element)
         {
-            if (property.GetOperation() != collectionOperation)
-            {
-                throw new ArgumentException("Property operation does not match collection operation", nameof(property));
-            }
-
             var collection = property.ValueEntry.WeakValues[targetIndex];
             collectionOperation.AddWeakElement(ref collection, element);
             property.ValueEntry.WeakValues[targetIndex] = collection;
@@ -19,11 +14,6 @@ namespace EasyToolKit.Inspector.Editor
 
         public static void RemoveWeakElement(this ICollectionOperation collectionOperation, InspectorProperty property, int targetIndex, object element)
         {
-            if (property.GetOperation() != collectionOperation)
-            {
-                throw new ArgumentException("Property operation does not match collection operation", nameof(property));
-            }
-
             var collection = property.ValueEntry.WeakValues[targetIndex];
             collectionOperation.RemoveWeakElement(ref collection, element);
             property.ValueEntry.WeakValues[targetIndex] = collection;

@@ -11,7 +11,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Handles Unity-specific collection operations using SerializedProperty system.
     /// </summary>
     /// <typeparam name="TElement">The type of elements in the collection</typeparam>
-    public class UnityCollectionOperation<TOwner, TElement> : OrderedCollectionOperation<TOwner, IList<TElement>, TElement>
+    public class UnityCollectionOperation<TElement> : OrderedCollectionOperation<IList<TElement>, TElement>
     {
         private readonly InspectorProperty _property;
         private SerializedProperty _serializedProperty;
@@ -26,8 +26,8 @@ namespace EasyToolKit.Inspector.Editor
         /// Initializes a new instance of the UnityCollectionOperationResolver
         /// </summary>
         /// <param name="property">The inspector property associated with this resolver</param>
-        public UnityCollectionOperation(IPropertyOperation<TOwner, IList<TElement>> auxiliaryOperation, [NotNull] InspectorProperty property)
-            : base(auxiliaryOperation)
+        public UnityCollectionOperation(Type ownerType, [NotNull] InspectorProperty property)
+            : base(ownerType)
         {
             _property = property ?? throw new ArgumentNullException(nameof(property));
             InitializeSerializedProperty();

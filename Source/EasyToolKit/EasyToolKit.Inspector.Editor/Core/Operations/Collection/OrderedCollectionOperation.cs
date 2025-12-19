@@ -6,12 +6,11 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Generic abstract base class for ordered collection operations with type safety
     /// </summary>
-    /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TCollection">Collection type</typeparam>
     /// <typeparam name="TElement">Element type</typeparam>
-    public abstract class OrderedCollectionOperation<TOwner, TCollection, TElement> : CollectionOperation<TOwner, TCollection, TElement>, IOrderedCollectionOperation<TOwner, TCollection, TElement>
+    public abstract class OrderedCollectionOperation<TCollection, TElement> : CollectionOperation<TCollection, TElement>, IOrderedCollectionOperation<TCollection, TElement>
     {
-        protected OrderedCollectionOperation([NotNull] IPropertyOperation<TOwner, TCollection> auxiliaryOperation) : base(auxiliaryOperation)
+        protected OrderedCollectionOperation(Type ownerType) : base(ownerType)
         {
         }
 
