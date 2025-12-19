@@ -7,72 +7,15 @@ using UnityEngine;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Interface for all EasyToolKit drawers that handle property drawing in the Unity Inspector.
-    /// Drawers are responsible for rendering custom UI for properties and attributes.
-    /// </summary>
-    public interface IEasyDrawer : IInitializable
-    {
-        /// <summary>
-        /// Gets or sets whether this drawer should be skipped during the drawing process.
-        /// When true, the drawer will not render its UI.
-        /// </summary>
-        bool SkipWhenDrawing { get; set; }
-
-        /// <summary>
-        /// Gets or sets the <see cref="InspectorProperty"/> that this drawer is responsible for rendering.
-        /// </summary>
-        InspectorProperty Property { get; set; }
-
-        /// <summary>
-        /// Draws the property UI using the specified label.
-        /// </summary>
-        /// <param name="label">The GUIContent label to display for this property.</param>
-        void DrawProperty(GUIContent label);
-
-        /// <summary>
-        /// Determines whether this drawer can draw the specified property.
-        /// </summary>
-        /// <param name="property">The <see cref="InspectorProperty"/> to check.</param>
-        /// <returns>True if this drawer can handle the property, false otherwise.</returns>
-        bool CanDrawProperty(InspectorProperty property);
-    }
-
-    /// <summary>
     /// Base abstract class for all EasyToolKit drawers.
     /// Provides common functionality for property drawing and lifecycle management.
     /// </summary>
-    public abstract class EasyDrawer : IEasyDrawer
+    public abstract class EasyDrawer : InspectorElementBase, IEasyDrawer
     {
         /// <summary>
         /// Gets or sets whether this drawer should be skipped during the drawing process.
         /// </summary>
         public bool SkipWhenDrawing { get; set; }
-
-        /// <summary>
-        /// Gets the InspectorProperty that this drawer is responsible for rendering.
-        /// </summary>
-        public InspectorProperty Property { get; private set; }
-
-        /// <summary>
-        /// Gets whether this drawer has been initialized.
-        /// </summary>
-        public bool IsInitialized { get; private set; }
-
-        /// <summary>
-        /// Called when the drawer is being initialized.
-        /// Override this method to perform custom initialization logic.
-        /// </summary>
-        protected virtual void Initialize()
-        {
-        }
-
-        /// <summary>
-        /// Called when the drawer is being deinitialized.
-        /// Override this method to perform cleanup operations.
-        /// </summary>
-        protected virtual void Deinitialize()
-        {
-        }
 
         /// <summary>
         /// Determines whether this drawer can draw the specified property.
@@ -112,44 +55,6 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Explicit interface implementation for IEasyDrawer.Property.
-        /// Gets or sets the InspectorProperty for this drawer.
-        /// </summary>
-        InspectorProperty IEasyDrawer.Property
-        {
-            get => Property;
-            set => Property = value;
-        }
-
-        /// <summary>
-        /// Explicit interface implementation for IInitializable.IsInitialized.
-        /// Gets whether this drawer has been initialized.
-        /// </summary>
-        bool IInitializable.IsInitialized => IsInitialized;
-
-        /// <summary>
-        /// Explicit interface implementation for IInitializable.Initialize.
-        /// Initializes the drawer if it hasn't been initialized already.
-        /// </summary>
-        void IInitializable.Initialize()
-        {
-            if (IsInitialized) return;
-            Initialize();
-            IsInitialized = true;
-        }
-
-        /// <summary>
-        /// Explicit interface implementation for IInitializable.Deinitialize.
-        /// Deinitializes the drawer if it has been initialized.
-        /// </summary>
-        void IInitializable.Deinitialize()
-        {
-            if (!IsInitialized) return;
-            Deinitialize();
-            IsInitialized = false;
-        }
-
-        /// <summary>
         /// Explicit interface implementation for IEasyDrawer.DrawProperty.
         /// Draws the property UI using the specified label.
         /// </summary>
@@ -159,13 +64,7 @@ namespace EasyToolKit.Inspector.Editor
             DrawProperty(label);
         }
 
-        /// <summary>
-        /// Explicit interface implementation for IEasyDrawer.CanDrawProperty.
-        /// Determines whether this drawer can draw the specified property.
-        /// </summary>
-        /// <param name="property">The InspectorProperty to check.</param>
-        /// <returns>True if this drawer can handle the property, false otherwise.</returns>
-        bool IEasyDrawer.CanDrawProperty(InspectorProperty property)
+        protected override bool CanHandle(InspectorProperty property)
         {
             return CanDrawProperty(property);
         }

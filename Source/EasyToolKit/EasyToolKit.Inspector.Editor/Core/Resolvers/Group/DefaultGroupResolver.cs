@@ -8,7 +8,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Default implementation of group property resolver for <see cref="InspectorProperty"/>
     /// </summary>
-    public class DefaultGroupResolver : GroupResolver
+    public class DefaultGroupResolver : GroupResolverBase
     {
         private readonly Dictionary<Type, InspectorProperty[]> _groupPropertiesCache = new Dictionary<Type, InspectorProperty[]>();
 

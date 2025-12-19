@@ -149,23 +149,5 @@ namespace EasyToolKit.Inspector.Editor
         {
             return _propertyInfos.Count;
         }
-
-        /// <summary>
-        /// Gets the SerializedProperty for this resolver
-        /// </summary>
-        /// <returns>The SerializedProperty associated with this resolver</returns>
-        public SerializedProperty GetSerializedProperty()
-        {
-            return _serializedProperty;
-        }
-
-        /// <summary>
-        /// Clears cached property information when the resolver is deinitialized
-        /// </summary>
-        protected override void Deinitialize()
-        {
-            _propertyInfos.Clear();
-            _serializedProperty = null;
-        }
     }
 }

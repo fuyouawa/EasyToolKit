@@ -3,9 +3,11 @@ using System.Collections.Generic;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public class ReadOnlyCollectionStructureResolver<TCollection, TElement> : CollectionStructureResolverBase<TCollection, TElement>
+    public class ReadOnlyCollectionStructureResolver<TCollection, TElement> : CollectionStructureResolverBase<TCollection>
         where TCollection : IReadOnlyCollection<TElement>
     {
+        public override Type ElementType => typeof(TElement);
+
         protected override int CalculateChildCount()
         {
             var minLength = int.MaxValue;

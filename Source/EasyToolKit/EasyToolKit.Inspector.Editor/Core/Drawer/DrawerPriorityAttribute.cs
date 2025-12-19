@@ -8,12 +8,32 @@ namespace EasyToolKit.Inspector.Editor
     /// in the drawer chain. Higher priority drawers are executed before lower priority drawers.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class DrawerPriorityAttribute : Attribute
+    public class DrawerPriorityAttribute : Attribute, IInspectorPriorityGetter
     {
+        /// <summary>
+        /// Represents the lowest possible drawer priority.
+        /// </summary>
+        public static readonly InspectorPriority LowestPriority = new InspectorPriority(DrawerPriorityLevel.Lowest);
+
+        /// <summary>
+        /// Represents the standard priority for value drawers.
+        /// </summary>
+        public static readonly InspectorPriority ValuePriority = new InspectorPriority(DrawerPriorityLevel.Value);
+
+        /// <summary>
+        /// Represents the priority for attribute-based drawers.
+        /// </summary>
+        public static readonly InspectorPriority AttributePriority = new InspectorPriority(DrawerPriorityLevel.Attribute);
+
+        /// <summary>
+        /// Represents the highest standard drawer priority.
+        /// </summary>
+        public static readonly InspectorPriority SuperPriority = new InspectorPriority(DrawerPriorityLevel.Super);
+
         /// <summary>
         /// Gets the priority value for the drawer.
         /// </summary>
-        public DrawerPriority Priority { get; }
+        public InspectorPriority Priority { get; }
 
         /// <summary>
         /// Initializes a new instance of the DrawerPriorityAttribute class.
@@ -21,7 +41,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="value">The priority value for the drawer. Defaults to <see cref="DrawerPriorityLevel.Lowest"/>.</param>
         public DrawerPriorityAttribute(double value = DrawerPriorityLevel.Lowest)
         {
-            Priority = new DrawerPriority(value);
+            Priority = new InspectorPriority(value);
         }
     }
 }

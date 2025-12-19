@@ -29,7 +29,7 @@ namespace EasyToolKit.Inspector.Editor
         private IGroupResolver _groupResolver;
         private IDrawerChainResolver _drawerChainResolver;
         private IAttributeResolver _attributeResolver;
-        private IPropertyOperation _operation;
+        private IPropertyOperationResolver _operationResolver;
         private long _lastUpdateId;
 
         /// <summary>
@@ -142,31 +142,16 @@ namespace EasyToolKit.Inspector.Editor
             _drawerChainResolver = new DefaultDrawerChainResolver();
             _attributeResolver = new DefaultAttributeResolver();
             _groupResolver = new DefaultGroupResolver();
-            Refresh();
 
-            if (Operation != null)
-            {
-                var entryType = typeof(PropertyValueEntry<>).MakeGenericType(Operation.ValueType);
-                BaseValueEntry = (IPropertyValueEntry)entryType.CreateInstance(this);
-            }
+            var entryType = typeof(PropertyValueEntry<>).MakeGenericType(Info.PropertyType);
+            BaseValueEntry = (IPropertyValueEntry)entryType.CreateInstance(this);
         }
 
-        /// <summary>
-        /// 延迟加载操作实例
-        /// </summary>
-        public IPropertyOperation Operation
-        {
-            get
-            {
-                if (_operation == null)
-                {
-                    var locator = Tree.OperationResolverLocatorFactory.CreateLocator(this);
-                    var resolver = locator?.GetResolver(this);
-                    _operation = resolver?.GetOperation(this);
-                }
-                return _operation;
-            }
-        }
+        [CanBeNull] public IPropertyOperationResolver OperationResolver => _operationResolver;
+        [CanBeNull] public IPropertyStructureResolver ChildrenResolver => _childrenResolver;
+        [CanBeNull] public IDrawerChainResolver DrawerChainResolver => _drawerChainResolver;
+        public IAttributeResolver AttributeResolver => _attributeResolver;
+        public IGroupResolver GroupResolver => _groupResolver;
 
         /// <summary>
         /// Gets the state of this property, including validation state, visibility, and other runtime properties.
@@ -266,7 +251,7 @@ namespace EasyToolKit.Inspector.Editor
             {
                 if (_lastSelfReadOnlyUpdateId != Tree.UpdateId)
                 {
-                    if (Operation != null && Operation.IsReadOnly)
+                    if (GetOperation() != null && GetOperation().IsReadOnly)
                     {
                         _isSelfReadOnly = true;
                     }
@@ -306,76 +291,6 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Gets or sets the resolver responsible for providing child properties for this property.
-        /// Setting this value triggers a refresh of the property tree.
-        /// </summary>
-        [CanBeNull]
-        public IPropertyStructureResolver ChildrenResolver
-        {
-            get => _childrenResolver;
-            set
-            {
-                _childrenResolver = value;
-                Refresh();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the resolver responsible for providing the drawer chain for this property.
-        /// Setting this value triggers a refresh of the property tree.
-        /// </summary>
-        [CanBeNull]
-        public IDrawerChainResolver DrawerChainResolver
-        {
-            get => _drawerChainResolver;
-            set
-            {
-                _drawerChainResolver = value;
-                Refresh();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the resolver responsible for providing attributes for this property.
-        /// Setting this value triggers a refresh of the property tree.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown when setting to null</exception>
-        public IAttributeResolver AttributeResolver
-        {
-            get => _attributeResolver;
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                _attributeResolver = value;
-                Refresh();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the resolver responsible for providing grouped properties for this property.
-        /// Setting this value triggers a refresh of the property tree.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown when setting to null</exception>
-        public IGroupResolver GroupResolver
-        {
-            get => _groupResolver;
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                _groupResolver = value;
-                Refresh();
-            }
-        }
-
-        /// <summary>
         /// Updates the property state, including value entries and child properties.
         /// This method is called automatically during drawing but can be forced manually.
         /// </summary>
@@ -393,8 +308,6 @@ namespace EasyToolKit.Inspector.Editor
 
             if (Children == null && IsAllowChildren)
             {
-                var locator = Tree.StructureResolverLocatorFactory.CreateLocator(this);
-                ChildrenResolver =  locator.GetResolver(this);
                 Children = new PropertyChildren(this);
             }
 
@@ -455,21 +368,26 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public void Refresh()
         {
-            if (_childrenResolver != null)
-            {
-                if (_childrenResolver.IsInitialized)
-                {
-                    _childrenResolver.Deinitialize();
-                }
+            _operationResolver = Tree.OperationResolverFactory.CreateResolver(this);
+            _childrenResolver = Tree.StructureResolverFactory.CreateResolver(this);
+            _drawerChainResolver = Tree.DrawerChainResolverFactory.CreateResolver(this);
+            _attributeResolver = Tree.AttributeResolverFactory.CreateResolver(this);
+            _groupResolver = Tree.GroupResolverFactory.CreateResolver(this);
 
-                var locator = Tree.StructureResolverLocatorFactory.CreateLocator(this);
-                _childrenResolver =  locator.GetResolver(this);
-            }
+            _operationResolver.Property = this;
+            _operationResolver.Initialize();
 
-            ReinitializeResolver(_childrenResolver);
-            ReinitializeResolver(_drawerChainResolver);
-            ReinitializeResolver(_attributeResolver);
-            ReinitializeResolver(_groupResolver);
+            _childrenResolver.Property = this;
+            _childrenResolver.Initialize();
+
+            _drawerChainResolver.Property = this;
+            _drawerChainResolver.Initialize();
+
+            _attributeResolver.Property = this;
+            _attributeResolver.Initialize();
+
+            _groupResolver.Property = this;
+            _groupResolver.Initialize();
 
             if (Children != null)
             {
@@ -530,6 +448,11 @@ namespace EasyToolKit.Inspector.Editor
             return null;
         }
 
+        public IPropertyOperation GetOperation()
+        {
+            return OperationResolver?.GetOperation();
+        }
+
         /// <summary>
         /// Gets the source information for a specific attribute on this property.
         /// </summary>
@@ -572,20 +495,6 @@ namespace EasyToolKit.Inspector.Editor
                 EditorGUI.BeginDisabledGroup(IsSelfReadOnly);
                 chain.Current.DrawProperty(label);
                 EditorGUI.EndDisabledGroup();
-            }
-        }
-
-        private void ReinitializeResolver(IInitializableResolver resolver)
-        {
-            if (resolver != null)
-            {
-                if (resolver.IsInitialized)
-                {
-                    resolver.Deinitialize();
-                }
-
-                resolver.Property = this;
-                resolver.Initialize();
             }
         }
 
@@ -653,30 +562,6 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public void Dispose()
         {
-            if (_childrenResolver?.IsInitialized == true)
-            {
-                _childrenResolver.Deinitialize();
-                _childrenResolver = null;
-            }
-
-            if (_drawerChainResolver?.IsInitialized == true)
-            {
-                _drawerChainResolver.Deinitialize();
-                _drawerChainResolver = null;
-            }
-
-            if (_attributeResolver?.IsInitialized == true)
-            {
-                _attributeResolver.Deinitialize();
-                _attributeResolver = null;
-            }
-
-            if (_groupResolver?.IsInitialized == true)
-            {
-                _groupResolver.Deinitialize();
-                _groupResolver = null;
-            }
-
             BaseValueEntry?.Dispose();
             if (ValueEntry != BaseValueEntry)
             {

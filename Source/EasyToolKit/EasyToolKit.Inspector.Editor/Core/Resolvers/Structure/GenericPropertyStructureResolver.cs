@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using EasyToolKit.Core;
 using EasyToolKit.ThirdParty.OdinSerializer;
-using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -168,14 +167,6 @@ namespace EasyToolKit.Inspector.Editor
             if (memberInfo.IsDefined<CompilerGeneratedAttribute>()) return false;
 
             return true;
-        }
-
-        /// <summary>
-        /// Clears cached property information when the resolver is deinitialized
-        /// </summary>
-        protected override void Deinitialize()
-        {
-            _propertyInfos.Clear();
         }
     }
 }

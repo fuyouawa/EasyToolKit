@@ -23,27 +23,7 @@ namespace EasyToolKit.Inspector.Editor
                 return false;
             }
 
-            if (IsEasyValueDrawerSatisfiedBy(type))
-            {
-                return false;
-            }
-
             return InspectorDrawerUtility.IsDefinedUnityPropertyDrawer(type);
-        }
-
-        /// <summary>
-        /// Determines if a type is satisfied of easy value drawer.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>True if the type is satisfied of easy value drawer.; otherwise false.</returns>
-        public static bool IsEasyValueDrawerSatisfiedBy(Type type)
-        {
-            if (typeof(UnityEngine.Object).IsAssignableFrom(type))
-            {
-                return false;
-            }
-
-            return InspectorDrawerUtility.IsDefinedEasyValueDrawer(type);
         }
 
         /// <summary>
@@ -92,8 +72,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             return !type.IsBasicValueType() &&
                    !typeof(Delegate).IsAssignableFrom(type) &&
-                   !typeof(UnityEngine.Object).IsAssignableFrom(type) &&
-                   !IsUnityPropertyDrawerSatisfiedBy(type);
+                   !typeof(UnityEngine.Object).IsAssignableFrom(type);
         }
 
         // public static bool IsAllowChildrenField(FieldInfo fieldInfo)

@@ -24,7 +24,6 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         private ICollectionStructureResolver _collectionStructureResolver;
-        private IChangeManager _changeManager;
         private ICollectionOperation _collectionOperation;
         [CanBeNull] private IOrderedCollectionOperation _orderedCollectionOperation;
         [CanBeNull] private ListDrawerSettingsAttribute _listDrawerSettings;
@@ -40,11 +39,8 @@ namespace EasyToolKit.Inspector.Editor
         protected override void Initialize()
         {
             _collectionStructureResolver = (ICollectionStructureResolver)Property.ChildrenResolver;
-            _collectionOperation = Property.Operation as ICollectionOperation;
+            _collectionOperation = Property.GetOperation() as ICollectionOperation;
             _orderedCollectionOperation = _collectionOperation as IOrderedCollectionOperation;
-
-            // ChangeManager现在需要通过其他方式获取，暂时设为null
-            _changeManager = null;
 
             _listDrawerSettings = Property.GetAttribute<MetroListDrawerSettingsAttribute>();
             if (_listDrawerSettings == null)
@@ -74,7 +70,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void DrawProperty(GUIContent label)
         {
-            _isReadOnly = _collectionStructureResolver.IsReadOnly || _listDrawerSettings?.IsReadOnly == true;
+            _isReadOnly = _collectionOperation.IsReadOnly || _listDrawerSettings?.IsReadOnly == true;
             _elementDropdownListGetter = CollectionDrawerStaticContext.NextElementDropdownListGetter;
             CollectionDrawerStaticContext.NextElementDropdownListGetter = null;
             UpdateDragAndDrop();

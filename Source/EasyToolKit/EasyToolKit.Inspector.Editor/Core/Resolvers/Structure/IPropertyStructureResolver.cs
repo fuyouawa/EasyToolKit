@@ -6,14 +6,12 @@ namespace EasyToolKit.Inspector.Editor
     /// Interface for resolving property structure information in the inspector system.
     /// Focuses purely on property structure without collection operations or change management.
     /// </summary>
-    public interface IPropertyStructureResolver : IInitializableResolver
+    public interface IPropertyStructureResolver : IInspectorElement
     {
         /// <summary>
         /// Gets the number of child properties
         /// </summary>
         int ChildCount { get; }
-
-        bool CanResolver(InspectorProperty property);
 
         /// <summary>
         /// Gets information about a child property at the specified index

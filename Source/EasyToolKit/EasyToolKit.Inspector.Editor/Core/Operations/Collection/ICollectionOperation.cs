@@ -17,8 +17,6 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         Type ElementType { get; }
 
-        IChangeManager ChangeManager { get; }
-
         /// <summary>
         /// Adds an element to the collection
         /// </summary>

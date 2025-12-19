@@ -1,10 +1,11 @@
 using System;
+using EasyToolKit.Inspector.Editor.Internal;
 using UnityEditor;
 using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    [DrawerPriority(DrawerPriorityLevel.Attribute - 1)]
+    [DrawerPriority(DrawerPriorityLevel.Value - 1)]
     public class UnityPropertyDrawer : EasyDrawer
     {
         protected override bool CanDrawProperty(InspectorProperty property)
@@ -27,8 +28,7 @@ namespace EasyToolKit.Inspector.Editor
             }
 
             return !propertyType.IsSubclassOf(typeof(UnityEngine.Object)) &&
-                   InspectorDrawerUtility.IsDefinedUnityPropertyDrawer(propertyType) &&
-                   !InspectorDrawerUtility.IsDefinedEasyValueDrawer(propertyType);
+                   InspectorDrawerUtility.IsDefinedUnityPropertyDrawer(propertyType);
         }
 
         private SerializedProperty _serializedProperty;
@@ -42,7 +42,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             if (_serializedProperty == null)
             {
-                EditorGUILayout.LabelField(label, InspectorDrawerUtility.NotSupportedContent);
+                EditorGUILayout.LabelField(label, EditorHelper.TempContent("Not Supported"));
                 return;
             }
 

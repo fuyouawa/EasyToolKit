@@ -8,7 +8,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Default implementation of attribute resolution for <see cref="InspectorProperty"/>
     /// </summary>
-    public class DefaultAttributeResolver : AttributeResolver
+    public class DefaultAttributeResolver : AttributeResolverBase
     {
         private Attribute[] _attributes;
         private Dictionary<Attribute, AttributeSource> _attributeSources;

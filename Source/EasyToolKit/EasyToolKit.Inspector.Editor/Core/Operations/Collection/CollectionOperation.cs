@@ -8,7 +8,6 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public abstract class CollectionOperation : ICollectionOperation
     {
-        private IChangeManager _changeManager;
         private readonly IPropertyOperation _auxiliaryOperation;
 
         protected CollectionOperation([NotNull] IPropertyOperation auxiliaryOperation)
@@ -40,11 +39,6 @@ namespace EasyToolKit.Inspector.Editor
         /// Element type
         /// </summary>
         public abstract Type ElementType { get; }
-
-        /// <summary>
-        /// Change manager for tracking collection modifications
-        /// </summary>
-        public virtual IChangeManager ChangeManager => _changeManager ??= new UnityChangeManager();
 
         /// <summary>
         /// Gets the collection value

@@ -7,7 +7,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Default implementation of drawer chain resolver for <see cref="InspectorProperty"/>
     /// </summary>
-    public class DefaultDrawerChainResolver : DrawerChainResolver
+    public class DefaultDrawerChainResolver : DrawerChainResolverBase
     {
         private DrawerChain _chain;
 
@@ -24,7 +24,7 @@ namespace EasyToolKit.Inspector.Editor
             }
 
             // Get default property drawer types for the property
-            var drawerTypeResults = InspectorDrawerUtility.GetDefaultPropertyDrawerTypes(Property);
+            var drawerTypeResults = InspectorDrawerUtility.GetDrawerTypes(Property);
             var drawers = new List<IEasyDrawer>();
 
             // Create and initialize drawer instances
@@ -39,14 +39,6 @@ namespace EasyToolKit.Inspector.Editor
             // Create and cache the drawer chain
             _chain = new DrawerChain(Property, drawers);
             return _chain;
-        }
-
-        /// <summary>
-        /// Deinitializes the resolver by clearing the cached drawer chain
-        /// </summary>
-        protected override void Deinitialize()
-        {
-            _chain = null;
         }
     }
 }

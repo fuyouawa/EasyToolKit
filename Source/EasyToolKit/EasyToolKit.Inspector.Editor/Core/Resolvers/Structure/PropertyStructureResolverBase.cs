@@ -6,28 +6,10 @@ namespace EasyToolKit.Inspector.Editor
     /// Abstract base class for property structure resolvers in the inspector system.
     /// Provides common functionality for property structure resolution without collection operations.
     /// </summary>
-    public abstract class PropertyStructureResolverBase : IPropertyStructureResolver
+    public abstract class PropertyStructureResolverBase : InspectorElementBase, IPropertyStructureResolver
     {
         private int? _lastChildCountUpdateId;
         private int _childCount;
-
-        /// <summary>
-        /// Gets the InspectorProperty associated with this resolver
-        /// </summary>
-        public InspectorProperty Property { get; private set; }
-
-        /// <summary>
-        /// Gets whether this resolver has been initialized
-        /// </summary>
-        public bool IsInitialized { get; private set; }
-
-        InspectorProperty IInitializableResolver.Property
-        {
-            get => Property;
-            set => Property = value;
-        }
-
-        bool IInitializable.IsInitialized => IsInitialized;
 
         public int ChildCount
         {
@@ -41,30 +23,6 @@ namespace EasyToolKit.Inspector.Editor
                 return _childCount;
             }
         }
-
-        void IInitializable.Initialize()
-        {
-            if (IsInitialized) return;
-            Initialize();
-            IsInitialized = true;
-        }
-
-        void IInitializable.Deinitialize()
-        {
-            if (!IsInitialized) return;
-            Deinitialize();
-            IsInitialized = false;
-        }
-
-        /// <summary>
-        /// Initializes the resolver (can be overridden by derived classes)
-        /// </summary>
-        protected virtual void Initialize() { }
-
-        /// <summary>
-        /// Deinitializes the resolver (can be overridden by derived classes)
-        /// </summary>
-        protected virtual void Deinitialize() { }
 
         public virtual bool CanResolver(InspectorProperty property) => true;
 
@@ -115,6 +73,8 @@ namespace EasyToolKit.Inspector.Editor
                 return _valueEntry;
             }
         }
+
+        public override Type MatchedType => typeof(PropertyStructureResolverBase<>);
 
         public override bool CanResolver(InspectorProperty property)
         {

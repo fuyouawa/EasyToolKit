@@ -86,7 +86,7 @@ namespace EasyToolKit.Inspector.Editor
             get => _values[index];
             set
             {
-                if (!EqualityComparer<TValue>.Default.Equals(_values[index], value))
+                if (!ReferenceEquals(_values[index], value) && !EqualityComparer<TValue>.Default.Equals(_values[index], value))
                 {
                     if (Property.IsReadOnly)
                     {
@@ -141,7 +141,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     for (int i = 0; i < Property.Tree.Targets.Count; i++)
                     {
-                        _values[i] = (TValue)(object)Property.Tree.Targets[i];
+                        _values[i] = (TValue)Property.Tree.Targets[i];
                     }
                 }
             }
@@ -157,7 +157,7 @@ namespace EasyToolKit.Inspector.Editor
                         _values[i] = default;
                         continue;
                     }
-                    var value = (TValue)Property.Operation.GetWeakValue(owner);
+                    var value = (TValue)Property.GetOperation().GetWeakValue(ref owner);
                     if (value == null && IsInstantiableType)
                     {
                         if (typeof(TValue).TryCreateInstance<TValue>(out _values[i]))
@@ -193,7 +193,8 @@ namespace EasyToolKit.Inspector.Editor
             {
                 var owner = Property.Parent.ValueEntry.WeakValues[i];
                 var value = _values[i];
-                Property.Operation.SetWeakValue(owner, value);
+                Property.GetOperation().SetWeakValue(ref owner, value);
+                Property.Parent.ValueEntry.WeakValues[i] = owner;
             }
 
             ClearDirty();

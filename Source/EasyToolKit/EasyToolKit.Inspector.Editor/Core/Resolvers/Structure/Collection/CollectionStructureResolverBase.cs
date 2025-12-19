@@ -4,38 +4,15 @@ using System.Collections.Generic;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public abstract class CollectionStructureResolverBase<TCollection, TElement> : PropertyStructureResolverBase<TCollection>, ICollectionStructureResolver
-        where TCollection : IEnumerable<TElement>
+    public abstract class CollectionStructureResolverBase<TCollection> : PropertyStructureResolverBase<TCollection>, ICollectionStructureResolver
     {
         private readonly Dictionary<int, InspectorPropertyInfo> _propertyInfosByIndex =
             new Dictionary<int, InspectorPropertyInfo>();
 
-        private IPropertyValueEntry<TCollection> _valueEntry;
-
-        /// <summary>
-        /// Gets the property value entry for the collection, with lazy initialization
-        /// </summary>
-        protected IPropertyValueEntry<TCollection> ValueEntry
-        {
-            get
-            {
-                if (_valueEntry == null)
-                {
-                    _valueEntry = Property.ValueEntry as IPropertyValueEntry<TCollection>;
-                    if (_valueEntry == null)
-                    {
-                        Property.Update(true);
-                        _valueEntry = Property.ValueEntry as IPropertyValueEntry<TCollection>;
-                    }
-                }
-                return _valueEntry;
-            }
-        }
-
         /// <summary>
         /// Gets the type of elements in the collection
         /// </summary>
-        public Type ElementType => typeof(TElement);
+        public abstract Type ElementType { get; }
 
         /// <summary>
         /// Gets information about a child property at the specified index
@@ -68,14 +45,6 @@ namespace EasyToolKit.Inspector.Editor
         public override int ChildNameToIndex(string name)
         {
             throw new NotSupportedException("Collection resolvers do not support name-based access");
-        }
-
-        /// <summary>
-        /// Clears cached property information when the resolver is deinitialized
-        /// </summary>
-        protected override void Deinitialize()
-        {
-            _propertyInfosByIndex.Clear();
         }
     }
 }

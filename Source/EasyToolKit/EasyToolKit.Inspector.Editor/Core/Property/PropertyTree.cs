@@ -46,15 +46,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public Type TargetType => LogicRootProperty.Info.PropertyType;
 
-        /// <summary>
-        /// 获取结构解析器定位器工厂
-        /// </summary>
-        public IPropertyStructureResolverLocatorFactory StructureResolverLocatorFactory { get; }
-
-        /// <summary>
-        /// 获取操作解析器定位器工厂
-        /// </summary>
-        public IPropertyOperationResolverLocatorFactory OperationResolverLocatorFactory { get; }
+        public IPropertyStructureResolverFactory StructureResolverFactory { get; }
+        public IPropertyOperationResolverFactory OperationResolverFactory { get; }
+        public IAttributeResolverFactory AttributeResolverFactory { get; }
+        public IDrawerChainResolverFactory DrawerChainResolverFactory { get; }
+        public IGroupResolverFactory GroupResolverFactory { get; }
 
         /// <summary>
         /// Gets or sets whether to draw the <see cref="MonoScript"/> object field in the inspector.
@@ -71,24 +67,22 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="targets">The target objects to create the property tree for.</param>
         /// <param name="serializedObject">The <see cref="SerializedObject"/> to create the property tree for.</param>
-        /// <param name="structureResolverLocatorFactory">结构解析器定位器工厂</param>
-        /// <param name="operationResolverLocatorFactory">操作解析器定位器工厂</param>
         /// <exception cref="ArgumentNullException">Thrown when <see cref="serializedObject"/> is null.</exception>
         public PropertyTree(
             [NotNull] object[] targets,
-            [CanBeNull] SerializedObject serializedObject,
-            IPropertyStructureResolverLocatorFactory structureResolverLocatorFactory = null,
-            IPropertyOperationResolverLocatorFactory operationResolverLocatorFactory = null)
+            [CanBeNull] SerializedObject serializedObject)
         {
             if (targets.IsNullOrEmpty())
                 throw new ArgumentException(nameof(targets));
 
             _targets = targets;
             SerializedObject = serializedObject;
-            StructureResolverLocatorFactory = structureResolverLocatorFactory
-                ?? new DefaultPropertyStructureResolverLocatorFactory();
-            OperationResolverLocatorFactory = operationResolverLocatorFactory
-                ?? new DefaultPropertyOperationResolverLocatorFactory();
+
+            StructureResolverFactory = new DefaultPropertyStructureResolverFactory();
+            OperationResolverFactory = new DefaultPropertyOperationResolverFactory();
+            AttributeResolverFactory = new DefaultAttributeResolverFactory();
+            DrawerChainResolverFactory = new DefaultDrawerChainResolverFactory();
+            GroupResolverFactory = new DefaultGroupResolverFactory();
 
             LogicRootProperty = new InspectorProperty(this, null,
                 InspectorPropertyInfo.CreateForLogicRoot(targets), 0);
@@ -377,14 +371,6 @@ namespace EasyToolKit.Inspector.Editor
                 _dirtyProperties.Clear();
                 foreach (var property in tempDirtyProperties)
                 {
-                    if (property.Operation is ICollectionOperation operation)
-                    {
-                        if (operation.ChangeManager.ApplyChanges())
-                        {
-                            changed = true;
-                        }
-                    }
-
                     if (property.ValueEntry != null)
                     {
                         if (property.ValueEntry.ApplyChanges())

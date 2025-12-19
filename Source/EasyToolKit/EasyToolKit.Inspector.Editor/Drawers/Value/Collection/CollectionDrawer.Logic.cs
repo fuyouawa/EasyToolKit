@@ -194,10 +194,12 @@ namespace EasyToolKit.Inspector.Editor
 
         protected virtual void DoAddElement(int targetIndex, object valueToAdd)
         {
-            var collection = Property.Parent.ValueEntry.WeakValues[targetIndex];
-            // 临时直接调用，需要重新设计ChangeManager的集成
-            _collectionOperation.AddWeakElement(collection, valueToAdd);
-            _onAddedElementCallback?.Invoke(collection, valueToAdd);
+            var parent = Property.Parent.ValueEntry.WeakValues[targetIndex];
+            ValueEntry.EnqueueChange(() =>
+            {
+                _collectionOperation.AddWeakElement(Property, targetIndex, valueToAdd);
+                _onAddedElementCallback?.Invoke(parent, valueToAdd);
+            });
         }
 
         private void DoInsertElement(int index, object valueToAdd)
@@ -213,14 +215,18 @@ namespace EasyToolKit.Inspector.Editor
             // Use the new ordered collection operation
             if (_orderedCollectionOperation != null)
             {
-                _changeManager.EnqueueChange(() => _orderedCollectionOperation.InsertWeakElementAt(targetIndex, index, valueToAdd));
+                var parent = Property.Parent.ValueEntry.WeakValues[targetIndex];
+                ValueEntry.EnqueueChange(() =>
+                {
+                    _orderedCollectionOperation.InsertWeakElementAt(Property, targetIndex, index, valueToAdd);
+                    _onAddedElementCallback?.Invoke(parent, valueToAdd);
+                });
             }
             else
             {
                 throw new InvalidOperationException(
                     $"The property '{Property.Path}' is not ordered collection, so you cannot insert elements at a specific index.");
             }
-            _onAddedElementCallback?.Invoke(Property.Parent.ValueEntry.WeakValues[targetIndex], valueToAdd);
         }
 
         protected virtual void DoRemoveElementAt(int index)
@@ -241,11 +247,13 @@ namespace EasyToolKit.Inspector.Editor
             else
             {
                 Assert.IsTrue(_orderedCollectionOperation != null);
-                _changeManager.EnqueueChange(() => _orderedCollectionOperation.RemoveWeakElementAt(targetIndex, index));
+                ValueEntry.EnqueueChange(() =>
+                {
+                    var valueToRemove = Property.Children[index].ValueEntry.WeakValues[targetIndex];
+                    _orderedCollectionOperation.RemoveWeakElementAt(Property, targetIndex, index);
+                    _onRemovedElementCallback?.Invoke(parent, valueToRemove);
+                });
             }
-
-            var valueToRemove = Property.Children[index].ValueEntry.WeakValues[targetIndex];
-            _onRemovedElementCallback?.Invoke(parent, valueToRemove);
         }
 
         protected virtual void DoRemoveElement(InspectorProperty propertyToRemove)
@@ -279,10 +287,12 @@ namespace EasyToolKit.Inspector.Editor
             }
             else
             {
-                _changeManager.EnqueueChange(() => _collectionOperation.RemoveWeakElement(targetIndex, valueToRemove));
+                ValueEntry.EnqueueChange(() =>
+                {
+                    _collectionOperation.RemoveWeakElement(Property, targetIndex, valueToRemove);
+                    _onRemovedElementCallback?.Invoke(parent, valueToRemove);
+                });
             }
-
-            _onRemovedElementCallback?.Invoke(parent, valueToRemove);
         }
 
         protected virtual object GetValueToAdd(int targetIndex)

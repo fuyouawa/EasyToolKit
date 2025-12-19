@@ -3,13 +3,13 @@
 namespace EasyToolKit.Inspector.Editor
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class ResolverPriorityAttribute : Attribute
+    public class ResolverPriorityAttribute : Attribute, IInspectorPriorityGetter
     {
-        public double Priority { get; }
+        public InspectorPriority Priority { get; }
 
-        public ResolverPriorityAttribute(double priority)
+        public ResolverPriorityAttribute(double priority = 0.0)
         {
-            Priority = priority;
+            Priority = new InspectorPriority(priority);
         }
     }
 }

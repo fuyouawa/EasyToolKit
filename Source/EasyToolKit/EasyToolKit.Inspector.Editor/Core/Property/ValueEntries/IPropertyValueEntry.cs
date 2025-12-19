@@ -72,6 +72,12 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <returns>True if changes were applied; otherwise, false.</returns>
         bool ApplyChanges();
+
+        /// <summary>
+        /// Enqueues a change action to be applied later
+        /// </summary>
+        /// <param name="action">The action representing the change to be applied</param>
+        void EnqueueChange(Action action);
     }
 
     /// <summary>

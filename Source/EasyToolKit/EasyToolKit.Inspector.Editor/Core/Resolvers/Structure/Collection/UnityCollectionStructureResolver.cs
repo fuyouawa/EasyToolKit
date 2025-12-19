@@ -5,10 +5,12 @@ using UnityEditor;
 namespace EasyToolKit.Inspector.Editor
 {
     [ResolverPriority(-10000.0)]
-    public class UnityCollectionStructureResolver<TCollection, TElement> : CollectionStructureResolverBase<TCollection, TElement>
+    public class UnityCollectionStructureResolver<TCollection, TElement> : CollectionStructureResolverBase<TCollection>
         where TCollection : IList<TElement>
     {
         private SerializedProperty _serializedProperty;
+
+        public override Type ElementType => typeof(TElement);
 
         protected override bool CanResolverProperty(InspectorProperty property)
         {

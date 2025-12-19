@@ -97,6 +97,11 @@ namespace EasyToolKit.Inspector.Editor
             return _valueEntry.ApplyChanges();
         }
 
+        public void EnqueueChange(Action action)
+        {
+            _valueEntry.EnqueueChange(action);
+        }
+
         /// <summary>
         /// Determines whether the property values are conflicted across different targets.
         /// A property is conflicted when different targets have different values for the same property.

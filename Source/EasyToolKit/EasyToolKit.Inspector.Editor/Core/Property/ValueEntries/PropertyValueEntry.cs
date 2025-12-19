@@ -16,6 +16,7 @@ namespace EasyToolKit.Inspector.Editor
         private bool? _isConflictedCache;
         private int? _lastUpdateId;
         private Type _runtimeValueType;
+        private Action _changeAction;
 
         /// <summary>
         /// Gets the inspector property associated with this value entry.
@@ -145,8 +146,18 @@ namespace EasyToolKit.Inspector.Editor
 
                 changed = Values.ApplyChanges();
 
+                if (_changeAction != null)
+                {
+                    _changeAction();
+                    _changeAction = null;
+                    changed = true;
+                }
+
                 if (changed)
                 {
+                    Property.Update();
+                    Property.Children?.Clear();
+
                     for (int i = 0; i < Property.Tree.Targets.Count; i++)
                     {
                         TriggerValueChanged(i);
@@ -155,6 +166,12 @@ namespace EasyToolKit.Inspector.Editor
             }
 
             return changed;
+        }
+
+        public void EnqueueChange(Action action)
+        {
+            _changeAction = action;
+            Values.ForceMakeDirty();
         }
 
         /// <summary>
