@@ -17,8 +17,6 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public sealed class InspectorPropertyInfo
     {
-        private bool? _isArrayElement;
-
         public Type OwnerType { get; private set; }
 
         /// <summary>
@@ -42,33 +40,11 @@ namespace EasyToolKit.Inspector.Editor
         public bool IsUnityProperty { get; private set; }
 
         public MemberInfo MemberInfo { get; private set; }
+        public bool IsCollectionElement { get; private set; }
+        public int CollectionElementIndex { get; private set; }
 
         private InspectorPropertyInfo()
         {
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this property represents an array element.
-        /// This is determined by checking if the property's owner type implements <see cref="ICollection{T}"/>.
-        /// </summary>
-        public bool IsArrayElement
-        {
-            get
-            {
-                if (_isArrayElement == null)
-                {
-                    if (OwnerType.IsImplementsOpenGenericType(typeof(ICollection<>)))
-                    {
-                        _isArrayElement = false;
-                    }
-                    else
-                    {
-                        _isArrayElement = true;
-                        //TODO IsArrayElement其他情况的补充
-                    }
-                }
-                return _isArrayElement.Value;
-            }
         }
 
         /// <summary>
@@ -224,7 +200,8 @@ namespace EasyToolKit.Inspector.Editor
                 PropertyName = elementName,
                 OwnerType = collectionType,
                 IsUnityProperty = false,
-                _isArrayElement = true
+                IsCollectionElement = true,
+                CollectionElementIndex = elementIndex
             };
 
             return info;

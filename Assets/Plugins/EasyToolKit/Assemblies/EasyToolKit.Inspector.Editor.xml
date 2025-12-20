@@ -66,127 +66,31 @@
             Resets the enumerator position.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.DrawerPriority">
-            <summary>
-            Represents the priority of a drawer in the inspector drawer chain.
-            Higher priority drawers are executed before lower priority drawers.
-            This class implements comparison and equality operations for proper drawer ordering.
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriority.LowestPriority">
-            <summary>
-            Represents the lowest possible drawer priority.
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriority.ValuePriority">
-            <summary>
-            Represents the standard priority for value drawers.
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriority.AttributePriority">
-            <summary>
-            Represents the priority for attribute-based drawers.
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriority.SuperPriority">
-            <summary>
-            Represents the highest standard drawer priority.
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriority.Value">
-            <summary>
-            Gets the numeric value of this drawer priority.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.#ctor(System.Double)">
-            <summary>
-            Initializes a new instance of the DrawerPriority class with the specified value.
-            </summary>
-            <param name="value">The numeric priority value.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.op_Equality(EasyToolKit.Inspector.Editor.DrawerPriority,EasyToolKit.Inspector.Editor.DrawerPriority)">
-            <summary>
-            Determines whether two DrawerPriority instances are equal.
-            Uses approximate equality comparison to account for floating-point precision.
-            </summary>
-            <param name="left">The first DrawerPriority to compare.</param>
-            <param name="right">The second DrawerPriority to compare.</param>
-            <returns>true if the two DrawerPriority instances are equal; otherwise, false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.op_Inequality(EasyToolKit.Inspector.Editor.DrawerPriority,EasyToolKit.Inspector.Editor.DrawerPriority)">
-            <summary>
-            Determines whether two DrawerPriority instances are not equal.
-            </summary>
-            <param name="left">The first DrawerPriority to compare.</param>
-            <param name="right">The second DrawerPriority to compare.</param>
-            <returns>true if the two DrawerPriority instances are not equal; otherwise, false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.op_GreaterThan(EasyToolKit.Inspector.Editor.DrawerPriority,EasyToolKit.Inspector.Editor.DrawerPriority)">
-            <summary>
-            Determines whether one DrawerPriority is greater than another.
-            </summary>
-            <param name="left">The first DrawerPriority to compare.</param>
-            <param name="right">The second DrawerPriority to compare.</param>
-            <returns>true if left is greater than right; otherwise, false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.op_LessThan(EasyToolKit.Inspector.Editor.DrawerPriority,EasyToolKit.Inspector.Editor.DrawerPriority)">
-            <summary>
-            Determines whether one DrawerPriority is less than another.
-            </summary>
-            <param name="left">The first DrawerPriority to compare.</param>
-            <param name="right">The second DrawerPriority to compare.</param>
-            <returns>true if left is less than right; otherwise, false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.op_GreaterThanOrEqual(EasyToolKit.Inspector.Editor.DrawerPriority,EasyToolKit.Inspector.Editor.DrawerPriority)">
-            <summary>
-            Determines whether one DrawerPriority is greater than or equal to another.
-            </summary>
-            <param name="left">The first DrawerPriority to compare.</param>
-            <param name="right">The second DrawerPriority to compare.</param>
-            <returns>true if left is greater than or equal to right; otherwise, false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.op_LessThanOrEqual(EasyToolKit.Inspector.Editor.DrawerPriority,EasyToolKit.Inspector.Editor.DrawerPriority)">
-            <summary>
-            Determines whether one DrawerPriority is less than or equal to another.
-            </summary>
-            <param name="left">The first DrawerPriority to compare.</param>
-            <param name="right">The second DrawerPriority to compare.</param>
-            <returns>true if left is less than or equal to right; otherwise, false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.GetHashCode">
-            <summary>
-            Returns the hash code for this DrawerPriority.
-            </summary>
-            <returns>A hash code for the current DrawerPriority.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.Equals(System.Object)">
-            <summary>
-            Determines whether the specified object is equal to the current DrawerPriority.
-            </summary>
-            <param name="obj">The object to compare with the current DrawerPriority.</param>
-            <returns>true if the specified object is equal to the current DrawerPriority; otherwise, false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.Equals(EasyToolKit.Inspector.Editor.DrawerPriority)">
-            <summary>
-            Indicates whether the current DrawerPriority is equal to another DrawerPriority.
-            </summary>
-            <param name="other">A DrawerPriority to compare with this DrawerPriority.</param>
-            <returns>true if the current DrawerPriority is equal to the other parameter; otherwise, false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerPriority.CompareTo(EasyToolKit.Inspector.Editor.DrawerPriority)">
-            <summary>
-            Compares this DrawerPriority with another DrawerPriority and returns an integer
-            that indicates whether this instance precedes, follows, or occurs in the same position
-            in the sort order as the other DrawerPriority.
-            </summary>
-            <param name="other">A DrawerPriority to compare with this instance.</param>
-            <returns>A value that indicates the relative order of the objects being compared.</returns>
-        </member>
         <member name="T:EasyToolKit.Inspector.Editor.DrawerPriorityAttribute">
             <summary>
             Attribute used to specify the priority of an inspector drawer.
             This attribute can be applied to drawer classes to control their execution order
             in the drawer chain. Higher priority drawers are executed before lower priority drawers.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriorityAttribute.LowestPriority">
+            <summary>
+            Represents the lowest possible drawer priority.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriorityAttribute.ValuePriority">
+            <summary>
+            Represents the standard priority for value drawers.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriorityAttribute.AttributePriority">
+            <summary>
+            Represents the priority for attribute-based drawers.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.DrawerPriorityAttribute.SuperPriority">
+            <summary>
+            Represents the highest standard drawer priority.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.DrawerPriorityAttribute.Priority">
@@ -279,120 +183,839 @@
             Can be overridden by derived classes to customize tree drawing behavior.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.GenericPropertyResolverLocator">
+        <member name="T:EasyToolKit.Inspector.Editor.IInspectorElement">
             <summary>
-            Property resolver locator that handles generic collection types and provides
-            specialized resolvers using the new composition-based architecture.
+            Base interface for all EasyToolKit inspector elements that manage properties and initialization state.
+            This interface provides common functionality for drawers, resolvers, and other inspector components.
             </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IInspectorElement.Property">
+            <summary>
+            Gets or sets the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> that this element is associated with.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IInspectorElement.IsInitialized">
+            <summary>
+            Gets a value indicating whether this element has been initialized.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IInspectorElement.Initialize">
+            <summary>
+            Initializes this element with its current property and any required resources.
+            This method should be called before using the element for drawing or resolving.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.InspectorElementUtility">
+            <summary>
+            Utility class for discovering and matching inspector elements that implement <see cref="T:EasyToolKit.Inspector.Editor.IInspectorElement"/>.
+            Elements are discovered via reflection, sorted by priority obtained from <see cref="T:EasyToolKit.Inspector.Editor.IInspectorPriorityGetter"/> attributes,
+            and registered in a <see cref="F:EasyToolKit.Inspector.Editor.InspectorElementUtility.s_typeMatcher"/> for type-based matching.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.InspectorElementUtility.NullPriorityFallbacks">
+            <summary>
+            Gets or sets a callback that provides a default <see cref="T:EasyToolKit.Inspector.Editor.InspectorPriority"/> when no priority attribute is found.
+            If not set, returns null when no priority attribute is present.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.AddNullPriorityFallback(System.Func{System.Type,EasyToolKit.Inspector.Editor.InspectorPriority})">
+            <summary>
+            Adds a fallback function that provides a default priority when no priority attribute is found.
+            This will reset the type matcher to ensure newly added elements are sorted with the updated fallback.
+            </summary>
+            <param name="fallback">The fallback function to add.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.GetElementTypes(EasyToolKit.Inspector.Editor.InspectorProperty,System.Func{System.Type,System.Boolean},System.Collections.Generic.IList{System.Type[]})">
+            <summary>
+            Gets element types for the specified inspector property.
+            Matches elements against the property's value type and its attributes.
+            </summary>
+            <param name="property">The inspector property to match.</param>
+            <returns>An enumerable of types, ordered by priority.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.GetMatchedType(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+            <summary>
+            Resolves generic type arguments for inspector elements that target partially open generic types.
+            This method handles complex scenarios where an inspector element's generic parameters correspond to
+            specific type parameters within a partially concrete generic target type.
+            </summary>
+            <param name="matchIndex">The type match index containing the inspector element type and its target generic type.</param>
+            <param name="targets">The target types to match against; expected to contain exactly one type (the actual value type).</param>
+            <param name="stopMatch">Reference parameter that can be set to true to stop further matching (not used in this implementation).</param>
+            <returns>
+            If the inspector element's target type is a (partially open) generic type and the actual value type
+            can provide the missing generic arguments, returns the concretely instantiated inspector element type.
+            Otherwise, returns null to indicate no match.
+            </returns>
             <remarks>
-            This locator specifically handles:
-            - <see cref="T:System.Collections.Generic.IList`1"/> collections with composition-based resolvers
-            - <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> collections with composition-based resolvers
-            - Other types with GenericPropertyStructureResolver
+            <para>
+            This method enables inspector elements to target complex generic types with mixed concrete and generic type parameters.
+            For example, consider an inspector element type that draws values of a generic collection with a fixed key type:
+            </para>
+            <code>
+            class SerializedDictionaryValueDrawer&lt;TValue&gt; : EasyValueDrawer&lt;SerializedDictionary&lt;string, TValue&gt;&gt;
+            </code>
+            <para>
+            Here, <c>SerializedDictionaryValueDrawer&lt;TValue&gt;</c> (matchIndex.Type) targets
+            <c>SerializedDictionary&lt;string, TValue&gt;</c> (matchIndex.Targets[0]),
+            which is a partially open generic type with a concrete key type (string) and a generic value type (TValue).
+            The target type is obtained via <see cref="M:EasyToolKit.Core.TypeExtensions.GetArgumentsOfInheritedOpenGenericType(System.Type,System.Type)"/> during initialization:
+            given <c>SerializedDictionaryValueDrawer&lt;TValue&gt;</c> and its base class <c>EasyValueDrawer&lt;SerializedDictionary&lt;string, TValue&gt;&gt;</c>,
+            the method extracts the generic argument <c>SerializedDictionary&lt;string, TValue&gt;</c>.
+            </para>
+            <para>
+            When the actual value type is <c>SerializedDictionary&lt;string, int&gt;</c> (targets[0]), this method:
+            </para>
+            <list type="number">
+            <item><description>Validates there's exactly one target type and that the element's target is a generic type.</description></item>
+            <item><description>If the target is a completely concrete type (no generic parameters), requires exact type equality.</description></item>
+            <item><description>Otherwise, calls <see cref="M:EasyToolKit.Core.TypeExtensions.ResolveMissingGenericTypeArguments(System.Type,System.Type,System.Boolean)"/> to extract the missing generic arguments:
+            <c>ResolveMissingGenericTypeArguments(SerializedDictionary&lt;string, TValue&gt;, SerializedDictionary&lt;string, int&gt;, false)</c>
+            returns <c>[int]</c>, which is the concrete type for the parameter TValue.</description></item>
+            <item><description>If no arguments are missing (types already match or are incompatible), returns null.</description></item>
+            <item><description>Checks that <c>SerializedDictionaryValueDrawer&lt;TValue&gt;</c>'s generic constraints are satisfied by <c>[int]</c> via <see cref="M:EasyToolKit.Core.TypeExtensions.AreGenericConstraintsSatisfiedBy(System.Type,System.Type[])"/>.</description></item>
+            <item><description>If all checks pass, constructs and returns <c>SerializedDictionaryValueDrawer&lt;int&gt;</c> using <see cref="M:System.Type.MakeGenericType(System.Type[])"/>.</description></item>
+            </list>
+            <para>
+            This mechanism allows inspector elements to be automatically instantiated with the correct type arguments
+            based on the actual runtime type of the property being inspected. It supports complex scenarios with multiple
+            generic parameters, such as <c>KeyValuePairDrawer&lt;TKey, TValue&gt; : EasyValueDrawer&lt;KeyValuePair&lt;int, TKey&gt;&gt;</c>
+            where only a subset of the target type's generic parameters correspond to the drawer's own generic parameters.
+            </para>
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolverLocator.GetResolver(EasyToolKit.Inspector.Editor.InspectorProperty)">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.GetElementPriority(System.Type)">
             <summary>
-            Gets the appropriate property resolver for generic collection types using composition.
+            Gets the priority of an inspector element type.
+            Priority is obtained from the <see cref="T:EasyToolKit.Inspector.Editor.IInspectorPriorityGetter"/> attribute if present;
+            otherwise, falls back to <see cref="F:EasyToolKit.Inspector.Editor.InspectorElementUtility.NullPriorityFallbacks"/> if set.
             </summary>
-            <param name="property">The inspector property to find a resolver for.</param>
-            <returns>
-            An IPropertyResolver instance based on the collection type:
-            - CollectionPropertyResolver for <see cref="T:System.Collections.Generic.IList`1"/> collections
-            - CollectionPropertyResolver for <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> collections
-            - GenericPropertyStructureResolver for other types
-            </returns>
+            <param name="elementType">The element type to examine.</param>
+            <returns>The priority of the element, or null if no priority could be determined.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolverLocator.CreateListCollectionResolver(EasyToolKit.Inspector.Editor.InspectorProperty,System.Type,System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.CanElementHandleProperty(System.Type,EasyToolKit.Inspector.Editor.InspectorProperty)">
             <summary>
-            Creates a composition-based collection resolver for IList{T} collections
+            Determines whether the specified element type can handle the given property.
+            If the element implements <see cref="T:EasyToolKit.Inspector.Editor.IEasyDrawer"/>, calls its <see cref="!:IEasyDrawer.CanDrawProperty"/> method;
+            otherwise, returns true assuming the element can handle any property.
             </summary>
-            <param name="property">The inspector property</param>
-            <param name="collectionType">The collection type</param>
-            <param name="elementType">The element type</param>
-            <returns>A composition-based collection resolver</returns>
+            <param name="elementType">The element type to test.</param>
+            <param name="property">The inspector property to check.</param>
+            <returns>True if the element can handle the property; otherwise, false.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyResolverLocator.CreateReadOnlyListCollectionResolver(EasyToolKit.Inspector.Editor.InspectorProperty,System.Type,System.Type)">
+        <member name="T:EasyToolKit.Inspector.Editor.CollectionOperationBase">
             <summary>
-            Creates a composition-based collection resolver for IReadOnlyList{T} collections
-            </summary>
-            <param name="property">The inspector property</param>
-            <param name="collectionType">The collection type</param>
-            <param name="elementType">The element type</param>
-            <returns>A composition-based collection resolver</returns>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IPropertyResolverLocator">
-            <summary>
-            Interface for locating property resolvers based on inspector property characteristics.
-            Implementations determine the appropriate resolver for handling property serialization and display.
+            Abstract base class for collection operations
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IPropertyResolverLocator.GetResolver(EasyToolKit.Inspector.Editor.InspectorProperty)">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationBase.IsReadOnly">
             <summary>
-            Gets the appropriate property resolver for the specified inspector property.
-            </summary>
-            <param name="property">The inspector property to find a resolver for.</param>
-            <returns>An IPropertyResolver instance suitable for handling the property.</returns>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.PropertyResolverLocator">
-            <summary>
-            Abstract base class for property resolver locators that provides a foundation
-            for implementing specific resolver location strategies.
+            Whether the collection is read-only
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyResolverLocator.GetResolver(EasyToolKit.Inspector.Editor.InspectorProperty)">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationBase.OwnerType">
             <summary>
-            When implemented in a derived class, gets the appropriate property resolver
-            for the specified inspector property based on the locator's specific strategy.
+            Owner type
             </summary>
-            <param name="property">The inspector property to find a resolver for.</param>
-            <returns>An IPropertyResolver instance suitable for handling the property.</returns>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.UnityPropertyResolverLocator">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationBase.ValueType">
             <summary>
-            Property resolver locator specifically designed for Unity serialized properties
-            and collections, providing specialized resolvers that work with Unity's serialization system.
+            Value type (collection type)
             </summary>
-            <remarks>
-            This locator handles:
-            - Unity collections with composite CollectionPropertyResolver
-            - Regular Unity properties with UnityPropertyStructureResolver
-            It leverages Unity's SerializedProperty system for proper serialization support.
-            </remarks>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolverLocator.GetResolver(EasyToolKit.Inspector.Editor.InspectorProperty)">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationBase.CollectionType">
             <summary>
-            Gets the appropriate property resolver for Unity serialized properties.
+            Collection type
             </summary>
-            <param name="property">The inspector property to find a resolver for.</param>
-            <returns>
-            An IPropertyStructureResolver instance based on the property type:
-            - CollectionPropertyResolver for collection types
-            - UnityPropertyStructureResolver for other property types
-            </returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolverLocator.IsUnityCollectionType(System.Type,UnityEditor.SerializedProperty)">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationBase.ElementType">
             <summary>
-            Determines if the type represents a Unity collection type
+            Element type
             </summary>
-            <param name="valueType">The value type to check</param>
-            <param name="serializedProperty">The serialized property for additional context</param>
-            <returns>True if this is a Unity collection type</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolverLocator.CreateCollectionResolver(EasyToolKit.Inspector.Editor.InspectorProperty,System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase.GetWeakValue(System.Object@)">
             <summary>
-            Creates a composite collection resolver for Unity collections
+            Gets the collection value
             </summary>
-            <param name="property">The inspector property</param>
-            <param name="valueType">The value type of the collection</param>
-            <returns>A configured CollectionPropertyResolver instance</returns>
+            <param name="owner">Owner object</param>
+            <returns>Collection value</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyResolverLocator.GetElementType(System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase.SetWeakValue(System.Object@,System.Object)">
             <summary>
-            Determines the element type for a collection
+            Sets the collection value
             </summary>
-            <param name="valueType">The collection value type</param>
-            <returns>The element type of the collection</returns>
+            <param name="owner">Owner object</param>
+            <param name="value">Collection to set</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase.AddWeakElement(System.Object@,System.Object)">
+            <summary>
+            Adds an element to the collection
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="value">Element to add</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase.RemoveWeakElement(System.Object@,System.Object)">
+            <summary>
+            Removes an element from the collection
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="value">Element to remove</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.CollectionOperationBase`2">
+            <summary>
+            Generic abstract base class for collection operations with type safety
+            </summary>
+            <typeparam name="TCollection">Collection type</typeparam>
+            <typeparam name="TElement">Element type</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.ValueType">
+            <summary>
+            Value type (collection type)
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.CollectionType">
+            <summary>
+            Collection type
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.ElementType">
+            <summary>
+            Element type
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.GetValue(System.Object@)">
+            <summary>
+            Gets the collection value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Collection value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.SetValue(System.Object@,`0)">
+            <summary>
+            Sets the collection value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Collection to set</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.AddElement(`0@,`1)">
+            <summary>
+            Adds an element to the collection with type safety
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="value">Element to add</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.RemoveElement(`0@,`1)">
+            <summary>
+            Removes an element from the collection with type safety
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="value">Element to remove</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.GetWeakValue(System.Object@)">
+            <summary>
+            Gets the collection value
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Collection value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.SetWeakValue(System.Object@,System.Object)">
+            <summary>
+            Sets the collection value
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Collection to set</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.AddWeakElement(System.Object@,System.Object)">
+            <summary>
+            Adds an element to the collection
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="value">Element to add</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationBase`2.RemoveWeakElement(System.Object@,System.Object)">
+            <summary>
+            Removes an element from the collection
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="value">Element to remove</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ICollectionOperation">
+            <summary>
+            Collection operation interface, inherits from IPropertyOperation
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionOperation.CollectionType">
+            <summary>
+            Collection type
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionOperation.ElementType">
+            <summary>
+            Element type
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperation.AddWeakElement(System.Object@,System.Object)">
+            <summary>
+            Adds an element to the collection
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="value">Element to add</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperation.RemoveWeakElement(System.Object@,System.Object)">
+            <summary>
+            Removes an element from the collection
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="value">Element to remove</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.IOrderedCollectionOperation">
+            <summary>
+            Interface for handling ordered collection operations in the inspector system.
+            Extends <see cref="T:EasyToolKit.Inspector.Editor.ICollectionOperation"/> with position-based operations.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionOperation.InsertWeakElementAt(System.Object@,System.Int32,System.Object)">
+            <summary>
+            Inserts an element into the collection at the specified index
+            </summary>
+            <param name="collection">collection target</param>
+            <param name="index">The position in the collection where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionOperation.RemoveWeakElementAt(System.Object@,System.Int32)">
+            <summary>
+            Removes an element from the collection at the specified index
+            </summary>
+            <param name="collection">collection target</param>
+            <param name="index">The position in the collection from which to remove the element</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.IOrderedCollectionOperation`2">
+            <summary>
+            Generic interface for ordered collection operations with type safety
+            </summary>
+            <typeparam name="TCollection">Collection type</typeparam>
+            <typeparam name="TElement">Element type</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionOperation`2.InsertElementAt(`0@,System.Int32,`1)">
+            <summary>
+            Inserts an element into the collection at the specified index with type safety
+            </summary>
+            <param name="collection">Collection target</param>
+            <param name="index">The position in the collection where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionOperation`2.RemoveElementAt(`0@,System.Int32)">
+            <summary>
+            Removes an element from the collection at the specified index with type safety
+            </summary>
+            <param name="collection">Collection target</param>
+            <param name="index">The position in the collection from which to remove the element</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ListOperation`2">
+            <summary>
+            Operation for IList{T} collections in the inspector system.
+            Handles list-specific operations like indexed access, insertion, and removal.
+            Implements IOrderedCollectionOperationResolver for position-based operations.
+            </summary>
+            <typeparam name="TOwner">The owner type of the collection</typeparam>
+            <typeparam name="TCollection">The type of the collection (must implement IList{TElement})</typeparam>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperation`2.AddElement(`0@,`1)">
+            <summary>
+            Adds an element to the end of the list
+            </summary>
+            <param name="collection">The list collection</param>
+            <param name="value">The element to add</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperation`2.RemoveElement(`0@,`1)">
+            <summary>
+            Removes the first occurrence of an element from the list
+            </summary>
+            <param name="collection">The list collection</param>
+            <param name="value">The element to remove</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperation`2.InsertElementAt(`0@,System.Int32,`1)">
+            <summary>
+            Inserts an element into the list at the specified index
+            </summary>
+            <param name="collection">The list collection</param>
+            <param name="index">The zero-based index at which value should be inserted</param>
+            <param name="value">The element to insert</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">index is less than 0 or greater than the count of elements in the list</exception>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ListOperation`2.RemoveElementAt(`0@,System.Int32)">
+            <summary>
+            Removes the element at the specified index from the list
+            </summary>
+            <param name="collection">The list collection</param>
+            <param name="index">The zero-based index of the element to remove</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">index is less than 0 or greater than or equal to the count of elements in the list</exception>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.OrderedCollectionOperationBase`2">
+            <summary>
+            Generic abstract base class for ordered collection operations with type safety
+            </summary>
+            <typeparam name="TCollection">Collection type</typeparam>
+            <typeparam name="TElement">Element type</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionOperationBase`2.InsertElementAt(`0@,System.Int32,`1)">
+            <summary>
+            Inserts an element into the collection at the specified index with type safety
+            </summary>
+            <param name="collection">Collection target</param>
+            <param name="index">The position in the collection where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionOperationBase`2.RemoveElementAt(`0@,System.Int32)">
+            <summary>
+            Removes an element from the collection at the specified index with type safety
+            </summary>
+            <param name="collection">Collection target</param>
+            <param name="index">The position in the collection from which to remove the element</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionOperationBase`2.InsertWeakElementAt(System.Object@,System.Int32,System.Object)">
+            <summary>
+            Inserts an element into the collection at the specified index
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="index">The position in the collection where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionOperationBase`2.RemoveWeakElementAt(System.Object@,System.Int32)">
+            <summary>
+            Removes an element from the collection at the specified index
+            </summary>
+            <param name="collection">Collection object</param>
+            <param name="index">The position in the collection from which to remove the element</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ReadOnlyListOperation`2">
+            <summary>
+            Operation for IReadOnlyList{T} collections in the inspector system.
+            Provides read-only access to collection elements and prevents modifications.
+            </summary>
+            <typeparam name="TCollection">The type of the collection (must implement IReadOnlyList{TElement})</typeparam>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ReadOnlyListOperation`2.IsReadOnly">
+            <summary>
+            Gets whether the collection is read-only (always returns true)
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1">
+            <summary>
+            Operation for Unity serialized collections in the inspector system.
+            Handles Unity-specific collection operations using SerializedProperty system.
+            </summary>
+            <typeparam name="TElement">The type of elements in the collection</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1.#ctor(System.Type,EasyToolKit.Inspector.Editor.InspectorProperty)">
+            <summary>
+            Initializes a new instance of the UnityCollectionOperationResolver
+            </summary>
+            <param name="property">The inspector property associated with this resolver</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1.IsReadOnly">
+            <summary>
+            Gets whether the collection is read-only based on SerializedProperty
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1.CollectionType">
+            <summary>
+            Gets the type of the collection (System.Collections.Generic.List{T})
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1.InitializeSerializedProperty">
+            <summary>
+            Initializes the SerializedProperty for Unity collection access
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1.AddElement(System.Collections.Generic.IList{`0}@,`0)">
+            <summary>
+            Adds an element to the Unity collection
+            </summary>
+            <param name="collection">集合对象</param>
+            <param name="value">The value to add to the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1.RemoveElement(System.Collections.Generic.IList{`0}@,`0)">
+            <summary>
+            Removes an element from the Unity collection
+            </summary>
+            <param name="collection">集合对象</param>
+            <param name="value">The value to remove from the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1.InsertElementAt(System.Collections.Generic.IList{`0}@,System.Int32,`0)">
+            <summary>
+            Inserts an element at a specific index in the Unity collection
+            </summary>
+            <param name="collection">集合对象</param>
+            <param name="insertIndex">The position where the element should be inserted</param>
+            <param name="value">The value to insert into the collection</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperation`1.RemoveElementAt(System.Collections.Generic.IList{`0}@,System.Int32)">
+            <summary>
+            Removes an element at a specific index from the Unity collection
+            </summary>
+            <param name="collection">集合对象</param>
+            <param name="removeIndex">The index of the element to remove</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.GenericPropertyOperation">
+            <summary>
+            Generic property operation implementation using delegates
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.GenericPropertyOperation.ValueType">
+            <summary>
+            Value type
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyOperation.#ctor(System.Type,System.Type,EasyToolKit.ThirdParty.OdinSerializer.Utilities.WeakValueGetter,EasyToolKit.ThirdParty.OdinSerializer.Utilities.WeakValueSetter)">
+            <summary>
+            Initializes a new instance of GenericPropertyOperation
+            </summary>
+            <param name="ownerType">Owner type</param>
+            <param name="valueType">Value type</param>
+            <param name="getter">Value getter delegate</param>
+            <param name="setter">Value setter delegate</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.GenericPropertyOperation.IsReadOnly">
+            <summary>
+            Whether the property is read-only
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyOperation.GetWeakValue(System.Object@)">
+            <summary>
+            Gets the value
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyOperation.SetWeakValue(System.Object@,System.Object)">
+            <summary>
+            Sets the value
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.GenericPropertyOperation`2">
+            <summary>
+            Generic property operation implementation with type safety
+            </summary>
+            <typeparam name="TOwner">Owner type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyOperation`2.#ctor(EasyToolKit.ThirdParty.OdinSerializer.Utilities.ValueGetter{`0,`1},EasyToolKit.ThirdParty.OdinSerializer.Utilities.ValueSetter{`0,`1})">
+            <summary>
+            Initializes a new instance of GenericPropertyOperation
+            </summary>
+            <param name="getter">Value getter delegate</param>
+            <param name="setter">Value setter delegate</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.GenericPropertyOperation`2.IsReadOnly">
+            <summary>
+            Whether the property is read-only
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyOperation`2.GetValue(System.Object@)">
+            <summary>
+            Gets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyOperation`2.SetValue(System.Object@,`1)">
+            <summary>
+            Sets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.IPropertyOperation">
+            <summary>
+            Unified property operation interface to replace IValueAccessor
+            Provides read and write access to property values
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IPropertyOperation.IsReadOnly">
+            <summary>
+            Whether the property is read-only
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IPropertyOperation.OwnerType">
+            <summary>
+            Owner type
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IPropertyOperation.ValueType">
+            <summary>
+            Value type
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IPropertyOperation.GetWeakValue(System.Object@)">
+            <summary>
+            Gets the value
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IPropertyOperation.SetWeakValue(System.Object@,System.Object)">
+            <summary>
+            Sets the value
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.IPropertyOperation`1">
+            <summary>
+            Generic property operation interface with type safety
+            </summary>
+            <typeparam name="TValue">Value type</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IPropertyOperation`1.GetValue(System.Object@)">
+            <summary>
+            Gets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IPropertyOperation`1.SetValue(System.Object@,`0)">
+            <summary>
+            Sets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.MemberPropertyOperation`2">
+            <summary>
+            Property operation implementation for member access (fields and properties)
+            </summary>
+            <typeparam name="TOwner">Owner type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MemberPropertyOperation`2.#ctor(System.Reflection.MemberInfo)">
+            <summary>
+            Initializes a new instance of MemberPropertyOperation
+            </summary>
+            <param name="memberInfo">Member information</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.MemberPropertyOperation`2.IsReadOnly">
+            <summary>
+            Whether the property is read-only
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MemberPropertyOperation`2.GetValue(System.Object@)">
+            <summary>
+            Gets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MemberPropertyOperation`2.SetValue(System.Object@,`1)">
+            <summary>
+            Sets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.PropertyOperationBase">
+            <summary>
+            Abstract base class for property operations
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.PropertyOperationBase.IsReadOnly">
+            <summary>
+            Whether the property is read-only
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.PropertyOperationBase.OwnerType">
+            <summary>
+            Owner type
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.PropertyOperationBase.ValueType">
+            <summary>
+            Value type
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyOperationBase.GetWeakValue(System.Object@)">
+            <summary>
+            Gets the value
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyOperationBase.SetWeakValue(System.Object@,System.Object)">
+            <summary>
+            Sets the value
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.PropertyOperationBase`1">
+            <summary>
+            Generic abstract base class for property operations with type safety
+            </summary>
+            <typeparam name="TValue">Value type</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.PropertyOperationBase`1.ValueType">
+            <summary>
+            Value type
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyOperationBase`1.GetValue(System.Object@)">
+            <summary>
+            Gets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyOperationBase`1.SetValue(System.Object@,`0)">
+            <summary>
+            Sets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyOperationBase`1.GetWeakValue(System.Object@)">
+            <summary>
+            Gets the value
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyOperationBase`1.SetWeakValue(System.Object@,System.Object)">
+            <summary>
+            Sets the value
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.UnityPropertyOperation`1">
+            <summary>
+            Property operation implementation for Unity serialized properties
+            </summary>
+            <typeparam name="TValue">Value type</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyOperation`1.#ctor(System.Type,UnityEditor.SerializedProperty)">
+            <summary>
+            Initializes a new instance of UnityPropertyOperation
+            </summary>
+            <param name="serializedProperty">Unity serialized property</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.UnityPropertyOperation`1.IsReadOnly">
+            <summary>
+            Whether the property is read-only
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyOperation`1.GetValue(System.Object@)">
+            <summary>
+            Gets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <returns>Property value</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyOperation`1.SetValue(System.Object@,`0)">
+            <summary>
+            Sets the value with type safety
+            </summary>
+            <param name="owner">Owner object</param>
+            <param name="value">Value to set</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.InspectorPriority">
+            <summary>
+            Represents the priority of a drawer in the inspector drawer chain.
+            Higher priority drawers are executed before lower priority drawers.
+            This class implements comparison and equality operations for proper drawer ordering.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.InspectorPriority.Value">
+            <summary>
+            Gets the numeric value of this drawer priority.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.#ctor(System.Double)">
+            <summary>
+            Initializes a new instance of the DrawerPriority class with the specified value.
+            </summary>
+            <param name="value">The numeric priority value.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.op_Equality(EasyToolKit.Inspector.Editor.InspectorPriority,EasyToolKit.Inspector.Editor.InspectorPriority)">
+            <summary>
+            Determines whether two DrawerPriority instances are equal.
+            Uses approximate equality comparison to account for floating-point precision.
+            </summary>
+            <param name="left">The first DrawerPriority to compare.</param>
+            <param name="right">The second DrawerPriority to compare.</param>
+            <returns>true if the two DrawerPriority instances are equal; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.op_Inequality(EasyToolKit.Inspector.Editor.InspectorPriority,EasyToolKit.Inspector.Editor.InspectorPriority)">
+            <summary>
+            Determines whether two DrawerPriority instances are not equal.
+            </summary>
+            <param name="left">The first DrawerPriority to compare.</param>
+            <param name="right">The second DrawerPriority to compare.</param>
+            <returns>true if the two DrawerPriority instances are not equal; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.op_GreaterThan(EasyToolKit.Inspector.Editor.InspectorPriority,EasyToolKit.Inspector.Editor.InspectorPriority)">
+            <summary>
+            Determines whether one DrawerPriority is greater than another.
+            </summary>
+            <param name="left">The first DrawerPriority to compare.</param>
+            <param name="right">The second DrawerPriority to compare.</param>
+            <returns>true if left is greater than right; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.op_LessThan(EasyToolKit.Inspector.Editor.InspectorPriority,EasyToolKit.Inspector.Editor.InspectorPriority)">
+            <summary>
+            Determines whether one DrawerPriority is less than another.
+            </summary>
+            <param name="left">The first DrawerPriority to compare.</param>
+            <param name="right">The second DrawerPriority to compare.</param>
+            <returns>true if left is less than right; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.op_GreaterThanOrEqual(EasyToolKit.Inspector.Editor.InspectorPriority,EasyToolKit.Inspector.Editor.InspectorPriority)">
+            <summary>
+            Determines whether one DrawerPriority is greater than or equal to another.
+            </summary>
+            <param name="left">The first DrawerPriority to compare.</param>
+            <param name="right">The second DrawerPriority to compare.</param>
+            <returns>true if left is greater than or equal to right; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.op_LessThanOrEqual(EasyToolKit.Inspector.Editor.InspectorPriority,EasyToolKit.Inspector.Editor.InspectorPriority)">
+            <summary>
+            Determines whether one DrawerPriority is less than or equal to another.
+            </summary>
+            <param name="left">The first DrawerPriority to compare.</param>
+            <param name="right">The second DrawerPriority to compare.</param>
+            <returns>true if left is less than or equal to right; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.GetHashCode">
+            <summary>
+            Returns the hash code for this DrawerPriority.
+            </summary>
+            <returns>A hash code for the current DrawerPriority.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.Equals(System.Object)">
+            <summary>
+            Determines whether the specified object is equal to the current DrawerPriority.
+            </summary>
+            <param name="obj">The object to compare with the current DrawerPriority.</param>
+            <returns>true if the specified object is equal to the current DrawerPriority; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.Equals(EasyToolKit.Inspector.Editor.InspectorPriority)">
+            <summary>
+            Indicates whether the current DrawerPriority is equal to another DrawerPriority.
+            </summary>
+            <param name="other">A DrawerPriority to compare with this DrawerPriority.</param>
+            <returns>true if the current DrawerPriority is equal to the other parameter; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPriority.CompareTo(EasyToolKit.Inspector.Editor.InspectorPriority)">
+            <summary>
+            Compares this DrawerPriority with another DrawerPriority and returns an integer
+            that indicates whether this instance precedes, follows, or occurs in the same position
+            in the sort order as the other DrawerPriority.
+            </summary>
+            <param name="other">A DrawerPriority to compare with this instance.</param>
+            <returns>A value that indicates the relative order of the objects being compared.</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.InspectorProperty">
              <summary>
@@ -513,32 +1136,6 @@
             that can be expanded to show its members or elements.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorProperty.ChildrenResolver">
-            <summary>
-            Gets or sets the resolver responsible for providing child properties for this property.
-            Setting this value triggers a refresh of the property tree.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorProperty.DrawerChainResolver">
-            <summary>
-            Gets or sets the resolver responsible for providing the drawer chain for this property.
-            Setting this value triggers a refresh of the property tree.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorProperty.AttributeResolver">
-            <summary>
-            Gets or sets the resolver responsible for providing attributes for this property.
-            Setting this value triggers a refresh of the property tree.
-            </summary>
-            <exception cref="T:System.ArgumentNullException">Thrown when setting to null</exception>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorProperty.GroupResolver">
-            <summary>
-            Gets or sets the resolver responsible for providing grouped properties for this property.
-            Setting this value triggers a refresh of the property tree.
-            </summary>
-            <exception cref="T:System.ArgumentNullException">Thrown when setting to null</exception>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.InspectorProperty.Update(System.Boolean)">
             <summary>
             Updates the property state, including value entries and child properties.
@@ -644,16 +1241,6 @@
             including Unity serialized properties, fields, methods, and custom values.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.PropertyResolverLocator">
-            <summary>
-            Gets the property resolver locator used to find appropriate property resolvers for this property.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.ValueAccessor">
-            <summary>
-            Gets the value accessor that provides read/write access to the property's value.
-            </summary>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.PropertyType">
             <summary>
             Gets the type of the property value.
@@ -672,12 +1259,6 @@
         <member name="P:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.IsUnityProperty">
             <summary>
             Gets a value indicating whether this property is a Unity serialized property.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.IsArrayElement">
-            <summary>
-            Gets a value indicating whether this property represents an array element.
-            This is determined by checking if the property's owner type implements <see cref="T:System.Collections.Generic.ICollection`1"/>.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.CreateForUnityProperty(UnityEditor.SerializedProperty,System.Type,System.Type)">
@@ -718,13 +1299,12 @@
             <param name="fieldInfo">The field info to create property info for.</param>
             <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> instance configured for the field.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.CreateForValue(System.Type,System.String,EasyToolKit.Inspector.Editor.IValueAccessor)">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.CreateForValue(System.Type,System.String)">
             <summary>
-            Creates an <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> for a custom value with a specified accessor.
+            Creates an <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> for a custom value.
             </summary>
             <param name="valueType">The type of the property value.</param>
             <param name="valueName">The name of the property.</param>
-            <param name="valueAccessor">The value accessor that provides read/write access to the value.</param>
             <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> instance configured for the custom value.</returns>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.CreateForLogicRoot(System.Collections.IList)">
@@ -735,19 +1315,14 @@
             <param name="targets">The target objects representing the root.</param>
             <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> instance configured as a logic root.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.GetMemberInfo">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.CreateForCollectionElement(System.Type,System.String,System.Int32,System.Type)">
             <summary>
-            Gets the member information for this property.
+            Creates an <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> for a collection element.
             </summary>
-            <returns>The member info associated with this property.</returns>
-            <exception cref="T:System.NotSupportedException">Thrown when member info cannot be retrieved.</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfo.TryGetMemberInfo(System.Reflection.MemberInfo@)">
-            <summary>
-            Attempts to get the member information for this property.
-            </summary>
-            <param name="memberInfo">When this method returns, contains the member info if found; otherwise, null.</param>
-            <returns>true if member info was found; otherwise, false.</returns>
+            <param name="elementType">The type of the element.</param>
+            <param name="elementName">The name of the element.</param>
+            <param name="elementIndex">The index of the element in the collection.</param>
+            <returns>A new <see cref="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfo"/> instance configured for the collection element.</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.InspectorPropertyInfoUtility">
             <summary>
@@ -761,13 +1336,6 @@
             </summary>
             <param name="type">The type to check.</param>
             <returns>True if the type is satisfied of unity property drawer.; otherwise false.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfoUtility.IsEasyValueDrawerSatisfiedBy(System.Type)">
-            <summary>
-            Determines if a type is satisfied of easy value drawer.
-            </summary>
-            <param name="type">The type to check.</param>
-            <returns>True if the type is satisfied of easy value drawer.; otherwise false.</returns>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.InspectorPropertyInfoUtility.IsSerializableType(System.Type)">
             <summary>
@@ -1162,6 +1730,12 @@
             Applies any pending changes from this value entry back to the target objects.
             </summary>
             <returns>True if changes were applied; otherwise, false.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IPropertyValueEntry.EnqueueChange(System.Action)">
+            <summary>
+            Enqueues a change action to be applied later
+            </summary>
+            <param name="action">The action representing the change to be applied</param>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IPropertyValueEntry`1">
             <summary>
@@ -1590,56 +2164,18 @@
             Attribute is defined on a list/collection type/field but is passed to each element
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IAttributeResolver">
-            <summary>
-            Interface for resolving attributes associated with an <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/>
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IAttributeResolver.GetAttributes">
-            <summary>
-            Gets all attributes associated with the property
-            </summary>
-            <returns>Array of attributes</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IAttributeResolver.GetAttributeSource(System.Attribute)">
-            <summary>
-            Gets the source of an attribute to determine where it was originally defined
-            </summary>
-            <param name="attribute">The attribute to check</param>
-            <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.AttributeResolver">
+        <member name="T:EasyToolKit.Inspector.Editor.AttributeResolverBase">
             <summary>
             Abstract base class for attribute resolver in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.AttributeResolver.Property">
-            <summary>
-            Gets the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> associated with this resolver
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.AttributeResolver.IsInitialized">
-            <summary>
-            Gets whether this resolver has been initialized
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolver.Initialize">
-            <summary>
-            Initializes the resolver (can be overridden by derived classes)
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolver.Deinitialize">
-            <summary>
-            Deinitializes the resolver (can be overridden by derived classes)
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolver.GetAttributes">
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.GetAttributes">
             <summary>
             Gets all attributes associated with the property
             </summary>
             <returns>Array of attributes</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolver.GetAttributeSource(System.Attribute)">
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.GetAttributeSource(System.Attribute)">
             <summary>
             Gets the source of an attribute to determine where it was originally defined
             </summary>
@@ -1665,175 +2201,23 @@
             <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
             <exception cref="T:System.ArgumentException">Thrown when the attribute is not found</exception>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IChangeManager">
+        <member name="T:EasyToolKit.Inspector.Editor.IAttributeResolver">
             <summary>
-            Interface for managing property changes in the inspector system.
-            Handles change queuing, application, and undo/redo operations.
+            Interface for resolving attributes associated with an <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/>
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IChangeManager.EnqueueChange(System.Action)">
+        <member name="M:EasyToolKit.Inspector.Editor.IAttributeResolver.GetAttributes">
             <summary>
-            Enqueues a change action to be applied later
+            Gets all attributes associated with the property
             </summary>
-            <param name="action">The action representing the change to be applied</param>
+            <returns>Array of attributes</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IChangeManager.ApplyChanges">
+        <member name="M:EasyToolKit.Inspector.Editor.IAttributeResolver.GetAttributeSource(System.Attribute)">
             <summary>
-            Applies all queued changes
+            Gets the source of an attribute to determine where it was originally defined
             </summary>
-            <returns>True if changes were applied successfully, false if there were no pending changes</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IChangeManager.RecordUndo(System.String)">
-            <summary>
-            Records an undo operation for the given action
-            </summary>
-            <param name="operationName">The name of the operation for undo/redo tracking</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.NullChangeManager">
-            <summary>
-            Null implementation of change management for testing purposes.
-            Does nothing when changes are queued or applied.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.NullChangeManager.EnqueueChange(System.Action)">
-            <summary>
-            Enqueues a change action to be applied later (no-op in null implementation)
-            </summary>
-            <param name="action">The action representing the change to be applied</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.NullChangeManager.ApplyChanges">
-            <summary>
-            Applies all queued changes (always returns false in null implementation)
-            </summary>
-            <returns>False - no changes applied in null implementation</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.NullChangeManager.RecordUndo(System.String)">
-            <summary>
-            Records an undo operation (no-op in null implementation)
-            </summary>
-            <param name="operationName">The name of the operation for undo/redo tracking</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.UnityChangeManager">
-            <summary>
-            Unity-specific implementation of change management for the inspector system.
-            Integrates with Unity's Undo system and handles multi-object selection.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityChangeManager.#ctor(EasyToolKit.Inspector.Editor.InspectorProperty)">
-            <summary>
-            Initializes a new instance of the UnityChangeManager
-            </summary>
-            <param name="property">The inspector property associated with this change manager</param>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.UnityChangeManager.Property">
-            <summary>
-            Gets or sets the associated inspector property
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityChangeManager.EnqueueChange(System.Action)">
-            <summary>
-            Enqueues a change action to be applied later
-            </summary>
-            <param name="action">The action representing the change to be applied</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityChangeManager.ApplyChanges">
-            <summary>
-            Applies all queued changes
-            </summary>
-            <returns>True if changes were applied successfully, false if there were no pending changes</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityChangeManager.RecordUndo(System.String)">
-            <summary>
-            Records an undo operation for the given action
-            </summary>
-            <param name="operationName">The name of the operation for undo/redo tracking</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2">
-            <summary>
-            Core collection structure resolver that handles property structure resolution for collections
-            without any collection operations or change management concerns.
-            </summary>
-            <typeparam name="TCollection">The type of the collection</typeparam>
-            <typeparam name="TElement">The type of elements in the collection</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.#ctor(EasyToolKit.Inspector.Editor.ICollectionOperationResolver,EasyToolKit.Inspector.Editor.IChangeManager)">
-            <summary>
-            Initializes a new instance of the CollectionStructureCore
-            </summary>
-            <param name="operationResolver">The collection operation resolver for metadata (read-only status, types)</param>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.ValueEntry">
-            <summary>
-            Gets the property value entry for the collection, with lazy initialization
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.IsReadOnly">
-            <summary>
-            Gets whether the collection is read-only
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.CollectionType">
-            <summary>
-            Gets the type of the collection
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.ElementType">
-            <summary>
-            Gets the type of elements in the collection
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.GetChildInfo(System.Int32)">
-            <summary>
-            Gets information about a child property at the specified index
-            </summary>
-            <param name="childIndex">The index of the child property</param>
-            <returns>Information about the child property</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.ChildNameToIndex(System.String)">
-            <summary>
-            Converts a child property name to its index (not supported for collections)
-            </summary>
-            <param name="name">The name of the child property</param>
-            <returns>Throws NotSupportedException</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.CalculateChildCount">
-            <summary>
-            Calculates the number of child properties in the collection
-            </summary>
-            <returns>The number of elements in the collection</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.Deinitialize">
-            <summary>
-            Clears cached property information when the resolver is deinitialized
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructurePropertyResolver`2.GetElementCount(`0)">
-            <summary>
-            Gets the element count for a collection
-            </summary>
-            <param name="collection">The collection to count</param>
-            <returns>The number of elements in the collection</returns>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ICollectionStructureResolver">
-            <summary>
-            Interface for resolving collection properties in the inspector.
-            Provides basic collection operations and metadata for collection types.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionStructureResolver.IsReadOnly">
-            <summary>
-            Gets whether the collection is read-only.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionStructureResolver.CollectionType">
-            <summary>
-            Gets the type of the collection.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionStructureResolver.ElementType">
-            <summary>
-            Gets the type of elements in the collection.
-            </summary>
+            <param name="attribute">The attribute to check</param>
+            <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.DefaultDrawerChainResolver">
             <summary>
@@ -1846,10 +2230,16 @@
             </summary>
             <returns>The drawer chain</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DefaultDrawerChainResolver.Deinitialize">
+        <member name="T:EasyToolKit.Inspector.Editor.DrawerChainResolverBase">
             <summary>
-            Deinitializes the resolver by clearing the cached drawer chain
+            Abstract base class for drawer chain resolution in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
             </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.DrawerChainResolverBase.GetDrawerChain">
+            <summary>
+            Gets the drawer chain for the property
+            </summary>
+            <returns>The drawer chain</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IDrawerChainResolver">
             <summary>
@@ -1862,43 +2252,24 @@
             </summary>
             <returns>The drawer chain</returns>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.DrawerChainResolver">
-            <summary>
-            Abstract base class for drawer chain resolution in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.DrawerChainResolver.Property">
-            <summary>
-            Gets the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> associated with this resolver
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.DrawerChainResolver.IsInitialized">
-            <summary>
-            Gets whether this resolver has been initialized
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerChainResolver.Initialize">
-            <summary>
-            Initializes the resolver (can be overridden by derived classes)
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerChainResolver.Deinitialize">
-            <summary>
-            Deinitializes the resolver (can be overridden by derived classes)
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.DrawerChainResolver.GetDrawerChain">
-            <summary>
-            Gets the drawer chain for the property
-            </summary>
-            <returns>The drawer chain</returns>
-        </member>
         <member name="T:EasyToolKit.Inspector.Editor.DefaultGroupResolver">
             <summary>
             Default implementation of group property resolver for <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/>
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.DefaultGroupResolver.GetGroupProperties(System.Type)">
+            <summary>
+            Gets all properties that belong to the same group as the current property
+            </summary>
+            <param name="beginGroupAttributeType">The type of the begin group attribute</param>
+            <returns>Array of properties in the group</returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.GroupResolverBase">
+            <summary>
+            Abstract base class for group property resolver in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GroupResolverBase.GetGroupProperties(System.Type)">
             <summary>
             Gets all properties that belong to the same group as the current property
             </summary>
@@ -1917,428 +2288,35 @@
             <param name="beginGroupAttributeType">The type of the begin group attribute</param>
             <returns>Array of properties in the group</returns>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.GroupResolver">
-            <summary>
-            Abstract base class for group property resolver in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.GroupResolver.Property">
-            <summary>
-            Gets the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> associated with this resolver
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.GroupResolver.IsInitialized">
-            <summary>
-            Gets whether this resolver has been initialized
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GroupResolver.Initialize">
-            <summary>
-            Initializes the resolver (can be overridden by derived classes)
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GroupResolver.Deinitialize">
-            <summary>
-            Deinitializes the resolver (can be overridden by derived classes)
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GroupResolver.GetGroupProperties(System.Type)">
-            <summary>
-            Gets all properties that belong to the same group as the current property
-            </summary>
-            <param name="beginGroupAttributeType">The type of the begin group attribute</param>
-            <returns>Array of properties in the group</returns>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IInitializableResolver">
-            <summary>
-            Interface for resolvers that can be initialized and deinitialized with an associated <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/>
-            </summary>
-            <remarks>
-            This interface combines the initialization capabilities of <see cref="T:EasyToolKit.Inspector.Editor.IInitializable"/> with property association,
-            providing a standard pattern for resolvers in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system.
-            </remarks>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IInitializableResolver.Property">
-            <summary>
-            Gets or sets the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> associated with this resolver
-            </summary>
-            <remarks>
-            This property is typically set during the resolver's initialization phase
-            and provides access to the property being resolved.
-            </remarks>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2">
-            <summary>
-            Abstract base class for collection operation resolvers in the inspector system.
-            Provides common functionality for collection manipulation without property structure concerns.
-            </summary>
-            <typeparam name="TCollection">The type of the collection</typeparam>
-            <typeparam name="TElement">The type of elements in the collection</typeparam>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.IsReadOnly">
-            <summary>
-            Gets whether the collection is read-only
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.CollectionType">
-            <summary>
-            Gets the type of the collection
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.ElementType">
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionStructureResolverBase`1.ElementType">
             <summary>
             Gets the type of elements in the collection
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.Property">
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructureResolverBase`1.GetChildInfo(System.Int32)">
             <summary>
-            Gets or sets the associated inspector property
+            Gets information about a child property at the specified index
+            </summary>
+            <param name="childIndex">The index of the child property</param>
+            <returns>Information about the child property</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructureResolverBase`1.ChildNameToIndex(System.String)">
+            <summary>
+            Converts a child property name to its index (not supported for collections)
+            </summary>
+            <param name="name">The name of the child property</param>
+            <returns>Throws NotSupportedException</returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ICollectionStructureResolver">
+            <summary>
+            Interface for resolving collection properties in the inspector.
+            Provides basic collection structure metadata for collection types.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.AddElement(System.Int32,`1)">
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionStructureResolver.ElementType">
             <summary>
-            Actually adds an element to the collection at the specified target index
+            Gets the type of elements in the collection.
             </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to add to the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.RemoveElement(System.Int32,`1)">
-            <summary>
-            Actually removes an element from the collection at the specified target index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to remove from the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.GetElementAt(`0,System.Int32)">
-            <summary>
-            Gets an element at the specified index from a collection
-            </summary>
-            <param name="collection">The collection to get the element from</param>
-            <param name="elementIndex">The index of the element</param>
-            <returns>The element at the specified index</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionOperationResolver`2.SetElementAt(`0,System.Int32,`1)">
-            <summary>
-            Sets an element at the specified index in a collection
-            </summary>
-            <param name="collection">The collection to set the element in</param>
-            <param name="elementIndex">The index of the element to set</param>
-            <param name="value">The value to set</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ICollectionOperationResolver">
-            <summary>
-            Interface for handling collection operations in the inspector system.
-            Focuses purely on collection manipulation without property structure concerns.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.IsReadOnly">
-            <summary>
-            Gets whether the collection is read-only
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.CollectionType">
-            <summary>
-            Gets the type of the collection
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.ElementType">
-            <summary>
-            Gets the type of elements in the collection
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.AddElement(System.Int32,System.Object)">
-            <summary>
-            Actually adds an element to the collection at the specified target index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to add to the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.RemoveElement(System.Int32,System.Object)">
-            <summary>
-            Actually removes an element from the collection at the specified target index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to remove from the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.GetElementAt(System.Object,System.Int32)">
-            <summary>
-            Gets an element at the specified index from a collection
-            </summary>
-            <param name="collection">The collection to get the element from</param>
-            <param name="elementIndex">The index of the element</param>
-            <returns>The element at the specified index</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ICollectionOperationResolver.SetElementAt(System.Object,System.Int32,System.Object)">
-            <summary>
-            Sets an element at the specified index in a collection
-            </summary>
-            <param name="collection">The collection to set the element in</param>
-            <param name="elementIndex">The index of the element to set</param>
-            <param name="value">The value to set</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IOrderedCollectionOperationResolver">
-            <summary>
-            Interface for handling ordered collection operations in the inspector system.
-            Extends <see cref="T:EasyToolKit.Inspector.Editor.ICollectionOperationResolver"/> with position-based operations.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionOperationResolver.InsertElementAt(System.Int32,System.Int32,System.Object)">
-            <summary>
-            Actually inserts an element into the collection at the specified index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="index">The position in the collection where the element should be inserted</param>
-            <param name="value">The value to insert into the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IOrderedCollectionOperationResolver.RemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Actually removes an element from the collection at the specified index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="index">The position in the collection from which to remove the element</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ListOperationResolver`2">
-            <summary>
-            Operation resolver for IList{T} collections in the inspector system.
-            Handles list-specific operations like indexed access, insertion, and removal.
-            Implements IOrderedCollectionOperationResolver for position-based operations.
-            </summary>
-            <typeparam name="TCollection">The type of the collection (must implement IList{TElement})</typeparam>
-            <typeparam name="TElement">The type of elements in the collection</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.#ctor(EasyToolKit.Inspector.Editor.IPropertyValueEntry{`0})">
-            <summary>
-            Initializes a new instance of the ListOperationResolver
-            </summary>
-            <param name="valueEntry">The property value entry for the collection</param>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ListOperationResolver`2.IsReadOnly">
-            <summary>
-            Gets whether the collection is read-only
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ListOperationResolver`2.CollectionType">
-            <summary>
-            Gets the type of the collection
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.AddElement(System.Int32,`1)">
-            <summary>
-            Actually adds an element to the collection at the specified target index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to add to the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.RemoveElement(System.Int32,`1)">
-            <summary>
-            Actually removes an element from the collection at the specified target index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to remove from the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.InsertElementAt(System.Int32,System.Int32,`1)">
-            <summary>
-            Actually inserts an element into the collection at the specified index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="index">The position in the collection where the element should be inserted</param>
-            <param name="value">The value to insert into the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.RemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Actually removes an element from the collection at the specified index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="index">The position in the collection from which to remove the element</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.GetElementAt(`0,System.Int32)">
-            <summary>
-            Gets an element at the specified index from a collection
-            </summary>
-            <param name="collection">The collection to get the element from</param>
-            <param name="elementIndex">The index of the element</param>
-            <returns>The element at the specified index</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ListOperationResolver`2.SetElementAt(`0,System.Int32,`1)">
-            <summary>
-            Sets an element at the specified index in a collection
-            </summary>
-            <param name="collection">The collection to set the element in</param>
-            <param name="elementIndex">The index of the element to set</param>
-            <param name="value">The value to set</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.OrderedCollectionOperationResolver`2">
-            <summary>
-            Abstract base class for ordered collection operation resolvers.
-            Provides position-based collection operations with index-based insertion and removal.
-            </summary>
-            <typeparam name="TCollection">The type of the collection</typeparam>
-            <typeparam name="TElement">The type of elements in the collection</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionOperationResolver`2.InsertElementAt(System.Int32,System.Int32,`1)">
-            <summary>
-            Actually inserts an element into the collection at the specified index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="index">The position in the collection where the element should be inserted</param>
-            <param name="value">The value to insert into the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.OrderedCollectionOperationResolver`2.RemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Actually removes an element from the collection at the specified index
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="index">The position in the collection from which to remove the element</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2">
-            <summary>
-            Operation resolver for IReadOnlyList{T} collections in the inspector system.
-            Provides read-only access to collection elements and prevents modifications.
-            </summary>
-            <typeparam name="TCollection">The type of the collection (must implement IReadOnlyList{TElement})</typeparam>
-            <typeparam name="TElement">The type of elements in the collection</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.#ctor(EasyToolKit.Inspector.Editor.IPropertyValueEntry{`0})">
-            <summary>
-            Initializes a new instance of the ReadOnlyListOperationResolver
-            </summary>
-            <param name="valueEntry">The property value entry for the collection</param>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.IsReadOnly">
-            <summary>
-            Gets whether the collection is read-only (always returns true)
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.CollectionType">
-            <summary>
-            Gets the type of the collection
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.AddElement(System.Int32,`1)">
-            <summary>
-            Attempts to add an element to the collection. Always throws NotSupportedException.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to add to the collection</param>
-            <exception cref="T:System.NotSupportedException">Always thrown as read-only lists cannot be modified</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.RemoveElement(System.Int32,`1)">
-            <summary>
-            Attempts to remove an element from the collection. Always throws NotSupportedException.
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to remove from the collection</param>
-            <exception cref="T:System.NotSupportedException">Always thrown as read-only lists cannot be modified</exception>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.GetElementCount">
-            <summary>
-            Gets the element count for a read-only list
-            </summary>
-            <returns>The minimum number of elements across all selected collections</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.GetElement(System.Int32,System.Int32)">
-            <summary>
-            Gets an element at the specified index from the read-only list
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="elementIndex">The index of the element within the collection</param>
-            <returns>The element at the specified index</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.GetElementAt(`0,System.Int32)">
-            <summary>
-            Gets an element at the specified index from a collection
-            </summary>
-            <param name="collection">The collection to get the element from</param>
-            <param name="elementIndex">The index of the element</param>
-            <returns>The element at the specified index</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ReadOnlyListOperationResolver`2.SetElementAt(`0,System.Int32,`1)">
-            <summary>
-            Sets an element at the specified index in a collection. Always throws NotSupportedException.
-            </summary>
-            <param name="collection">The collection to set the element in</param>
-            <param name="elementIndex">The index of the element to set</param>
-            <param name="value">The value to set</param>
-            <exception cref="T:System.NotSupportedException">Always thrown as read-only lists cannot be modified</exception>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1">
-            <summary>
-            Operation resolver for Unity serialized collections in the inspector system.
-            Handles Unity-specific collection operations using SerializedProperty system.
-            </summary>
-            <typeparam name="TElement">The type of elements in the collection</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.#ctor(EasyToolKit.Inspector.Editor.InspectorProperty)">
-            <summary>
-            Initializes a new instance of the UnityCollectionOperationResolver
-            </summary>
-            <param name="property">The inspector property associated with this resolver</param>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.IsReadOnly">
-            <summary>
-            Gets whether the collection is read-only based on SerializedProperty
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.CollectionType">
-            <summary>
-            Gets the type of the collection (System.Collections.Generic.List{T})
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.InitializeSerializedProperty">
-            <summary>
-            Initializes the SerializedProperty for Unity collection access
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.AddElement(System.Int32,`0)">
-            <summary>
-            Actually adds an element to the Unity collection
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to add to the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.RemoveElement(System.Int32,`0)">
-            <summary>
-            Actually removes an element from the Unity collection
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="value">The value to remove from the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.InsertElementAt(System.Int32,System.Int32,`0)">
-            <summary>
-            Inserts an element at a specific index in the Unity collection
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="insertIndex">The position where the element should be inserted</param>
-            <param name="value">The value to insert into the collection</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.RemoveElementAt(System.Int32,System.Int32)">
-            <summary>
-            Removes an element at a specific index from the Unity collection
-            </summary>
-            <param name="targetIndex">The index of the target object in a multi-selection context</param>
-            <param name="removeIndex">The index of the element to remove</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.GetElementCount">
-            <summary>
-            Gets the element count from the SerializedProperty
-            </summary>
-            <returns>The number of elements in the Unity collection</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.GetElementAt(System.Collections.Generic.IList{`0},System.Int32)">
-            <summary>
-            Gets an element at the specified index from a collection
-            </summary>
-            <param name="collection">The collection to get the element from</param>
-            <param name="elementIndex">The index of the element</param>
-            <returns>The element at the specified index</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityCollectionOperationResolver`1.SetElementAt(System.Collections.Generic.IList{`0},System.Int32,`0)">
-            <summary>
-            Sets an element at the specified index in a collection
-            </summary>
-            <param name="collection">The collection to set the element in</param>
-            <param name="elementIndex">The index of the element to set</param>
-            <param name="value">The value to set</param>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver">
             <summary>
@@ -2385,11 +2363,6 @@
             <param name="memberInfo">The member to filter</param>
             <returns>True if the member should be included in the inspector</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.GenericPropertyStructureResolver.Deinitialize">
-            <summary>
-            Clears cached property information when the resolver is deinitialized
-            </summary>
-        </member>
         <member name="T:EasyToolKit.Inspector.Editor.IPropertyStructureResolver">
             <summary>
             Interface for resolving property structure information in the inspector system.
@@ -2415,51 +2388,37 @@
             <param name="name">The name of the child property</param>
             <returns>The index of the child property, or -1 if not found</returns>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.PropertyStructureResolver">
+        <member name="T:EasyToolKit.Inspector.Editor.PropertyStructureResolverBase">
             <summary>
             Abstract base class for property structure resolvers in the inspector system.
             Provides common functionality for property structure resolution without collection operations.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.PropertyStructureResolver.Property">
-            <summary>
-            Gets the InspectorProperty associated with this resolver
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.PropertyStructureResolver.IsInitialized">
-            <summary>
-            Gets whether this resolver has been initialized
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.Initialize">
-            <summary>
-            Initializes the resolver (can be overridden by derived classes)
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.Deinitialize">
-            <summary>
-            Deinitializes the resolver (can be overridden by derived classes)
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.GetChildInfo(System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolverBase.GetChildInfo(System.Int32)">
             <summary>
             Gets information about a child property at the specified index
             </summary>
             <param name="childIndex">The index of the child property</param>
             <returns>Information about the child property</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.ChildNameToIndex(System.String)">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolverBase.ChildNameToIndex(System.String)">
             <summary>
             Converts a child property name to its index
             </summary>
             <param name="name">The name of the child property</param>
             <returns>The index of the child property, or -1 if not found</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolver.CalculateChildCount">
+        <member name="M:EasyToolKit.Inspector.Editor.PropertyStructureResolverBase.CalculateChildCount">
             <summary>
             Calculates the number of child properties
             </summary>
             <returns>The number of child properties</returns>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.PropertyStructureResolverBase`1.ValueEntry">
+            <summary>
+            Gets the strongly-typed value entry for the property.
+            The value entry is lazily loaded and will attempt to update the property if not found initially.
+            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver">
             <summary>
@@ -2491,17 +2450,6 @@
             Calculates the number of child properties
             </summary>
             <returns>The number of child properties</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver.GetSerializedProperty">
-            <summary>
-            Gets the SerializedProperty for this resolver
-            </summary>
-            <returns>The SerializedProperty associated with this resolver</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.UnityPropertyStructureResolver.Deinitialize">
-            <summary>
-            Clears cached property information when the resolver is deinitialized
-            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.EasyAttributeDrawer`1">
             <summary>
@@ -2576,36 +2524,6 @@
             <param name="property">The InspectorProperty to check.</param>
             <returns>True if this drawer can handle the attribute value property, false otherwise.</returns>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IEasyDrawer">
-            <summary>
-            Interface for all EasyToolKit drawers that handle property drawing in the Unity Inspector.
-            Drawers are responsible for rendering custom UI for properties and attributes.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IEasyDrawer.SkipWhenDrawing">
-            <summary>
-            Gets or sets whether this drawer should be skipped during the drawing process.
-            When true, the drawer will not render its UI.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IEasyDrawer.Property">
-            <summary>
-            Gets or sets the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> that this drawer is responsible for rendering.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IEasyDrawer.DrawProperty(UnityEngine.GUIContent)">
-            <summary>
-            Draws the property UI using the specified label.
-            </summary>
-            <param name="label">The GUIContent label to display for this property.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IEasyDrawer.CanDrawProperty(EasyToolKit.Inspector.Editor.InspectorProperty)">
-            <summary>
-            Determines whether this drawer can draw the specified property.
-            </summary>
-            <param name="property">The <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> to check.</param>
-            <returns>True if this drawer can handle the property, false otherwise.</returns>
-        </member>
         <member name="T:EasyToolKit.Inspector.Editor.EasyDrawer">
             <summary>
             Base abstract class for all EasyToolKit drawers.
@@ -2615,28 +2533,6 @@
         <member name="P:EasyToolKit.Inspector.Editor.EasyDrawer.SkipWhenDrawing">
             <summary>
             Gets or sets whether this drawer should be skipped during the drawing process.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyDrawer.Property">
-            <summary>
-            Gets the InspectorProperty that this drawer is responsible for rendering.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyDrawer.IsInitialized">
-            <summary>
-            Gets whether this drawer has been initialized.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyDrawer.Initialize">
-            <summary>
-            Called when the drawer is being initialized.
-            Override this method to perform custom initialization logic.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyDrawer.Deinitialize">
-            <summary>
-            Called when the drawer is being deinitialized.
-            Override this method to perform cleanup operations.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyDrawer.CanDrawProperty(EasyToolKit.Inspector.Editor.InspectorProperty)">
@@ -2662,44 +2558,12 @@
             </summary>
             <param name="label">The GUIContent label to display for this property.</param>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyDrawer.EasyToolKit#Inspector#Editor#IEasyDrawer#Property">
-            <summary>
-            Explicit interface implementation for IEasyDrawer.Property.
-            Gets or sets the InspectorProperty for this drawer.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyDrawer.EasyToolKit#Inspector#Editor#IInitializable#IsInitialized">
-            <summary>
-            Explicit interface implementation for IInitializable.IsInitialized.
-            Gets whether this drawer has been initialized.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyDrawer.EasyToolKit#Inspector#Editor#IInitializable#Initialize">
-            <summary>
-            Explicit interface implementation for IInitializable.Initialize.
-            Initializes the drawer if it hasn't been initialized already.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyDrawer.EasyToolKit#Inspector#Editor#IInitializable#Deinitialize">
-            <summary>
-            Explicit interface implementation for IInitializable.Deinitialize.
-            Deinitializes the drawer if it has been initialized.
-            </summary>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyDrawer.EasyToolKit#Inspector#Editor#IEasyDrawer#DrawProperty(UnityEngine.GUIContent)">
             <summary>
             Explicit interface implementation for IEasyDrawer.DrawProperty.
             Draws the property UI using the specified label.
             </summary>
             <param name="label">The GUIContent label to display for this property.</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyDrawer.EasyToolKit#Inspector#Editor#IEasyDrawer#CanDrawProperty(EasyToolKit.Inspector.Editor.InspectorProperty)">
-            <summary>
-            Explicit interface implementation for IEasyDrawer.CanDrawProperty.
-            Determines whether this drawer can draw the specified property.
-            </summary>
-            <param name="property">The InspectorProperty to check.</param>
-            <returns>True if this drawer can handle the property, false otherwise.</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.EasyDrawerExtensions">
             <summary>
@@ -2835,6 +2699,24 @@
             <param name="property">The InspectorProperty to check.</param>
             <returns>True if this drawer can handle the value property, false otherwise.</returns>
         </member>
+        <member name="T:EasyToolKit.Inspector.Editor.IEasyDrawer">
+            <summary>
+            Interface for all EasyToolKit drawers that handle property drawing in the Unity Inspector.
+            Drawers are responsible for rendering custom UI for properties and attributes.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IEasyDrawer.SkipWhenDrawing">
+            <summary>
+            Gets or sets whether this drawer should be skipped during the drawing process.
+            When true, the drawer will not render its UI.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IEasyDrawer.DrawProperty(UnityEngine.GUIContent)">
+            <summary>
+            Draws the property UI using the specified label.
+            </summary>
+            <param name="label">The GUIContent label to display for this property.</param>
+        </member>
         <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.WindowClosed">
             <summary>
             Occurs when the window is closed.
@@ -2875,71 +2757,76 @@
             Gets the default preview height for Unity editors.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetModule``1">
-            <summary>
-            Gets a module of the specified type
-            </summary>
-            <typeparam name="T">The module type</typeparam>
-            <returns>The module instance or null if not found</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.SetSerializedTarget(UnityEngine.Object)">
-            <summary>
-            Internal method to set the serialized target
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.SetTargetObject(System.Object)">
-            <summary>
-            Internal method to set the target object
-            </summary>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget">
             <summary>
-            Gets the target which the window is supposed to draw.
+            Gets the target which which the window is supposed to draw. By default it simply returns the editor window instance itself. By default, this method is called by <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets"/>().
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets">
             <summary>
-            Gets the targets to be drawn by the editor window.
+            Gets the targets to be drawn by the editor window. By default this simply yield returns the <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget"/> method.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets">
             <summary>
-            At the start of each OnGUI event when in the Layout event, the GetTargets() method is called and cached into a list.
+            At the start of each OnGUI event when in the Layout event, the GetTargets() method is called and cached into a list which you can access from here.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Rect,System.Single)">
             <summary>
-            Pops up an editor window for the given object in a drop-down window.
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            This particular overload uses a few frames to calculate the height of the content before showing the window with a height that matches its content.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Rect,UnityEngine.Vector2)">
             <summary>
-            Pops up an editor window for the given object in a drop-down window.
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Vector2)">
             <summary>
-            Pops up an editor window for the given object in a drop-down window.
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,System.Single)">
             <summary>
-            Pops up an editor window for the given object in a drop-down window.
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Vector2,System.Single)">
             <summary>
-            Pops up an editor window for the given object in a drop-down window.
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,System.Single,System.Single)">
             <summary>
-            Pops up an editor window for the given object in a drop-down window.
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object)">
             <summary>
-            Pops up an editor window for the given object in a drop-down window.
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObject(System.Object)">
@@ -2957,307 +2844,50 @@
             Creates an editor window instance for the specified object, without opening the window.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.SetWindowTitle(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Object,UnityEngine.Object)">
-            <summary>
-            Sets the window title based on the object type
-            </summary>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnGUI">
             <summary>
             Draws the Easy Editor Window.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEnable">
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditors">
             <summary>
-            Called when the window is enabled.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnDisable">
-            <summary>
-            Called when the window is disabled/destroyed.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnDestroy">
-            <summary>
-            Called when the window is destroyed.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InitializeIfNeeded">
-            <summary>
-            Initializes the window and its modules.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InitializeModules">
-            <summary>
-            Initializes all modules
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.UpdateModuleProperties">
-            <summary>
-            Updates module properties with current serialized values
+            Calls DrawEditor(index) for each of the currently drawing targets.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.Initialize">
             <summary>
-            Initialize get called by OnEnable and by OnGUI after assembly reloads.
+            Initialize get called by OnEnable and by OnGUI after assembly reloads
+            which often happens when you recompile or enter and exit play mode.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnBeginDrawEditors">
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEnable">
             <summary>
-            Called before starting to draw all editors.
+            Called when the window is enabled. Remember to call base.OnEnable();
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditor(System.Int32)">
+            <summary>
+            Draws the editor for the CurrentDrawingTargets[index].
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditorPreview(System.Int32,System.Single)">
+            <summary>
+            Uses the <see cref="M:UnityEditor.Editor.DrawPreview(UnityEngine.Rect)"/> method to draw a preview for the CurrentDrawingTargets[index].
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnDestroy">
+            <summary>
+            Called when the window is destroyed. Remember to call base.OnDestroy();
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEndDrawEditors">
             <summary>
-            Called after all editors have been drawn.
+            Called before starting to draw all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/>.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule">
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnBeginDrawEditors">
             <summary>
-            Manages Unity editors and property trees creation/destruction
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.UpdateEditors">
-            <summary>
-            Updates the editors and property trees based on current targets
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CleanupExcessEditors(System.Int32)">
-            <summary>
-            Cleans up excess editors when target count decreases
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.ResizeArrays(System.Int32)">
-            <summary>
-            Resizes all arrays to match the new target count
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.UpdateSingleTarget(System.Int32,System.Object)">
-            <summary>
-            Updates a single target at the specified index
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CleanupTargetAt(System.Int32)">
-            <summary>
-            Cleans up the editor and property tree at the specified index
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CreateEditorForTarget(System.Int32,System.Object)">
-            <summary>
-            Creates an appropriate editor for the target object
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CreateUnityEditor(System.Int32,System.Object)">
-            <summary>
-            Creates a Unity editor for Unity objects
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.CreatePropertyTree(System.Int32,System.Object)">
-            <summary>
-            Creates a property tree for non-Unity objects
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.DrawEditor(System.Int32)">
-            <summary>
-            Draws the editor for the target at the specified index
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.DrawEditorPreview(System.Int32,System.Single)">
-            <summary>
-            Draws the editor preview for the target at the specified index
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.EditorManagementModule.Dispose">
-            <summary>
-            Disposes all editors and property trees
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule">
-            <summary>
-            Handles scrolling, layout, and drawing logic
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.BeginLayoutArea">
-            <summary>
-            Begins the wrapped area if content expansion is prevented
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.EndLayoutArea">
-            <summary>
-            Ends the wrapped area if content expansion is prevented
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.BeginVerticalLayout">
-            <summary>
-            Begins the scroll view and vertical layout
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.EndVerticalLayout">
-            <summary>
-            Ends the vertical layout
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.UpdateContentSize(UnityEngine.Vector2)">
-            <summary>
-            Updates the content size if needed
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.ConfigureGUILayout">
-            <summary>
-            Configures GUI helper settings for layout
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.DrawContent">
-            <summary>
-            Draws the main content area
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.GUILayoutModule.DrawEditors">
-            <summary>
-            Draws all editors
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule">
-            <summary>
-            Base interface for editor window modules
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.Initialize(EasyToolKit.Inspector.Editor.EasyEditorWindow)">
-            <summary>
-            Initialize the module with the parent window
-            </summary>
-            <param name="window">The parent editor window</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.Dispose">
-            <summary>
-            Called when the module is being destroyed
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.OnGUI">
-            <summary>
-            Called during OnGUI to handle module-specific GUI logic
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.OnEnable">
-            <summary>
-            Called when the window is enabled
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.IEditorWindowModule.OnDisable">
-            <summary>
-            Called when the window is disabled/destroyed
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.Modules.EditorWindowModuleBase">
-            <summary>
-            Abstract base class for editor window modules providing common functionality
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule">
-            <summary>
-            Manages mouse/keyboard interactions and focus control
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.HandleInputEvents">
-            <summary>
-            Handles mouse and keyboard input events
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.RemoveFocusFromEmptyAreaClick">
-            <summary>
-            Removes focus from controls when clicking on empty areas
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.HandleRepaintLogic">
-            <summary>
-            Handles repaint logic based on various conditions
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.HandleWarmupRepaints">
-            <summary>
-            Handles warmup repaints for proper initialization
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.InputHandlingModule.OnSelectionChanged">
-            <summary>
-            Called when Unity selection changes
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule">
-            <summary>
-            Handles editor preview drawing
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.DrawEditorPreview(System.Int32,System.Single)">
-            <summary>
-            Draws the editor preview for the target at the specified index
-            </summary>
-            <param name="index">The index of the target</param>
-            <param name="height">The height of the preview area</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.HasPreviewGUI(System.Int32)">
-            <summary>
-            Checks if the target at the specified index has a preview available
-            </summary>
-            <param name="index">The index of the target</param>
-            <returns>True if preview is available, false otherwise</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.GetDefaultPreviewHeight">
-            <summary>
-            Gets the default preview height
-            </summary>
-            <returns>The default preview height in pixels</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.SetDrawUnityEditorPreview(System.Boolean)">
-            <summary>
-            Sets whether Unity editor previews should be drawn
-            </summary>
-            <param name="draw">True to draw previews, false otherwise</param>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.PreviewRenderingModule.SetDefaultPreviewHeight(System.Single)">
-            <summary>
-            Sets the default preview height
-            </summary>
-            <param name="height">The height in pixels</param>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule">
-            <summary>
-            Handles window creation, positioning, and popup functionality
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.InspectObjectInDropDown(System.Object,UnityEngine.Rect,System.Single)">
-            <summary>
-            Pops up an editor window for the given object in a drop-down window
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.InspectObjectInDropDown(System.Object,UnityEngine.Rect,UnityEngine.Vector2)">
-            <summary>
-            Pops up an editor window for the given object in a drop-down window with automatic height adjustment
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.SetupAutomaticHeightAdjustment(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Int32)">
-            <summary>
-            Sets up automatic height adjustment for dropdown windows
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.InspectObjectInDropDown(System.Object,UnityEngine.Vector2)">
-            <summary>
-            Additional InspectObjectInDropDown overloads
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.InspectObject(System.Object)">
-            <summary>
-            Pops up a regular editor window for the given object
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.CreateEasyEditorWindowInstanceForObject(System.Object)">
-            <summary>
-            Creates an editor window instance for the specified object, without opening the window
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Modules.WindowManagementModule.SetWindowTitle(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Object,UnityEngine.Object)">
-            <summary>
-            Sets the window title based on the object type
+            Called after all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/> has been drawn.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.GlobalPersistentContext">

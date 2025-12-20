@@ -6,9 +6,9 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Abstract base class for collection operations
     /// </summary>
-    public abstract class CollectionOperation : ICollectionOperation
+    public abstract class CollectionOperationBase : ICollectionOperation
     {
-        protected CollectionOperation(Type ownerType)
+        protected CollectionOperationBase(Type ownerType)
         {
             OwnerType = ownerType;
         }
@@ -78,9 +78,9 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TCollection">Collection type</typeparam>
     /// <typeparam name="TElement">Element type</typeparam>
-    public abstract class CollectionOperation<TCollection, TElement> : CollectionOperation, ICollectionOperation<TCollection, TElement>
+    public abstract class CollectionOperationBase<TCollection, TElement> : CollectionOperationBase, ICollectionOperation<TCollection, TElement>
     {
-        protected CollectionOperation(Type ownerType) : base(ownerType)
+        protected CollectionOperationBase(Type ownerType) : base(ownerType)
         {
         }
 

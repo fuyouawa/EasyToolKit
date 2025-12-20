@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Generic property operation implementation using delegates
     /// </summary>
-    public class GenericPropertyOperation : PropertyOperation
+    public class GenericPropertyOperation : PropertyOperationBase
     {
         /// <summary>
         /// Value type
@@ -63,7 +63,7 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public class GenericPropertyOperation<TOwner, TValue> : PropertyOperation<TValue>
+    public class GenericPropertyOperation<TOwner, TValue> : PropertyOperationBase<TValue>
     {
         private readonly ValueGetter<TOwner, TValue> _getter;
         private readonly ValueSetter<TOwner, TValue> _setter;

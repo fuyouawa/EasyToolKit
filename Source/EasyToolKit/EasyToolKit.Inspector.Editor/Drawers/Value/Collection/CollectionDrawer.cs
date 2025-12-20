@@ -39,7 +39,7 @@ namespace EasyToolKit.Inspector.Editor
         protected override void Initialize()
         {
             _collectionStructureResolver = (ICollectionStructureResolver)Property.ChildrenResolver;
-            _collectionOperation = Property.GetOperation() as ICollectionOperation;
+            _collectionOperation = (ICollectionOperation)Property.GetOperation();
             _orderedCollectionOperation = _collectionOperation as IOrderedCollectionOperation;
 
             _listDrawerSettings = Property.GetAttribute<MetroListDrawerSettingsAttribute>();

@@ -170,7 +170,7 @@ namespace EasyToolKit.Inspector.Editor
 
         public void EnqueueChange(Action action)
         {
-            _changeAction = action;
+            _changeAction += action;
             Values.ForceMakeDirty();
         }
 

@@ -18,7 +18,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             var propertyOperation = GetPropertyOperation();
 
-            if (Property.BaseValueEntry.ValueType.IsInheritsFrom(typeof(IEnumerable<>)))
+            if (Property.BaseValueEntry.ValueType.IsImplementsOpenGenericType(typeof(IEnumerable<>)))
             {
                 var collectionOperation = GetCollectionOperation();
                 var collectionType = Property.BaseValueEntry.ValueType;

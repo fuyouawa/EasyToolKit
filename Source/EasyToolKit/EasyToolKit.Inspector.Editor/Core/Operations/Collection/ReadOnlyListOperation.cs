@@ -10,7 +10,7 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TCollection">The type of the collection (must implement IReadOnlyList{TElement})</typeparam>
     /// <typeparam name="TElement">The type of elements in the collection</typeparam>
-    public class ReadOnlyListOperation<TCollection, TElement> : CollectionOperation<TCollection, TElement>
+    public class ReadOnlyListOperation<TCollection, TElement> : CollectionOperationBase<TCollection, TElement>
         where TCollection : IReadOnlyList<TElement>
     {
         protected ReadOnlyListOperation(Type ownerType) : base(ownerType)

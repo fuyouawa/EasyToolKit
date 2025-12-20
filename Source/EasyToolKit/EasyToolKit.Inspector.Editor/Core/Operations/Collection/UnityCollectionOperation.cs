@@ -11,7 +11,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Handles Unity-specific collection operations using SerializedProperty system.
     /// </summary>
     /// <typeparam name="TElement">The type of elements in the collection</typeparam>
-    public class UnityCollectionOperation<TElement> : OrderedCollectionOperation<IList<TElement>, TElement>
+    public class UnityCollectionOperation<TElement> : OrderedCollectionOperationBase<IList<TElement>, TElement>
     {
         private readonly InspectorProperty _property;
         private SerializedProperty _serializedProperty;

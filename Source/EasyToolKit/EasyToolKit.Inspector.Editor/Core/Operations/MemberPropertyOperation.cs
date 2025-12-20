@@ -10,7 +10,7 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public class MemberPropertyOperation<TOwner, TValue> : PropertyOperation<TValue>
+    public class MemberPropertyOperation<TOwner, TValue> : PropertyOperationBase<TValue>
     {
         private readonly MemberInfo _memberInfo;
         private readonly ValueGetter<TOwner, TValue> _getter;

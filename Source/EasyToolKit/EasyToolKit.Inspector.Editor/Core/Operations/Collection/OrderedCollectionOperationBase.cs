@@ -8,9 +8,9 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TCollection">Collection type</typeparam>
     /// <typeparam name="TElement">Element type</typeparam>
-    public abstract class OrderedCollectionOperation<TCollection, TElement> : CollectionOperation<TCollection, TElement>, IOrderedCollectionOperation<TCollection, TElement>
+    public abstract class OrderedCollectionOperationBase<TCollection, TElement> : CollectionOperationBase<TCollection, TElement>, IOrderedCollectionOperation<TCollection, TElement>
     {
-        protected OrderedCollectionOperation(Type ownerType) : base(ownerType)
+        protected OrderedCollectionOperationBase(Type ownerType) : base(ownerType)
         {
         }
 

@@ -5,9 +5,9 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Abstract base class for property operations
     /// </summary>
-    public abstract class PropertyOperation : IPropertyOperation
+    public abstract class PropertyOperationBase : IPropertyOperation
     {
-        protected PropertyOperation(Type ownerType)
+        protected PropertyOperationBase(Type ownerType)
         {
             OwnerType = ownerType;
         }
@@ -46,9 +46,9 @@ namespace EasyToolKit.Inspector.Editor
     /// Generic abstract base class for property operations with type safety
     /// </summary>
     /// <typeparam name="TValue">Value type</typeparam>
-    public abstract class PropertyOperation<TValue> : PropertyOperation, IPropertyOperation<TValue>
+    public abstract class PropertyOperationBase<TValue> : PropertyOperationBase, IPropertyOperation<TValue>
     {
-        protected PropertyOperation(Type ownerType) : base(ownerType)
+        protected PropertyOperationBase(Type ownerType) : base(ownerType)
         {
         }
 
