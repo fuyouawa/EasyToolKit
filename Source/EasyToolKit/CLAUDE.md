@@ -128,14 +128,6 @@ When writing XML documentation comments, use `<see cref=""/>` blocks to referenc
 3. **Testing**: Use Unity's Play Mode for runtime testing, Editor Mode for inspector testing
 4. **Documentation**: XML documentation generated automatically
 
-## Key Files for Reference
-
-- `EasyToolKit.Core/Tools/Singleton/ScriptableObjectSingleton.cs` - Singleton pattern
-- `EasyToolKit.Core/Tools/Event/EasyEventManager.cs` - Event system
-- `EasyToolKit.Core/Tools/StateMachine/StateMachine.cs` - State machine
-- `EasyToolKit.Inspector/Attributes/ShowIfAttribute.cs` - Conditional inspector attributes
-- `EasyToolKit.Inspector.Editor/Drawers/EasyDrawer.cs` - Base drawer class
-
 ## Architecture Patterns Used
 
 - **Singleton Pattern**: Managers and global services
