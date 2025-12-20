@@ -371,12 +371,9 @@ namespace EasyToolKit.Inspector.Editor
                 _dirtyProperties.Clear();
                 foreach (var property in tempDirtyProperties)
                 {
-                    if (property.ValueEntry != null)
+                    if (property.ValueEntry.ApplyChanges())
                     {
-                        if (property.ValueEntry.ApplyChanges())
-                        {
-                            changed = true;
-                        }
+                        changed = true;
                     }
                 }
 

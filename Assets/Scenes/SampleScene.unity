@@ -158,7 +158,22 @@ MonoBehaviour:
     jjss: 23
     ddbba: 0
     assdaad: {x: 0, y: 0}
-  jjjjjss: 9c0000004f0000002d00000064000000
+  kk:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  jjjjjss: 4f0000009c0000002d00000064000000
 --- !u!4 &288710752
 Transform:
   m_ObjectHideFlags: 0

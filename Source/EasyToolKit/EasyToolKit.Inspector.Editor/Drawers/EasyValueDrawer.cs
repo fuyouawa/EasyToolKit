@@ -44,11 +44,6 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if this drawer can handle the property, false otherwise.</returns>
         protected sealed override bool CanDrawProperty(InspectorProperty property)
         {
-            if (property.ValueEntry == null)
-            {
-                return false;
-            }
-
             var valueType = property.ValueEntry.ValueType;
             return valueType == typeof(T) &&
                    CanDrawValueType(valueType) &&

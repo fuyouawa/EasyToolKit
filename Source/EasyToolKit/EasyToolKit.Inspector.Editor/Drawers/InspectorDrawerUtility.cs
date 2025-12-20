@@ -20,7 +20,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             foreach (var type in AppDomain.CurrentDomain.GetAssemblies()
                          .SelectMany(asm => asm.GetTypes())
-                         .Where(t => t.IsClass && !t.IsInterface && !t.IsAbstract && !t.IsInheritsFrom<UnityEditor.PropertyDrawer>()))
+                         .Where(t => t.IsClass && !t.IsInterface && !t.IsAbstract && t.IsInheritsFrom<UnityEditor.PropertyDrawer>()))
             {
                 var customPropertyDrawers = type.GetCustomAttributes<UnityEditor.CustomPropertyDrawer>();
                 foreach (var drawer in customPropertyDrawers)
@@ -33,7 +33,7 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            InspectorElementUtility.AddNullPriorityFallback(type =>
+            InspectorHandlerUtility.AddNullPriorityFallback(type =>
             {
                 if (type.IsImplementsOpenGenericType(typeof(EasyAttributeDrawer<>)))
                 {
@@ -73,13 +73,10 @@ namespace EasyToolKit.Inspector.Editor
             foreach (var attribute in property.GetAttributes())
             {
                 additionalMatchTypesList.Add(new[] { attribute.GetType() });
-                if (property.ValueEntry != null)
-                {
-                    additionalMatchTypesList.Add(new[] { attribute.GetType(), property.ValueEntry.ValueType });
-                }
+                additionalMatchTypesList.Add(new[] { attribute.GetType(), property.ValueEntry.ValueType });
             }
 
-            return InspectorElementUtility.GetElementTypes(property, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
+            return InspectorHandlerUtility.GetElementTypes(property, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
         }
     }
 }

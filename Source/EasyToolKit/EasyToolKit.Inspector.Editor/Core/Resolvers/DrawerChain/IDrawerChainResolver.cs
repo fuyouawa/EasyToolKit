@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface for resolving drawer chains for <see cref="InspectorProperty"/>
     /// </summary>
-    public interface IDrawerChainResolver : IInspectorElement
+    public interface IDrawerChainResolver : IInspectorHandler
     {
         /// <summary>
         /// Gets the drawer chain for the property

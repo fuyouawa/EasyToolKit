@@ -54,7 +54,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if this drawer can handle the property, false otherwise.</returns>
         protected sealed override bool CanDrawProperty(InspectorProperty property)
         {
-            if (property.ValueEntry != null && !CanDrawValueType(property.ValueEntry.ValueType))
+            if (!CanDrawValueType(property.ValueEntry.ValueType))
             {
                 return false;
             }
@@ -121,8 +121,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if this drawer can handle the attribute property, false otherwise.</returns>
         protected override bool CanDrawAttributeProperty(InspectorProperty property)
         {
-            return property.ValueEntry != null &&
-                   property.ValueEntry.ValueType == typeof(TValue) &&
+            return property.ValueEntry.ValueType == typeof(TValue) &&
                    CanDrawAttributeValueProperty(property);
         }
 

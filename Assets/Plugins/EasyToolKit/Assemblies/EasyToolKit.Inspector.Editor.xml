@@ -183,49 +183,32 @@
             Can be overridden by derived classes to customize tree drawing behavior.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.IInspectorElement">
-            <summary>
-            Base interface for all EasyToolKit inspector elements that manage properties and initialization state.
-            This interface provides common functionality for drawers, resolvers, and other inspector components.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IInspectorElement.Property">
+        <member name="P:EasyToolKit.Inspector.Editor.IInspectorHandler.Property">
             <summary>
             Gets or sets the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> that this element is associated with.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IInspectorElement.IsInitialized">
+        <member name="T:EasyToolKit.Inspector.Editor.InspectorHandlerUtility">
             <summary>
-            Gets a value indicating whether this element has been initialized.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IInspectorElement.Initialize">
-            <summary>
-            Initializes this element with its current property and any required resources.
-            This method should be called before using the element for drawing or resolving.
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.InspectorElementUtility">
-            <summary>
-            Utility class for discovering and matching inspector elements that implement <see cref="T:EasyToolKit.Inspector.Editor.IInspectorElement"/>.
+            Utility class for discovering and matching inspector elements that implement <see cref="T:EasyToolKit.Inspector.Editor.IInspectorHandler"/>.
             Elements are discovered via reflection, sorted by priority obtained from <see cref="T:EasyToolKit.Inspector.Editor.IInspectorPriorityGetter"/> attributes,
-            and registered in a <see cref="F:EasyToolKit.Inspector.Editor.InspectorElementUtility.s_typeMatcher"/> for type-based matching.
+            and registered in a <see cref="F:EasyToolKit.Inspector.Editor.InspectorHandlerUtility.s_typeMatcher"/> for type-based matching.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.InspectorElementUtility.NullPriorityFallbacks">
+        <member name="F:EasyToolKit.Inspector.Editor.InspectorHandlerUtility.NullPriorityFallbacks">
             <summary>
             Gets or sets a callback that provides a default <see cref="T:EasyToolKit.Inspector.Editor.InspectorPriority"/> when no priority attribute is found.
             If not set, returns null when no priority attribute is present.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.AddNullPriorityFallback(System.Func{System.Type,EasyToolKit.Inspector.Editor.InspectorPriority})">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorHandlerUtility.AddNullPriorityFallback(System.Func{System.Type,EasyToolKit.Inspector.Editor.InspectorPriority})">
             <summary>
             Adds a fallback function that provides a default priority when no priority attribute is found.
             This will reset the type matcher to ensure newly added elements are sorted with the updated fallback.
             </summary>
             <param name="fallback">The fallback function to add.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.GetElementTypes(EasyToolKit.Inspector.Editor.InspectorProperty,System.Func{System.Type,System.Boolean},System.Collections.Generic.IList{System.Type[]})">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorHandlerUtility.GetElementTypes(EasyToolKit.Inspector.Editor.InspectorProperty,System.Func{System.Type,System.Boolean},System.Collections.Generic.IList{System.Type[]})">
             <summary>
             Gets element types for the specified inspector property.
             Matches elements against the property's value type and its attributes.
@@ -233,7 +216,7 @@
             <param name="property">The inspector property to match.</param>
             <returns>An enumerable of types, ordered by priority.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.GetMatchedType(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorHandlerUtility.GetMatchedType(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
             <summary>
             Resolves generic type arguments for inspector elements that target partially open generic types.
             This method handles complex scenarios where an inspector element's generic parameters correspond to
@@ -284,16 +267,16 @@
             </para>
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.GetElementPriority(System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorHandlerUtility.GetElementPriority(System.Type)">
             <summary>
             Gets the priority of an inspector element type.
             Priority is obtained from the <see cref="T:EasyToolKit.Inspector.Editor.IInspectorPriorityGetter"/> attribute if present;
-            otherwise, falls back to <see cref="F:EasyToolKit.Inspector.Editor.InspectorElementUtility.NullPriorityFallbacks"/> if set.
+            otherwise, falls back to <see cref="F:EasyToolKit.Inspector.Editor.InspectorHandlerUtility.NullPriorityFallbacks"/> if set.
             </summary>
             <param name="elementType">The element type to examine.</param>
             <returns>The priority of the element, or null if no priority could be determined.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.InspectorElementUtility.CanElementHandleProperty(System.Type,EasyToolKit.Inspector.Editor.InspectorProperty)">
+        <member name="M:EasyToolKit.Inspector.Editor.InspectorHandlerUtility.CanElementHandleProperty(System.Type,EasyToolKit.Inspector.Editor.InspectorProperty)">
             <summary>
             Determines whether the specified element type can handle the given property.
             If the element implements <see cref="T:EasyToolKit.Inspector.Editor.IEasyDrawer"/>, calls its <see cref="!:IEasyDrawer.CanDrawProperty"/> method;
@@ -1045,18 +1028,6 @@
         <member name="P:EasyToolKit.Inspector.Editor.InspectorProperty.Info">
             <summary>
             Gets the metadata information about this property, including type information, member accessors, and resolver configuration.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorProperty.BaseValueEntry">
-            <summary>
-            Gets the base value entry that provides access to the underlying property value, or null if this property has no value accessor.
-            This entry represents the raw value without any type conversion or wrapping.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.InspectorProperty.ValueEntry">
-            <summary>
-            Gets the current value entry that provides access to the property value, which may be a wrapper around the base value entry
-            for type conversion scenarios, or null if this property has no value accessor.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.InspectorProperty.Path">
@@ -2144,6 +2115,29 @@
             Releases all resources used by this value entry wrapper.
             </summary>
         </member>
+        <member name="T:EasyToolKit.Inspector.Editor.AttributeResolverBase">
+            <summary>
+            Abstract base class for attribute resolver in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.Initialize">
+            <summary>
+            Override this method to perform initialization logic
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.GetAttributes">
+            <summary>
+            Gets all attributes associated with the property
+            </summary>
+            <returns>Array of attributes</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.GetAttributeSource(System.Attribute)">
+            <summary>
+            Gets the source of an attribute to determine where it was originally defined
+            </summary>
+            <param name="attribute">The attribute to check</param>
+            <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.AttributeSource">
             <summary>
             Specifies the source of an attribute in the inspector property system
@@ -2163,24 +2157,6 @@
             <summary>
             Attribute is defined on a list/collection type/field but is passed to each element
             </summary>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.AttributeResolverBase">
-            <summary>
-            Abstract base class for attribute resolver in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.GetAttributes">
-            <summary>
-            Gets all attributes associated with the property
-            </summary>
-            <returns>Array of attributes</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.GetAttributeSource(System.Attribute)">
-            <summary>
-            Gets the source of an attribute to determine where it was originally defined
-            </summary>
-            <param name="attribute">The attribute to check</param>
-            <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.DefaultAttributeResolver">
             <summary>
@@ -2235,6 +2211,11 @@
             Abstract base class for drawer chain resolution in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.DrawerChainResolverBase.Initialize">
+            <summary>
+            Override this method to perform initialization logic
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.DrawerChainResolverBase.GetDrawerChain">
             <summary>
             Gets the drawer chain for the property
@@ -2267,6 +2248,11 @@
         <member name="T:EasyToolKit.Inspector.Editor.GroupResolverBase">
             <summary>
             Abstract base class for group property resolver in the <see cref="T:EasyToolKit.Inspector.Editor.InspectorProperty"/> system
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GroupResolverBase.Initialize">
+            <summary>
+            Override this method to perform initialization logic
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.GroupResolverBase.GetGroupProperties(System.Type)">

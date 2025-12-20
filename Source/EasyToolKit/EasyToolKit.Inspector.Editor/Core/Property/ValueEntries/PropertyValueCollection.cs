@@ -177,8 +177,6 @@ namespace EasyToolKit.Inspector.Editor
         {
             if (!Dirty) return false;
 
-            Assert.IsTrue(Property.Parent?.ValueEntry != null);
-
             for (int i = 0; i < _values.Length; i++)
             {
                 var owner = Property.Parent.ValueEntry.WeakValues[i];

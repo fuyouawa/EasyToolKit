@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Interface for all EasyToolKit drawers that handle property drawing in the Unity Inspector.
     /// Drawers are responsible for rendering custom UI for properties and attributes.
     /// </summary>
-    public interface IEasyDrawer : IInspectorElement
+    public interface IEasyDrawer : IInspectorHandler
     {
         /// <summary>
         /// Gets or sets whether this drawer should be skipped during the drawing process.

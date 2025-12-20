@@ -10,8 +10,10 @@ namespace EasyToolKit.Inspector.Editor
     /// Base abstract class for all EasyToolKit drawers.
     /// Provides common functionality for property drawing and lifecycle management.
     /// </summary>
-    public abstract class EasyDrawer : InspectorElementBase, IEasyDrawer
+    public abstract class EasyDrawer : InspectorHandlerBase, IEasyDrawer
     {
+        private bool _isInitialized;
+
         /// <summary>
         /// Gets or sets whether this drawer should be skipped during the drawing process.
         /// </summary>
@@ -54,6 +56,15 @@ namespace EasyToolKit.Inspector.Editor
         {
         }
 
+        protected override bool CanHandle(InspectorProperty property)
+        {
+            return CanDrawProperty(property);
+        }
+
+        protected virtual void Initialize()
+        {
+        }
+
         /// <summary>
         /// Explicit interface implementation for IEasyDrawer.DrawProperty.
         /// Draws the property UI using the specified label.
@@ -61,12 +72,12 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="label">The GUIContent label to display for this property.</param>
         void IEasyDrawer.DrawProperty(GUIContent label)
         {
+            if (!_isInitialized)
+            {
+                Initialize();
+                _isInitialized = true;
+            }
             DrawProperty(label);
-        }
-
-        protected override bool CanHandle(InspectorProperty property)
-        {
-            return CanDrawProperty(property);
         }
     }
 }

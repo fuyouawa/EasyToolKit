@@ -11,18 +11,8 @@ namespace EasyToolKit.Inspector.Editor
     {
         private DrawerChain _chain;
 
-        /// <summary>
-        /// Gets the drawer chain for the property by discovering and initializing appropriate drawers
-        /// </summary>
-        /// <returns>The drawer chain</returns>
-        public override DrawerChain GetDrawerChain()
+        protected override void Initialize()
         {
-            // Return cached chain if available
-            if (_chain != null)
-            {
-                return _chain;
-            }
-
             // Get default property drawer types for the property
             var drawerTypes = InspectorDrawerUtility.GetDrawerTypes(Property);
             var drawers = new List<IEasyDrawer>();
@@ -32,12 +22,19 @@ namespace EasyToolKit.Inspector.Editor
             {
                 var drawer = drawerType.CreateInstance<IEasyDrawer>();
                 drawer.Property = Property;
-                drawer.Initialize();
                 drawers.Add(drawer);
             }
 
             // Create and cache the drawer chain
             _chain = new DrawerChain(Property, drawers);
+        }
+
+        /// <summary>
+        /// Gets the drawer chain for the property by discovering and initializing appropriate drawers
+        /// </summary>
+        /// <returns>The drawer chain</returns>
+        protected override DrawerChain GetDrawerChain()
+        {
             return _chain;
         }
     }

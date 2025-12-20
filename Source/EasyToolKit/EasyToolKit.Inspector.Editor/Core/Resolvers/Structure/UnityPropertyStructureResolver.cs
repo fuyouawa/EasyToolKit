@@ -115,7 +115,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="childIndex">The index of the child property</param>
         /// <returns>Information about the child property</returns>
-        public override InspectorPropertyInfo GetChildInfo(int childIndex)
+        protected override InspectorPropertyInfo GetChildInfo(int childIndex)
         {
             if (childIndex < 0 || childIndex >= _propertyInfos.Count)
                 throw new ArgumentOutOfRangeException(nameof(childIndex));
@@ -128,7 +128,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="name">The name of the child property</param>
         /// <returns>The index of the child property, or -1 if not found</returns>
-        public override int ChildNameToIndex(string name)
+        protected override int ChildNameToIndex(string name)
         {
             for (int i = 0; i < _propertyInfos.Count; i++)
             {

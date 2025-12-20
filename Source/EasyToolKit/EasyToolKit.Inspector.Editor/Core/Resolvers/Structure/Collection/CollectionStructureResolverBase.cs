@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace EasyToolKit.Inspector.Editor
 {
+    [ResolverPriority(1.0)]
     public abstract class CollectionStructureResolverBase<TCollection> : PropertyStructureResolverBase<TCollection>, ICollectionStructureResolver
     {
         private readonly Dictionary<int, InspectorPropertyInfo> _propertyInfosByIndex =
@@ -19,7 +20,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="childIndex">The index of the child property</param>
         /// <returns>Information about the child property</returns>
-        public override InspectorPropertyInfo GetChildInfo(int childIndex)
+        protected override InspectorPropertyInfo GetChildInfo(int childIndex)
         {
             if (_propertyInfosByIndex.TryGetValue(childIndex, out var info))
             {
@@ -42,7 +43,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="name">The name of the child property</param>
         /// <returns>Throws NotSupportedException</returns>
-        public override int ChildNameToIndex(string name)
+        protected override int ChildNameToIndex(string name)
         {
             throw new NotSupportedException("Collection resolvers do not support name-based access");
         }

@@ -15,8 +15,8 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var elementType = Property.BaseValueEntry.ValueType;
             var collectionType = Property.Parent.ValueEntry.ValueType;
+            var elementType = ((ICollectionStructureResolver)Property.Parent.ChildrenResolver).ElementType;
 
             Type operationType;
             if (collectionType.IsImplementsOpenGenericType(typeof(IList<>)))
@@ -35,7 +35,7 @@ namespace EasyToolKit.Inspector.Editor
             _operation = operationType.CreateInstance<IPropertyOperation>(Property.Info.CollectionElementIndex);
         }
 
-        public override IPropertyOperation GetOperation()
+        protected override IPropertyOperation GetOperation()
         {
             return _operation;
         }

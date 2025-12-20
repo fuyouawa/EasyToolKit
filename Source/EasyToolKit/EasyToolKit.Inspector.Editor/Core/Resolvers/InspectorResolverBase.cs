@@ -1,6 +1,6 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
-    public class InspectorResolverBase : InspectorElementBase
+    public class InspectorResolverBase : InspectorHandlerBase
     {
         protected override bool CanHandle(InspectorProperty property)
         {

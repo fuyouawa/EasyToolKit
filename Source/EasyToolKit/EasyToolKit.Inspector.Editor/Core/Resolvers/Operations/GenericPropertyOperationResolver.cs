@@ -11,17 +11,17 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override bool CanResolve(InspectorProperty property)
         {
-            return property.Info.IsLogicRoot || property.Info.MemberInfo != null;
+            return property.Info.MemberInfo != null;
         }
 
         protected override void Initialize()
         {
             var propertyOperation = GetPropertyOperation();
 
-            if (Property.BaseValueEntry.ValueType.IsImplementsOpenGenericType(typeof(IEnumerable<>)))
+            if (Property.ChildrenResolver is ICollectionStructureResolver)
             {
                 var collectionOperation = GetCollectionOperation();
-                var collectionType = Property.BaseValueEntry.ValueType;
+                var collectionType = Property.ValueEntry.ValueType;
                 var elementType = collectionType.GetArgumentsOfInheritedOpenGenericType(typeof(IEnumerable<>))[0];
                 if (collectionOperation is IOrderedCollectionOperation)
                 {
@@ -42,25 +42,15 @@ namespace EasyToolKit.Inspector.Editor
 
         private IPropertyOperation GetPropertyOperation()
         {
-            if (Property.Info.IsLogicRoot)
-            {
-                return new GenericPropertyOperation(
-                    null, Property.BaseValueEntry.ValueType,
-                    (ref object index) => Property.Tree.Targets[(int)index],
-                    (ref object index, object value) => throw new InvalidOperationException("Cannot set logic root"));
-            }
-            else
-            {
-                var ownerType = Property.Parent.ValueEntry.ValueType;
-                var operationType = typeof(MemberPropertyOperation<,>).MakeGenericType(ownerType, Property.BaseValueEntry.ValueType);
-                return operationType.CreateInstance<IPropertyOperation>(Property.Info.MemberInfo);
-            }
+            var ownerType = Property.Parent.ValueEntry.ValueType;
+            var operationType = typeof(MemberPropertyOperation<,>).MakeGenericType(ownerType, Property.ValueEntry.ValueType);
+            return operationType.CreateInstance<IPropertyOperation>(Property.Info.MemberInfo);
         }
 
         private ICollectionOperation GetCollectionOperation()
         {
             var ownerType = Property.Parent.ValueEntry.ValueType;
-            var collectionType = Property.BaseValueEntry.ValueType;
+            var collectionType = Property.ValueEntry.ValueType;
             var elementType = collectionType.GetArgumentsOfInheritedOpenGenericType(typeof(IEnumerable<>))[0];
 
             if (collectionType.IsImplementsOpenGenericType(typeof(IList<>)))
@@ -78,7 +68,7 @@ namespace EasyToolKit.Inspector.Editor
             throw new NotSupportedException($"Collection type {collectionType} is not supported.");
         }
 
-        public override IPropertyOperation GetOperation()
+        protected override IPropertyOperation GetOperation()
         {
             return _operation;
         }

@@ -24,13 +24,15 @@ namespace EasyToolKit.Inspector.Editor
         private bool _isAllowChildren;
         private long _lastAllowChildrenUpdateId;
         private string _unityPath;
+        private IPropertyValueEntry _baseValueEntry;
+        [CanBeNull] private IPropertyValueEntry _valueEntry;
 
         private IPropertyStructureResolver _childrenResolver;
         private IGroupResolver _groupResolver;
         private IDrawerChainResolver _drawerChainResolver;
         private IAttributeResolver _attributeResolver;
         private IPropertyOperationResolver _operationResolver;
-        private long _lastUpdateId;
+        private long? _lastUpdateId;
 
         /// <summary>
         /// Gets the parent property in the inspector hierarchy, or null if this is a root property.
@@ -51,18 +53,6 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets the metadata information about this property, including type information, member accessors, and resolver configuration.
         /// </summary>
         public InspectorPropertyInfo Info { get; private set; }
-
-        /// <summary>
-        /// Gets the base value entry that provides access to the underlying property value, or null if this property has no value accessor.
-        /// This entry represents the raw value without any type conversion or wrapping.
-        /// </summary>
-        [CanBeNull] public IPropertyValueEntry BaseValueEntry { get; private set; }
-
-        /// <summary>
-        /// Gets the current value entry that provides access to the property value, which may be a wrapper around the base value entry
-        /// for type conversion scenarios, or null if this property has no value accessor.
-        /// </summary>
-        [CanBeNull] public IPropertyValueEntry ValueEntry { get; private set; }
 
         /// <summary>
         /// Gets the hierarchical path of this property within the inspector tree, using dot notation for nested properties.
@@ -144,7 +134,7 @@ namespace EasyToolKit.Inspector.Editor
             _groupResolver = new DefaultGroupResolver();
 
             var entryType = typeof(PropertyValueEntry<>).MakeGenericType(Info.PropertyType);
-            BaseValueEntry = (IPropertyValueEntry)entryType.CreateInstance(this);
+            _baseValueEntry = (IPropertyValueEntry)entryType.CreateInstance(this);
         }
 
         public IPropertyOperationResolver OperationResolver => _operationResolver;
@@ -152,6 +142,8 @@ namespace EasyToolKit.Inspector.Editor
         [CanBeNull] public IDrawerChainResolver DrawerChainResolver => _drawerChainResolver;
         public IAttributeResolver AttributeResolver => _attributeResolver;
         public IGroupResolver GroupResolver => _groupResolver;
+
+        public IPropertyValueEntry ValueEntry => _valueEntry ?? _baseValueEntry;
 
         /// <summary>
         /// Gets the state of this property, including validation state, visibility, and other runtime properties.
@@ -302,6 +294,11 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
+            if (_lastUpdateId == null)
+            {
+                Refresh();
+            }
+
             _lastUpdateId = Tree.UpdateId;
 
             UpdateValueEntry();
@@ -319,54 +316,45 @@ namespace EasyToolKit.Inspector.Editor
 
         private void UpdateValueEntry()
         {
-            if (BaseValueEntry == null)
-                return;
-            if (_operationResolver == null)
-            {
-                _operationResolver = Tree.OperationResolverFactory.CreateResolver(this);
-                _operationResolver.Property = this;
-                _operationResolver.Initialize();
-            }
-
-            BaseValueEntry.Update();
+            _baseValueEntry.Update();
 
             if (!Info.PropertyType.IsValueType)
             {
-                var valueType = BaseValueEntry.ValueType;
-                if (valueType != BaseValueEntry.BaseValueType)
+                var valueType = _baseValueEntry.ValueType;
+                if (valueType != _baseValueEntry.BaseValueType)
                 {
-                    if (ValueEntry == null ||
-                        (ValueEntry is IPropertyValueEntryWrapper && ValueEntry.RuntimeValueType != valueType) ||
-                        (!(ValueEntry is IPropertyValueEntryWrapper) && ValueEntry.RuntimeValueType != ValueEntry.BaseValueType))
+                    if (_valueEntry == null ||
+                        (_valueEntry is IPropertyValueEntryWrapper && _valueEntry.RuntimeValueType != valueType) ||
+                        (!(_valueEntry is IPropertyValueEntryWrapper) && _valueEntry.RuntimeValueType != _valueEntry.BaseValueType))
                     {
-                        if (ValueEntry != null && ValueEntry != BaseValueEntry)
+                        if (_valueEntry != null && _valueEntry != _baseValueEntry)
                         {
-                            ValueEntry.Dispose();
+                            _valueEntry.Dispose();
                         }
 
-                        var wrapperType = typeof(PropertyValueEntryWrapper<,>).MakeGenericType(valueType, BaseValueEntry.BaseValueType);
-                        ValueEntry = wrapperType.CreateInstance<IPropertyValueEntry>(BaseValueEntry);
+                        var wrapperType = typeof(PropertyValueEntryWrapper<,>).MakeGenericType(valueType, _baseValueEntry.BaseValueType);
+                        _valueEntry = wrapperType.CreateInstance<IPropertyValueEntry>(_baseValueEntry);
                         Refresh();
                     }
                 }
-                else if (ValueEntry != BaseValueEntry)
+                else if (_valueEntry != _baseValueEntry)
                 {
-                    if (ValueEntry != null)
+                    if (_valueEntry != null)
                     {
-                        ValueEntry.Dispose();
+                        _valueEntry.Dispose();
                     }
 
-                    ValueEntry = BaseValueEntry;
+                    _valueEntry = _baseValueEntry;
                     Refresh();
                 }
             }
-            else if (ValueEntry == null)
+            else if (_valueEntry == null)
             {
-                ValueEntry = BaseValueEntry;
+                _valueEntry = _baseValueEntry;
                 Refresh();
             }
 
-            ValueEntry.Update();
+            _valueEntry.Update();
         }
 
         /// <summary>
@@ -375,26 +363,17 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public void Refresh()
         {
-            _operationResolver = Tree.OperationResolverFactory.CreateResolver(this);
             _childrenResolver = Tree.StructureResolverFactory.CreateResolver(this);
+            _operationResolver = Tree.OperationResolverFactory.CreateResolver(this);
             _drawerChainResolver = Tree.DrawerChainResolverFactory.CreateResolver(this);
             _attributeResolver = Tree.AttributeResolverFactory.CreateResolver(this);
             _groupResolver = Tree.GroupResolverFactory.CreateResolver(this);
 
-            _operationResolver.Property = this;
-            _operationResolver.Initialize();
-
             _childrenResolver.Property = this;
-            _childrenResolver.Initialize();
-
+            _operationResolver.Property = this;
             _drawerChainResolver.Property = this;
-            _drawerChainResolver.Initialize();
-
             _attributeResolver.Property = this;
-            _attributeResolver.Initialize();
-
             _groupResolver.Property = this;
-            _groupResolver.Initialize();
 
             if (Children != null)
             {
@@ -535,9 +514,9 @@ namespace EasyToolKit.Inspector.Editor
             //     }
             // }
 
-            if (ValueEntry != null)
+            if (_valueEntry != null)
             {
-                var valueType = ValueEntry.ValueType;
+                var valueType = _valueEntry.ValueType;
                 if (InspectorPropertyInfoUtility.IsAllowChildrenTypeLeniently(valueType))
                 {
                     return true;
@@ -569,15 +548,15 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public void Dispose()
         {
-            BaseValueEntry?.Dispose();
-            if (ValueEntry != BaseValueEntry)
+            _baseValueEntry.Dispose();
+            if (_valueEntry != _baseValueEntry)
             {
-                ValueEntry?.Dispose();
-                ValueEntry = null;
+                _valueEntry?.Dispose();
+                _valueEntry = null;
             }
 
             Children?.Dispose();
-            BaseValueEntry = null;
+            _baseValueEntry = null;
             Children = null;
             Info = null;
             Tree = null;

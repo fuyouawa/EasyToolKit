@@ -10,11 +10,13 @@ namespace EasyToolKit.Inspector.Editor
     {
         private int? _lastChildCountUpdateId;
         private int _childCount;
+        private bool _isInitialized;
 
         public int ChildCount
         {
             get
             {
+                EnsureInitialize();
                 if (_lastChildCountUpdateId != Property.Tree.UpdateId)
                 {
                     _lastChildCountUpdateId = Property.Tree.UpdateId;
@@ -29,20 +31,45 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="childIndex">The index of the child property</param>
         /// <returns>Information about the child property</returns>
-        public abstract InspectorPropertyInfo GetChildInfo(int childIndex);
+        protected abstract InspectorPropertyInfo GetChildInfo(int childIndex);
 
         /// <summary>
         /// Converts a child property name to its index
         /// </summary>
         /// <param name="name">The name of the child property</param>
         /// <returns>The index of the child property, or -1 if not found</returns>
-        public abstract int ChildNameToIndex(string name);
+        protected abstract int ChildNameToIndex(string name);
 
         /// <summary>
         /// Calculates the number of child properties
         /// </summary>
         /// <returns>The number of child properties</returns>
         protected abstract int CalculateChildCount();
+
+        protected virtual void Initialize()
+        {
+        }
+
+        private void EnsureInitialize()
+        {
+            if (!_isInitialized)
+            {
+                Initialize();
+                _isInitialized = true;
+            }
+        }
+
+        InspectorPropertyInfo IPropertyStructureResolver.GetChildInfo(int childIndex)
+        {
+            EnsureInitialize();
+            return GetChildInfo(childIndex);
+        }
+
+        int IPropertyStructureResolver.ChildNameToIndex(string name)
+        {
+            EnsureInitialize();
+            return ChildNameToIndex(name);
+        }
     }
 
     public abstract class PropertyStructureResolverBase<T> : PropertyStructureResolverBase
@@ -74,11 +101,6 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override bool CanResolve(InspectorProperty property)
         {
-            if (property.ValueEntry == null)
-            {
-                return false;
-            }
-
             var valueType = property.ValueEntry.ValueType;
             return valueType == typeof(T) &&
                    CanResolveType(valueType) &&

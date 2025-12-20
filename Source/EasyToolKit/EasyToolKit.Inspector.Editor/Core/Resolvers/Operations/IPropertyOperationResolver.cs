@@ -1,6 +1,6 @@
 namespace EasyToolKit.Inspector.Editor
 {
-    public interface IPropertyOperationResolver : IInspectorElement
+    public interface IPropertyOperationResolver : IInspectorHandler
     {
         IPropertyOperation GetOperation();
     }

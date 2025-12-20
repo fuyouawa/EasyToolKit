@@ -9,11 +9,11 @@ using UnityEngine;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Utility class for discovering and matching inspector elements that implement <see cref="IInspectorElement"/>.
+    /// Utility class for discovering and matching inspector elements that implement <see cref="IInspectorHandler"/>.
     /// Elements are discovered via reflection, sorted by priority obtained from <see cref="IInspectorPriorityGetter"/> attributes,
     /// and registered in a <see cref="s_typeMatcher"/> for type-based matching.
     /// </summary>
-    public static class InspectorElementUtility
+    public static class InspectorHandlerUtility
     {
         private static Type[] s_elementTypes;
         private static TypeMatcher s_typeMatcher;
@@ -71,7 +71,7 @@ namespace EasyToolKit.Inspector.Editor
                              .SelectMany(asm => asm.GetTypes())
                              .Where(t => t.IsClass && !t.IsInterface && !t.IsAbstract))
                 {
-                    if (type.IsInheritsFrom<IInspectorElement>())
+                    if (type.IsInheritsFrom<IInspectorHandler>())
                     {
                         elementTypes.Add(type);
                     }
@@ -114,10 +114,7 @@ namespace EasyToolKit.Inspector.Editor
                 TypeMatcher.GetCachedMatches(Type.EmptyTypes),
             };
 
-            if (property.ValueEntry != null)
-            {
-                resultsList.Add(TypeMatcher.GetCachedMatches(property.ValueEntry.ValueType));
-            }
+            resultsList.Add(TypeMatcher.GetCachedMatches(property.ValueEntry.ValueType));
 
             if (additionalMatchTypesList != null)
             {
@@ -247,7 +244,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             InspectorPriority priority = null;
 
-            if (elementType.GetCustomAttributes()
+            if (elementType.GetCustomAttributes(true)
                     .FirstOrDefault(attr => attr is IInspectorPriorityGetter) is IInspectorPriorityGetter priorityAttribute)
             {
                 priority = priorityAttribute.Priority;
@@ -278,7 +275,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if the element can handle the property; otherwise, false.</returns>
         private static bool CanElementHandleProperty(Type elementType, InspectorProperty property)
         {
-            var element = (IInspectorElement)FormatterServices.GetUninitializedObject(elementType);
+            var element = (IInspectorHandler)FormatterServices.GetUninitializedObject(elementType);
             return element.CanHandle(property);
         }
     }

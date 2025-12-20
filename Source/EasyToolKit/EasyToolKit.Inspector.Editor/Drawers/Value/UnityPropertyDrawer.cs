@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    [DrawerPriority(DrawerPriorityLevel.Value - 1)]
+    [DrawerPriority(DrawerPriorityLevel.Value + 0.2)]
     public class UnityPropertyDrawer : EasyDrawer
     {
         protected override bool CanDrawProperty(InspectorProperty property)

@@ -17,7 +17,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="beginGroupAttributeType">The type of the begin group attribute</param>
         /// <returns>Array of properties in the group</returns>
-        public override InspectorProperty[] GetGroupProperties(Type beginGroupAttributeType)
+        protected override InspectorProperty[] GetGroupProperties(Type beginGroupAttributeType)
         {
             // Return cached properties if available
             if (_groupPropertiesCache.TryGetValue(beginGroupAttributeType, out var properties))

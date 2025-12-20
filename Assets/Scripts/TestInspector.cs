@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using EasyToolKit.Inspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 [Serializable]
 public class TestInner
@@ -20,6 +21,8 @@ public class TestInspector : MonoBehaviour
     public Vector2 assd;
 
     public TestInner inner;
+
+    public UnityEvent kk;
 
     public List<int> jjjjjss;
 

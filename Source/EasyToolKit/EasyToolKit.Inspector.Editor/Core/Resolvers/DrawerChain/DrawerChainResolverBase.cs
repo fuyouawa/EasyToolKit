@@ -9,10 +9,34 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public abstract class DrawerChainResolverBase : InspectorResolverBase, IDrawerChainResolver
     {
+        private bool _isInitialized;
+
+        /// <summary>
+        /// Override this method to perform initialization logic
+        /// </summary>
+        protected virtual void Initialize()
+        {
+        }
+
         /// <summary>
         /// Gets the drawer chain for the property
         /// </summary>
         /// <returns>The drawer chain</returns>
-        public abstract DrawerChain GetDrawerChain();
+        protected abstract DrawerChain GetDrawerChain();
+
+        private void EnsureInitialize()
+        {
+            if (!_isInitialized)
+            {
+                Initialize();
+                _isInitialized = true;
+            }
+        }
+
+        DrawerChain IDrawerChainResolver.GetDrawerChain()
+        {
+            EnsureInitialize();
+            return GetDrawerChain();
+        }
     }
 }

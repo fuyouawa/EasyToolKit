@@ -13,18 +13,8 @@ namespace EasyToolKit.Inspector.Editor
         private Attribute[] _attributes;
         private Dictionary<Attribute, AttributeSource> _attributeSources;
 
-        /// <summary>
-        /// Gets all attributes associated with the property from member, type, and list element sources
-        /// </summary>
-        /// <returns>Array of attributes</returns>
-        public override Attribute[] GetAttributes()
+        protected override void Initialize()
         {
-            // Return cached attributes if available
-            if (_attributes != null)
-            {
-                return _attributes;
-            }
-
             _attributeSources = new Dictionary<Attribute, AttributeSource>();
 
             if (!Property.Info.IsLogicRoot && Property.Parent.ChildrenResolver is ICollectionStructureResolver)
@@ -45,16 +35,21 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            if (Property.ValueEntry != null)
+            var typeAttributes = Property.ValueEntry.ValueType.GetCustomAttributes(true).Cast<Attribute>();
+            foreach (var attribute in typeAttributes)
             {
-                var typeAttributes = Property.ValueEntry.ValueType.GetCustomAttributes(true).Cast<Attribute>();
-                foreach (var attribute in typeAttributes)
-                {
-                    _attributeSources[attribute] = AttributeSource.Type;
-                }
+                _attributeSources[attribute] = AttributeSource.Type;
             }
 
             _attributes = _attributeSources.Keys.ToArray();
+        }
+
+        /// <summary>
+        /// Gets all attributes associated with the property from member, type, and list element sources
+        /// </summary>
+        /// <returns>Array of attributes</returns>
+        protected override Attribute[] GetAttributes()
+        {
             return _attributes;
         }
 
@@ -64,14 +59,8 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="attribute">The attribute to check</param>
         /// <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
         /// <exception cref="ArgumentException">Thrown when the attribute is not found</exception>
-        public override AttributeSource GetAttributeSource(Attribute attribute)
+        protected override AttributeSource GetAttributeSource(Attribute attribute)
         {
-            // Ensure attributes are loaded
-            if (_attributeSources == null)
-            {
-                GetAttributes();
-            }
-
             // Return the source if found
             if (_attributeSources.TryGetValue(attribute, out var source))
             {
