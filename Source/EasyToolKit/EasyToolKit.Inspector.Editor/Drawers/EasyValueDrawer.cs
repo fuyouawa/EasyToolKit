@@ -36,8 +36,6 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        public override Type MatchedType => typeof(EasyValueDrawer<>);
-
         /// <summary>
         /// Determines whether this drawer can draw the specified property.
         /// This method is sealed and provides the base logic for value type-based property filtering.

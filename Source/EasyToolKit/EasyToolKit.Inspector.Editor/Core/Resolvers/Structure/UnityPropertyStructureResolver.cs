@@ -18,13 +18,13 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override bool CanResolve(InspectorProperty property)
         {
-            if (Property.Info.IsLogicRoot)
+            if (property.Info.IsLogicRoot)
             {
-                _serializedProperty = Property.Tree.SerializedObject?.GetIterator();
+                _serializedProperty = property.Tree.SerializedObject?.GetIterator();
             }
             else
             {
-                _serializedProperty = Property.Tree.GetUnityPropertyByPath(Property.UnityPath);
+                _serializedProperty = property.Tree.GetUnityPropertyByPath(property.UnityPath);
             }
 
             if (_serializedProperty == null)

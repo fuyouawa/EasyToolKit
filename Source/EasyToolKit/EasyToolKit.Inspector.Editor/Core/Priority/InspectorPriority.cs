@@ -11,6 +11,8 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public class InspectorPriority : IEquatable<InspectorPriority>, IComparable<InspectorPriority>
     {
+        public static readonly InspectorPriority Default = new InspectorPriority(0.0);
+
         /// <summary>
         /// Gets the numeric value of this drawer priority.
         /// </summary>

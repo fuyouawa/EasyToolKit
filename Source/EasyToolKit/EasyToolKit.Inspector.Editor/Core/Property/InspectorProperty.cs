@@ -147,7 +147,7 @@ namespace EasyToolKit.Inspector.Editor
             BaseValueEntry = (IPropertyValueEntry)entryType.CreateInstance(this);
         }
 
-        [CanBeNull] public IPropertyOperationResolver OperationResolver => _operationResolver;
+        public IPropertyOperationResolver OperationResolver => _operationResolver;
         [CanBeNull] public IPropertyStructureResolver ChildrenResolver => _childrenResolver;
         [CanBeNull] public IDrawerChainResolver DrawerChainResolver => _drawerChainResolver;
         public IAttributeResolver AttributeResolver => _attributeResolver;
@@ -321,6 +321,13 @@ namespace EasyToolKit.Inspector.Editor
         {
             if (BaseValueEntry == null)
                 return;
+            if (_operationResolver == null)
+            {
+                _operationResolver = Tree.OperationResolverFactory.CreateResolver(this);
+                _operationResolver.Property = this;
+                _operationResolver.Initialize();
+            }
+
             BaseValueEntry.Update();
 
             if (!Info.PropertyType.IsValueType)
@@ -450,7 +457,7 @@ namespace EasyToolKit.Inspector.Editor
 
         public IPropertyOperation GetOperation()
         {
-            return OperationResolver?.GetOperation();
+            return OperationResolver.GetOperation();
         }
 
         /// <summary>

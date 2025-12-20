@@ -67,7 +67,7 @@ namespace EasyToolKit.Inspector.Editor
             return false;
         }
 
-        public static IEnumerable<TypeMatchResult> GetDrawerTypes(InspectorProperty property)
+        public static IEnumerable<Type> GetDrawerTypes(InspectorProperty property)
         {
             var additionalMatchTypesList = new List<Type[]>();
             foreach (var attribute in property.GetAttributes())
@@ -79,8 +79,7 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            return InspectorElementUtility.GetElementTypes(property, additionalMatchTypesList)
-                .Where(result => result.MatchedType.IsInheritsFrom<IEasyDrawer>());
+            return InspectorElementUtility.GetElementTypes(property, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
         }
     }
 }

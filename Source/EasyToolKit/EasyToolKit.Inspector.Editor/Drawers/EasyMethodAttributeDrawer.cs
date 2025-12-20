@@ -23,14 +23,10 @@ namespace EasyToolKit.Inspector.Editor
             {
                 if (_methodInfo == null)
                 {
-                    if (Property.Info.TryGetMemberInfo(out var memberInfo))
-                    {
-                        _methodInfo = memberInfo as MethodInfo;
-                    }
-
+                    _methodInfo = Property.Info.MemberInfo as MethodInfo;
                     if (_methodInfo == null)
                     {
-                        throw new InvalidOperationException($"{memberInfo} is not a MethodInfo.");
+                        throw new InvalidOperationException($"Property '{Property}' is not a Method.");
                     }
                 }
                 return _methodInfo;
@@ -45,12 +41,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if the property represents a method, false otherwise.</returns>
         protected override bool CanDrawAttributeProperty(InspectorProperty property)
         {
-            if (property.Info.TryGetMemberInfo(out var memberInfo))
-            {
-                return memberInfo is MethodInfo;
-            }
-
-            return false;
+            return property.Info.MemberInfo is MethodInfo;
         }
     }
 }

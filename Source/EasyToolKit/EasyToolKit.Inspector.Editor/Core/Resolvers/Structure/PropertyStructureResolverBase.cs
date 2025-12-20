@@ -72,8 +72,6 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        public override Type MatchedType => typeof(PropertyStructureResolverBase<>);
-
         protected override bool CanResolve(InspectorProperty property)
         {
             if (property.ValueEntry == null)

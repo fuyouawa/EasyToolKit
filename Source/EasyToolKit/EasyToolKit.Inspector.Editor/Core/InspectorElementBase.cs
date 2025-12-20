@@ -15,7 +15,6 @@ namespace EasyToolKit.Inspector.Editor
 
         public bool IsInitialized => _isInitialized;
         public InspectorProperty Property => _property;
-        public virtual Type MatchedType => typeof(InspectorElementBase);
 
         bool IInspectorElement.CanHandle(InspectorProperty property)
         {

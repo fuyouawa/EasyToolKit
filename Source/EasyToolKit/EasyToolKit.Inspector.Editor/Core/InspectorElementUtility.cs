@@ -85,15 +85,14 @@ namespace EasyToolKit.Inspector.Editor
                 .Select((type, i) =>
                 {
                     var index = new TypeMatchIndex(type, s_elementTypes.Length - i, null);
-                    var element = (IInspectorElement)FormatterServices.GetUninitializedObject(type);
-                    if (element.MatchedType != null && element.MatchedType.IsGenericType)
+                    if (type.BaseType != null && type.BaseType.IsGenericType)
                     {
                         // For generic inspector elements, extract the target generic type from the inheritance chain.
                         // Example: For `SerializedDictionaryValueDrawer<TValue> : EasyValueDrawer<SerializedDictionary<string, TValue>>`,
-                        // `element.MatchedType` is `EasyValueDrawer<>` (the base class), and
+                        // `OpenGenericType` is `EasyValueDrawer<>` (the base class), and
                         // `GetArgumentsOfInheritedOpenGenericType` returns `SerializedDictionary<string, TValue>`,
                         // which is stored in `index.Targets` for later matching in `GetMatchedType`.
-                        index.Targets = type.GetArgumentsOfInheritedOpenGenericType(element.MatchedType);
+                        index.Targets = type.GetArgumentsOfInheritedOpenGenericType(type.BaseType.GetGenericTypeDefinition());
                     }
 
                     return index;
@@ -107,8 +106,8 @@ namespace EasyToolKit.Inspector.Editor
         /// Matches elements against the property's value type and its attributes.
         /// </summary>
         /// <param name="property">The inspector property to match.</param>
-        /// <returns>An enumerable of type match results, ordered by priority.</returns>
-        public static IEnumerable<TypeMatchResult> GetElementTypes(InspectorProperty property, IList<Type[]> additionalMatchTypesList = null)
+        /// <returns>An enumerable of types, ordered by priority.</returns>
+        public static IEnumerable<Type> GetElementTypes(InspectorProperty property, Func<Type, bool> typeFilter = null, IList<Type[]> additionalMatchTypesList = null)
         {
             var resultsList = new List<TypeMatchResult[]>
             {
@@ -128,8 +127,31 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            return TypeMatcher.GetCachedMergedResults(resultsList)
-                .Where(result => CanElementHandleProperty(result.MatchedType, property));
+            var typeSet = new HashSet<Type>();
+            var results = TypeMatcher.GetCachedMergedResults(resultsList);
+            foreach (var result in results)
+            {
+                var type = result.MatchedType;
+                if (!typeSet.Add(type))
+                {
+                    continue;
+                }
+
+                if (typeFilter != null)
+                {
+                    if (!typeFilter(type))
+                    {
+                        continue;
+                    }
+                }
+
+                if (!CanElementHandleProperty(type, property))
+                {
+                    continue;
+                }
+
+                yield return type;
+            }
         }
 
         /// <summary>
@@ -243,7 +265,7 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            return priority;
+            return priority ?? InspectorPriority.Default;
         }
 
         /// <summary>

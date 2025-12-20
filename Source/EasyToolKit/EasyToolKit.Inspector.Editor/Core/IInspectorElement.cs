@@ -13,8 +13,6 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         InspectorProperty Property { get; set; }
 
-        Type MatchedType { get; }
-
         /// <summary>
         /// Gets a value indicating whether this element has been initialized.
         /// </summary>

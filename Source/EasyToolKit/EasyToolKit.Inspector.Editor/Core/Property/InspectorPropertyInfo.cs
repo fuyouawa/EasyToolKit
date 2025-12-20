@@ -17,7 +17,6 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public sealed class InspectorPropertyInfo
     {
-        private MemberInfo _memberInfo;
         private bool? _isArrayElement;
 
         public Type OwnerType { get; private set; }
@@ -41,6 +40,8 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets a value indicating whether this property is a Unity serialized property.
         /// </summary>
         public bool IsUnityProperty { get; private set; }
+
+        public MemberInfo MemberInfo { get; private set; }
 
         private InspectorPropertyInfo()
         {
@@ -128,7 +129,7 @@ namespace EasyToolKit.Inspector.Editor
                 OwnerType = propertyInfo.DeclaringType,
                 PropertyName = propertyInfo.Name,
                 IsUnityProperty = false,
-                _memberInfo = propertyInfo
+                MemberInfo = propertyInfo
             };
 
             return info;
@@ -146,7 +147,7 @@ namespace EasyToolKit.Inspector.Editor
                 PropertyName = methodInfo.Name + "()",
                 OwnerType = methodInfo.DeclaringType,
                 IsUnityProperty = false,
-                _memberInfo = methodInfo
+                MemberInfo = methodInfo
             };
 
             return info;
@@ -165,7 +166,7 @@ namespace EasyToolKit.Inspector.Editor
                 OwnerType = fieldInfo.DeclaringType,
                 PropertyName = fieldInfo.Name,
                 IsUnityProperty = false,
-                _memberInfo = fieldInfo
+                MemberInfo = fieldInfo
             };
 
             return info;
@@ -227,58 +228,6 @@ namespace EasyToolKit.Inspector.Editor
             };
 
             return info;
-        }
-
-        /// <summary>
-        /// Gets the member information for this property.
-        /// </summary>
-        /// <returns>The member info associated with this property.</returns>
-        /// <exception cref="NotSupportedException">Thrown when member info cannot be retrieved.</exception>
-        public MemberInfo GetMemberInfo()
-        {
-            if (TryGetMemberInfo(out var memberInfo))
-            {
-                return memberInfo;
-            }
-
-            throw new NotSupportedException($"Get member info failed for '{PropertyName}'.");
-        }
-
-        /// <summary>
-        /// Attempts to get the member information for this property.
-        /// </summary>
-        /// <param name="memberInfo">When this method returns, contains the member info if found; otherwise, null.</param>
-        /// <returns>true if member info was found; otherwise, false.</returns>
-        public bool TryGetMemberInfo(out MemberInfo memberInfo)
-        {
-            memberInfo = null;
-            if (_memberInfo != null)
-            {
-                memberInfo = _memberInfo;
-                return true;
-            }
-
-            if (IsArrayElement ||
-                PropertyName.IsNullOrEmpty())
-            {
-                return false;
-            }
-
-            var fieldInfo = OwnerType.GetField(PropertyName, BindingFlagsHelper.AllInstance);
-            if (fieldInfo != null)
-            {
-                memberInfo = fieldInfo;
-                return true;
-            }
-
-            var propertyInfo = OwnerType.GetProperty(PropertyName, BindingFlagsHelper.AllInstance);
-            if (propertyInfo != null)
-            {
-                memberInfo = propertyInfo;
-                return true;
-            }
-
-            return false;
         }
     }
 }

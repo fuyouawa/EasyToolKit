@@ -24,11 +24,11 @@ namespace EasyToolKit.Inspector.Editor
             }
 
             // Get default property drawer types for the property
-            var drawerTypeResults = InspectorDrawerUtility.GetDrawerTypes(Property);
+            var drawerTypes = InspectorDrawerUtility.GetDrawerTypes(Property);
             var drawers = new List<IEasyDrawer>();
 
             // Create and initialize drawer instances
-            foreach (var drawerType in drawerTypeResults.Select(result => result.MatchedType).Distinct())
+            foreach (var drawerType in drawerTypes)
             {
                 var drawer = drawerType.CreateInstance<IEasyDrawer>();
                 drawer.Property = Property;

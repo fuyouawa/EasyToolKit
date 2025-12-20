@@ -36,9 +36,9 @@ namespace EasyToolKit.Inspector.Editor
                     _attributeSources[attribute] = AttributeSource.ListPassToElement;
                 }
             }
-            else if (Property.Info.TryGetMemberInfo(out var memberInfo))
+            else if (Property.Info.MemberInfo != null)
             {
-                var memberAttributes = memberInfo.GetCustomAttributes();
+                var memberAttributes = Property.Info.MemberInfo.GetCustomAttributes();
                 foreach (var attribute in memberAttributes)
                 {
                     _attributeSources[attribute] = AttributeSource.Member;
