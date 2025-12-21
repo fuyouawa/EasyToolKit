@@ -4,7 +4,7 @@ namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
     /// Configuration interface for creating value element definitions.
-    /// Values represent data-containing elements such as fields, properties, method parameters, or collection items.
+    /// Values represent fields, properties, or dynamically created custom values.
     /// </summary>
     public interface IValueConfiguration : IElementConfiguration
     {

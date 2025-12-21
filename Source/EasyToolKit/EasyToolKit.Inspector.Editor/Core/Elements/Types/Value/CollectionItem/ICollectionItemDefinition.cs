@@ -11,6 +11,6 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the index of this item within its parent collection.
         /// </summary>
-        int CollectionItemIndex { get; }
+        int ItemIndex { get; }
     }
 }

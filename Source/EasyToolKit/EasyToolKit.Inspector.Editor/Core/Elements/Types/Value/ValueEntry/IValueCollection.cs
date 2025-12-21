@@ -1,9 +1,12 @@
-﻿namespace EasyToolKit.Inspector.Editor
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
     /// Represents a collection of property values across multiple target objects.
     /// </summary>
-    public interface IValueCollection
+    public interface IValueCollection : IEnumerable
     {
         /// <summary>
         /// Gets the value element associated with this collection.
@@ -48,7 +51,7 @@
     /// Represents a strongly‑typed collection of property values across multiple target objects.
     /// </summary>
     /// <typeparam name="TValue">The type of the property value.</typeparam>
-    public interface IValueCollection<TValue> : IValueCollection
+    public interface IValueCollection<TValue> : IValueCollection, IReadOnlyList<TValue>
     {
         /// <summary>
         /// Gets or sets the strongly-typed property value at the specified target index.

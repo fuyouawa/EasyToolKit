@@ -1,19 +1,19 @@
 using System;
+using System.Reflection;
 
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
     /// Configuration interface for creating property element definitions.
-    /// Properties unify fields and properties, providing consistent access to member data.
+    /// Properties provide consistent access to property member data.
     /// </summary>
     public interface IPropertyConfiguration : IValueConfiguration
     {
         /// <summary>
-        /// Gets or sets whether this property should be rendered using Unity's built-in property drawer
-        /// instead of the framework's custom <see cref="EasyDrawer"/>.
-        /// When true, Unity handles the rendering; when false, the framework provides enhanced rendering.
+        /// Gets or sets the <see cref="System.Reflection.PropertyInfo"/> that represents this property.
+        /// Provides access to reflection information about the underlying property.
         /// </summary>
-        bool AsUnityProperty { get; set; }
+        PropertyInfo PropertyInfo { get; set; }
 
         /// <summary>
         /// Creates a new <see cref="IPropertyDefinition"/> instance based on the current configuration.

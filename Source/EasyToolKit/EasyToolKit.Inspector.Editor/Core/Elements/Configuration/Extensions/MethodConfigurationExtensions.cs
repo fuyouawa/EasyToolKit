@@ -16,7 +16,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="configuration">The configuration instance.</param>
         /// <param name="methodInfo">The method info to set.</param>
         /// <returns>The configuration instance for method chaining.</returns>
-        public static TConfiguration WithMethod<TConfiguration>(this TConfiguration configuration, MethodInfo methodInfo)
+        public static TConfiguration WithMethodInfo<TConfiguration>(this TConfiguration configuration, MethodInfo methodInfo)
             where TConfiguration : IMethodConfiguration
         {
             configuration.MethodInfo = methodInfo;
@@ -32,7 +32,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="configuration">The configuration instance.</param>
         /// <param name="methodName">The name of the method.</param>
         /// <returns>The configuration instance for method chaining.</returns>
-        public static TConfiguration WithMethod<T, TConfiguration>(this TConfiguration configuration, string methodName)
+        public static TConfiguration WithMethodInfo<T, TConfiguration>(this TConfiguration configuration, string methodName)
             where TConfiguration : IMethodConfiguration
         {
             var methodInfo = typeof(T).GetMethod(methodName);

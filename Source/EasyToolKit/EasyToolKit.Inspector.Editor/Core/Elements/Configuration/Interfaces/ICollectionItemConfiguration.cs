@@ -12,7 +12,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets or sets the index of this item within its parent collection.
         /// This determines the position of the item in the collection display.
         /// </summary>
-        int CollectionItemIndex { get; set; }
+        int ItemIndex { get; set; }
 
         /// <summary>
         /// Creates a new <see cref="ICollectionItemDefinition"/> instance based on the current configuration.

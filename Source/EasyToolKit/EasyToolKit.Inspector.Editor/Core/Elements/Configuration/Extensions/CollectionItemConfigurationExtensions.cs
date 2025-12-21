@@ -13,10 +13,10 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="configuration">The configuration instance.</param>
         /// <param name="index">The index of the item in the collection.</param>
         /// <returns>The configuration instance for method chaining.</returns>
-        public static TConfiguration WithIndex<TConfiguration>(this TConfiguration configuration, int index)
+        public static TConfiguration WithItemIndex<TConfiguration>(this TConfiguration configuration, int index)
             where TConfiguration : ICollectionItemConfiguration
         {
-            configuration.CollectionItemIndex = index;
+            configuration.ItemIndex = index;
             return configuration;
         }
     }

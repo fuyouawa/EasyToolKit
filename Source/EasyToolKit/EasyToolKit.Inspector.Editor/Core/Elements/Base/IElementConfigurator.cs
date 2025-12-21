@@ -8,7 +8,7 @@
     {
         /// <summary>
         /// Creates a new <see cref="IValueConfiguration"/> instance for value elements.
-        /// Value elements represent data-containing elements like fields, properties, or parameters.
+        /// Value elements represent fields, properties, or dynamically created custom values.
         /// </summary>
         /// <returns>A new value configuration instance.</returns>
         IValueConfiguration Value();
@@ -28,11 +28,39 @@
         IGroupConfiguration Group();
 
         /// <summary>
+        /// Creates a new <see cref="IFieldConfiguration"/> instance for field elements.
+        /// Field elements provide consistent access to field member data.
+        /// </summary>
+        /// <returns>A new field configuration instance.</returns>
+        IFieldConfiguration Field();
+
+        /// <summary>
         /// Creates a new <see cref="IPropertyConfiguration"/> instance for property elements.
-        /// Property elements unify fields and properties, providing consistent access to member data.
+        /// Property elements provide consistent access to property member data.
         /// </summary>
         /// <returns>A new property configuration instance.</returns>
         IPropertyConfiguration Property();
+
+        /// <summary>
+        /// Creates a new <see cref="IFieldCollectionConfiguration"/> instance for field collection elements.
+        /// Field collection elements represent collection fields on an object.
+        /// </summary>
+        /// <returns>A new field collection configuration instance.</returns>
+        IFieldCollectionConfiguration FieldCollection();
+
+        /// <summary>
+        /// Creates a new <see cref="IPropertyCollectionConfiguration"/> instance for property collection elements.
+        /// Property collection elements represent collection properties on an object.
+        /// </summary>
+        /// <returns>A new property collection configuration instance.</returns>
+        IPropertyCollectionConfiguration PropertyCollection();
+
+        /// <summary>
+        /// Creates a new <see cref="ICollectionConfiguration"/> instance for collection elements.
+        /// Collection elements represent dynamically created custom containers that hold multiple items.
+        /// </summary>
+        /// <returns>A new collection configuration instance.</returns>
+        ICollectionConfiguration Collection();
 
         /// <summary>
         /// Creates a new <see cref="IMethodConfiguration"/> instance for method elements.
@@ -43,7 +71,7 @@
 
         /// <summary>
         /// Creates a new <see cref="ICollectionItemConfiguration"/> instance for collection item elements.
-        /// Collection item elements represent individual elements within collections (lists, arrays).
+        /// Collection item elements represent individual elements within collections (e.g., lists, arrays).
         /// </summary>
         /// <returns>A new collection item configuration instance.</returns>
         ICollectionItemConfiguration CollectionItem();

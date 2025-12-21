@@ -29,11 +29,5 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets the value entry that manages the underlying value storage and change notifications.
         /// </summary>
         IValueEntry ValueEntry { get; }
-
-        /// <summary>
-        /// Gets all custom attributes applied to this value element.
-        /// </summary>
-        /// <returns>An array of attributes.</returns>
-        Attribute[] GetAttributes();
     }
 }

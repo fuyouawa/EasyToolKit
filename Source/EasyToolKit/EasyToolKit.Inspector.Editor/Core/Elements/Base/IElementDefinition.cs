@@ -9,9 +9,9 @@ namespace EasyToolKit.Inspector.Editor
     public interface IElementDefinition
     {
         /// <summary>
-        /// Gets the type of the element.
+        /// Gets the flags of the element.
         /// </summary>
-        ElementType ElementType { get; }
+        ElementFlags Flags { get; }
 
         /// <summary>
         /// Gets the name of the element.

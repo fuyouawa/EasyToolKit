@@ -27,7 +27,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the parent element in the inspector tree.
         /// </summary>
-        IElement Parent { get; }
+        IValueElement Parent { get; }
 
         /// <summary>
         /// Gets the logical parent element. If this element is inside a group, this is the <see cref="IGroupElement"/>; otherwise, it equals <see cref="Parent"/>.
@@ -58,6 +58,12 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets the number of frames to skip drawing this element. Decremented by one each time <see cref="Draw(GUIContent)"/> is called (if greater than zero).
         /// </summary>
         int SkipFrameCount { get; }
+
+        /// <summary>
+        /// Gets all custom attributes applied to this value element.
+        /// </summary>
+        /// <returns>An array of attributes.</returns>
+        Attribute[] GetAttributes();
 
         /// <summary>
         /// Draws this element in the inspector with the specified label.
