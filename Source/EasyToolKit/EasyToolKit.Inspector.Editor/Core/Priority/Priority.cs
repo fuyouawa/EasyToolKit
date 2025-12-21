@@ -4,14 +4,9 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    /// <summary>
-    /// Represents the priority of a drawer in the inspector drawer chain.
-    /// Higher priority drawers are executed before lower priority drawers.
-    /// This class implements comparison and equality operations for proper drawer ordering.
-    /// </summary>
-    public class InspectorPriority : IEquatable<InspectorPriority>, IComparable<InspectorPriority>
+    public class Priority : IEquatable<Priority>, IComparable<Priority>
     {
-        public static readonly InspectorPriority Default = new InspectorPriority(0.0);
+        public static readonly Priority Default = new Priority(0.0);
 
         /// <summary>
         /// Gets the numeric value of this drawer priority.
@@ -22,7 +17,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Initializes a new instance of the DrawerPriority class with the specified value.
         /// </summary>
         /// <param name="value">The numeric priority value.</param>
-        public InspectorPriority(double value)
+        public Priority(double value)
         {
             Value = value;
         }
@@ -34,7 +29,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="left">The first DrawerPriority to compare.</param>
         /// <param name="right">The second DrawerPriority to compare.</param>
         /// <returns>true if the two DrawerPriority instances are equal; otherwise, false.</returns>
-        public static bool operator ==(InspectorPriority left, InspectorPriority right)
+        public static bool operator ==(Priority left, Priority right)
         {
             if (ReferenceEquals(left, right)) return true;
             if (left is null || right is null) return false;
@@ -48,7 +43,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="left">The first DrawerPriority to compare.</param>
         /// <param name="right">The second DrawerPriority to compare.</param>
         /// <returns>true if the two DrawerPriority instances are not equal; otherwise, false.</returns>
-        public static bool operator !=(InspectorPriority left, InspectorPriority right)
+        public static bool operator !=(Priority left, Priority right)
         {
             return !(left == right);
         }
@@ -59,7 +54,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="left">The first DrawerPriority to compare.</param>
         /// <param name="right">The second DrawerPriority to compare.</param>
         /// <returns>true if left is greater than right; otherwise, false.</returns>
-        public static bool operator >(InspectorPriority left, InspectorPriority right)
+        public static bool operator >(Priority left, Priority right)
         {
             if (left == right) return false;
             if (left.Value > right.Value) return true;
@@ -72,7 +67,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="left">The first DrawerPriority to compare.</param>
         /// <param name="right">The second DrawerPriority to compare.</param>
         /// <returns>true if left is less than right; otherwise, false.</returns>
-        public static bool operator <(InspectorPriority left, InspectorPriority right)
+        public static bool operator <(Priority left, Priority right)
         {
             if (left == right) return false;
             if (left.Value < right.Value) return true;
@@ -85,7 +80,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="left">The first DrawerPriority to compare.</param>
         /// <param name="right">The second DrawerPriority to compare.</param>
         /// <returns>true if left is greater than or equal to right; otherwise, false.</returns>
-        public static bool operator >=(InspectorPriority left, InspectorPriority right)
+        public static bool operator >=(Priority left, Priority right)
         {
             if (left.Value.IsApproximatelyOf(right.Value) || left.Value > right.Value) return true;
             return false;
@@ -97,7 +92,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="left">The first DrawerPriority to compare.</param>
         /// <param name="right">The second DrawerPriority to compare.</param>
         /// <returns>true if left is less than or equal to right; otherwise, false.</returns>
-        public static bool operator <=(InspectorPriority left, InspectorPriority right)
+        public static bool operator <=(Priority left, Priority right)
         {
             if (left.Value.IsApproximatelyOf(right.Value) || left.Value < right.Value) return true;
             return false;
@@ -119,7 +114,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>true if the specified object is equal to the current DrawerPriority; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            if (obj is InspectorPriority priority)
+            if (obj is Priority priority)
             {
                 return this == priority;
             }
@@ -131,7 +126,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="other">A DrawerPriority to compare with this DrawerPriority.</param>
         /// <returns>true if the current DrawerPriority is equal to the other parameter; otherwise, false.</returns>
-        public bool Equals(InspectorPriority other)
+        public bool Equals(Priority other)
         {
             return this == other;
         }
@@ -143,7 +138,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="other">A DrawerPriority to compare with this instance.</param>
         /// <returns>A value that indicates the relative order of the objects being compared.</returns>
-        public int CompareTo(InspectorPriority other)
+        public int CompareTo(Priority other)
         {
             if (this > other)
             {

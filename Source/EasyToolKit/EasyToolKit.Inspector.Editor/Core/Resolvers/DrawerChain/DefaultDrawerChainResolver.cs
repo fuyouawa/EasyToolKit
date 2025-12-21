@@ -14,19 +14,19 @@ namespace EasyToolKit.Inspector.Editor
         protected override void Initialize()
         {
             // Get default property drawer types for the property
-            var drawerTypes = InspectorDrawerUtility.GetDrawerTypes(Property);
+            var drawerTypes = InspectorDrawerUtility.GetDrawerTypes(Element);
             var drawers = new List<IEasyDrawer>();
 
             // Create and initialize drawer instances
             foreach (var drawerType in drawerTypes)
             {
                 var drawer = drawerType.CreateInstance<IEasyDrawer>();
-                drawer.Property = Property;
+                drawer.Element = Element;
                 drawers.Add(drawer);
             }
 
             // Create and cache the drawer chain
-            _chain = new DrawerChain(Property, drawers);
+            _chain = new DrawerChain(Element, drawers);
         }
 
         /// <summary>

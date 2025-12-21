@@ -10,19 +10,19 @@ using EasyToolKit.ThirdParty.OdinSerializer;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Generic property structure resolver implementation using reflection to discover properties.
-    /// Focuses purely on property structure without collection operations.
+    /// Generic value structure resolver implementation using reflection to discover elements.
+    /// Focuses purely on value structure without collection operations.
     /// </summary>
-    public class GenericPropertyStructureResolver : PropertyStructureResolverBase
+    public class GenericValueStructureResolver : ValueStructureResolverBase
     {
-        private readonly List<InspectorPropertyInfo> _propertyInfos = new List<InspectorPropertyInfo>();
+        private readonly List<IElementDefinition> _definitions = new List<IElementDefinition>();
 
         /// <summary>
         /// Initializes the resolver by discovering properties, fields, and methods using reflection
         /// </summary>
         protected override void Initialize()
         {
-            var targetType = Property.ValueEntry.ValueType;
+            var targetType = Element.ValueEntry.ValueType;
             // Get all members, filter them, and order by priority
             var memberInfos = targetType.GetAllMembers(BindingFlagsHelper.AllInstance).Where(Filter).OrderBy(Order);
 
@@ -36,14 +36,14 @@ namespace EasyToolKit.Inspector.Editor
                     // Handle auxiliary attributes
                     if (fieldInfo.GetCustomAttributes().Any(attr => attr is AuxiliaryAttribute))
                     {
-                        _propertyInfos.Add(InspectorPropertyInfo.CreateForMember(memberInfo));
+                        _definitions.Add(CreateDefinition(memberInfo));
                         continue;
                     }
 
                     // Handle Odin serialized fields
                     if (showOdinSerializersInInspector && fieldInfo.IsDefined<OdinSerializeAttribute>())
                     {
-                        _propertyInfos.Add(InspectorPropertyInfo.CreateForMember(memberInfo));
+                        _definitions.Add(CreateDefinition(memberInfo));
                         continue;
                     }
 
@@ -77,36 +77,112 @@ namespace EasyToolKit.Inspector.Editor
                     // Only include methods with MethodAttribute
                     if (!methodInfo.GetCustomAttributes().Any(attr => attr is MethodAttribute))
                         continue;
+
+                    _definitions.Add(CreateDefinition(memberInfo));
+                    continue;
                 }
 
-                // Add valid member to property infos
-                _propertyInfos.Add(InspectorPropertyInfo.CreateForMember(memberInfo));
+                // Add valid member to property definitions
+                _definitions.Add(CreateDefinition(memberInfo));
             }
         }
 
-        /// <summary>
-        /// Gets information about a child property at the specified index
-        /// </summary>
-        /// <param name="childIndex">The index of the child property</param>
-        /// <returns>Information about the child property</returns>
-        protected override InspectorPropertyInfo GetChildInfo(int childIndex)
+        private IElementDefinition CreateDefinition(MemberInfo memberInfo)
         {
-            if (childIndex < 0 || childIndex >= _propertyInfos.Count)
-                throw new ArgumentOutOfRangeException(nameof(childIndex));
+            if (memberInfo is MethodInfo methodInfo)
+            {
+                return InspectorElements.Configurator.Method()
+                    .WithMethodInfo(methodInfo)
+                    .WithName(methodInfo.Name)
+                    .CreateDefinition();
+            }
 
-            return _propertyInfos[childIndex];
+            if (memberInfo is FieldInfo fieldInfo)
+            {
+                if (TryCreateCollectionDefinition(fieldInfo, out var definition))
+                {
+                    return definition;
+                }
+                return InspectorElements.Configurator.Field()
+                    .WithFieldInfo(fieldInfo)
+                    .WithName(fieldInfo.Name)
+                    .CreateDefinition();
+            }
+
+            if (memberInfo is PropertyInfo propertyInfo)
+            {
+                if (TryCreateCollectionDefinition(propertyInfo, out var definition))
+                {
+                    return definition;
+                }
+                return InspectorElements.Configurator.Property()
+                    .WithPropertyInfo(propertyInfo)
+                    .WithName(propertyInfo.Name)
+                    .CreateDefinition();
+            }
+
+            throw new NotSupportedException($"Member '{memberInfo}' is not supported.");
+        }
+
+        private bool TryCreateCollectionDefinition(MemberInfo memberInfo, out ICollectionDefinition collectionDefinition)
+        {
+            collectionDefinition = null;
+            var type = memberInfo.GetMemberType();
+            if (!type.IsGenericType)
+                return false;
+
+            var genericType = type.GetGenericTypeDefinition();
+
+            if (genericType != typeof(ICollection<>) || genericType != typeof(IReadOnlyCollection<>))
+                return false;
+
+            var elementType = type.GetArgumentsOfInheritedOpenGenericType(typeof(IEnumerable<>))[0];
+            if (memberInfo is FieldInfo fieldInfo)
+            {
+                collectionDefinition = InspectorElements.Configurator.FieldCollection()
+                    .WithFieldInfo(fieldInfo)
+                    .WithName(fieldInfo.Name)
+                    .WithItemType(elementType)
+                    .CreateDefinition();
+            }
+            else if (memberInfo is PropertyInfo propertyInfo)
+            {
+                collectionDefinition = InspectorElements.Configurator.PropertyCollection()
+                    .WithPropertyInfo(propertyInfo)
+                    .WithName(propertyInfo.Name)
+                    .WithItemType(elementType)
+                    .CreateDefinition();
+            }
+            else
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
-        /// Converts a child property name to its index
+        /// Gets the definition of a child at the specified index
         /// </summary>
-        /// <param name="name">The name of the child property</param>
-        /// <returns>The index of the child property, or -1 if not found</returns>
+        /// <param name="childIndex">The index of the child</param>
+        /// <returns>Definition of the child</returns>
+        protected override IElementDefinition GetChildDefinition(int childIndex)
+        {
+            if (childIndex < 0 || childIndex >= _definitions.Count)
+                throw new ArgumentOutOfRangeException(nameof(childIndex));
+
+            return _definitions[childIndex];
+        }
+
+        /// <summary>
+        /// Converts a child name to its index
+        /// </summary>
+        /// <param name="name">The name of the child</param>
+        /// <returns>The index of the child, or -1 if not found</returns>
         protected override int ChildNameToIndex(string name)
         {
-            for (int i = 0; i < _propertyInfos.Count; i++)
+            for (int i = 0; i < _definitions.Count; i++)
             {
-                if (_propertyInfos[i].PropertyName == name)
+                if (_definitions[i].Name == name)
                 {
                     return i;
                 }
@@ -116,12 +192,12 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Calculates the number of child properties
+        /// Calculates the number of children
         /// </summary>
-        /// <returns>The number of child properties</returns>
+        /// <returns>The number of childreh</returns>
         protected override int CalculateChildCount()
         {
-            return _propertyInfos.Count;
+            return _definitions.Count;
         }
 
         /// <summary>
@@ -149,7 +225,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if the member should be included in the inspector</returns>
         private bool Filter(MemberInfo memberInfo)
         {
-            var targetType = Property.ValueEntry.ValueType;
+            var targetType = Element.ValueEntry.ValueType;
             // Exclude object type members unless the target type is object
             if (memberInfo.DeclaringType == typeof(object) && targetType != typeof(object)) return false;
             // Only include fields, properties, and methods

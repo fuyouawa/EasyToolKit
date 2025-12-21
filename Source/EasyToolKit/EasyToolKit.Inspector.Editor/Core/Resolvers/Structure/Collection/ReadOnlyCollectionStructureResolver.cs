@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     public class ReadOnlyCollectionStructureResolver<TCollection, TElement> : CollectionStructureResolverBase<TCollection>
         where TCollection : IReadOnlyCollection<TElement>
     {
-        public override Type ElementType => typeof(TElement);
+        public override Type ItemType => typeof(TElement);
 
         protected override int CalculateChildCount()
         {

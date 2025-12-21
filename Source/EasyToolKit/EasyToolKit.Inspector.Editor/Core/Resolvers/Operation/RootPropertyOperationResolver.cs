@@ -7,16 +7,16 @@ namespace EasyToolKit.Inspector.Editor
     {
         private IPropertyOperation _operation;
 
-        protected override bool CanResolve(InspectorProperty property)
+        protected override bool CanResolveElement(IValueElement element)
         {
-            return property.Info.IsLogicRoot;
+            return element.Definition.Flags.IsRoot();
         }
 
         protected override void Initialize()
         {
             _operation = new GenericPropertyOperation(
-                null, Property.ValueEntry.ValueType,
-                (ref object index) => Property.Tree.Targets[(int)index],
+                null, Element.ValueEntry.ValueType,
+                (ref object index) => Element.SharedContext.Tree.Targets[(int)index],
                 (ref object index, object value) => throw new InvalidOperationException("Cannot set logic root"));
         }
 

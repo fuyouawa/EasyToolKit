@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         public IDrawerChainResolver CreateResolver(InspectorProperty property)
         {
-            var resolverType = InspectorResolverUtility.GetResolverType(property, typeof(IDrawerChainResolver));
+            var resolverType = ResolverUtility.GetResolverType(property, typeof(IDrawerChainResolver));
             return resolverType.CreateInstance<IDrawerChainResolver>();
         }
     }

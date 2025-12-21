@@ -33,7 +33,7 @@ namespace EasyToolKit.Inspector.Editor
             if (_orderedCollectionOperation == null) return null;
 
             var dropZone = DragAndDropManager.BeginDropZone(Property.Tree.GetHashCode() + "-" + Property.Path,
-                _collectionStructureResolver.ElementType, true);
+                _collectionStructureResolver.ItemType, true);
 
             if (Event.current.type == EventType.Repaint && DragAndDropManager.IsDragInProgress)
             {
@@ -110,19 +110,19 @@ namespace EasyToolKit.Inspector.Editor
                 UnityEngine.Object[] objReferences = null;
 
                 if (DragAndDrop.objectReferences.Any(n =>
-                        n != null && _collectionStructureResolver.ElementType.IsAssignableFrom(n.GetType())))
+                        n != null && _collectionStructureResolver.ItemType.IsAssignableFrom(n.GetType())))
                 {
                     objReferences = DragAndDrop.objectReferences
-                        .Where(x => x != null && _collectionStructureResolver.ElementType.IsAssignableFrom(x.GetType()))
+                        .Where(x => x != null && _collectionStructureResolver.ItemType.IsAssignableFrom(x.GetType()))
                         .Reverse().ToArray();
                 }
-                else if (_collectionStructureResolver.ElementType.IsInheritsFrom(typeof(Component)))
+                else if (_collectionStructureResolver.ItemType.IsInheritsFrom(typeof(Component)))
                 {
                     objReferences = DragAndDrop.objectReferences.OfType<GameObject>()
-                        .Select(x => x.GetComponent(_collectionStructureResolver.ElementType)).Where(x => x != null).Reverse()
+                        .Select(x => x.GetComponent(_collectionStructureResolver.ItemType)).Where(x => x != null).Reverse()
                         .ToArray();
                 }
-                else if (_collectionStructureResolver.ElementType.IsInheritsFrom(typeof(Sprite)) &&
+                else if (_collectionStructureResolver.ItemType.IsInheritsFrom(typeof(Sprite)) &&
                          DragAndDrop.objectReferences.Any(n => n is Texture2D && AssetDatabase.Contains(n)))
                 {
                     objReferences = DragAndDrop.objectReferences.OfType<Texture2D>().Select(x =>

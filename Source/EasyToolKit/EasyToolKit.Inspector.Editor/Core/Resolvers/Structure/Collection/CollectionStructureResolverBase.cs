@@ -5,36 +5,36 @@ using System.Collections.Generic;
 namespace EasyToolKit.Inspector.Editor
 {
     [ResolverPriority(1.0)]
-    public abstract class CollectionStructureResolverBase<TCollection> : PropertyStructureResolverBase<TCollection>, ICollectionStructureResolver
+    public abstract class CollectionStructureResolverBase<TCollection> : ValueStructureResolverBase<TCollection>, ICollectionStructureResolver
     {
-        private readonly Dictionary<int, InspectorPropertyInfo> _propertyInfosByIndex =
-            new Dictionary<int, InspectorPropertyInfo>();
+        private readonly Dictionary<int, IElementDefinition> _definitionsByIndex =
+            new Dictionary<int, IElementDefinition>();
 
         /// <summary>
         /// Gets the type of elements in the collection
         /// </summary>
-        public abstract Type ElementType { get; }
+        public abstract Type ItemType { get; }
 
         /// <summary>
-        /// Gets information about a child property at the specified index
+        /// Gets the definition of a child property at the specified index
         /// </summary>
         /// <param name="childIndex">The index of the child property</param>
-        /// <returns>Information about the child property</returns>
-        protected override InspectorPropertyInfo GetChildInfo(int childIndex)
+        /// <returns>Definition of the child property</returns>
+        protected override IElementDefinition GetChildDefinition(int childIndex)
         {
-            if (_propertyInfosByIndex.TryGetValue(childIndex, out var info))
+            if (_definitionsByIndex.TryGetValue(childIndex, out var definition))
             {
-                return info;
+                return definition;
             }
 
-            info = InspectorPropertyInfo.CreateForCollectionElement(
-                ElementType,
-                $"Array.data[{childIndex}]",
-                childIndex
-            );
+            definition = InspectorElements.Configurator.CollectionItem()
+                .WithItemIndex(childIndex)
+                .WithValueType(ItemType)
+                .WithName($"Array.data[{childIndex}]")
+                .CreateDefinition();
 
-            _propertyInfosByIndex[childIndex] = info;
-            return info;
+            _definitionsByIndex[childIndex] = definition;
+            return definition;
         }
 
         /// <summary>
@@ -45,6 +45,11 @@ namespace EasyToolKit.Inspector.Editor
         protected override int ChildNameToIndex(string name)
         {
             throw new NotSupportedException("Collection resolvers do not support name-based access");
+        }
+
+        protected override bool CanResolveElement(IValueElement element)
+        {
+            return element.Definition.Flags.IsCollection();
         }
     }
 }

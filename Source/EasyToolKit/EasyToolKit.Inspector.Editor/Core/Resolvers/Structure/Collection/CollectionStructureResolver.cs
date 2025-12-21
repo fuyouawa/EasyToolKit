@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     public class CollectionStructureResolver<TCollection, TElement> : CollectionStructureResolverBase<TCollection>
         where TCollection : ICollection<TElement>
     {
-        public override Type ElementType => typeof(TElement);
+        public override Type ItemType => typeof(TElement);
 
         protected override int CalculateChildCount()
         {

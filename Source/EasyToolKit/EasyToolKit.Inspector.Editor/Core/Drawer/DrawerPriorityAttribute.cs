@@ -13,27 +13,27 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Represents the lowest possible drawer priority.
         /// </summary>
-        public static readonly InspectorPriority LowestPriority = new InspectorPriority(DrawerPriorityLevel.Lowest);
+        public static readonly Priority LowestPriority = new Priority(DrawerPriorityLevel.Lowest);
 
         /// <summary>
         /// Represents the standard priority for value drawers.
         /// </summary>
-        public static readonly InspectorPriority ValuePriority = new InspectorPriority(DrawerPriorityLevel.Value);
+        public static readonly Priority ValuePriority = new Priority(DrawerPriorityLevel.Value);
 
         /// <summary>
         /// Represents the priority for attribute-based drawers.
         /// </summary>
-        public static readonly InspectorPriority AttributePriority = new InspectorPriority(DrawerPriorityLevel.Attribute);
+        public static readonly Priority AttributePriority = new Priority(DrawerPriorityLevel.Attribute);
 
         /// <summary>
         /// Represents the highest standard drawer priority.
         /// </summary>
-        public static readonly InspectorPriority SuperPriority = new InspectorPriority(DrawerPriorityLevel.Super);
+        public static readonly Priority SuperPriority = new Priority(DrawerPriorityLevel.Super);
 
         /// <summary>
         /// Gets the priority value for the drawer.
         /// </summary>
-        public InspectorPriority Priority { get; }
+        public Priority Priority { get; }
 
         /// <summary>
         /// Initializes a new instance of the DrawerPriorityAttribute class.
@@ -41,7 +41,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="value">The priority value for the drawer. Defaults to <see cref="DrawerPriorityLevel.Lowest"/>.</param>
         public DrawerPriorityAttribute(double value = DrawerPriorityLevel.Lowest)
         {
-            Priority = new InspectorPriority(value);
+            Priority = new Priority(value);
         }
     }
 }

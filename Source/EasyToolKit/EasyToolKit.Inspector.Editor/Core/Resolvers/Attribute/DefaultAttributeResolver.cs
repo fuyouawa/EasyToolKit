@@ -13,32 +13,39 @@ namespace EasyToolKit.Inspector.Editor
         private Attribute[] _attributes;
         private Dictionary<Attribute, AttributeSource> _attributeSources;
 
+        protected override bool CanResolve(IElement element)
+        {
+            return !element.Definition.Flags.IsGroup();
+        }
+
         protected override void Initialize()
         {
             _attributeSources = new Dictionary<Attribute, AttributeSource>();
 
-            if (!Property.Info.IsLogicRoot && Property.Parent.ChildrenResolver is ICollectionStructureResolver)
+            if (Element.Definition.Flags.IsCollectionItem())
             {
-                var passToListElementAttributes = Property.Parent.GetAttributes()
+                var passToListElementAttributes = Element.Parent.GetAttributes()
                     .Where(attr => attr is CanPassToListElementAttribute { PassToListElements: true });
                 foreach (var attribute in passToListElementAttributes)
                 {
                     _attributeSources[attribute] = AttributeSource.ListPassToElement;
                 }
             }
-            else if (Property.Info.MemberInfo != null)
+            else if (Element.Definition is IMemberDefinition memberDefinition)
             {
-                var memberAttributes = Property.Info.MemberInfo.GetCustomAttributes();
+                var memberAttributes = memberDefinition.MemberInfo.GetCustomAttributes();
                 foreach (var attribute in memberAttributes)
                 {
                     _attributeSources[attribute] = AttributeSource.Member;
                 }
             }
-
-            var typeAttributes = Property.ValueEntry.ValueType.GetCustomAttributes(true).Cast<Attribute>();
-            foreach (var attribute in typeAttributes)
+            else if (Element is IValueElement valueElement)
             {
-                _attributeSources[attribute] = AttributeSource.Type;
+                var typeAttributes = valueElement.ValueEntry.ValueType.GetCustomAttributes(true).Cast<Attribute>();
+                foreach (var attribute in typeAttributes)
+                {
+                    _attributeSources[attribute] = AttributeSource.Type;
+                }
             }
 
             _attributes = _attributeSources.Keys.ToArray();
@@ -67,7 +74,7 @@ namespace EasyToolKit.Inspector.Editor
                 return source;
             }
 
-            throw new ArgumentException($"Attribute '{attribute.GetType()}' not found in the property '{Property}'");
+            throw new ArgumentException($"Attribute '{attribute.GetType()}' not found in the element '{Element}'");
         }
     }
 }

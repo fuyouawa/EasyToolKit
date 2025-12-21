@@ -2,6 +2,6 @@
 {
     public interface IInspectorPriorityGetter
     {
-        InspectorPriority Priority { get; }
+        Priority Priority { get; }
     }
 }

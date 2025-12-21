@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         public IPropertyOperationResolver CreateResolver(InspectorProperty property)
         {
-            var resolverType = InspectorResolverUtility.GetResolverType(property, typeof(IPropertyOperationResolver));
+            var resolverType = ResolverUtility.GetResolverType(property, typeof(IPropertyOperationResolver));
             return resolverType.CreateInstance<IPropertyOperationResolver>();
         }
     }

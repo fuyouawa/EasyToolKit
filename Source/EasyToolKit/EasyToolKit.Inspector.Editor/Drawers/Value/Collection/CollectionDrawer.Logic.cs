@@ -47,10 +47,10 @@ namespace EasyToolKit.Inspector.Editor
                     }
                     else if (parameters.Length == 1)
                     {
-                        if (!_collectionStructureResolver.ElementType.IsAssignableFrom(parameters[0].ParameterType))
+                        if (!_collectionStructureResolver.ItemType.IsAssignableFrom(parameters[0].ParameterType))
                         {
                             throw new Exception(
-                                $"The parameter type of '{_listDrawerSettings.OnAddedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionStructureResolver.ElementType}'");
+                                $"The parameter type of '{_listDrawerSettings.OnAddedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionStructureResolver.ItemType}'");
                         }
 
                         _onAddedElementCallback = (instance, value) =>
@@ -85,10 +85,10 @@ namespace EasyToolKit.Inspector.Editor
                     }
                     else if (parameters.Length == 1)
                     {
-                        if (!_collectionStructureResolver.ElementType.IsAssignableFrom(parameters[0].ParameterType))
+                        if (!_collectionStructureResolver.ItemType.IsAssignableFrom(parameters[0].ParameterType))
                         {
                             throw new Exception(
-                                $"The parameter type of '{_listDrawerSettings.OnRemovedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionStructureResolver.ElementType}'");
+                                $"The parameter type of '{_listDrawerSettings.OnRemovedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionStructureResolver.ItemType}'");
                         }
 
                         _onRemovedElementCallback = (instance, value) =>
@@ -303,12 +303,12 @@ namespace EasyToolKit.Inspector.Editor
                 return _customCreateElementFunction.Invoke(parent);
             }
 
-            if (_collectionStructureResolver.ElementType.IsInheritsFrom<UnityEngine.Object>())
+            if (_collectionStructureResolver.ItemType.IsInheritsFrom<UnityEngine.Object>())
             {
                 return null;
             }
 
-            return UnitySerializationUtility.CreateDefaultUnityInitializedObject(_collectionStructureResolver.ElementType);
+            return UnitySerializationUtility.CreateDefaultUnityInitializedObject(_collectionStructureResolver.ItemType);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         public IGroupResolver CreateResolver(InspectorProperty property)
         {
-            var resolverType = InspectorResolverUtility.GetResolverType(property, typeof(IGroupResolver));
+            var resolverType = ResolverUtility.GetResolverType(property, typeof(IGroupResolver));
             return resolverType.CreateInstance<IGroupResolver>();
         }
     }

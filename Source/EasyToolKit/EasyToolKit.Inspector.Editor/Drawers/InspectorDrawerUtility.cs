@@ -67,16 +67,20 @@ namespace EasyToolKit.Inspector.Editor
             return false;
         }
 
-        public static IEnumerable<Type> GetDrawerTypes(InspectorProperty property)
+        public static IEnumerable<Type> GetDrawerTypes(IElement element)
         {
             var additionalMatchTypesList = new List<Type[]>();
-            foreach (var attribute in property.GetAttributes())
+            foreach (var attribute in element.GetAttributes())
             {
                 additionalMatchTypesList.Add(new[] { attribute.GetType() });
-                additionalMatchTypesList.Add(new[] { attribute.GetType(), property.ValueEntry.ValueType });
+
+                if (element is IValueElement valueElement)
+                {
+                    additionalMatchTypesList.Add(new[] { attribute.GetType(), valueElement.ValueEntry.ValueType });
+                }
             }
 
-            return HandlerUtility.GetElementTypes(property, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
+            return HandlerUtility.GetElementTypes(element, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
         }
     }
 }

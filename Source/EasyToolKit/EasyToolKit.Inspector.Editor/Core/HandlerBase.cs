@@ -4,22 +4,21 @@ namespace EasyToolKit.Inspector.Editor
 {
     public class HandlerBase : IHandler
     {
-        private InspectorProperty _property;
-        private bool _isInitialized;
+        private IElement _element;
 
-        InspectorProperty IHandler.Property
+        IElement IHandler.Element
         {
-            get => _property;
-            set => _property = value;
+            get => _element;
+            set => _element = value;
         }
-        public InspectorProperty Property => _property;
+        public IElement Element => _element;
 
-        bool IHandler.CanHandle(InspectorProperty property)
+        bool IHandler.CanHandle(IElement element)
         {
-            return CanHandle(property);
+            return CanHandle(element);
         }
 
-        protected virtual bool CanHandle(InspectorProperty property)
+        protected virtual bool CanHandle(IElement element)
         {
             return true;
         }

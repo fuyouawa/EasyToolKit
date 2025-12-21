@@ -4,6 +4,8 @@
     {
         private bool _isInitialized;
 
+        new public IValueElement Element => base.Element as IValueElement;
+
         protected abstract IPropertyOperation GetOperation();
 
         protected virtual void Initialize()
@@ -23,6 +25,21 @@
         {
             EnsureInitialize();
             return GetOperation();
+        }
+
+        protected override bool CanResolve(IElement element)
+        {
+            if (element is IValueElement valueElement)
+            {
+                return CanResolveElement(valueElement);
+            }
+
+            return false;
+        }
+
+        protected virtual bool CanResolveElement(IValueElement element)
+        {
+            return true;
         }
     }
 }

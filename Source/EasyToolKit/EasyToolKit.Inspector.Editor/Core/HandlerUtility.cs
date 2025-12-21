@@ -21,10 +21,10 @@ namespace EasyToolKit.Inspector.Editor
         private static readonly object InitializationLock = new object();
 
         /// <summary>
-        /// Gets or sets a callback that provides a default <see cref="InspectorPriority"/> when no priority attribute is found.
+        /// Gets or sets a callback that provides a default <see cref="Priority"/> when no priority attribute is found.
         /// If not set, returns null when no priority attribute is present.
         /// </summary>
-        private static readonly List<Func<Type, InspectorPriority>> NullPriorityFallbacks = new List<Func<Type, InspectorPriority>>();
+        private static readonly List<Func<Type, Priority>> NullPriorityFallbacks = new List<Func<Type, Priority>>();
 
         public static TypeMatcher TypeMatcher
         {
@@ -40,7 +40,7 @@ namespace EasyToolKit.Inspector.Editor
         /// This will reset the type matcher to ensure newly added elements are sorted with the updated fallback.
         /// </summary>
         /// <param name="fallback">The fallback function to add.</param>
-        public static void AddNullPriorityFallback(Func<Type, InspectorPriority> fallback)
+        public static void AddNullPriorityFallback(Func<Type, Priority> fallback)
         {
             NullPriorityFallbacks.Add(fallback);
             lock (InitializationLock)
@@ -102,19 +102,23 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Gets element types for the specified inspector property.
-        /// Matches elements against the property's value type and its attributes.
+        /// Gets element types for the specified inspector element.
+        /// Matches elements against the element's definition and properties.
         /// </summary>
-        /// <param name="property">The inspector property to match.</param>
+        /// <param name="element">The inspector element to match.</param>
         /// <returns>An enumerable of types, ordered by priority.</returns>
-        public static IEnumerable<Type> GetElementTypes(InspectorProperty property, Func<Type, bool> typeFilter = null, IList<Type[]> additionalMatchTypesList = null)
+        public static IEnumerable<Type> GetElementTypes(IElement element, Func<Type, bool> typeFilter = null, IList<Type[]> additionalMatchTypesList = null)
         {
             var resultsList = new List<TypeMatchResult[]>
             {
                 TypeMatcher.GetCachedMatches(Type.EmptyTypes),
             };
 
-            resultsList.Add(TypeMatcher.GetCachedMatches(property.ValueEntry.ValueType));
+            // If the element is a value element, use its value type for matching
+          if (element is IValueElement valueElement)
+          {
+              resultsList.Add(TypeMatcher.GetCachedMatches(valueElement.ValueEntry.ValueType));
+          }
 
             if (additionalMatchTypesList != null)
             {
@@ -142,7 +146,7 @@ namespace EasyToolKit.Inspector.Editor
                     }
                 }
 
-                if (!CanElementHandleProperty(type, property))
+                if (!CanHandleElement(type, element))
                 {
                     continue;
                 }
@@ -240,9 +244,9 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="elementType">The element type to examine.</param>
         /// <returns>The priority of the element, or null if no priority could be determined.</returns>
-        private static InspectorPriority GetElementPriority(Type elementType)
+        private static Priority GetElementPriority(Type elementType)
         {
-            InspectorPriority priority = null;
+            Priority priority = null;
 
             if (elementType.GetCustomAttributes(true)
                     .FirstOrDefault(attr => attr is IInspectorPriorityGetter) is IInspectorPriorityGetter priorityAttribute)
@@ -262,21 +266,20 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            return priority ?? InspectorPriority.Default;
+            return priority ?? Priority.Default;
         }
 
         /// <summary>
-        /// Determines whether the specified element type can handle the given property.
-        /// If the element implements <see cref="IEasyDrawer"/>, calls its <see cref="IEasyDrawer.CanDrawProperty"/> method;
-        /// otherwise, returns true assuming the element can handle any property.
+        /// Determines whether the specified handler type can handle the given element.
+        /// Creates an instance of the handler type and calls its <see cref="IHandler.CanHandle(IElement)"/> method.
         /// </summary>
-        /// <param name="elementType">The element type to test.</param>
-        /// <param name="property">The inspector property to check.</param>
-        /// <returns>True if the element can handle the property; otherwise, false.</returns>
-        private static bool CanElementHandleProperty(Type elementType, InspectorProperty property)
+        /// <param name="handlerType">The handler type to test.</param>
+        /// <param name="element">The inspector element to check.</param>
+        /// <returns>True if the handler can handle the element; otherwise, false.</returns>
+        private static bool CanHandleElement(Type handlerType, IElement element)
         {
-            var element = (IHandler)FormatterServices.GetUninitializedObject(elementType);
-            return element.CanHandle(property);
+            var handler = (IHandler)FormatterServices.GetUninitializedObject(handlerType);
+            return handler.CanHandle(element);
         }
     }
 }

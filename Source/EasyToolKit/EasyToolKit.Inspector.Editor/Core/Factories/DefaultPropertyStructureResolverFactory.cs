@@ -5,10 +5,10 @@ namespace EasyToolKit.Inspector.Editor
 {
     public class DefaultPropertyStructureResolverFactory : IPropertyStructureResolverFactory
     {
-        public IPropertyStructureResolver CreateResolver(InspectorProperty property)
+        public IValueStructureResolver CreateResolver(InspectorProperty property)
         {
-            var resolverType = InspectorResolverUtility.GetResolverType(property, typeof(IPropertyStructureResolver));
-            return resolverType.CreateInstance<IPropertyStructureResolver>();
+            var resolverType = ResolverUtility.GetResolverType(property, typeof(IValueStructureResolver));
+            return resolverType.CreateInstance<IValueStructureResolver>();
         }
     }
 }

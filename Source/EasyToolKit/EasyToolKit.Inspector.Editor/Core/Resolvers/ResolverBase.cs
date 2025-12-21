@@ -2,11 +2,11 @@
 {
     public class ResolverBase : HandlerBase, IResolver
     {
-        protected override bool CanHandle(InspectorProperty property)
+        protected override bool CanHandle(IElement element)
         {
-            return CanResolve(property);
+            return CanResolve(element);
         }
 
-        protected virtual bool CanResolve(InspectorProperty property) => true;
+        protected virtual bool CanResolve(IElement element) => true;
     }
 }

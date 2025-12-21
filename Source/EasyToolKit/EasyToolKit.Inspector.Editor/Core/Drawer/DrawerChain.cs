@@ -38,18 +38,18 @@ namespace EasyToolKit.Inspector.Editor
         public IEasyDrawer[] Drawers => _drawers;
 
         /// <summary>
-        /// Gets the inspector property associated with this drawer chain.
+        /// Gets the inspector element associated with this drawer chain.
         /// </summary>
-        public InspectorProperty Property { get; private set; }
+        public IElement Element { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the DrawerChain class.
         /// </summary>
-        /// <param name="property">The inspector property this drawer chain is associated with.</param>
+        /// <param name="element">The inspector property this drawer chain is associated with.</param>
         /// <param name="drawers">The collection of drawers to include in the chain.</param>
-        public DrawerChain(InspectorProperty property, IEnumerable<IEasyDrawer> drawers)
+        public DrawerChain(IElement element, IEnumerable<IEasyDrawer> drawers)
         {
-            Property = property;
+            Element = element;
             _drawers = drawers.ToArray();
         }
 

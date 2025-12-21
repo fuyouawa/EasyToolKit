@@ -9,28 +9,27 @@ namespace EasyToolKit.Inspector.Editor
     {
         private IPropertyOperation _operation;
 
-        protected override bool CanResolve(InspectorProperty property)
+        protected override bool CanResolveElement(IValueElement element)
         {
-            return property.Info.MemberInfo != null;
+            return element.Definition.Flags.IsValue();
         }
 
         protected override void Initialize()
         {
             var propertyOperation = GetPropertyOperation();
 
-            if (Property.ChildrenResolver is ICollectionStructureResolver)
+            if (Element is ICollectionElement collectionElement)
             {
                 var collectionOperation = GetCollectionOperation();
-                var collectionType = Property.ValueEntry.ValueType;
-                var elementType = collectionType.GetArgumentsOfInheritedOpenGenericType(typeof(IEnumerable<>))[0];
+                var collectionType = collectionElement.ValueEntry.ValueType;
                 if (collectionOperation is IOrderedCollectionOperation)
                 {
-                    var operationWrapperType = typeof(OrderedCollectionOperationWrapper<,>).MakeGenericType(collectionType, elementType);
+                    var operationWrapperType = typeof(OrderedCollectionOperationWrapper<,>).MakeGenericType(collectionType, collectionElement.Definition.ItemType);
                     _operation = operationWrapperType.CreateInstance<ICollectionOperation>(propertyOperation, collectionOperation);
                 }
                 else
                 {
-                    var operationWrapperType = typeof(CollectionOperationWrapper<,>).MakeGenericType(collectionType, elementType);
+                    var operationWrapperType = typeof(CollectionOperationWrapper<,>).MakeGenericType(collectionType, collectionElement.Definition.ItemType);
                     _operation = operationWrapperType.CreateInstance<ICollectionOperation>(propertyOperation, collectionOperation);
                 }
             }
@@ -42,26 +41,34 @@ namespace EasyToolKit.Inspector.Editor
 
         private IPropertyOperation GetPropertyOperation()
         {
-            var ownerType = Property.Parent.ValueEntry.ValueType;
-            var operationType = typeof(MemberPropertyOperation<,>).MakeGenericType(ownerType, Property.ValueEntry.ValueType);
-            return operationType.CreateInstance<IPropertyOperation>(Property.Info.MemberInfo);
+            var ownerType = Element.Parent.ValueEntry.ValueType;
+            Type operationType = null;
+            if (Element.Definition.Flags.IsMember())
+            {
+                operationType = typeof(MemberPropertyOperation<,>).MakeGenericType(ownerType, Element.ValueEntry.ValueType);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            return operationType.CreateInstance<IPropertyOperation>(((IMemberDefinition)Element.Definition).MemberInfo);
         }
 
         private ICollectionOperation GetCollectionOperation()
         {
-            var ownerType = Property.Parent.ValueEntry.ValueType;
-            var collectionType = Property.ValueEntry.ValueType;
-            var elementType = collectionType.GetArgumentsOfInheritedOpenGenericType(typeof(IEnumerable<>))[0];
+            var collectionElement = (ICollectionElement)Element;
+            var ownerType = collectionElement.Parent.ValueEntry.ValueType;
+            var collectionType = collectionElement.ValueEntry.ValueType;
 
             if (collectionType.IsImplementsOpenGenericType(typeof(IList<>)))
             {
-                var operationType = typeof(ListOperation<,>).MakeGenericType(collectionType, elementType);
+                var operationType = typeof(ListOperation<,>).MakeGenericType(collectionType, collectionElement.Definition.ItemType);
                 return operationType.CreateInstance<ICollectionOperation>(ownerType);
             }
 
             if (collectionType.IsImplementsOpenGenericType(typeof(IReadOnlyList<>)))
             {
-                var operationType = typeof(ListOperation<,>).MakeGenericType(collectionType, elementType);
+                var operationType = typeof(ListOperation<,>).MakeGenericType(collectionType, collectionElement.Definition.ItemType);
                 return operationType.CreateInstance<ICollectionOperation>(ownerType);
             }
 

@@ -2,6 +2,6 @@
 {
     public interface IPropertyStructureResolverFactory
     {
-        IPropertyStructureResolver CreateResolver(InspectorProperty property);
+        IValueStructureResolver CreateResolver(InspectorProperty property);
     }
 }
