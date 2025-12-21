@@ -4,7 +4,7 @@
     /// Provides centralized access to the core factory services of the EasyToolKit inspector system.
     /// This static class serves as the main entry point for accessing element configuration and tree creation services.
     /// </summary>
-    public static class Elements
+    public static class InspectorElements
     {
         /// <summary>
         /// Gets the element configurator factory for creating element Definitions.
