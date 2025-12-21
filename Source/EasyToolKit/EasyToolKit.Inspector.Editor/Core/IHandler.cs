@@ -2,7 +2,7 @@ using System;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public interface IInspectorHandler
+    public interface IHandler
     {
         /// <summary>
         /// Gets or sets the <see cref="InspectorProperty"/> that this element is associated with.

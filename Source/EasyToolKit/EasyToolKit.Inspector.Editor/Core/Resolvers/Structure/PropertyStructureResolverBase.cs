@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Abstract base class for property structure resolvers in the inspector system.
     /// Provides common functionality for property structure resolution without collection operations.
     /// </summary>
-    public abstract class PropertyStructureResolverBase : InspectorResolverBase, IPropertyStructureResolver
+    public abstract class PropertyStructureResolverBase : ResolverBase, IPropertyStructureResolver
     {
         private int? _lastChildCountUpdateId;
         private int _childCount;

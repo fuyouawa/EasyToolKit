@@ -33,7 +33,7 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            InspectorHandlerUtility.AddNullPriorityFallback(type =>
+            HandlerUtility.AddNullPriorityFallback(type =>
             {
                 if (type.IsImplementsOpenGenericType(typeof(EasyAttributeDrawer<>)))
                 {
@@ -76,7 +76,7 @@ namespace EasyToolKit.Inspector.Editor
                 additionalMatchTypesList.Add(new[] { attribute.GetType(), property.ValueEntry.ValueType });
             }
 
-            return InspectorHandlerUtility.GetElementTypes(property, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
+            return HandlerUtility.GetElementTypes(property, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
         }
     }
 }

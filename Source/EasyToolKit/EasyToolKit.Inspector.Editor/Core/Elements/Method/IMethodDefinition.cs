@@ -3,7 +3,8 @@
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a method definition in the inspector.
+    /// Method definition interface for function handling in the inspector.
+    /// Provides metadata for methods that can be invoked or displayed in the inspector interface.
     /// </summary>
     public interface IMethodDefinition : IElementDefinition
     {

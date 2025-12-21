@@ -7,7 +7,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Abstract base class for drawer chain resolution in the <see cref="InspectorProperty"/> system
     /// </summary>
-    public abstract class DrawerChainResolverBase : InspectorResolverBase, IDrawerChainResolver
+    public abstract class DrawerChainResolverBase : ResolverBase, IDrawerChainResolver
     {
         private bool _isInitialized;
 

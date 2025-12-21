@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Interface for resolving attributes associated with an <see cref="InspectorProperty"/>
     /// </summary>
-    public interface IAttributeResolver : IInspectorHandler
+    public interface IAttributeResolver : IHandler
     {
         /// <summary>
         /// Gets all attributes associated with the property

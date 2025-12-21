@@ -30,8 +30,7 @@ namespace EasyToolKit.Inspector.Editor
             info = InspectorPropertyInfo.CreateForCollectionElement(
                 ElementType,
                 $"Array.data[{childIndex}]",
-                childIndex,
-                typeof(TCollection)
+                childIndex
             );
 
             _propertyInfosByIndex[childIndex] = info;

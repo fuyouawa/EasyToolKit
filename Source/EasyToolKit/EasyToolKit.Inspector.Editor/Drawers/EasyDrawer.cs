@@ -10,7 +10,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Base abstract class for all EasyToolKit drawers.
     /// Provides common functionality for property drawing and lifecycle management.
     /// </summary>
-    public abstract class EasyDrawer : InspectorHandlerBase, IEasyDrawer
+    public abstract class EasyDrawer : HandlerBase, IEasyDrawer
     {
         private bool _isInitialized;
 

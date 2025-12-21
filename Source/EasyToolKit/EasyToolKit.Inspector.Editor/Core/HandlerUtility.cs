@@ -9,11 +9,11 @@ using UnityEngine;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Utility class for discovering and matching inspector elements that implement <see cref="IInspectorHandler"/>.
+    /// Utility class for discovering and matching inspector elements that implement <see cref="IHandler"/>.
     /// Elements are discovered via reflection, sorted by priority obtained from <see cref="IInspectorPriorityGetter"/> attributes,
     /// and registered in a <see cref="s_typeMatcher"/> for type-based matching.
     /// </summary>
-    public static class InspectorHandlerUtility
+    public static class HandlerUtility
     {
         private static Type[] s_elementTypes;
         private static TypeMatcher s_typeMatcher;
@@ -71,7 +71,7 @@ namespace EasyToolKit.Inspector.Editor
                              .SelectMany(asm => asm.GetTypes())
                              .Where(t => t.IsClass && !t.IsInterface && !t.IsAbstract))
                 {
-                    if (type.IsInheritsFrom<IInspectorHandler>())
+                    if (type.IsInheritsFrom<IHandler>())
                     {
                         elementTypes.Add(type);
                     }
@@ -275,7 +275,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>True if the element can handle the property; otherwise, false.</returns>
         private static bool CanElementHandleProperty(Type elementType, InspectorProperty property)
         {
-            var element = (IInspectorHandler)FormatterServices.GetUninitializedObject(elementType);
+            var element = (IHandler)FormatterServices.GetUninitializedObject(elementType);
             return element.CanHandle(property);
         }
     }

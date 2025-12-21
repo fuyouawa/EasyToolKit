@@ -11,7 +11,9 @@ namespace EasyToolKit.Inspector.Editor
     public interface IElementTree : IDisposable
     {
         /// <summary>
-        /// Gets the current update identifier used for tracking property updates.
+        /// Gets the update identifier that increments every frame.
+        /// This value is used to prevent certain logic from executing multiple times within a single frame,
+        /// ensuring that operations which should only run once per frame are properly controlled.
         /// </summary>
         int UpdateId { get; }
 
@@ -26,7 +28,7 @@ namespace EasyToolKit.Inspector.Editor
         IRootElement RootElement { get; }
 
         /// <summary>
-        /// Gets the target objects associated with this property tree.
+        /// Gets the target objects when multiple objects are selected in the inspector.
         /// </summary>
         public IReadOnlyList<object> Targets { get; }
 
@@ -36,29 +38,9 @@ namespace EasyToolKit.Inspector.Editor
         public bool DrawMonoScriptObjectField { get; set; }
 
         /// <summary>
-        /// Gets the factory for creating property structure resolvers.
+        /// Gets the element factory instance owned by this tree.
         /// </summary>
-        public IPropertyStructureResolverFactory StructureResolverFactory { get; }
-
-        /// <summary>
-        /// Gets the factory for creating property operation resolvers.
-        /// </summary>
-        public IPropertyOperationResolverFactory OperationResolverFactory { get; }
-
-        /// <summary>
-        /// Gets the factory for creating attribute resolvers.
-        /// </summary>
-        public IAttributeResolverFactory AttributeResolverFactory { get; }
-
-        /// <summary>
-        /// Gets the factory for creating drawer chain resolvers.
-        /// </summary>
-        public IDrawerChainResolverFactory DrawerChainResolverFactory { get; }
-
-        /// <summary>
-        /// Gets the factory for creating group resolvers.
-        /// </summary>
-        public IGroupResolverFactory GroupResolverFactory { get; }
+        IElementFactory Factory { get; }
 
         /// <summary>
         /// Enumerates all elements in the tree.

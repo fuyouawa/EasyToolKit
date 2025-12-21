@@ -3,7 +3,8 @@ using System;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a property definition in the inspector.
+    /// Property definition interface that unifies <see cref="System.Reflection.PropertyInfo"/> and <see cref="System.Reflection.FieldInfo"/>.
+    /// Acts as a union type for properties and fields, providing a consistent access interface.
     /// </summary>
     public interface IPropertyDefinition : IValueDefinition
     {

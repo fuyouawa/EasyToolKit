@@ -2,19 +2,19 @@
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public class InspectorHandlerBase : IInspectorHandler
+    public class HandlerBase : IHandler
     {
         private InspectorProperty _property;
         private bool _isInitialized;
 
-        InspectorProperty IInspectorHandler.Property
+        InspectorProperty IHandler.Property
         {
             get => _property;
             set => _property = value;
         }
         public InspectorProperty Property => _property;
 
-        bool IInspectorHandler.CanHandle(InspectorProperty property)
+        bool IHandler.CanHandle(InspectorProperty property)
         {
             return CanHandle(property);
         }

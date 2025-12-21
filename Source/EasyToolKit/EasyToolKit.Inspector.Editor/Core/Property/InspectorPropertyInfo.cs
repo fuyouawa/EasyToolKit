@@ -17,8 +17,6 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public sealed class InspectorPropertyInfo
     {
-        public Type OwnerType { get; private set; }
-
         /// <summary>
         /// Gets the type of the property value.
         /// </summary>
@@ -56,12 +54,11 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the Unity serialized property.</returns>
         public static InspectorPropertyInfo CreateForUnityProperty(
             SerializedProperty serializedProperty,
-            Type parentType, Type valueType)
+            Type valueType)
         {
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = valueType,
-                OwnerType = parentType,
                 PropertyName = serializedProperty.name,
                 IsUnityProperty = true
             };
@@ -102,7 +99,6 @@ namespace EasyToolKit.Inspector.Editor
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = propertyInfo.PropertyType,
-                OwnerType = propertyInfo.DeclaringType,
                 PropertyName = propertyInfo.Name,
                 IsUnityProperty = false,
                 MemberInfo = propertyInfo
@@ -121,7 +117,6 @@ namespace EasyToolKit.Inspector.Editor
             var info = new InspectorPropertyInfo()
             {
                 PropertyName = methodInfo.Name + "()",
-                OwnerType = methodInfo.DeclaringType,
                 IsUnityProperty = false,
                 MemberInfo = methodInfo
             };
@@ -139,7 +134,6 @@ namespace EasyToolKit.Inspector.Editor
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = fieldInfo.FieldType,
-                OwnerType = fieldInfo.DeclaringType,
                 PropertyName = fieldInfo.Name,
                 IsUnityProperty = false,
                 MemberInfo = fieldInfo
@@ -159,7 +153,6 @@ namespace EasyToolKit.Inspector.Editor
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = valueType,
-                OwnerType = valueType.DeclaringType,
                 PropertyName = valueName,
                 IsUnityProperty = false
             };
@@ -192,13 +185,12 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="elementName">The name of the element.</param>
         /// <param name="elementIndex">The index of the element in the collection.</param>
         /// <returns>A new <see cref="InspectorPropertyInfo"/> instance configured for the collection element.</returns>
-        internal static InspectorPropertyInfo CreateForCollectionElement(Type elementType, string elementName, int elementIndex, Type collectionType)
+        internal static InspectorPropertyInfo CreateForCollectionElement(Type elementType, string elementName, int elementIndex)
         {
             var info = new InspectorPropertyInfo()
             {
                 PropertyType = elementType,
                 PropertyName = elementName,
-                OwnerType = collectionType,
                 IsUnityProperty = false,
                 IsCollectionElement = true,
                 CollectionElementIndex = elementIndex

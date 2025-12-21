@@ -9,7 +9,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         public static Type GetResolverType(InspectorProperty property, Type resolverBaseType)
         {
-            var resolverType = InspectorHandlerUtility.GetElementTypes(property, type => type.IsInheritsFrom(resolverBaseType)).FirstOrDefault();
+            var resolverType = HandlerUtility.GetElementTypes(property, type => type.IsInheritsFrom(resolverBaseType)).FirstOrDefault();
             if (resolverType == null)
             {
                 throw new Exception($"Cannot get resolver type '{resolverBaseType}' for property '{property}'");

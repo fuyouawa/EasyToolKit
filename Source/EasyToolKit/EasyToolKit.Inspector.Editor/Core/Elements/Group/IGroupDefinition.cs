@@ -3,7 +3,8 @@
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a group definition in the inspector.
+    /// Group definition interface for grouping abstract concepts in the inspector.
+    /// Defines the start and end attributes that create logical groupings of elements.
     /// </summary>
     public interface IGroupDefinition : IElementDefinition
     {

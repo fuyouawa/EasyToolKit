@@ -1,7 +1,8 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a collection item element in the inspector tree.
+    /// Collection item element interface representing individual elements in collections (arrays, lists, etc.).
+    /// As an abstract collection element concept, supports dynamic creation and management of individual data items in collections.
     /// </summary>
     public interface ICollectionItemElement : IValueElement
     {

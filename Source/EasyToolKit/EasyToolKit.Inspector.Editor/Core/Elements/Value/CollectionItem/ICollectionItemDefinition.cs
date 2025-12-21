@@ -3,7 +3,8 @@ using System;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a collection item definition in the inspector.
+    /// Collection item definition interface handling the abstract concept of elements in collections.
+    /// Similar to dynamically created custom values, representing individual element items in collections.
     /// </summary>
     public interface ICollectionItemDefinition : IValueDefinition
     {

@@ -1,7 +1,8 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a property element in the inspector tree.
+    /// Property element interface representing fields or properties on an object.
+    /// Uniformly handles display and editing of <see cref="System.Reflection.PropertyInfo"/> and <see cref="System.Reflection.FieldInfo"/>.
     /// </summary>
     public interface IPropertyElement : IValueElement
     {

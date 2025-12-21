@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Abstract base class for group property resolver in the <see cref="InspectorProperty"/> system
     /// </summary>
-    public abstract class GroupResolverBase : InspectorResolverBase, IGroupResolver
+    public abstract class GroupResolverBase : ResolverBase, IGroupResolver
     {
         private bool _isInitialized;
 

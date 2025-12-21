@@ -4,7 +4,8 @@ using JetBrains.Annotations;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a value element in the inspector tree. A value element can be a field, property, or method.
+    /// Value element interface for all data-containing elements.
+    /// Can represent fields, properties, or dynamically created custom values, and supports independent insertion into the element tree.
     /// </summary>
     public interface IValueElement : IElement
     {

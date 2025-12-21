@@ -1,6 +1,6 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
-    public abstract class PropertyOperationResolverBase : InspectorResolverBase, IPropertyOperationResolver
+    public abstract class PropertyOperationResolverBase : ResolverBase, IPropertyOperationResolver
     {
         private bool _isInitialized;
 

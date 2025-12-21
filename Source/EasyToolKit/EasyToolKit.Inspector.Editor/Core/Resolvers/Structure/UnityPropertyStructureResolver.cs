@@ -106,7 +106,7 @@ namespace EasyToolKit.Inspector.Editor
                 }
 
                 // Add valid property info
-                _propertyInfos.Add(InspectorPropertyInfo.CreateForUnityProperty(iterator, Property.Info.PropertyType, field.FieldType));
+                _propertyInfos.Add(InspectorPropertyInfo.CreateForUnityProperty(iterator, Property.Info.PropertyType));
             } while (iterator.Next(false));
         }
 

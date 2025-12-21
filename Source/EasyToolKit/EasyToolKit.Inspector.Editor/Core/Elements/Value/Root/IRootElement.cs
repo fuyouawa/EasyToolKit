@@ -1,7 +1,8 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents the root element of an inspector tree.
+    /// Root element interface for the inspector tree.
+    /// An abstract concept similar to dynamically created values, representing the root Unity instance being inspected.
     /// </summary>
     public interface IRootElement : IValueElement
     {

@@ -9,13 +9,13 @@ namespace EasyToolKit.Inspector.Editor
     public interface IElementDefinition
     {
         /// <summary>
+        /// Gets the type of the element.
+        /// </summary>
+        ElementType ElementType { get; }
+
+        /// <summary>
         /// Gets the name of the element.
         /// </summary>
         string Name { get; }
-
-        /// <summary>
-        /// Gets the type of the owner (parent) that contains this element.
-        /// </summary>
-        Type OwnerType { get; }
     }
 }

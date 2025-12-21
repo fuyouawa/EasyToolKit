@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Interface for resolving group properties in the <see cref="InspectorProperty"/> system
     /// </summary>
-    public interface IGroupResolver : IInspectorHandler
+    public interface IGroupResolver : IHandler
     {
         /// <summary>
         /// Gets all properties that belong to the same group as the current property
