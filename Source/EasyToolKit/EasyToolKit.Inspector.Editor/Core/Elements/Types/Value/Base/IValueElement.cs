@@ -15,15 +15,22 @@ namespace EasyToolKit.Inspector.Editor
         new IValueDefinition Definition { get; }
 
         /// <summary>
-        /// Gets whether this value element is read‑only.
+        /// Gets the child elements defined by the code structure.
+        /// These are immutable and determined solely by the definition.
         /// </summary>
-        bool IsReadOnly { get; }
+        /// <remarks>
+        /// Returns <c>null</c> for plain value types, for <see cref="UnityEngine.Object"/> references, or when <see cref="IFieldDefinition.AsUnityProperty"/> is <c>true</c>.
+        /// </remarks>
+        [CanBeNull] IReadOnlyElementList LogicalChildren { get; }
 
         /// <summary>
-        /// Gets the child elements of this value (fields, properties, or dynamic virtual value).
-        /// Returns <c>null</c> for plain value types, for <see cref="UnityEngine.Object"/> references, or when <see cref="IPropertyDefinition.AsUnityProperty"/> is <c>true</c>.
+        /// Gets child elements that were added or removed at runtime (e.g., by user interaction).
+        /// This collection is mutable and reflects runtime modifications.
         /// </summary>
-        [CanBeNull] IElementCollection Children { get; }
+        /// <remarks>
+        /// Returns <c>null</c> for plain value types, for <see cref="UnityEngine.Object"/> references, or when <see cref="IFieldDefinition.AsUnityProperty"/> is <c>true</c>.
+        /// </remarks>
+        [CanBeNull] IElementList Children { get; }
 
         /// <summary>
         /// Gets the value entry that manages the underlying value storage and change notifications.

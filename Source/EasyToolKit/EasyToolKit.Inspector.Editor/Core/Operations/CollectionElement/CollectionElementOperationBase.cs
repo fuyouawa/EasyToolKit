@@ -2,7 +2,7 @@
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public abstract class CollectionElementOperationBase<TCollection, TValue> : PropertyOperationBase<TValue>, ICollectionElementOperation<TValue>
+    public abstract class CollectionElementOperationBase<TCollection, TValue> : ValueOperationBase<TValue>, ICollectionElementOperation<TValue>
     {
         private readonly int _elementIndex;
 

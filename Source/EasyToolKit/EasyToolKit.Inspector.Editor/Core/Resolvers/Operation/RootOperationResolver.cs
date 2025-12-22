@@ -3,9 +3,9 @@
 namespace EasyToolKit.Inspector.Editor
 {
     [ResolverPriority(100000.0)]
-    public class RootPropertyOperationResolver : PropertyOperationResolverBase
+    public class RootOperationResolver : ValueOperationResolverBase
     {
-        private IPropertyOperation _operation;
+        private IValueOperation _operation;
 
         protected override bool CanResolveElement(IValueElement element)
         {
@@ -14,13 +14,13 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            _operation = new GenericPropertyOperation(
+            _operation = new GenericValueOperation(
                 null, Element.ValueEntry.ValueType,
                 (ref object index) => Element.SharedContext.Tree.Targets[(int)index],
                 (ref object index, object value) => throw new InvalidOperationException("Cannot set logic root"));
         }
 
-        protected override IPropertyOperation GetOperation()
+        protected override IValueOperation GetOperation()
         {
             return _operation;
         }

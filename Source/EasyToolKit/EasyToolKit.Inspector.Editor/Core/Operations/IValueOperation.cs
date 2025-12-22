@@ -3,13 +3,13 @@ using System;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Unified property operation interface to replace IValueAccessor
-    /// Provides read and write access to property values
+    /// Unified value operation interface to replace IValueAccessor
+    /// Provides read and write access to value values
     /// </summary>
-    public interface IPropertyOperation
+    public interface IValueOperation
     {
         /// <summary>
-        /// Whether the property is read-only
+        /// Whether the value is read-only
         /// </summary>
         bool IsReadOnly { get; }
 
@@ -39,10 +39,10 @@ namespace EasyToolKit.Inspector.Editor
     }
 
     /// <summary>
-    /// Generic property operation interface with type safety
+    /// Generic value operation interface with type safety
     /// </summary>
     /// <typeparam name="TValue">Value type</typeparam>
-    public interface IPropertyOperation<TValue> : IPropertyOperation
+    public interface IValueOperation<TValue> : IValueOperation
     {
         /// <summary>
         /// Gets the value with type safety

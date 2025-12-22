@@ -22,9 +22,9 @@ namespace EasyToolKit.Inspector.Editor
         {
             _attributeSources = new Dictionary<Attribute, AttributeSource>();
 
-            if (Element.Definition.Flags.IsCollectionItem())
+            if (Element.Definition.Flags.IsCollectionItem() && Element.LogicalParent != null)
             {
-                var passToListElementAttributes = Element.Parent.GetAttributes()
+                var passToListElementAttributes = Element.LogicalParent.GetAttributes()
                     .Where(attr => attr is CanPassToListElementAttribute { PassToListElements: true });
                 foreach (var attribute in passToListElementAttributes)
                 {

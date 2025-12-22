@@ -5,7 +5,7 @@
         private readonly IOrderedCollectionOperation _orderedCollectionOperation;
 
         public OrderedCollectionOperationWrapper(
-            IPropertyOperation auxiliaryOperation,
+            IValueOperation auxiliaryOperation,
             IOrderedCollectionOperation collectionOperation)
             : base(auxiliaryOperation, collectionOperation)
         {
@@ -29,7 +29,7 @@
         private readonly IOrderedCollectionOperation<TCollection, TElement> _orderedCollectionOperation;
 
         public OrderedCollectionOperationWrapper(
-            IPropertyOperation<TCollection> auxiliaryOperation,
+            IValueOperation<TCollection> auxiliaryOperation,
             IOrderedCollectionOperation<TCollection, TElement> collectionOperation)
             : base(auxiliaryOperation, collectionOperation)
         {

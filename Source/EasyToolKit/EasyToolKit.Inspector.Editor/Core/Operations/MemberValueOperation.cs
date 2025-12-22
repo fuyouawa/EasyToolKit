@@ -10,7 +10,7 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public class MemberPropertyOperation<TOwner, TValue> : PropertyOperationBase<TValue>
+    public class MemberValueOperation<TOwner, TValue> : ValueOperationBase<TValue>
     {
         private readonly MemberInfo _memberInfo;
         private readonly ValueGetter<TOwner, TValue> _getter;
@@ -20,7 +20,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Initializes a new instance of MemberPropertyOperation
         /// </summary>
         /// <param name="memberInfo">Member information</param>
-        public MemberPropertyOperation(MemberInfo memberInfo) : base(typeof(TOwner))
+        public MemberValueOperation(MemberInfo memberInfo) : base(typeof(TOwner))
         {
             switch (memberInfo)
             {
@@ -47,7 +47,7 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
-        /// Whether the property is read-only
+        /// Whether the value is read-only
         /// </summary>
         public override bool IsReadOnly => _setter == null;
 

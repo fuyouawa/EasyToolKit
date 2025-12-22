@@ -27,6 +27,11 @@ namespace EasyToolKit.Inspector.Editor
             return (flags & ElementFlags.Value) == ElementFlags.Value;
         }
 
+        public static bool IsCustomValue(this ElementFlags flags)
+        {
+            return flags.IsValue() && !flags.IsMember();
+        }
+
         /// <summary>
         /// Determines if the element represents a class field.
         /// </summary>

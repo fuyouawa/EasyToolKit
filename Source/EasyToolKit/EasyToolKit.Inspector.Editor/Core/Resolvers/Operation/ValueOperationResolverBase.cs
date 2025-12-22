@@ -1,12 +1,12 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
-    public abstract class PropertyOperationResolverBase : ResolverBase, IPropertyOperationResolver
+    public abstract class ValueOperationResolverBase : ResolverBase, IValueOperationResolver
     {
         private bool _isInitialized;
 
         new public IValueElement Element => base.Element as IValueElement;
 
-        protected abstract IPropertyOperation GetOperation();
+        protected abstract IValueOperation GetOperation();
 
         protected virtual void Initialize()
         {
@@ -21,7 +21,7 @@
             }
         }
 
-        IPropertyOperation IPropertyOperationResolver.GetOperation()
+        IValueOperation IValueOperationResolver.GetOperation()
         {
             EnsureInitialize();
             return GetOperation();

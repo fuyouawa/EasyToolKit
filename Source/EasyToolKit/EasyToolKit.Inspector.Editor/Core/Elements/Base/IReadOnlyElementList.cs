@@ -4,22 +4,10 @@ using System.Collections.Generic;
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Represents a collection of elements in the inspector tree.
+    /// Represents a readonly collection of elements in the inspector tree.
     /// </summary>
-    public interface IElementCollection : IEnumerable<IElement>
+    public interface IReadOnlyElementList : IReadOnlyList<IElement>
     {
-        /// <summary>
-        /// Gets the number of elements in the collection.
-        /// </summary>
-        int Count { get; }
-
-        /// <summary>
-        /// Gets the element at the specified index.
-        /// </summary>
-        /// <param name="index">The zero-based index of the element to get.</param>
-        /// <returns>The element at the specified index.</returns>
-        IElement this[int index] { get; }
-
         /// <summary>
         /// Gets the element with the specified name.
         /// </summary>
@@ -28,18 +16,11 @@ namespace EasyToolKit.Inspector.Editor
         IElement this[string name] { get; }
 
         /// <summary>
-        /// Gets the element at the specified index.
+        /// Gets the zero-based index of the first occurrence of an element with the specified name.
         /// </summary>
-        /// <param name="index">The zero-based index of the element.</param>
-        /// <returns>The element at the specified index.</returns>
-        IElement Get(int index);
-
-        /// <summary>
-        /// Gets the element with the specified name.
-        /// </summary>
-        /// <param name="name">The name of the element.</param>
-        /// <returns>The element with the specified name, or null if no element exists with that name.</returns>
-        IElement Get(string name);
+        /// <param name="name">The name of the element to locate.</param>
+        /// <returns>The zero-based index of the first occurrence of the element, or -1 if not found.</returns>
+        int IndexOf(string name);
 
         /// <summary>
         /// Gets the full path of the element at the specified index.
@@ -62,6 +43,6 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Clears all cached elements in the collection.
         /// </summary>
-        void Clear();
+        void ClearCache();
     }
 }

@@ -1,11 +1,11 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
-    public interface ICollectionElementOperation : IPropertyOperation
+    public interface ICollectionElementOperation : IValueOperation
     {
         int ElementIndex { get; }
     }
 
-    public interface ICollectionElementOperation<TValue> : ICollectionElementOperation, IPropertyOperation<TValue>
+    public interface ICollectionElementOperation<TValue> : ICollectionElementOperation, IValueOperation<TValue>
     {
     }
 }

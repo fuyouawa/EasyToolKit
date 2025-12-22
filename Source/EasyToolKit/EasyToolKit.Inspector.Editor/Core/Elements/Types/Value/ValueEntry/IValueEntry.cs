@@ -11,6 +11,11 @@ namespace EasyToolKit.Inspector.Editor
     public interface IValueEntry
     {
         /// <summary>
+        /// Gets whether this value is read‑only.
+        /// </summary>
+        bool IsReadOnly { get; }
+
+        /// <summary>
         /// Gets the actual type of the property value.
         /// This may differ from <see cref="BaseValueType"/> if the runtime type is more specific.
         /// </summary>

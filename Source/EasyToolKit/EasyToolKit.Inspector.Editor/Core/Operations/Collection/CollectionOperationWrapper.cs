@@ -5,9 +5,9 @@ namespace EasyToolKit.Inspector.Editor
     public class CollectionOperationWrapper : ICollectionOperation
     {
         private readonly ICollectionOperation _collectionOperation;
-        private readonly IPropertyOperation _auxiliaryOperation;
+        private readonly IValueOperation _auxiliaryOperation;
 
-        public CollectionOperationWrapper(IPropertyOperation auxiliaryOperation, ICollectionOperation collectionOperation)
+        public CollectionOperationWrapper(IValueOperation auxiliaryOperation, ICollectionOperation collectionOperation)
         {
             if (auxiliaryOperation.IsReadOnly != collectionOperation.IsReadOnly ||
                 auxiliaryOperation.OwnerType != collectionOperation.OwnerType ||
@@ -50,11 +50,11 @@ namespace EasyToolKit.Inspector.Editor
 
     public class CollectionOperationWrapper<TCollection, TElement> : CollectionOperationWrapper, ICollectionOperation<TCollection, TElement>
     {
-        private readonly IPropertyOperation<TCollection> _auxiliaryOperation;
+        private readonly IValueOperation<TCollection> _auxiliaryOperation;
         private readonly ICollectionOperation<TCollection, TElement> _collectionOperation;
 
         public CollectionOperationWrapper(
-            IPropertyOperation<TCollection> auxiliaryOperation,
+            IValueOperation<TCollection> auxiliaryOperation,
             ICollectionOperation<TCollection, TElement> collectionOperation)
             : base(auxiliaryOperation, collectionOperation)
         {

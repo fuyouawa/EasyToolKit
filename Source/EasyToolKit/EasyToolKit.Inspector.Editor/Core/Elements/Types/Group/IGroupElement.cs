@@ -15,6 +15,6 @@
         /// <summary>
         /// Gets the collection of elements contained within this group.
         /// </summary>
-        IElementCollection Elements { get; }
+        IElementList Elements { get; }
     }
 }

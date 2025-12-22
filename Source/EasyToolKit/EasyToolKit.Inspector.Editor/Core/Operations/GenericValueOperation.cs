@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Generic property operation implementation using delegates
     /// </summary>
-    public class GenericPropertyOperation : PropertyOperationBase
+    public class GenericValueOperation : ValueOperationBase
     {
         /// <summary>
         /// Value type
@@ -15,6 +15,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private readonly WeakValueGetter _getter;
         private readonly WeakValueSetter _setter;
+
         /// <summary>
         /// Initializes a new instance of GenericPropertyOperation
         /// </summary>
@@ -22,7 +23,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="valueType">Value type</param>
         /// <param name="getter">Value getter delegate</param>
         /// <param name="setter">Value setter delegate</param>
-        public GenericPropertyOperation(Type ownerType, Type valueType, WeakValueGetter getter, WeakValueSetter setter) : base(ownerType)
+        public GenericValueOperation(Type ownerType, Type valueType, WeakValueGetter getter, WeakValueSetter setter) : base(ownerType)
         {
             ValueType = valueType;
             _getter = getter;
@@ -63,7 +64,7 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     /// <typeparam name="TOwner">Owner type</typeparam>
     /// <typeparam name="TValue">Value type</typeparam>
-    public class GenericPropertyOperation<TOwner, TValue> : PropertyOperationBase<TValue>
+    public class GenericValueOperation<TOwner, TValue> : ValueOperationBase<TValue>
     {
         private readonly ValueGetter<TOwner, TValue> _getter;
         private readonly ValueSetter<TOwner, TValue> _setter;
@@ -73,7 +74,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="getter">Value getter delegate</param>
         /// <param name="setter">Value setter delegate</param>
-        public GenericPropertyOperation(ValueGetter<TOwner, TValue> getter, ValueSetter<TOwner, TValue> setter)
+        public GenericValueOperation(ValueGetter<TOwner, TValue> getter, ValueSetter<TOwner, TValue> setter)
             : base(typeof(TOwner))
         {
             _getter = getter;

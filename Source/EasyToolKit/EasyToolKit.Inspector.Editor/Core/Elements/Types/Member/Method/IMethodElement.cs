@@ -14,6 +14,6 @@
         /// <summary>
         /// Gets the collection of parameter elements for this method.
         /// </summary>
-        IElementCollection Parameters { get; }
+        IReadOnlyElementList Parameters { get; }
     }
 }

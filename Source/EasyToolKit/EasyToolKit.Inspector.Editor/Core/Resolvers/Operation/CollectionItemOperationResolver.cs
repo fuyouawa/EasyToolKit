@@ -4,9 +4,9 @@ using EasyToolKit.Core;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public class CollectionItemOperationResolver : PropertyOperationResolverBase
+    public class CollectionItemOperationResolver : ValueOperationResolverBase
     {
-        private IPropertyOperation _operation;
+        private IValueOperation _operation;
 
         protected override bool CanResolveElement(IValueElement element)
         {
@@ -16,7 +16,7 @@ namespace EasyToolKit.Inspector.Editor
         protected override void Initialize()
         {
             var itemElement = (ICollectionItemElement)Element;
-            var collectionType = Element.Parent.ValueEntry.ValueType;
+            var collectionType = Element.LogicalParent!.ValueEntry.ValueType;
             var valueType = Element.Definition.ValueType;
 
             Type operationType;
@@ -33,10 +33,10 @@ namespace EasyToolKit.Inspector.Editor
                 throw new InvalidOperationException($"Unsupported collection type '{valueType}'.");
             }
 
-            _operation = operationType.CreateInstance<IPropertyOperation>(itemElement.Definition.ItemIndex);
+            _operation = operationType.CreateInstance<IValueOperation>(itemElement.Definition.ItemIndex);
         }
 
-        protected override IPropertyOperation GetOperation()
+        protected override IValueOperation GetOperation()
         {
             return _operation;
         }

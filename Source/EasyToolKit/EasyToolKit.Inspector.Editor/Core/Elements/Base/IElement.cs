@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
@@ -25,14 +26,37 @@ namespace EasyToolKit.Inspector.Editor
         IElementSharedContext SharedContext { get; }
 
         /// <summary>
-        /// Gets the parent element in the inspector tree.
+        /// Gets the logical parent element that owns this element in the code structure.
+        /// This represents the static parent relationship defined by the element's definition and does not change
+        /// during runtime modifications or tree restructuring operations.
         /// </summary>
-        IValueElement Parent { get; }
+        /// <remarks>
+        /// <para>
+        /// This property can be <c>null</c> for root elements, group elements,
+        /// or custom elements created dynamically by users.
+        /// </para>
+        /// <para>
+        /// If the current element is an <see cref="ICollectionItemElement"/>,
+        /// this property returns the <see cref="ICollectionElement"/> that contains this item.
+        /// </para>
+        /// </remarks>
+        [CanBeNull] IValueElement LogicalParent { get; }
 
         /// <summary>
-        /// Gets the logical parent element. If this element is inside a group, this is the <see cref="IGroupElement"/>; otherwise, it equals <see cref="Parent"/>.
+        /// Gets the current parent element in the element tree hierarchy.
+        /// This represents the dynamic parent relationship and automatically updates as elements
+        /// are moved, restructured, or modified at runtime.
         /// </summary>
-        IElement LogicParent { get; }
+        /// <remarks>
+        /// <para>
+        /// When an element is initialized, its same as <see cref="LogicalParent"/>.
+        /// </para>
+        /// <para>
+        /// If the current element is in a hover state (removed from its original parent but not yet added to a new parent),
+        /// this property returns <c>null</c>.
+        /// </para>
+        /// </remarks>
+        [CanBeNull] IElement Parent { get; }
 
         /// <summary>
         /// Gets the runtime state of this element.

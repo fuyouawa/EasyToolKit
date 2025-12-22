@@ -5,13 +5,13 @@ using EasyToolKit.Core;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public class GenericPropertyOperationResolver : PropertyOperationResolverBase
+    public class GenericValueOperationResolver : ValueOperationResolverBase
     {
-        private IPropertyOperation _operation;
+        private IValueOperation _operation;
 
         protected override bool CanResolveElement(IValueElement element)
         {
-            return element.Definition.Flags.IsValue();
+            return element.Definition.Flags.IsValue() && !element.Definition.Flags.IsCustomValue();
         }
 
         protected override void Initialize()
@@ -39,25 +39,17 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        private IPropertyOperation GetPropertyOperation()
+        private IValueOperation GetPropertyOperation()
         {
-            var ownerType = Element.Parent.ValueEntry.ValueType;
-            Type operationType = null;
-            if (Element.Definition.Flags.IsMember())
-            {
-                operationType = typeof(MemberPropertyOperation<,>).MakeGenericType(ownerType, Element.ValueEntry.ValueType);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-            return operationType.CreateInstance<IPropertyOperation>(((IMemberDefinition)Element.Definition).MemberInfo);
+            var ownerType = Element.LogicalParent!.ValueEntry.ValueType;
+            var operationType = typeof(MemberValueOperation<,>).MakeGenericType(ownerType, Element.ValueEntry.ValueType);
+            return operationType.CreateInstance<IValueOperation>(((IMemberDefinition)Element.Definition).MemberInfo);
         }
 
         private ICollectionOperation GetCollectionOperation()
         {
             var collectionElement = (ICollectionElement)Element;
-            var ownerType = collectionElement.Parent.ValueEntry.ValueType;
+            var ownerType = collectionElement.LogicalParent!.ValueEntry.ValueType;
             var collectionType = collectionElement.ValueEntry.ValueType;
 
             if (collectionType.IsImplementsOpenGenericType(typeof(IList<>)))
@@ -75,7 +67,7 @@ namespace EasyToolKit.Inspector.Editor
             throw new NotSupportedException($"Collection type {collectionType} is not supported.");
         }
 
-        protected override IPropertyOperation GetOperation()
+        protected override IValueOperation GetOperation()
         {
             return _operation;
         }

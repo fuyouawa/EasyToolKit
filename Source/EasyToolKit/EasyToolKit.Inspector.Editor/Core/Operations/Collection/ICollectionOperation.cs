@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Collection operation interface, inherits from IPropertyOperation
     /// </summary>
-    public interface ICollectionOperation : IPropertyOperation
+    public interface ICollectionOperation : IValueOperation
     {
         /// <summary>
         /// Collection type
@@ -32,7 +32,7 @@ namespace EasyToolKit.Inspector.Editor
         void RemoveWeakElement(ref object collection, object value);
     }
 
-    public interface ICollectionOperation<TCollection, TElement> : ICollectionOperation, IPropertyOperation<TCollection>
+    public interface ICollectionOperation<TCollection, TElement> : ICollectionOperation, IValueOperation<TCollection>
     {
         void AddElement(ref TCollection collection, TElement value);
         void RemoveElement(ref TCollection collection, TElement value);

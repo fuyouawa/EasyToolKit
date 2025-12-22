@@ -8,7 +8,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Property operation implementation for Unity serialized properties
     /// </summary>
     /// <typeparam name="TValue">Value type</typeparam>
-    public class UnityPropertyOperation<TValue> : PropertyOperationBase<TValue>
+    public class UnityPropertyOperation<TValue> : ValueOperationBase<TValue>
     {
         private static readonly Func<SerializedProperty, TValue> ValueGetter = SerializedPropertyUtility.GetValueGetter<TValue>();
         private static readonly Action<SerializedProperty, TValue> ValueSetter = SerializedPropertyUtility.GetValueSetter<TValue>();
