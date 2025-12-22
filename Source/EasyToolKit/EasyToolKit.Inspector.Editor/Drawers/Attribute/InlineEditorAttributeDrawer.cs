@@ -10,7 +10,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         private UnityEditor.Editor _editor;
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             switch (Attribute.Style)
             {

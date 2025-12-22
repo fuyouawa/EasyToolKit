@@ -18,17 +18,15 @@ namespace EasyToolKit.Inspector.Editor
     [DrawerPriority(DrawerPriorityLevel.Value + 9)]
     public partial class CollectionDrawer<T> : EasyValueDrawer<T>
     {
-        protected override bool CanDrawValueProperty(InspectorProperty property)
+        protected override bool CanDrawElement(IValueElement element)
         {
-            return property.ChildrenResolver is ICollectionStructureResolver;
+            return element.Definition.Flags.IsCollection();
         }
 
-        private ICollectionStructureResolver _collectionStructureResolver;
-        private ICollectionOperation _collectionOperation;
-        [CanBeNull] private IOrderedCollectionOperation _orderedCollectionOperation;
+        private ICollectionAccessor _collectionAccessor;
+        private IOrderedCollectionAccessor _orderedCollectionAccessor;
         [CanBeNull] private ListDrawerSettingsAttribute _listDrawerSettings;
         [CanBeNull] private Type _listDrawerTargetType;
-        private bool _isListDrawerClassAttribute;
         [CanBeNull] private Func<ValueDropdownList> _elementDropdownListGetter;
 
         private bool _isReadOnly;
@@ -38,22 +36,18 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            _collectionStructureResolver = (ICollectionStructureResolver)Property.ChildrenResolver;
-            _collectionOperation = (ICollectionOperation)Property.GetOperation();
-            _orderedCollectionOperation = _collectionOperation as IOrderedCollectionOperation;
+            _collectionAccessor = ValueEntry as ICollectionAccessor;
+            _orderedCollectionAccessor = ValueEntry as IOrderedCollectionAccessor;
 
-            _listDrawerSettings = Property.GetAttribute<MetroListDrawerSettingsAttribute>();
+            _listDrawerSettings = Element.GetAttribute<MetroListDrawerSettingsAttribute>();
             if (_listDrawerSettings == null)
             {
-                _listDrawerSettings = Property.GetAttribute<ListDrawerSettingsAttribute>();
+                _listDrawerSettings = Element.GetAttribute<ListDrawerSettingsAttribute>();
             }
 
             if (_listDrawerSettings != null)
             {
-                _isListDrawerClassAttribute = Property.GetAttributeSource(_listDrawerSettings) == AttributeSource.Type;
-                _listDrawerTargetType = _isListDrawerClassAttribute
-                    ? Property.ValueEntry.ValueType
-                    : Property.Parent.ValueEntry.ValueType;
+                _listDrawerTargetType = ElementUtility.GetOwnerTypeWithAttribute(Element, _listDrawerSettings);
             }
 
             try
@@ -68,9 +62,9 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
-            _isReadOnly = _collectionOperation.IsReadOnly || _listDrawerSettings?.IsReadOnly == true;
+            _isReadOnly = ValueEntry.IsReadOnly || _listDrawerSettings?.IsReadOnly == true;
             _elementDropdownListGetter = CollectionDrawerStaticContext.NextElementDropdownListGetter;
             CollectionDrawerStaticContext.NextElementDropdownListGetter = null;
             UpdateDragAndDrop();

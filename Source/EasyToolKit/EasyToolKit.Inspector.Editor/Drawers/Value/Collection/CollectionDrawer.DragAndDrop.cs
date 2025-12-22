@@ -30,7 +30,7 @@ namespace EasyToolKit.Inspector.Editor
         private DropZoneHandle BeginDropZone()
         {
             // Check for the new ordered collection operation interface
-            if (_orderedCollectionOperation == null) return null;
+            if (_orderedCollectionAccessor == null) return null;
 
             var dropZone = DragAndDropManager.BeginDropZone(Property.Tree.GetHashCode() + "-" + Property.Path,
                 _collectionStructureResolver.ItemType, true);

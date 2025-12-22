@@ -7,7 +7,7 @@ namespace EasyToolKit.Inspector.Editor
     [DrawerPriority(DrawerPriorityLevel.Value + 2)]
     public class GuidDrawer : EasyValueDrawer<Guid>
     {
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             var value = ValueEntry.SmartValue;
 

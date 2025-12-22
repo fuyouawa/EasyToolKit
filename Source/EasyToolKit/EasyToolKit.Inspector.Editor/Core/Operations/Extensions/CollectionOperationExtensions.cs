@@ -8,14 +8,14 @@ namespace EasyToolKit.Inspector.Editor
         public static void AddWeakElement(this ICollectionOperation collectionOperation, InspectorProperty property, int targetIndex, object element)
         {
             var collection = property.ValueEntry.WeakValues[targetIndex];
-            collectionOperation.AddWeakElement(ref collection, element);
+            collectionOperation.AddWeakItem(ref collection, element);
             property.ValueEntry.WeakValues[targetIndex] = collection;
         }
 
         public static void RemoveWeakElement(this ICollectionOperation collectionOperation, InspectorProperty property, int targetIndex, object element)
         {
             var collection = property.ValueEntry.WeakValues[targetIndex];
-            collectionOperation.RemoveWeakElement(ref collection, element);
+            collectionOperation.RemoveWeakItem(ref collection, element);
             property.ValueEntry.WeakValues[targetIndex] = collection;
         }
     }

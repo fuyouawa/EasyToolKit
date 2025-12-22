@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+namespace EasyToolKit.Inspector.Editor
+{
+    /// <summary>
+    /// Default implementation of attribute resolution for <see cref="InspectorProperty"/>
+    /// </summary>
+    public class DefaultAttributeResolver : AttributeResolverBase
+    {
+        private Attribute[] _attributes;
+        private Dictionary<Attribute, ElementAttributeSource> _attributeSources;
+
+        protected override bool CanResolve(IElement element)
+        {
+            return !element.Definition.Flags.IsGroup();
+        }
+
+        protected override void Initialize()
+        {
+            _attributeSources = new Dictionary<Attribute, ElementAttributeSource>();
+
+            if (Element.Definition.Flags.IsCollectionItem() && Element.LogicalParent != null)
+            {
+                var passToListElementAttributes = Element.LogicalParent.EnumerateAttributes()
+                    .Where(attr => attr is CanPassToListElementAttribute { PassToListElements: true });
+                foreach (var attribute in passToListElementAttributes)
+                {
+                    _attributeSources[attribute] = ElementAttributeSource.ListPassToElement;
+                }
+            }
+            else if (Element.Definition is IMemberDefinition memberDefinition)
+            {
+                var memberAttributes = memberDefinition.MemberInfo.GetCustomAttributes();
+                foreach (var attribute in memberAttributes)
+                {
+                    _attributeSources[attribute] = ElementAttributeSource.Member;
+                }
+            }
+            else if (Element is IValueElement valueElement)
+            {
+                var typeAttributes = valueElement.ValueEntry.ValueType.GetCustomAttributes(true).Cast<Attribute>();
+                foreach (var attribute in typeAttributes)
+                {
+                    _attributeSources[attribute] = ElementAttributeSource.Type;
+                }
+            }
+
+            _attributes = _attributeSources.Keys.ToArray();
+        }
+
+        /// <summary>
+        /// Gets all attributes associated with the property from member, type, and list element sources
+        /// </summary>
+        /// <returns>Array of attributes</returns>
+        protected override Attribute[] GetAttributes()
+        {
+            return _attributes;
+        }
+
+        /// <summary>
+        /// Gets the source of an attribute to determine where it was originally defined
+        /// </summary>
+        /// <param name="attribute">The attribute to check</param>
+        /// <returns>The source of the attribute indicating whether it was defined on a member, type, or passed from a list</returns>
+        /// <exception cref="ArgumentException">Thrown when the attribute is not found</exception>
+        protected override ElementAttributeSource GetAttributeSource(Attribute attribute)
+        {
+            // Return the source if found
+            if (_attributeSources.TryGetValue(attribute, out var source))
+            {
+                return source;
+            }
+
+            throw new ArgumentException($"Attribute '{attribute.GetType()}' not found in the element '{Element}'");
+        }
+    }
+}

@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector.Editor
 {
     public class RangeAttributeInt16Drawer : EasyAttributeDrawer<RangeAttribute, short>
     {
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             var min = (int)Attribute.min;
             var max = (int)Attribute.max;

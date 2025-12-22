@@ -18,7 +18,7 @@ namespace EasyToolKit.Inspector.Editor
             _conditionResolver = CodeValueResolver.CreateWeak(Attribute.Condition, targetType);
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_conditionResolver.HasError(out var error))
             {

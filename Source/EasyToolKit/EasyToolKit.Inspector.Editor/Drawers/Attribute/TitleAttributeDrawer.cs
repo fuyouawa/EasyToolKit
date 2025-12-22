@@ -19,7 +19,7 @@ namespace EasyToolKit.Inspector.Editor
             _subtitleResolver = CodeValueResolver.Create<string>(Attribute.Subtitle, targetType, true);
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_titleResolver.HasError(out var error))
             {

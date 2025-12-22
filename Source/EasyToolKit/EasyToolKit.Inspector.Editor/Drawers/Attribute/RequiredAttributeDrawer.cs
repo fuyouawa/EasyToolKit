@@ -47,7 +47,7 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_isNotRequireType)
             {

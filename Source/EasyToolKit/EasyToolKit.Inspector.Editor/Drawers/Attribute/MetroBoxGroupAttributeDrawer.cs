@@ -44,7 +44,7 @@ namespace EasyToolKit.Inspector.Editor
             _iconTextureGetterResolver = CodeValueResolver.Create<Texture>(Attribute.IconTextureGetter, targetType);
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_labelResolver.HasError(out var error))
             {
@@ -58,10 +58,10 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            base.DrawProperty(label);
+            base.Draw(label);
         }
 
-        protected override void BeginDrawProperty(GUIContent label, ref bool foldout)
+        protected override void BeginDrawGroup(GUIContent label, ref bool foldout)
         {
             Texture iconTexture = null;
             var resolveTarget = this.GetTargetForResolver();
@@ -77,7 +77,7 @@ namespace EasyToolKit.Inspector.Editor
             BeginDraw(EditorHelper.TempContent(labelText), iconTexture);
         }
 
-        protected override void EndDrawProperty()
+        protected override void EndDrawGroup()
         {
             EndDraw();
         }

@@ -18,7 +18,7 @@ namespace EasyToolKit.Inspector.Editor
             _optionsGetterResolver = CodeValueResolver.Create<object>(Attribute.OptionsGetter, targetType);
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_optionsGetterResolver.HasError(out var error))
             {

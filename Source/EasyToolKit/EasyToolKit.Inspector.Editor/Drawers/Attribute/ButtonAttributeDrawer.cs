@@ -22,7 +22,7 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_buttonLabelResolver != null && _buttonLabelResolver.HasError(out var error))
             {

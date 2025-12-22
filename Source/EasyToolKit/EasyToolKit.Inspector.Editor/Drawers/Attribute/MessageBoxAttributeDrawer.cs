@@ -25,7 +25,7 @@ namespace EasyToolKit.Inspector.Editor
             _messageResolver = CodeValueResolver.Create<string>(Attribute.Message, targetType, true);
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_visibleIfResolver != null && _visibleIfResolver.HasError(out var error))
             {

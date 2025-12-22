@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     [DrawerPriority(DrawerPriorityLevel.Super)]
     public class SpaceAttributeDrawer : EasyAttributeDrawer<SpaceAttribute>
     {
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (Attribute.height == 0)
             {

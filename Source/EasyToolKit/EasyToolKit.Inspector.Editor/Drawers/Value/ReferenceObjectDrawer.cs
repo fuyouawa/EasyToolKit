@@ -10,31 +10,35 @@ namespace EasyToolKit.Inspector.Editor
     [DrawerPriority(DrawerPriorityLevel.Value + 0.1)]
     public class ReferenceObjectDrawer<T> : EasyValueDrawer<T>
     {
-        protected override bool CanDrawValueProperty(InspectorProperty property)
+        protected override bool CanDrawElement(IValueElement element)
         {
-            var isUnityBuiltInType = property.ValueEntry.ValueType.IsUnityBuiltInType();
+            var isUnityBuiltInType = element.ValueEntry.ValueType.IsUnityBuiltInType();
             if (isUnityBuiltInType)
             {
                 return false;
             }
 
-            if (property.Children == null)
-            {
-                return InspectorPropertyInfoUtility.IsAllowChildrenTypeLeniently(property.ValueEntry.ValueType);
-            }
-            return true;
+            return element.Children != null;
         }
 
         private ReferenceObjectDrawerSettingsAttribute _settings;
 
         protected override void Initialize()
         {
-            _settings = Property.GetAttribute<ReferenceObjectDrawerSettingsAttribute>();
+            _settings = Element.GetAttribute<ReferenceObjectDrawerSettingsAttribute>();
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
-            var containsNull = ValueEntry.Values.Any(value => value == null);
+            var containsNull = false;
+            for (int i = 0; i < ValueEntry.TargetCount; i++)
+            {
+                if (ValueEntry.GetValue(i) == null)
+                {
+                    containsNull = true;
+                    break;
+                }
+            }
 
             if (containsNull)
             {
@@ -82,15 +86,15 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            if (_settings?.HideFoldout == true || Property.ChildrenResolver is ICollectionStructureResolver)
+            if (_settings?.HideFoldout == true || Element.Definition.Flags.IsCollection())
             {
                 CallNextDrawer(label);
                 return;
             }
 
-            Property.State.Expanded = EasyEditorGUI.Foldout(Property.State.Expanded, label);
+            Element.State.Expanded = EasyEditorGUI.Foldout(Element.State.Expanded, label);
 
-            if (Property.State.Expanded)
+            if (Element.State.Expanded)
             {
                 EditorGUI.indentLevel++;
                 CallNextDrawer(null);
@@ -100,11 +104,11 @@ namespace EasyToolKit.Inspector.Editor
 
         private void InstantiateIfNull()
         {
-            for (int i = 0; i < ValueEntry.Values.Count; i++)
+            for (int i = 0; i < ValueEntry.TargetCount; i++)
             {
-                if (ValueEntry.Values[i] == null)
+                if (ValueEntry.GetValue(i) == null)
                 {
-                    ValueEntry.Values[i] = ValueEntry.ValueType.CreateInstance<T>();
+                    ValueEntry.SetValue(i, ValueEntry.ValueType.CreateInstance<T>());
                 }
             }
         }

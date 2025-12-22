@@ -17,7 +17,7 @@ namespace EasyToolKit.Inspector.Editor
             _headerResolver = CodeValueResolver.Create<string>(Attribute.header, targetType, true);
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_headerResolver.HasError(out var error))
             {

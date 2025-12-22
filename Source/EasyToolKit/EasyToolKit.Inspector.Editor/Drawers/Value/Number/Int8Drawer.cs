@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector.Editor
 {
     public class Int8Drawer : EasyValueDrawer<byte>
     {
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             EditorGUI.BeginChangeCheck();
 

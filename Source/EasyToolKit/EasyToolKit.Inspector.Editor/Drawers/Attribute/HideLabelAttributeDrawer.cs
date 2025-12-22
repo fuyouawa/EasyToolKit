@@ -4,7 +4,7 @@ namespace EasyToolKit.Inspector.Editor
 {
     public class HideLabelAttributeDrawer : EasyAttributeDrawer<HideLabelAttribute>
     {
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             CallNextDrawer(null);
         }

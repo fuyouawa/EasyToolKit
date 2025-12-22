@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector.Editor
 {
     public class StringDrawer : EasyValueDrawer<string>
     {
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             var value = ValueEntry.SmartValue;
             EditorGUI.BeginChangeCheck();

@@ -12,7 +12,7 @@ namespace EasyToolKit.Inspector.Editor
         private MethodInfo _methodInfo;
         private string _error;
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_error.IsNotNullOrEmpty())
             {

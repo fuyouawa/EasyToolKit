@@ -6,39 +6,40 @@ using UnityEngine;
 namespace EasyToolKit.Inspector.Editor
 {
     [DrawerPriority(DrawerPriorityLevel.Value + 0.2)]
-    public class UnityPropertyDrawer : EasyDrawer
+    public class UnityPropertyDrawer<T> : EasyValueDrawer<T>
     {
-        protected override bool CanDrawProperty(InspectorProperty property)
+        protected override bool CanDrawElement(IValueElement element)
         {
-            // if (!property.Info.IsUnityProperty)
-            // {
-            //     return false;
-            // }
-
-            if (property.Tree.SerializedObject == null)
+            if (element.SharedContext.Tree.SerializedObject == null)
             {
                 return false;
             }
 
-            var propertyType = property.Info.PropertyType;
-            var unityProperty = property.Tree.GetUnityPropertyByPath(property.UnityPath);
-            if (propertyType == null || unityProperty == null)
+            if (element is IFieldElement fieldElement)
             {
-                return false;
+                var propertyType = fieldElement.Definition.ValueType;
+                var unityProperty = fieldElement.SharedContext.Tree.GetUnityPropertyByPath(fieldElement.UnityPath);
+                if (propertyType == null || unityProperty == null)
+                {
+                    return false;
+                }
+
+                return !propertyType.IsSubclassOf(typeof(UnityEngine.Object)) &&
+                       InspectorDrawerUtility.IsDefinedUnityPropertyDrawer(propertyType);
             }
 
-            return !propertyType.IsSubclassOf(typeof(UnityEngine.Object)) &&
-                   InspectorDrawerUtility.IsDefinedUnityPropertyDrawer(propertyType);
+            return false;
         }
 
         private SerializedProperty _serializedProperty;
 
         protected override void Initialize()
         {
-            _serializedProperty = Property.Tree.GetUnityPropertyByPath(Property.UnityPath);
+            var fieldElement = (IFieldElement)Element;
+            _serializedProperty = fieldElement.SharedContext.Tree.GetUnityPropertyByPath(fieldElement.UnityPath);
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             if (_serializedProperty == null)
             {
