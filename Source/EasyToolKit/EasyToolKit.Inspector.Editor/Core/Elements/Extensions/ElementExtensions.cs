@@ -11,6 +11,17 @@ namespace EasyToolKit.Inspector.Editor
             return element as IValueElement;
         }
 
+        public static void Draw(this IElement element)
+        {
+            element.Draw(element.Label);
+        }
+
+        public static LocalPersistentContext<T> GetPersistentContext<T>(this IElement element, string key, T defaultValue = default)
+        {
+            var key1 = ElementUtility.GetKey(element);
+            return PersistentContext.GetLocal(string.Join("+", key1, key), defaultValue);
+        }
+
         public static ElementAttributeInfo GetAttributeInfo(this IElement element, Attribute matchedAttribute)
         {
             foreach (var attributeInfo in element.GetAttributeInfos())

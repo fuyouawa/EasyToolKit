@@ -13,7 +13,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var targetType = this.GetTargetTypeForResolver();
+            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
 
             _conditionResolver = CodeValueResolver.CreateWeak(Attribute.Condition, targetType);
         }
@@ -28,7 +28,7 @@ namespace EasyToolKit.Inspector.Editor
 
             if (Event.current.type == EventType.Layout)
             {
-                var resolveTarget = this.GetTargetForResolver();
+                var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
                 var condition = _conditionResolver.ResolveWeak(resolveTarget);
                 var value = Attribute.Value;
                 _hide = Equals(condition, value);

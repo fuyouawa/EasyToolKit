@@ -7,21 +7,22 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public class DirtyTriggerAttributeDrawer : EasyAttributeDrawer<DirtyTriggerAttribute>
+    public class DirtyTriggerAttributeDrawer<T> : EasyAttributeDrawer<DirtyTriggerAttribute, T>
+        where T : Delegate
     {
         private string _errorMessage;
 
         protected override void Initialize()
         {
-            if (Property.ValueEntry.ValueType != typeof(Action<string>))
+            if (ValueEntry.ValueType != typeof(Action<string>))
             {
-                _errorMessage = $"The dirty property '{Property.Path}' must be a Action or Action<string>!";
+                _errorMessage = $"The dirty property '{Element.Path}' must be a Action or Action<string>!";
                 return;
             }
 
-            for (int i = 0; i < Property.ValueEntry.ValueCount; i++)
+            for (int i = 0; i < ValueEntry.TargetCount; i++)
             {
-                var action = (Action<string>)Property.ValueEntry.WeakValues[i];
+                var action = (Action<string>)ValueEntry.GetWeakValue(i);
                 if (action is null)
                 {
                     action = OnDirtyPropertyTriggered;
@@ -30,7 +31,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     action += OnDirtyPropertyTriggered;
                 }
-                Property.ValueEntry.WeakValues[i] = action;
+                ValueEntry.SetWeakValue(i, action);
             }
         }
 
@@ -49,12 +50,15 @@ namespace EasyToolKit.Inspector.Editor
         {
             if (propertyName.IsNotNullOrWhiteSpace())
             {
-                var dirtyProperty = Property.Parent.Children[propertyName];
-                dirtyProperty.ValueEntry.WeakValues.ForceMakeDirty();
+                var dirtyElement = Element.LogicalParent!.Children![propertyName];
+                if (dirtyElement is IValueElement dirtyValueElement)
+                {
+                    dirtyValueElement.ValueEntry.MarkDirty();
+                }
             }
             else
             {
-                Property.Parent.ValueEntry.WeakValues.ForceMakeDirty();
+                Element.LogicalParent!.ValueEntry.MarkDirty();
             }
         }
     }

@@ -31,13 +31,13 @@ namespace EasyToolKit.Inspector.Editor
                 case InlineEditorStyle.Foldout:
                     if (ValueEntry.SmartValue != null)
                     {
-                        Property.State.DefaultExpanded = false;
-                        Property.State.Expanded = EasyEditorGUI.Foldout(
-                            Property.State.Expanded, label, out var valueRect);
+                        Element.State.DefaultExpanded = false;
+                        Element.State.Expanded = EasyEditorGUI.Foldout(
+                            Element.State.Expanded, label, out var valueRect);
                         DrawObjectField(valueRect, GUIContent.none);
 
                         EditorGUI.indentLevel++;
-                        if (Property.State.Expanded)
+                        if (Element.State.Expanded)
                         {
                             DrawEditor();
                         }
@@ -53,14 +53,14 @@ namespace EasyToolKit.Inspector.Editor
                     {
                         EasyEditorGUI.BeginBox();
                         EasyEditorGUI.BeginBoxHeader();
-                        Property.State.DefaultExpanded = false;
-                        Property.State.Expanded = EasyEditorGUI.Foldout(
-                            Property.State.Expanded, label, out var valueRect);
+                        Element.State.DefaultExpanded = false;
+                        Element.State.Expanded = EasyEditorGUI.Foldout(
+                            Element.State.Expanded, label, out var valueRect);
 
                         EasyEditorGUI.EndBoxHeader();
                         DrawObjectField(valueRect, GUIContent.none);
 
-                        if (Property.State.Expanded)
+                        if (Element.State.Expanded)
                         {
                             DrawEditor();
                         }
@@ -87,7 +87,7 @@ namespace EasyToolKit.Inspector.Editor
             var value = ValueEntry.SmartValue;
             EditorGUI.BeginChangeCheck();
 
-            bool assetsOnly = Property.GetAttribute<AssetsOnlyAttribute>() == null;
+            bool assetsOnly = Element.GetAttribute<AssetsOnlyAttribute>() == null;
             if (label == null)
             {
                 value = (T)EditorGUI.ObjectField(rect, value, typeof(T), assetsOnly);
@@ -111,7 +111,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            if (ValueEntry.IsConflicted())
+            if (ValueEntry.State == ValueEntryState.Mixed)
             {
                 EasyEditorGUI.MessageBox("This object is in conflict state and cannot be edited.", MessageType.Warning);
                 return;

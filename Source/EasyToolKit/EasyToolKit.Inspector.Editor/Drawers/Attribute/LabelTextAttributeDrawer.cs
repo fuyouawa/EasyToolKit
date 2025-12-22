@@ -12,7 +12,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var targetType = this.GetTargetTypeForResolver();
+            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
 
             _labelResolver = CodeValueResolver.Create<string>(Attribute.Label, targetType, true);
         }
@@ -25,7 +25,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            var resolveTarget = this.GetTargetForResolver();
+            var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
             label.text = _labelResolver.Resolve(resolveTarget);
             CallNextDrawer(label);
         }

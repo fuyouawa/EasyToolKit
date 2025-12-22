@@ -5,14 +5,15 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Represents a mutable collection of elements in the inspector tree that supports adding, removing, and reordering.
     /// </summary>
-    public interface IElementList : IReadOnlyElementList
+    public interface IElementList<TElement> : IReadOnlyElementList<TElement>
+        where TElement : IElement
     {
         /// <summary>
         /// Inserts an element at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index at which to insert the element.</param>
         /// <param name="element">The element to insert.</param>
-        void Insert(int index, IElement element);
+        void Insert(int index, TElement element);
 
         /// <summary>
         /// Removes the element at the specified index.

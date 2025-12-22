@@ -9,8 +9,8 @@ namespace EasyToolKit.Inspector.Editor
 {
     public static class CollectionDrawerStaticContext
     {
-        public static InspectorProperty CurrentDraggingPropertyInfo;
-        public static InspectorProperty CurrentDroppingPropertyInfo;
+        public static IElement CurrentDraggingPropertyInfo;
+        public static IElement CurrentDroppingPropertyInfo;
         public static DelayedGUIDrawer DelayedGUIDrawer = new DelayedGUIDrawer();
         [CanBeNull] public static Func<ValueDropdownList> NextElementDropdownListGetter;
     }
@@ -23,10 +23,12 @@ namespace EasyToolKit.Inspector.Editor
             return element.Definition.Flags.IsCollection();
         }
 
-        private ICollectionAccessor _collectionAccessor;
+        public new ICollectionElement Element => base.Element as ICollectionElement;
+        public new ICollectionEntry ValueEntry => base.ValueEntry as ICollectionEntry;
+
         private IOrderedCollectionAccessor _orderedCollectionAccessor;
+        private Type _listDrawerTargetType;
         [CanBeNull] private ListDrawerSettingsAttribute _listDrawerSettings;
-        [CanBeNull] private Type _listDrawerTargetType;
         [CanBeNull] private Func<ValueDropdownList> _elementDropdownListGetter;
 
         private bool _isReadOnly;
@@ -36,7 +38,6 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            _collectionAccessor = ValueEntry as ICollectionAccessor;
             _orderedCollectionAccessor = ValueEntry as IOrderedCollectionAccessor;
 
             _listDrawerSettings = Element.GetAttribute<MetroListDrawerSettingsAttribute>();

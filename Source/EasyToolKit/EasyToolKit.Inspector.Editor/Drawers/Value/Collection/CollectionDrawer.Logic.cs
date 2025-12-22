@@ -11,11 +11,11 @@ namespace EasyToolKit.Inspector.Editor
 {
     public partial class CollectionDrawer<T>
     {
-        [CanBeNull] private Action<object, object> _onAddedElementCallback;
-        [CanBeNull] private Action<object, object> _onRemovedElementCallback;
+        [CanBeNull] private Action<object, object> _onAddedItemCallback;
+        [CanBeNull] private Action<object, object> _onRemovedItemCallback;
 
-        [CanBeNull] private Func<object, object> _customCreateElementFunction;
-        [CanBeNull] private Action<object, object> _customRemoveElementFunction;
+        [CanBeNull] private Func<object, object> _customCreateItemFunction;
+        [CanBeNull] private Action<object, object> _customRemoveItemFunction;
         [CanBeNull] private Action<object, int> _customRemoveIndexFunction;
 
         private int? _insertAt;
@@ -24,123 +24,86 @@ namespace EasyToolKit.Inspector.Editor
 
         private void InitializeLogic()
         {
-            if (_listDrawerSettings != null)
+            if (_listDrawerSettings == null) return;
+
+            _onAddedItemCallback = SetupItemCallback(_listDrawerSettings.OnAddedItemCallback);
+            _onRemovedItemCallback = SetupItemCallback(_listDrawerSettings.OnRemovedItemCallback);
+            _customCreateItemFunction = SetupCustomCreateFunction(_listDrawerSettings.CustomCreateItemFunction);
+            _customRemoveItemFunction = SetupCustomRemoveFunction(_listDrawerSettings.CustomRemoveItemFunction);
+        }
+
+        private Action<object, object> SetupItemCallback(string callbackName)
+        {
+            if (!callbackName.IsNotNullOrWhiteSpace()) return null;
+
+            var methodInfo = FindItemCallbackMethod(callbackName);
+            ValidateItemCallbackMethod(methodInfo, callbackName);
+
+            var parameters = methodInfo.GetParameters();
+            return parameters.Length switch
             {
-                if (_listDrawerSettings.OnAddedElementCallback.IsNotNullOrEmpty())
-                {
-                    var onAddedElementMethod = _listDrawerTargetType.GetMethods(BindingFlagsHelper.AllInstance)
-                                                   .FirstOrDefault(m => m.Name == _listDrawerSettings.OnAddedElementCallback)
-                                               ?? throw new Exception($"Cannot find method '{_listDrawerSettings.OnAddedElementCallback}' in '{_listDrawerTargetType}'");
+                0 => (instance, value) => methodInfo.Invoke(instance, null),
+                1 => CreateSingleParameterCallback(methodInfo),
+                _ => throw new Exception($"The parameter count of '{callbackName}' in '{_listDrawerTargetType}' must be 0 or 1")
+            };
+        }
 
-                    if (onAddedElementMethod.ReturnType != typeof(void))
-                    {
-                        throw new Exception(
-                            $"Method '{_listDrawerSettings.OnAddedElementCallback}' in '{_listDrawerTargetType}' must return void");
-                    }
-                    var parameters = onAddedElementMethod.GetParameters();
-                    if (parameters.Length == 0)
-                    {
-                        _onAddedElementCallback = (instance, value) =>
-                        {
-                            onAddedElementMethod.Invoke(instance, null);
-                        };
-                    }
-                    else if (parameters.Length == 1)
-                    {
-                        if (!_collectionStructureResolver.ItemType.IsAssignableFrom(parameters[0].ParameterType))
-                        {
-                            throw new Exception(
-                                $"The parameter type of '{_listDrawerSettings.OnAddedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionStructureResolver.ItemType}'");
-                        }
+        private Action<object, object> CreateSingleParameterCallback(System.Reflection.MethodInfo methodInfo)
+        {
+            var parameterType = methodInfo.GetParameters()[0].ParameterType;
+            if (!ValueEntry.ItemType.IsAssignableFrom(parameterType))
+            {
+                throw new Exception(
+                    $"The parameter type of '{methodInfo.Name}' in '{_listDrawerTargetType}' must be '{ValueEntry.ItemType}'");
+            }
 
-                        _onAddedElementCallback = (instance, value) =>
-                        {
-                            onAddedElementMethod.Invoke(instance, new object[] { value });
-                        };
-                    }
-                    else
-                    {
-                        throw new Exception($"The parameter count of '{_listDrawerSettings.OnAddedElementCallback}' in '{_listDrawerTargetType}' must be 0 or 1");
-                    }
-                }
+            return (instance, value) => methodInfo.Invoke(instance, new object[] { value });
+        }
 
-                if (_listDrawerSettings.OnRemovedElementCallback.IsNotNullOrEmpty())
-                {
-                    var onRemovedElementMethod = _listDrawerTargetType.GetMethods(BindingFlagsHelper.AllInstance)
-                                                   .FirstOrDefault(m => m.Name == _listDrawerSettings.OnRemovedElementCallback)
-                                               ?? throw new Exception($"Cannot find method '{_listDrawerSettings.OnRemovedElementCallback}' in '{_listDrawerTargetType}'");
+        private Func<object, object> SetupCustomCreateFunction(string functionName)
+        {
+            if (!functionName.IsNotNullOrWhiteSpace()) return null;
 
-                    if (onRemovedElementMethod.ReturnType != typeof(void))
-                    {
-                        throw new Exception(
-                            $"Method '{_listDrawerSettings.OnRemovedElementCallback}' in '{_listDrawerTargetType}' must return void");
-                    }
-                    var parameters = onRemovedElementMethod.GetParameters();
-                    if (parameters.Length == 0)
-                    {
-                        _onRemovedElementCallback = (instance, value) =>
-                        {
-                            onRemovedElementMethod.Invoke(instance, null);
-                        };
-                    }
-                    else if (parameters.Length == 1)
-                    {
-                        if (!_collectionStructureResolver.ItemType.IsAssignableFrom(parameters[0].ParameterType))
-                        {
-                            throw new Exception(
-                                $"The parameter type of '{_listDrawerSettings.OnRemovedElementCallback}' in '{_listDrawerTargetType}' must be '{_collectionStructureResolver.ItemType}'");
-                        }
+            var methodInfo = _listDrawerTargetType.GetMethodEx(functionName, BindingFlagsHelper.All)
+                             ?? throw new Exception($"Cannot find method '{functionName}' in '{_listDrawerTargetType}'");
 
-                        _onRemovedElementCallback = (instance, value) =>
-                        {
-                            onRemovedElementMethod.Invoke(instance, new object[] { value });
-                        };
-                    }
-                    else
-                    {
-                        throw new Exception($"The parameter count of '{_listDrawerSettings.OnRemovedElementCallback}' in '{_listDrawerTargetType}' must be 0 or 1");
-                    }
-                }
+            return instance => methodInfo.Invoke(instance, null);
+        }
 
-                if (_listDrawerSettings.CustomCreateElementFunction.IsNotNullOrEmpty())
-                {
-                    var customCreateElementFunction =
-                        _listDrawerTargetType.GetMethodEx(_listDrawerSettings.CustomCreateElementFunction,
-                            BindingFlagsHelper.All)
-                        ?? throw new Exception(
-                            $"Cannot find method '{_listDrawerSettings.CustomCreateElementFunction}' in '{_listDrawerTargetType}'");
+        private Action<object, object> SetupCustomRemoveFunction(string functionName)
+        {
+            if (!functionName.IsNotNullOrWhiteSpace()) return null;
 
-                    _customCreateElementFunction = instance =>
-                    {
-                        return customCreateElementFunction.Invoke(instance, null);
-                    };
-                }
+            var methodInfo = _listDrawerTargetType.GetMethodEx(functionName, BindingFlagsHelper.All)
+                             ?? throw new Exception($"Cannot find method '{functionName}' in '{_listDrawerTargetType}'");
 
-                if (_listDrawerSettings.CustomRemoveElementFunction.IsNotNullOrEmpty())
-                {
-                    var customRemoveElementFunction =
-                        _listDrawerTargetType.GetMethodEx(_listDrawerSettings.CustomRemoveElementFunction,
-                            BindingFlagsHelper.All)
-                        ?? throw new Exception(
-                            $"Cannot find method '{_listDrawerSettings.CustomRemoveElementFunction}' in '{_listDrawerTargetType}'");
+            return (instance, value) => methodInfo.Invoke(instance, new object[] { value });
+        }
 
-                    _customRemoveElementFunction = (instance, value) =>
-                    {
-                        customRemoveElementFunction.Invoke(instance, new object[] { value });
-                    };
-                }
+        private System.Reflection.MethodInfo FindItemCallbackMethod(string callbackName)
+        {
+            return _listDrawerTargetType.GetMethods(BindingFlagsHelper.AllInstance)
+                       .FirstOrDefault(m => m.Name == callbackName)
+                   ?? throw new Exception($"Cannot find method '{callbackName}' in '{_listDrawerTargetType}'");
+        }
+
+        private void ValidateItemCallbackMethod(System.Reflection.MethodInfo methodInfo, string callbackName)
+        {
+            if (methodInfo.ReturnType != typeof(void))
+            {
+                throw new Exception($"Method '{callbackName}' in '{_listDrawerTargetType}' must return void");
             }
         }
 
         private void UpdateLogic()
         {
-            if (_orderedCollectionOperation != null)
+            if (_orderedCollectionAccessor != null)
             {
                 if (_removeAt != null && Event.current.type == EventType.Repaint)
                 {
                     try
                     {
-                        DoRemoveElementAt(_removeAt.Value);
+                        DoRemoveItemAt(_removeAt.Value);
                     }
                     finally
                     {
@@ -154,7 +117,7 @@ namespace EasyToolKit.Inspector.Editor
             {
                 try
                 {
-                    DoRemoveElement(_removeValues);
+                    DoRemoveItem(_removeValues);
                 }
                 finally
                 {
@@ -165,7 +128,7 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        protected virtual void DoAddElement(Rect addButtonRect)
+        protected virtual void DoAddItem(Rect addButtonRect)
         {
             if (_elementDropdownListGetter != null)
             {
@@ -173,142 +136,128 @@ namespace EasyToolKit.Inspector.Editor
                 EasyEditorGUI.ShowValueDropdownMenu(addButtonRect, null, dropdownItems, (item) =>
                 {
                     var value = item.GetValue();
-                    DoAddElement(value);
+                    DoAddItem(value);
                 }, (item) => new GUIContent(item.GetText()));
                 return;
             }
 
-            for (int i = 0; i < Property.Tree.Targets.Count; i++)
+            for (int i = 0; i < Element.SharedContext.Tree.Targets.Count; i++)
             {
-                DoAddElement(GetValueToAdd(i));
+                DoAddItem(GetValueToAdd(i));
             }
         }
 
-        private void DoAddElement(object valueToAdd)
+        private void DoAddItem(object valueToAdd)
         {
-            for (int i = 0; i < Property.Tree.Targets.Count; i++)
+            for (int i = 0; i < Element.SharedContext.Tree.Targets.Count; i++)
             {
-                DoAddElement(i, valueToAdd);
+                DoAddItem(i, valueToAdd);
             }
         }
 
-        protected virtual void DoAddElement(int targetIndex, object valueToAdd)
+        protected virtual void DoAddItem(int targetIndex, object valueToAdd)
         {
-            var parent = Property.Parent.ValueEntry.WeakValues[targetIndex];
+            var parent = Element.LogicalParent!.ValueEntry.GetWeakValue(targetIndex);
             ValueEntry.EnqueueChange(() =>
             {
-                _collectionOperation.AddWeakElement(Property, targetIndex, valueToAdd);
-                _onAddedElementCallback?.Invoke(parent, valueToAdd);
+                ValueEntry.AddWeakItem(targetIndex, valueToAdd);
+                _onAddedItemCallback?.Invoke(parent, valueToAdd);
             });
         }
 
-        private void DoInsertElement(int index, object valueToAdd)
+        private void DoInsertItem(int index, object valueToAdd)
         {
-            for (int i = 0; i < Property.Tree.Targets.Count; i++)
+            for (int i = 0; i < Element.SharedContext.Tree.Targets.Count; i++)
             {
-                DoInsertElement(i, index, valueToAdd);
+                DoInsertItem(i, index, valueToAdd);
             }
         }
 
-        private void DoInsertElement(int targetIndex, int index, object valueToAdd)
+        private void DoInsertItem(int targetIndex, int index, object valueToAdd)
         {
             // Use the new ordered collection operation
-            if (_orderedCollectionOperation != null)
+            if (_orderedCollectionAccessor != null)
             {
-                var parent = Property.Parent.ValueEntry.WeakValues[targetIndex];
+                var parent = Element.LogicalParent!.ValueEntry.GetWeakValue(targetIndex);
                 ValueEntry.EnqueueChange(() =>
                 {
-                    _orderedCollectionOperation.InsertWeakElementAt(Property, targetIndex, index, valueToAdd);
-                    _onAddedElementCallback?.Invoke(parent, valueToAdd);
+                    _orderedCollectionAccessor.InsertWeakItem(targetIndex, index, valueToAdd);
+                    _onAddedItemCallback?.Invoke(parent, valueToAdd);
                 });
             }
             else
             {
                 throw new InvalidOperationException(
-                    $"The property '{Property.Path}' is not ordered collection, so you cannot insert elements at a specific index.");
+                    $"The property '{Element.Path}' is not ordered collection, so you cannot insert elements at a specific index.");
             }
         }
 
-        protected virtual void DoRemoveElementAt(int index)
+        protected virtual void DoRemoveItemAt(int index)
         {
-            for (int i = 0; i < Property.Tree.Targets.Count; i++)
+            for (int i = 0; i < Element.SharedContext.Tree.Targets.Count; i++)
             {
-                DoRemoveElementAt(i, index);
+                DoRemoveItemAt(i, index);
             }
         }
 
-        protected virtual void DoRemoveElementAt(int targetIndex, int index)
+        protected virtual void DoRemoveItemAt(int targetIndex, int index)
         {
-            var parent = Property.Parent.ValueEntry.WeakValues[targetIndex];
+            var parent = Element.LogicalParent!.ValueEntry.GetWeakValue(targetIndex);
             if (_customRemoveIndexFunction != null)
             {
                 _customRemoveIndexFunction.Invoke(parent, index);
             }
             else
             {
-                Assert.IsTrue(_orderedCollectionOperation != null);
+                Assert.IsTrue(_orderedCollectionAccessor != null);
                 ValueEntry.EnqueueChange(() =>
                 {
-                    var valueToRemove = Property.Children[index].ValueEntry.WeakValues[targetIndex];
-                    _orderedCollectionOperation.RemoveWeakElementAt(Property, targetIndex, index);
-                    _onRemovedElementCallback?.Invoke(parent, valueToRemove);
+                    var valueToRemove = Element.LogicalChildren[index].ValueEntry.GetWeakValue(targetIndex);
+                    _orderedCollectionAccessor.RemoveWeakItem(targetIndex, index);
+                    _onRemovedItemCallback?.Invoke(parent, valueToRemove);
                 });
             }
         }
 
-        protected virtual void DoRemoveElement(InspectorProperty propertyToRemove)
+        private void DoRemoveItem(object[] values)
         {
-            for (int i = 0; i < Property.Tree.Targets.Count; i++)
+            for (int i = 0; i < Element.SharedContext.Tree.Targets.Count; i++)
             {
-                DoRemoveElement(i, propertyToRemove);
+                DoRemoveItem(i, values[i]);
             }
         }
 
-        protected virtual void DoRemoveElement(int targetIndex, InspectorProperty propertyToRemove)
+        private void DoRemoveItem(int targetIndex, object valueToRemove)
         {
-            var valueToRemove = propertyToRemove.ValueEntry.WeakValues[targetIndex];
-            DoRemoveElement(targetIndex, valueToRemove);
-        }
-
-        private void DoRemoveElement(object[] values)
-        {
-            for (int i = 0; i < Property.Tree.Targets.Count; i++)
+            var parent = Element.LogicalParent.ValueEntry.GetWeakValue(targetIndex);
+            if (_customRemoveItemFunction != null)
             {
-                DoRemoveElement(i, values[i]);
-            }
-        }
-
-        private void DoRemoveElement(int targetIndex, object valueToRemove)
-        {
-            var parent = Property.Parent.ValueEntry.WeakValues[targetIndex];
-            if (_customRemoveElementFunction != null)
-            {
-                _customRemoveElementFunction.Invoke(parent, valueToRemove);
+                _customRemoveItemFunction.Invoke(parent, valueToRemove);
             }
             else
             {
                 ValueEntry.EnqueueChange(() =>
                 {
-                    _collectionOperation.RemoveWeakElement(Property, targetIndex, valueToRemove);
-                    _onRemovedElementCallback?.Invoke(parent, valueToRemove);
+                    ValueEntry.RemoveWeakItem(targetIndex, valueToRemove);
+                    _onRemovedItemCallback?.Invoke(parent, valueToRemove);
                 });
             }
         }
 
         protected virtual object GetValueToAdd(int targetIndex)
         {
-            var parent = Property.Parent.ValueEntry.WeakValues[targetIndex];
-            if (_customCreateElementFunction != null)
+            var parent = Element.LogicalParent.ValueEntry.GetWeakValue(targetIndex);
+            if (_customCreateItemFunction != null)
             {
-                return _customCreateElementFunction.Invoke(parent);
+                return _customCreateItemFunction.Invoke(parent);
             }
 
-            if (_collectionStructureResolver.ItemType.IsInheritsFrom<UnityEngine.Object>())
+            if (ValueEntry.ItemType.IsInheritsFrom<UnityEngine.Object>())
             {
                 return null;
             }
 
-            return UnitySerializationUtility.CreateDefaultUnityInitializedObject(_collectionStructureResolver.ItemType);
+            return UnitySerializationUtility.CreateDefaultUnityInitializedObject(ValueEntry.ItemType);
         }
     }
 }

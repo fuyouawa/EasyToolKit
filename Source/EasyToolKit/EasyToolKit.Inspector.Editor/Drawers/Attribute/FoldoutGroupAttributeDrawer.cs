@@ -13,7 +13,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var targetType = this.GetTargetTypeForResolver();
+            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
             _labelResolver = CodeValueResolver.Create<string>(Attribute.Label, targetType, true);
         }
 
@@ -28,12 +28,11 @@ namespace EasyToolKit.Inspector.Editor
             base.Draw(label);
         }
 
-        protected override void BeginDrawGroup(GUIContent label, ref bool foldout)
+        protected override void BeginDrawGroup(GUIContent label)
         {
-            var labelText = _labelResolver.Resolve(this.GetTargetForResolver());
-            Property.State.Expanded = EasyEditorGUI.Foldout(Property.State.Expanded, EditorHelper.TempContent(labelText));
+            var labelText = _labelResolver.Resolve(ElementUtility.GetOwnerWithAttribute(Element, Attribute));
+            Element.State.Expanded = EasyEditorGUI.Foldout(Element.State.Expanded, EditorHelper.TempContent(labelText));
 
-            foldout = Property.State.Expanded;
             EditorGUI.indentLevel++;
         }
 

@@ -135,7 +135,7 @@ namespace EasyToolKit.Inspector.Editor
             _showFoldoutHeader = _listDrawerSettings?.IsDefinedShowFoldoutHeader == true
                 ? _listDrawerSettings.ShowFoldoutHeader
                 : CollectionDrawerStyles.DefaultShowFoldoutHeader;
-            _showFoldoutHeader = _showFoldoutHeader && Property.Children.Count > 0;
+            _showFoldoutHeader = _showFoldoutHeader && Element.LogicalChildren.Count > 0;
 
             CollectionDrawerStyles.ListItemStyle.padding.left = _isDraggable ? 25 : 7;
             CollectionDrawerStyles.ListItemStyle.padding.right = _hideRemoveButton ? 4 : 20;
@@ -154,11 +154,11 @@ namespace EasyToolKit.Inspector.Editor
 
             if (Event.current.type == EventType.Layout)
             {
-                _count = Property.Children.Count;
+                _count = Element.LogicalChildren.Count;
             }
             else
             {
-                var newCount = Property.Children.Count;
+                var newCount = Element.LogicalChildren.Count;
                 if (_count > newCount)
                 {
                     _count = newCount;
@@ -176,7 +176,7 @@ namespace EasyToolKit.Inspector.Editor
                 DrawHeader(label);
             }
 
-            if (!_showFoldoutHeader || Property.State.Expanded)
+            if (!_showFoldoutHeader || Element.State.Expanded)
             {
                 DrawItems();
             }
@@ -190,7 +190,7 @@ namespace EasyToolKit.Inspector.Editor
 
             if (_showFoldoutHeader)
             {
-                Property.State.Expanded = EasyEditorGUI.Foldout(Property.State.Expanded, label ?? GUIContent.none);
+                Element.State.Expanded = EasyEditorGUI.Foldout(Element.State.Expanded, label ?? GUIContent.none);
             }
             else
             {
@@ -204,7 +204,7 @@ namespace EasyToolKit.Inspector.Editor
                 var buttonRect = GUILayoutUtility.GetRect(22, 22, GUILayout.ExpandWidth(false));
                 if (EasyEditorGUI.ToolbarButton(buttonRect, EasyEditorIcons.Plus))
                 {
-                    DoAddElement(buttonRect);
+                    DoAddItem(buttonRect);
                 }
             }
 
@@ -219,7 +219,7 @@ namespace EasyToolKit.Inspector.Editor
 
             if (_iconTextureGetterResolver != null)
             {
-                var iconTexture = _iconTextureGetterResolver.Resolve(Property.Parent.ValueEntry.WeakSmartValue);
+                var iconTexture = _iconTextureGetterResolver.Resolve(ElementUtility.GetOwnerWithAttribute(Element, _listDrawerSettings));
                 GUILayout.Label(iconTexture, GUILayout.Width(30), GUILayout.Height(30));
             }
 
@@ -227,9 +227,9 @@ namespace EasyToolKit.Inspector.Editor
             if (_showFoldoutHeader)
             {
                 var rect = EditorGUILayout.GetControlRect(false, 30);
-                Property.State.Expanded = EasyEditorGUI.Foldout(
+                Element.State.Expanded = EasyEditorGUI.Foldout(
                     rect,
-                    Property.State.Expanded,
+                    Element.State.Expanded,
                     label ?? GUIContent.none,
                     CollectionDrawerStyles.MetroHeaderFoldoutStyle);
             }
@@ -252,7 +252,7 @@ namespace EasyToolKit.Inspector.Editor
                 if (GUI.Button(btnRect, GUIContent.none, "Button"))
                 {
                     EasyGUIHelper.RemoveFocusControl();
-                    DoAddElement(btnRect);
+                    DoAddItem(btnRect);
                 }
 
                 if (Event.current.type == EventType.Repaint)
@@ -299,7 +299,7 @@ namespace EasyToolKit.Inspector.Editor
                     if (dragHandle.IsDragging == false)
                     {
                         actualIndex++;
-                        DrawItem(Property.Children[logicIndex], dragHandle, logicIndex);
+                        DrawItem(Element.LogicalChildren[logicIndex], dragHandle, logicIndex);
                     }
                     else
                     {
@@ -307,7 +307,7 @@ namespace EasyToolKit.Inspector.Editor
                         CollectionDrawerStaticContext.DelayedGUIDrawer.Begin(dragHandle.Rect.width,
                             dragHandle.Rect.height, dragHandle.CurrentMethod != DragAndDropMethods.Move);
                         DragAndDropManager.AllowDrop = false;
-                        DrawItem(Property.Children[logicIndex], dragHandle, logicIndex);
+                        DrawItem(Element.LogicalChildren[logicIndex], dragHandle, logicIndex);
                         DragAndDropManager.AllowDrop = true;
                         CollectionDrawerStaticContext.DelayedGUIDrawer.End();
                         if (dragHandle.CurrentMethod != DragAndDropMethods.Move)
@@ -340,7 +340,7 @@ namespace EasyToolKit.Inspector.Editor
                 _insertAt = Event.current.mousePosition.y > rect.center.y ? toIndex : fromIndex;
             }
 
-            if (toIndex == Property.Children.Count && Property.ValueEntry.IsConflicted())
+            if (toIndex == Element.LogicalChildren.Count && Element.ValueEntry.State == ValueEntryState.Mixed)
             {
                 EasyEditorGUI.BeginListItem(false);
                 GUILayout.Label(EditorHelper.TempContent("------"), EditorStyles.centeredGreyMiniLabel);
@@ -355,9 +355,9 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        private void DrawItem(InspectorProperty property, DragHandle dragHandle, int index)
+        private void DrawItem(ICollectionItemElement itemElement, DragHandle dragHandle, int index)
         {
-            var itemContext = property.GetPersistentContext("ItemContext", new CollectionItemContext()).Value;
+            var itemContext = itemElement.GetPersistentContext("ItemContext", new CollectionItemContext()).Value;
             if (_listDrawerSettings is MetroListDrawerSettingsAttribute)
             {
                 EasyGUIHelper.PushColor(CollectionDrawerStyles.MetroItemBackgroundColor);
@@ -378,7 +378,7 @@ namespace EasyToolKit.Inspector.Editor
 
                 EasyGUIHelper.PushHierarchyMode(false);
 
-                DrawElementProperty(property, index);
+                DrawItemElement(itemElement, index);
 
                 EasyGUIHelper.PopHierarchyMode();
 
@@ -386,7 +386,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     if (DrawItemRemoveButton(itemContext.RemoveBtnRect))
                     {
-                        if (_orderedCollectionOperation != null)
+                        if (_orderedCollectionAccessor != null)
                         {
                             if (index >= 0)
                             {
@@ -395,11 +395,11 @@ namespace EasyToolKit.Inspector.Editor
                         }
                         else
                         {
-                            var values = new object[property.ValueEntry.ValueCount];
+                            var values = new object[itemElement.ValueEntry.TargetCount];
 
                             for (int i = 0; i < values.Length; i++)
                             {
-                                values[i] = property.ValueEntry.WeakValues[i];
+                                values[i] = itemElement.ValueEntry.GetWeakValue(i);
                             }
 
                             _removeValues = values;
@@ -482,7 +482,7 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        protected virtual void DrawElementProperty(InspectorProperty property, int index)
+        protected virtual void DrawItemElement(ICollectionItemElement itemElement, int index)
         {
             GUIContent label = null;
 
@@ -491,33 +491,31 @@ namespace EasyToolKit.Inspector.Editor
                 label = EditorHelper.TempContent($"{index} : ");
                 if (_customIndexLabelFunction != null)
                 {
-                    var target = _isListDrawerClassAttribute
-                        ? Property.ValueEntry.WeakSmartValue
-                        : Property.Parent.ValueEntry.WeakSmartValue;
+                    var target = ElementUtility.GetOwnerWithAttribute(Element, _listDrawerSettings);
                     label.text = _customIndexLabelFunction(target, index);
                 }
             }
 
             if (label != null)
             {
-                if (property.Children != null)
+                if (itemElement.Children != null)
                 {
-                    property.State.Expanded = EasyEditorGUI.Foldout(property.State.Expanded, label);
-                    if (property.State.Expanded)
+                    itemElement.State.Expanded = EasyEditorGUI.Foldout(itemElement.State.Expanded, label);
+                    if (itemElement.State.Expanded)
                     {
                         EditorGUI.indentLevel++;
-                        property.Draw();
+                        itemElement.Draw();
                         EditorGUI.indentLevel--;
                     }
                 }
                 else
                 {
-                    property.Draw(label);
+                    itemElement.Draw(label);
                 }
             }
             else
             {
-                property.Draw(null);
+                itemElement.Draw(null);
             }
         }
     }

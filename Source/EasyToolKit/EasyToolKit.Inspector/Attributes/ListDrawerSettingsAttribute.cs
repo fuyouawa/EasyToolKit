@@ -46,12 +46,12 @@ namespace EasyToolKit.Inspector
         public bool HideAddButton { get; set; }
         public bool HideRemoveButton { get; set; }
 
-        public string OnAddedElementCallback { get; set; }
-        public string OnRemovedElementCallback { get; set; }
+        public string OnAddedItemCallback { get; set; }
+        public string OnRemovedItemCallback { get; set; }
 
-        public string CustomCreateElementFunction { get; set; }
+        public string CustomCreateItemFunction { get; set; }
         public string CustomRemoveIndexFunction { get; set; }
-        public string CustomRemoveElementFunction { get; set; }
+        public string CustomRemoveItemFunction { get; set; }
 
         public bool IsReadOnly { get; set; }
 

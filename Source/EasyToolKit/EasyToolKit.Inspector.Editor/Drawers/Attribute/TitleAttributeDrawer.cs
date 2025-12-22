@@ -13,7 +13,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var targetType = this.GetTargetTypeForResolver();
+            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
 
             _titleResolver = CodeValueResolver.Create<string>(Attribute.Title, targetType, true);
             _subtitleResolver = CodeValueResolver.Create<string>(Attribute.Subtitle, targetType, true);
@@ -32,7 +32,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            var resolveTarget = this.GetTargetForResolver();
+            var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
             var titleText = _titleResolver.Resolve(resolveTarget);
             var subtitleText = _subtitleResolver.Resolve(resolveTarget);
             EasyEditorGUI.Title(titleText, subtitleText, Attribute.TextAlignment, Attribute.HorizontalLine, Attribute.BoldTitle);

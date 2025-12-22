@@ -10,5 +10,7 @@
         /// Gets the collection item definition that describes this collection item.
         /// </summary>
         new ICollectionItemDefinition Definition { get; }
+
+        new ICollectionElement LogicalParent { get; }
     }
 }

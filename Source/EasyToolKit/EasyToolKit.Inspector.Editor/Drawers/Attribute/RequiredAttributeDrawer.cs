@@ -7,7 +7,7 @@ using UnityEngine;
 namespace EasyToolKit.Inspector.Editor
 {
     [DrawerPriority(DrawerPriorityLevel.Super)]
-    public class RequiredAttributeDrawer : EasyAttributeDrawer<RequiredAttribute>
+    public class RequiredAttributeDrawer<T> : EasyAttributeDrawer<RequiredAttribute, T>
     {
         private bool _isValueType;
         private bool _isIntegerType;
@@ -21,7 +21,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var valueType = Property.ValueEntry.ValueType;
+            var valueType = ValueEntry.ValueType;
 
             _isValueType = valueType.IsValueType;
             _isIntegerType = valueType.IsIntegerType();
@@ -57,9 +57,9 @@ namespace EasyToolKit.Inspector.Editor
             }
 
             var require = false;
-            for (int i = 0; i < Property.ValueEntry.ValueCount; i++)
+
+            foreach (var value in ValueEntry.EnumerateWeakValues())
             {
-                var value = Property.ValueEntry.WeakValues[i];
                 if (_isStringType)
                 {
                     if (string.IsNullOrEmpty((string)value))
@@ -88,7 +88,7 @@ namespace EasyToolKit.Inspector.Editor
                     }
                     else
                     {
-                        throw new NotImplementedException(Property.ValueEntry.ValueType.ToString());
+                        throw new NotImplementedException($"Value type '{ValueEntry.ValueType}' is not implemented.");
                     }
                 }
                 else

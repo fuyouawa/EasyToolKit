@@ -10,5 +10,9 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets the collection definition that describes this collection element.
         /// </summary>
         new ICollectionDefinition Definition { get; }
+
+        new IReadOnlyElementList<ICollectionItemElement> LogicalChildren { get; }
+
+        new ICollectionEntry ValueEntry { get; }
     }
 }

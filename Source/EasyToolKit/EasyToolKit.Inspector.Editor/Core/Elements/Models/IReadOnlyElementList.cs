@@ -6,14 +6,15 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Represents a readonly collection of elements in the inspector tree.
     /// </summary>
-    public interface IReadOnlyElementList : IReadOnlyList<IElement>
+    public interface IReadOnlyElementList<TElement> : IReadOnlyList<TElement>
+        where TElement : IElement
     {
         /// <summary>
         /// Gets the element with the specified name.
         /// </summary>
         /// <param name="name">The name of the element to get.</param>
         /// <returns>The element with the specified name.</returns>
-        IElement this[string name] { get; }
+        TElement this[string name] { get; }
 
         /// <summary>
         /// Gets the zero-based index of the first occurrence of an element with the specified name.
@@ -33,7 +34,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Recursively enumerates all elements and their descendants in the collection.
         /// </summary>
         /// <returns>An enumerable collection of all descendant elements.</returns>
-        IEnumerable<IElement> Recurse();
+        IEnumerable<TElement> Recurse();
 
         /// <summary>
         /// Updates the collection.

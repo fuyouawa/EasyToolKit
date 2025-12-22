@@ -29,11 +29,9 @@ namespace EasyToolKit.Inspector.Editor
 
         private DropZoneHandle BeginDropZone()
         {
-            // Check for the new ordered collection operation interface
             if (_orderedCollectionAccessor == null) return null;
 
-            var dropZone = DragAndDropManager.BeginDropZone(Property.Tree.GetHashCode() + "-" + Property.Path,
-                _collectionStructureResolver.ItemType, true);
+            var dropZone = DragAndDropManager.BeginDropZone(ElementUtility.GetKey(Element), ValueEntry.ItemType, true);
 
             if (Event.current.type == EventType.Repaint && DragAndDropManager.IsDragInProgress)
             {
@@ -49,13 +47,12 @@ namespace EasyToolKit.Inspector.Editor
 
         private void EndDropZone()
         {
-            // Check for the new ordered collection operation interface
-            if (_orderedCollectionOperation == null) return;
+            if (_orderedCollectionAccessor == null || _insertAt == null) return;
 
             if (_dropZone.IsReadyToClaim)
             {
                 CollectionDrawerStaticContext.CurrentDraggingPropertyInfo = null;
-                CollectionDrawerStaticContext.CurrentDroppingPropertyInfo = Property;
+                CollectionDrawerStaticContext.CurrentDroppingPropertyInfo = Element;
                 object droppedObject = _dropZone.ClaimObject();
 
                 if (_dropZone.IsCrossWindowDrag)
@@ -64,12 +61,12 @@ namespace EasyToolKit.Inspector.Editor
                     EasyGUIHelper.RequestRepaint();
                     EditorApplication.delayCall += () =>
                     {
-                        DoInsertElement(Mathf.Clamp(_insertAt.Value, 0, Property.Children.Count), droppedObject);
+                        DoInsertItem(Mathf.Clamp(_insertAt.Value, 0, Element.LogicalChildren.Count), droppedObject);
                     };
                 }
                 else
                 {
-                    DoInsertElement(Mathf.Clamp(_insertAt.Value, 0, Property.Children.Count), droppedObject);
+                    DoInsertItem(Mathf.Clamp(_insertAt.Value, 0, Element.LogicalChildren.Count), droppedObject);
                 }
             }
             else if (_isDraggable)
@@ -79,14 +76,14 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     foreach (var obj in droppedObjects)
                     {
-                        object[] values = new object[Property.Tree.Targets.Count];
+                        object[] values = new object[Element.SharedContext.Tree.Targets.Count];
 
                         for (int i = 0; i < values.Length; i++)
                         {
                             values[i] = obj;
                         }
 
-                        DoInsertElement(Mathf.Clamp(_insertAt.Value, 0, Property.Children.Count), values);
+                        DoInsertItem(Mathf.Clamp(_insertAt.Value, 0, Element.LogicalChildren.Count), values);
                     }
                 }
             }
@@ -110,19 +107,19 @@ namespace EasyToolKit.Inspector.Editor
                 UnityEngine.Object[] objReferences = null;
 
                 if (DragAndDrop.objectReferences.Any(n =>
-                        n != null && _collectionStructureResolver.ItemType.IsAssignableFrom(n.GetType())))
+                        n != null && ValueEntry.ItemType.IsAssignableFrom(n.GetType())))
                 {
                     objReferences = DragAndDrop.objectReferences
-                        .Where(x => x != null && _collectionStructureResolver.ItemType.IsAssignableFrom(x.GetType()))
+                        .Where(x => x != null && ValueEntry.ItemType.IsAssignableFrom(x.GetType()))
                         .Reverse().ToArray();
                 }
-                else if (_collectionStructureResolver.ItemType.IsInheritsFrom(typeof(Component)))
+                else if (ValueEntry.ItemType.IsInheritsFrom(typeof(Component)))
                 {
                     objReferences = DragAndDrop.objectReferences.OfType<GameObject>()
-                        .Select(x => x.GetComponent(_collectionStructureResolver.ItemType)).Where(x => x != null).Reverse()
+                        .Select(x => x.GetComponent(ValueEntry.ItemType)).Where(x => x != null).Reverse()
                         .ToArray();
                 }
-                else if (_collectionStructureResolver.ItemType.IsInheritsFrom(typeof(Sprite)) &&
+                else if (ValueEntry.ItemType.IsInheritsFrom(typeof(Sprite)) &&
                          DragAndDrop.objectReferences.Any(n => n is Texture2D && AssetDatabase.Contains(n)))
                 {
                     objReferences = DragAndDrop.objectReferences.OfType<Texture2D>().Select(x =>
@@ -162,13 +159,12 @@ namespace EasyToolKit.Inspector.Editor
 
             if (handle.IsDragging)
             {
-                Property.Tree.QueueCallback(() =>
+                Element.SharedContext.Tree.QueueCallback(() =>
                 {
                     if (DragAndDropManager.CurrentDraggingHandle != null)
                     {
-                        CollectionDrawerStaticContext.DelayedGUIDrawer.Draw(Event.current.mousePosition -
-                                                                            DragAndDropManager.CurrentDraggingHandle
-                                                                                .MouseDownPostionOffset);
+                        CollectionDrawerStaticContext.DelayedGUIDrawer.Draw(
+                            Event.current.mousePosition - DragAndDropManager.CurrentDraggingHandle.MouseDownPostionOffset);
                     }
                 });
             }
@@ -176,7 +172,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private DragHandle BeginDragHandle(int index)
         {
-            var child = Property.Children[index];
+            var child = Element.LogicalChildren![index];
             var dragHandle = DragAndDropManager.BeginDragHandle(child, child.ValueEntry.WeakSmartValue,
                 _isReadOnly ? DragAndDropMethods.Reference : DragAndDropMethods.Move);
             dragHandle.Enabled = _isDraggable;
@@ -184,23 +180,23 @@ namespace EasyToolKit.Inspector.Editor
             if (dragHandle.OnDragStarted)
             {
                 CollectionDrawerStaticContext.CurrentDroppingPropertyInfo = null;
-                CollectionDrawerStaticContext.CurrentDraggingPropertyInfo = Property.Children[index];
+                CollectionDrawerStaticContext.CurrentDraggingPropertyInfo = Element.LogicalChildren[index];
                 dragHandle.OnDragFinnished = dropEvent =>
                 {
                     if (dropEvent == DropEvents.Moved)
                     {
                         if (dragHandle.IsCrossWindowDrag ||
                             (CollectionDrawerStaticContext.CurrentDroppingPropertyInfo != null &&
-                             CollectionDrawerStaticContext.CurrentDroppingPropertyInfo.Tree != Property.Tree))
+                             CollectionDrawerStaticContext.CurrentDroppingPropertyInfo.SharedContext.Tree != Element.SharedContext.Tree))
                         {
                             // Make sure drop happens a bit later, as deserialization and other things sometimes
                             // can override the change.
                             EasyGUIHelper.RequestRepaint();
-                            EditorApplication.delayCall += () => { DoRemoveElementAt(index); };
+                            EditorApplication.delayCall += () => { DoRemoveItemAt(index); };
                         }
                         else
                         {
-                            DoRemoveElementAt(index);
+                            DoRemoveItemAt(index);
                         }
                     }
 

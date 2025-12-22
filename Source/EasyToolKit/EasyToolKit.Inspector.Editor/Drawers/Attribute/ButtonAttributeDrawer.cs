@@ -14,7 +14,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var targetType = this.GetTargetTypeForResolver();
+            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
 
             if (Attribute.Label.IsNotNullOrEmpty())
             {
@@ -30,13 +30,13 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            var resolveTarget = this.GetTargetForResolver();
+            var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
             var buttonLabel = _buttonLabelResolver != null
                 ? _buttonLabelResolver.Resolve(resolveTarget)
                 : label.text;
             if (GUILayout.Button(buttonLabel))
             {
-                foreach (var target in Property.Parent.ValueEntry.WeakValues)
+                foreach (var target in Element.LogicalParent!.ValueEntry.EnumerateWeakValues())
                 {
                     if (target == null)
                         continue;

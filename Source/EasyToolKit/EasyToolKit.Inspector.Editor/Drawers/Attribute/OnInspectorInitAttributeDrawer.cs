@@ -21,12 +21,12 @@ namespace EasyToolKit.Inspector.Editor
                 throw new Exception($"The OnInspectorInit method '{MethodInfo}' only supports 0 or 1 parameters.");
             }
 
-            for (int i = 0; i < Property.Tree.Targets.Count; i++)
+            for (int i = 0; i < Element.SharedContext.Tree.Targets.Count; i++)
             {
-                var target = Property.Parent.ValueEntry.WeakValues[i];
+                var target = Element.LogicalParent.ValueEntry.GetWeakValue(i);
                 if (target == null)
                     continue;
-                var referencedObject = Property.Tree.Targets[i];
+                var referencedObject = Element.SharedContext.Tree.Targets[i];
                 action(target, referencedObject);
             }
         }

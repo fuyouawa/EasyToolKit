@@ -26,6 +26,26 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
+        public static object GetOwnerWithAttribute(IElement element, Attribute attribute)
+        {
+            var source = element.GetAttributeInfo(attribute)?.Source;
+            if (source == null)
+            {
+                throw new ArgumentException($"Attribute '{attribute.GetType()}' not found in the element '{element}'");
+            }
+
+            switch (source)
+            {
+                case ElementAttributeSource.Type:
+                    var valueElement = (IValueElement)element;
+                    return valueElement.ValueEntry.WeakSmartValue;
+                case ElementAttributeSource.Member:
+                case ElementAttributeSource.ListPassToElement:
+                    return element.LogicalParent!.ValueEntry.WeakSmartValue;
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
 
         public static object GetOwnerWithAttribute(IElement element, Attribute attribute, int targetIndex)
         {

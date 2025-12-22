@@ -15,7 +15,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var targetType = this.GetTargetTypeForResolver();
+            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
 
             if (Attribute.VisibleIf != null)
             {
@@ -39,7 +39,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            var resolveTarget = this.GetTargetForResolver();
+            var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
 
             if (_visibleIfResolver != null)
             {

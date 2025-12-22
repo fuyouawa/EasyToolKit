@@ -8,13 +8,13 @@ using UnityEngine;
 namespace EasyToolKit.Inspector.Editor
 {
     //TODO conflict handling
-    public class ValueDropdownAttributeDrawer : EasyAttributeDrawer<ValueDropdownAttribute>
+    public class ValueDropdownAttributeDrawer<T> : EasyAttributeDrawer<ValueDropdownAttribute, T>
     {
         private ICodeValueResolver<object> _optionsGetterResolver;
 
         protected override void Initialize()
         {
-            var targetType = this.GetTargetTypeForResolver();
+            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
             _optionsGetterResolver = CodeValueResolver.Create<object>(Attribute.OptionsGetter, targetType);
         }
 
@@ -26,7 +26,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            var target = this.GetTargetForResolver();
+            var target = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
             var options = _optionsGetterResolver.Resolve(target);
             var dropdownItems = new ValueDropdownList();
             if (options is IEnumerable<IValueDropdownItem> valueDropdownItems)
@@ -46,7 +46,7 @@ namespace EasyToolKit.Inspector.Editor
                     $"The return type of '{Attribute.OptionsGetter}' must be IEnumerable<IValueDropdownItem> or IEnumerable<object>");
             }
 
-            if (Property.ChildrenResolver is ICollectionStructureResolver)
+            if (Element.Definition.Flags.IsCollection())
             {
                 CollectionDrawerStaticContext.NextElementDropdownListGetter = () => dropdownItems;
                 CallNextDrawer(label);
@@ -54,7 +54,7 @@ namespace EasyToolKit.Inspector.Editor
             }
             else
             {
-                var value = Property.ValueEntry.WeakSmartValue;
+                var value = ValueEntry.WeakSmartValue;
                 var selectedIndex = dropdownItems.FindIndex(item => item.GetValue().Equals(value));
 
                 EditorGUI.BeginChangeCheck();
@@ -68,7 +68,7 @@ namespace EasyToolKit.Inspector.Editor
                     if (newSelectedIndex != selectedIndex && newSelectedIndex != -1)
                     {
                         value = dropdownItems[newSelectedIndex].GetValue();
-                        Property.ValueEntry.WeakSmartValue = value;
+                        ValueEntry.WeakSmartValue = value;
                     }
                 }
             }

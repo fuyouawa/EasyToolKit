@@ -12,7 +12,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var targetType = this.GetTargetTypeForResolver();
+            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
 
             _headerResolver = CodeValueResolver.Create<string>(Attribute.header, targetType, true);
         }
@@ -25,7 +25,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            var resolveTarget = this.GetTargetForResolver();
+            var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
             var headerText = _headerResolver.Resolve(resolveTarget);
             EditorGUILayout.LabelField(headerText, EditorStyles.boldLabel);
             CallNextDrawer(label);

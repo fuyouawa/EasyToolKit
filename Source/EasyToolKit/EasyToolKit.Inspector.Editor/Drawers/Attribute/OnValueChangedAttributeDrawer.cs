@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public class OnValueChangedAttributeDrawer : EasyAttributeDrawer<OnValueChangedAttribute>
+    public class OnValueChangedAttributeDrawer<T> : EasyAttributeDrawer<OnValueChangedAttribute, T>
     {
         private MethodInfo _methodInfo;
         private string _error;
@@ -22,19 +22,19 @@ namespace EasyToolKit.Inspector.Editor
 
             if (_methodInfo == null)
             {
-                var targetType = this.GetTargetTypeForResolver();
+                var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
                 try
                 {
                     try
                     {
-                        _methodInfo = targetType.GetMethodEx(Attribute.Method, BindingFlagsHelper.All, Property.ValueEntry.ValueType);
+                        _methodInfo = targetType.GetMethodEx(Attribute.Method, BindingFlagsHelper.All, ValueEntry.ValueType);
                     }
                     catch (Exception e)
                     {
                         _methodInfo = targetType.GetMethodEx(Attribute.Method, BindingFlagsHelper.All);
                     }
 
-                    Property.ValueEntry.OnValueChanged += OnValueChanged;
+                    ValueEntry.PostValueChanged += OnValueChanged;
                 }
                 catch (Exception e)
                 {
@@ -45,9 +45,9 @@ namespace EasyToolKit.Inspector.Editor
             CallNextDrawer(label);
         }
 
-        private void OnValueChanged(int targetIndex)
+        private void OnValueChanged(object sender, ValueChangedEventArgs eventArgs)
         {
-            var value = Property.ValueEntry.WeakValues[targetIndex];
+            var value = ValueEntry.GetWeakValue(eventArgs.TargetIndex);
             var args = _methodInfo.GetParameters().Length == 0 ? null : new object[] { value };
             if (_methodInfo.IsStatic)
             {
@@ -55,7 +55,7 @@ namespace EasyToolKit.Inspector.Editor
             }
             else
             {
-                var target = this.GetTargetForResolver(targetIndex);
+                var target = ElementUtility.GetOwnerWithAttribute(Element, Attribute, eventArgs.TargetIndex);
                 _methodInfo.Invoke(target, args);
             }
         }
