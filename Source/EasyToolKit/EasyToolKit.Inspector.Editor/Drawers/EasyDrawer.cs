@@ -6,9 +6,18 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public abstract class EasyDrawer : HandlerBase, IEasyDrawer
+    public abstract class EasyDrawer : IEasyDrawer
     {
         private bool _isInitialized;
+        private IElement _element;
+
+        IElement IEasyDrawer.Element
+        {
+            get => _element;
+            set => _element = value;
+        }
+
+        public IElement Element => _element;
 
         public bool SkipWhenDrawing { get; set; }
 
@@ -32,11 +41,6 @@ namespace EasyToolKit.Inspector.Editor
         {
         }
 
-        protected override bool CanHandle(IElement element)
-        {
-            return CanDraw(element);
-        }
-
         protected virtual void Initialize()
         {
         }
@@ -48,6 +52,11 @@ namespace EasyToolKit.Inspector.Editor
                 Initialize();
                 _isInitialized = true;
             }
+        }
+
+        bool IHandler.CanHandle(IElement element)
+        {
+            return CanDraw(element);
         }
 
         void IEasyDrawer.Draw(GUIContent label)

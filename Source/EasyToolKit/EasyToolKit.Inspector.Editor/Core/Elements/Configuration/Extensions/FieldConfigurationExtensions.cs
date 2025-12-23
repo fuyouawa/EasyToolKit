@@ -14,18 +14,11 @@ namespace EasyToolKit.Inspector.Editor
         /// <typeparam name="TConfiguration">The field configuration type.</typeparam>
         /// <param name="configuration">The configuration instance.</param>
         /// <param name="fieldInfo">The field info representing the field.</param>
-        /// <param name="autoSetValueType">Whether to automatically set the ValueType based on the field type. Defaults to true.</param>
         /// <returns>The configuration instance for method chaining.</returns>
-        public static TConfiguration WithFieldInfo<TConfiguration>(this TConfiguration configuration, FieldInfo fieldInfo, bool autoSetValueType = true)
+        public static TConfiguration WithFieldInfo<TConfiguration>(this TConfiguration configuration, FieldInfo fieldInfo)
             where TConfiguration : IFieldConfiguration
         {
             configuration.FieldInfo = fieldInfo;
-
-            if (autoSetValueType)
-            {
-                configuration.ValueType = fieldInfo.FieldType;
-            }
-
             return configuration;
         }
 

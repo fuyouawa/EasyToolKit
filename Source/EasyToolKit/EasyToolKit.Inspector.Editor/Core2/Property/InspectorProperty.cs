@@ -27,7 +27,7 @@ namespace EasyToolKit.Inspector.Editor
         private IPropertyValueEntry _baseValueEntry;
         [CanBeNull] private IPropertyValueEntry _valueEntry;
 
-        private IValueStructureResolver _childrenResolver;
+        private IStructureResolver _childrenResolver;
         private IGroupResolver _groupResolver;
         private IDrawerChainResolver _drawerChainResolver;
         private IAttributeResolver _attributeResolver;
@@ -138,7 +138,7 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         public IValueOperationResolver OperationResolver => _operationResolver;
-        [CanBeNull] public IValueStructureResolver ChildrenResolver => _childrenResolver;
+        [CanBeNull] public IStructureResolver ChildrenResolver => _childrenResolver;
         [CanBeNull] public IDrawerChainResolver DrawerChainResolver => _drawerChainResolver;
         public IAttributeResolver AttributeResolver => _attributeResolver;
         public IGroupResolver GroupResolver => _groupResolver;

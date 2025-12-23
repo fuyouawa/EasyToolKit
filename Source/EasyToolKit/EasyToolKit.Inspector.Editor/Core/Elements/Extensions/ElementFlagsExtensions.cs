@@ -83,6 +83,16 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
+        /// Determines if the element represents a method parameter for method invocation.
+        /// </summary>
+        /// <param name="flags">The element flags to check.</param>
+        /// <returns>True if the element has the MethodParameter flag set.</returns>
+        public static bool IsMethodParameter(this ElementFlags flags)
+        {
+            return (flags & ElementFlags.MethodParameter) == ElementFlags.MethodParameter;
+        }
+
+        /// <summary>
         /// Determines if the element is a group for organizing related elements in the UI.
         /// </summary>
         /// <param name="flags">The element flags to check.</param>

@@ -14,6 +14,8 @@
         /// <summary>
         /// Gets the collection of parameter elements for this method.
         /// </summary>
-        IReadOnlyElementList<IValueElement> Parameters { get; }
+        IReadOnlyElementList<IMethodParameterElement> LogicalParameters { get; }
+
+        IElementList<IElement> Children { get; }
     }
 }

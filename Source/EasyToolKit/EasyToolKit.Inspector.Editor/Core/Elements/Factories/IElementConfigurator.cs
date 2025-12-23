@@ -75,5 +75,12 @@
         /// </summary>
         /// <returns>A new collection item configuration instance.</returns>
         ICollectionItemConfiguration CollectionItem();
+
+        /// <summary>
+        /// Creates a new <see cref="IMethodParameterConfiguration"/> instance for method parameter elements.
+        /// Method parameter elements represent individual parameter values for method invocation.
+        /// </summary>
+        /// <returns>A new method parameter configuration instance.</returns>
+        IMethodParameterConfiguration MethodParameter();
     }
 }

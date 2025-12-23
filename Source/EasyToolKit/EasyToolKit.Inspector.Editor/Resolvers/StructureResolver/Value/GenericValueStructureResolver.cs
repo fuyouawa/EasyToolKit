@@ -93,7 +93,6 @@ namespace EasyToolKit.Inspector.Editor
             {
                 return InspectorElements.Configurator.Method()
                     .WithMethodInfo(methodInfo)
-                    .WithName(methodInfo.Name)
                     .CreateDefinition();
             }
 
@@ -105,7 +104,6 @@ namespace EasyToolKit.Inspector.Editor
                 }
                 return InspectorElements.Configurator.Field()
                     .WithFieldInfo(fieldInfo)
-                    .WithName(fieldInfo.Name)
                     .CreateDefinition();
             }
 
@@ -117,7 +115,6 @@ namespace EasyToolKit.Inspector.Editor
                 }
                 return InspectorElements.Configurator.Property()
                     .WithPropertyInfo(propertyInfo)
-                    .WithName(propertyInfo.Name)
                     .CreateDefinition();
             }
 
@@ -141,7 +138,6 @@ namespace EasyToolKit.Inspector.Editor
             {
                 collectionDefinition = InspectorElements.Configurator.FieldCollection()
                     .WithFieldInfo(fieldInfo)
-                    .WithName(fieldInfo.Name)
                     .WithItemType(elementType)
                     .CreateDefinition();
             }
@@ -149,7 +145,6 @@ namespace EasyToolKit.Inspector.Editor
             {
                 collectionDefinition = InspectorElements.Configurator.PropertyCollection()
                     .WithPropertyInfo(propertyInfo)
-                    .WithName(propertyInfo.Name)
                     .WithItemType(elementType)
                     .CreateDefinition();
             }

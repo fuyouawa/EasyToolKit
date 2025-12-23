@@ -74,5 +74,30 @@ namespace EasyToolKit.Inspector.Editor
             var key2 = element.Path;
             return string.Join("+", key1, key2);
         }
+
+        public static IElementList<IElement> GetParentCollection(IElement element)
+        {
+            if (element.Parent == null)
+            {
+                throw new ArgumentException($"Element '{element}' has no parent collection.", nameof(element));
+            }
+
+            if (element.Parent is IValueElement valueElement)
+            {
+                return valueElement.Children;
+            }
+
+            if (element.Parent is IGroupElement groupElement)
+            {
+                return groupElement.Children;
+            }
+
+            if (element.Parent is IMethodElement methodElement)
+            {
+                return methodElement.Children;
+            }
+
+            throw new ArgumentException($"Element '{element}' has no parent collection.", nameof(element));
+        }
     }
 }

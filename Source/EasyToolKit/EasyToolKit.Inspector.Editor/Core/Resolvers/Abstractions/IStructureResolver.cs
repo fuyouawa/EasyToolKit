@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Interface for resolving value structure information in the inspector system.
     /// Focuses purely on value structure without collection operations or change management.
     /// </summary>
-    public interface IValueStructureResolver : IResolver
+    public interface IStructureResolver : IResolver
     {
         /// <summary>
         /// Gets the number of child properties

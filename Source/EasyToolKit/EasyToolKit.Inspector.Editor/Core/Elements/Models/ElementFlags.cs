@@ -68,6 +68,14 @@ namespace EasyToolKit.Inspector.Editor
         Method = 1 << 6,
 
         /// <summary>
+        /// Method parameter element representing an individual parameter for method invocation.
+        /// </summary>
+        /// <remarks>
+        /// Always combined with Value flag.
+        /// </remarks>
+        MethodParameter = 1 << 8,
+
+        /// <summary>
         /// Group element for organizing related elements in the inspector UI.
         /// </summary>
         Group = 1 << 7,

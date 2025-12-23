@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EasyToolKit.Core;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -48,13 +49,39 @@ namespace EasyToolKit.Inspector.Editor
 
             return null;
         }
+        public static Attribute GetAttribute(this IElement element, Type attributeType, bool includeDerived = false)
+        {
+            foreach (var attributeInfo in element.GetAttributeInfos())
+            {
+                if (includeDerived)
+                {
+                    if (attributeInfo.Attribute.GetType().IsInheritsFrom(attributeType))
+                    {
+                        return attributeInfo.Attribute;
+                    }
+                }
+                else
+                {
+                    if (attributeInfo.Attribute.GetType() == attributeType)
+                    {
+                        return attributeInfo.Attribute;
+                    }
+                }
+            }
 
-        public static TAttribute GetAttribute<TAttribute>(this IElement element) where TAttribute : Attribute
+            return null;
+        }
+
+        public static TAttribute GetAttribute<TAttribute>(this IElement element, bool includeDerived = false) where TAttribute : Attribute
         {
             foreach (var attributeInfo in element.GetAttributeInfos())
             {
                 if (attributeInfo.Attribute is TAttribute attribute)
                 {
+                    if (!includeDerived && attributeInfo.Attribute.GetType() != typeof(TAttribute))
+                    {
+                        continue;
+                    }
                     return attribute;
                 }
             }

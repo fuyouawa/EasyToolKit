@@ -23,6 +23,8 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>The zero-based index of the first occurrence of the element, or -1 if not found.</returns>
         int IndexOf(string name);
 
+        int IndexOf(TElement element);
+
         /// <summary>
         /// Gets the full path of the element at the specified index.
         /// </summary>
