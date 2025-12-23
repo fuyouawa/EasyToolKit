@@ -9,6 +9,16 @@ namespace EasyToolKit.Inspector.Editor
         where TElement : IElement
     {
         /// <summary>
+        /// Occurs before the element list is moved.
+        /// </summary>
+        event EventHandler<ElementMovedEventArgs> PreElementMoved;
+
+        /// <summary>
+        /// Occurs after the element list is moved.
+        /// </summary>
+        event EventHandler<ElementMovedEventArgs> PostElementMoved;
+
+        /// <summary>
         /// Inserts an element at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index at which to insert the element.</param>

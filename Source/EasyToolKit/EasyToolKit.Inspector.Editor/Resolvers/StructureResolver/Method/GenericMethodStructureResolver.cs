@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace EasyToolKit.Inspector.Editor
@@ -37,28 +38,9 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        protected override IElementDefinition GetChildDefinition(int childIndex)
+        protected override IElementDefinition[] GetChildrenDefinitions()
         {
-            return _definitions[childIndex];
-        }
-
-        protected override int ChildNameToIndex(string name)
-        {
-            for (var i = 0; i < _definitions.Count; i++)
-            {
-                var definition = _definitions[i];
-                if (definition.Name == name)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        protected override int CalculateChildCount()
-        {
-            return _definitions.Count;
+            return _definitions.Cast<IElementDefinition>().ToArray();
         }
     }
 }

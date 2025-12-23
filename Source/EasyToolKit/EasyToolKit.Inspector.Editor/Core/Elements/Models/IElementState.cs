@@ -14,9 +14,19 @@ namespace EasyToolKit.Inspector.Editor
         IElement Element { get; }
 
         /// <summary>
-        /// Gets or sets the default expanded state for the element.
+        /// Gets the default expanded state for the element.
         /// </summary>
         bool DefaultExpanded { get; set; }
+
+        /// <summary>
+        /// Gets the default visible state for the element.
+        /// </summary>
+        bool DefaultVisible { get; }
+
+        /// <summary>
+        /// Gets the default enabled state for the element.
+        /// </summary>
+        bool DefaultEnabled { get; }
 
         /// <summary>
         /// Gets or sets whether the element is expanded in the inspector.
@@ -26,18 +36,15 @@ namespace EasyToolKit.Inspector.Editor
 
         /// <summary>
         /// Gets or sets whether the element is visible in the inspector.
+        /// This state is persisted across Unity sessions.
         /// </summary>
         bool Visible { get; set; }
 
         /// <summary>
         /// Gets or sets whether the element is enabled (interactable) in the inspector.
+        /// This state is persisted across Unity sessions.
         /// </summary>
         bool Enabled { get; set; }
-
-        /// <summary>
-        /// Gets the GUI content used for displaying the element's label.
-        /// </summary>
-        GUIContent LabelContent { get; }
 
         /// <summary>
         /// Updates the state based on the current element configuration.

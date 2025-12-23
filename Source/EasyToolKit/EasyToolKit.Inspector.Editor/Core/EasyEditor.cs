@@ -26,14 +26,14 @@ namespace EasyToolKit.Inspector.Editor
         private static Type s_audioFilterGUIType;
 
         // Instance fields for property tree and audio filter GUI
-        private PropertyTree _tree;
+        private IElementTree _tree;
         private object _audioFilterGUIInstance;
 
         /// <summary>
         /// Gets the property tree for the current serialized object.
         /// Creates the tree if it doesn't exist.
         /// </summary>
-        public PropertyTree Tree
+        public IElementTree Tree
         {
             get
             {
@@ -41,7 +41,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     try
                     {
-                        _tree = PropertyTree.Create(serializedObject);
+                        _tree = InspectorElements.TreeFactory.CreateTree(serializedObject);
                     }
                     catch (ArgumentException e)
                     {

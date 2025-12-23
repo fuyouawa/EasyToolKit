@@ -1,0 +1,378 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
+
+namespace EasyToolKit.Inspector.Editor.Implementations
+{
+    /// <summary>
+    /// Provides a mutable collection of elements in the inspector tree that supports adding, removing, and reordering.
+    /// Maintains cached elements and paths for efficient access, with change notifications via events.
+    /// </summary>
+    /// <typeparam name="TElement">The type of elements in this collection.</typeparam>
+    public class ElementList<TElement> : IElementList<TElement>
+        where TElement : IElement
+    {
+        private const string NamePathSeparator = ".";
+
+        private readonly IElement _ownerElement;
+
+        private readonly List<TElement> _elements;
+        private readonly Dictionary<string, int> _nameToIndex;
+        private readonly Dictionary<int, string> _pathByIndex;
+
+        /// <summary>
+        /// Occurs before the element list is changed.
+        /// </summary>
+        public event EventHandler<ElementMovedEventArgs> PreElementMoved;
+
+        /// <summary>
+        /// Occurs after the element list is changed.
+        /// </summary>
+        public event EventHandler<ElementMovedEventArgs> PostElementMoved;
+
+        /// <summary>
+        /// Gets the element that owns this list.
+        /// </summary>
+        public IElement OwnerElement => _ownerElement;
+
+        /// <summary>
+        /// Gets the number of elements in the collection.
+        /// </summary>
+        public int Count => _elements.Count;
+
+        /// <summary>
+        /// Gets the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get.</param>
+        /// <returns>The element at the specified index.</returns>
+        public TElement this[int index] => GetElement(index);
+
+        /// <summary>
+        /// Gets the element with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the element to get.</param>
+        /// <returns>The element with the specified name.</returns>
+        public TElement this[string name] => GetElement(name);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ElementList{TElement}"/> class.
+        /// </summary>
+        public ElementList() : this(null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ElementList{TElement}"/> class.
+        /// </summary>
+        /// <param name="ownerElement">The element that owns this list.</param>
+        public ElementList([NotNull] IElement ownerElement)
+        {
+            _ownerElement = ownerElement ?? throw new ArgumentNullException(nameof(ownerElement));
+            _elements = new List<TElement>();
+            _nameToIndex = new Dictionary<string, int>();
+            _pathByIndex = new Dictionary<int, string>();
+        }
+
+        /// <summary>
+        /// Gets the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element.</param>
+        /// <returns>The element at the specified index.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when index is out of range.</exception>
+        public TElement GetElement(int index)
+        {
+            ValidateIndex(index);
+            return _elements[index];
+        }
+
+        /// <summary>
+        /// Gets the element with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the element to get.</param>
+        /// <returns>The element with the specified name.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when name is null.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown when no element with the specified name exists.</exception>
+        public TElement GetElement([NotNull] string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            var index = IndexOf(name);
+            if (index < 0)
+            {
+                throw new KeyNotFoundException($"The element list does not contain an element with name '{name}'.");
+            }
+
+            return _elements[index];
+        }
+
+        /// <summary>
+        /// Inserts an element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index at which to insert the element.</param>
+        /// <param name="element">The element to insert.</param>
+        /// <exception cref="ArgumentNullException">Thrown when element is null.</exception>
+        public void Insert(int index, TElement element)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException(nameof(element));
+            }
+
+            ValidateInsertIndex(index);
+
+            var args = new ElementMovedEventArgs(ElementListChangeType.Insert, index, element, element.Parent, _ownerElement);
+            OnPreElementChanged(args);
+
+            _elements.Insert(index, element);
+            //TODO refactor: coupling
+            ((ElementBase)(object)element).OnChangeParent(_ownerElement);
+
+            UpdateNameIndexAfterInsert(index, element);
+            InvalidatePathCacheFrom(index);
+
+            OnPostElementChanged(args);
+        }
+
+        /// <summary>
+        /// Removes the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to remove.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when index is out of range.</exception>
+        public void RemoveAt(int index)
+        {
+            ValidateIndex(index);
+
+            var element = _elements[index];
+            var args = new ElementMovedEventArgs(ElementListChangeType.Remove, index, element, _ownerElement, null);
+            OnPreElementChanged(args);
+
+            RemoveNameIndex(element);
+            _elements.RemoveAt(index);
+            //TODO refactor: coupling
+            ((ElementBase)(object)element).OnChangeParent(null);
+
+            InvalidatePathCacheFrom(index);
+
+            OnPostElementChanged(args);
+        }
+
+        /// <summary>
+        /// Gets the zero-based index of the first occurrence of an element with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the element to locate.</param>
+        /// <returns>The zero-based index of the first occurrence of the element, or -1 if not found.</returns>
+        public int IndexOf(string name)
+        {
+            if (name == null)
+            {
+                return -1;
+            }
+
+            UpdateNameIndexIfNeeded();
+
+            return _nameToIndex.TryGetValue(name, out var index) ? index : -1;
+        }
+
+        /// <summary>
+        /// Gets the zero-based index of the specified element.
+        /// </summary>
+        /// <param name="element">The element to locate.</param>
+        /// <returns>The zero-based index of the element, or -1 if not found.</returns>
+        public int IndexOf(TElement element)
+        {
+            return _elements.IndexOf(element);
+        }
+
+        /// <summary>
+        /// Gets the full path of the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element.</param>
+        /// <returns>The full path of the element.</returns>
+        public string GetPath(int index)
+        {
+            ValidateIndex(index);
+
+            if (_pathByIndex.TryGetValue(index, out var path))
+            {
+                return path;
+            }
+
+            var element = _elements[index];
+            path = ComputePath(index, element);
+            _pathByIndex[index] = path;
+            return path;
+        }
+
+        /// <summary>
+        /// Updates the element list by removing any elements whose Parent no longer matches OwnerElement.
+        /// This handles cases where elements have been moved or removed through external means.
+        /// </summary>
+        public void Update()
+        {
+            for (var i = Count - 1; i >= 0; i--)
+            {
+                var element = _elements[i];
+                if (element.Parent != _ownerElement)
+                {
+                    RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clears all cached elements and their associated data in the collection.
+        /// </summary>
+        public void ClearCache()
+        {
+            for (var i = 0; i < Count; i++)
+            {
+                var element = _elements[i];
+                element.Dispose();
+            }
+
+            _elements.Clear();
+            _nameToIndex.Clear();
+            _pathByIndex.Clear();
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>An enumerator for the collection.</returns>
+        public IEnumerator<TElement> GetEnumerator()
+        {
+            return _elements.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>An enumerator for the collection.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /// <summary>
+        /// Raises the <see cref="PreElementMoved"/> event.
+        /// </summary>
+        /// <param name="args">The event arguments containing change details.</param>
+        protected virtual void OnPreElementChanged(ElementMovedEventArgs args)
+        {
+            PreElementMoved?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="PostElementMoved"/> event.
+        /// </summary>
+        /// <param name="args">The event arguments containing change details.</param>
+        protected virtual void OnPostElementChanged(ElementMovedEventArgs args)
+        {
+            PostElementMoved?.Invoke(this, args);
+        }
+
+        private void ValidateIndex(int index)
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} is out of range. Collection contains {Count} elements.");
+            }
+        }
+
+        private void ValidateInsertIndex(int index)
+        {
+            if (index < 0 || index > Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Insert index {index} is out of range. Collection contains {Count} elements.");
+            }
+        }
+
+        private void UpdateNameIndexIfNeeded()
+        {
+            if (_nameToIndex.Count == Count)
+            {
+                return;
+            }
+
+            for (var i = 0; i < Count; i++)
+            {
+                var element = _elements[i];
+                var name = element.Definition?.Name;
+                if (!string.IsNullOrEmpty(name) && !_nameToIndex.ContainsKey(name))
+                {
+                    _nameToIndex[name] = i;
+                }
+            }
+        }
+
+        private void UpdateNameIndexAfterInsert(int index, TElement element)
+        {
+            var name = element.Definition?.Name;
+            if (!string.IsNullOrEmpty(name))
+            {
+                _nameToIndex[name] = index;
+            }
+
+            for (var i = index + 1; i < Count; i++)
+            {
+                var elemName = _elements[i].Definition?.Name;
+                if (!string.IsNullOrEmpty(elemName) && _nameToIndex.TryGetValue(elemName, out var oldIndex) && oldIndex == i - 1)
+                {
+                    _nameToIndex[elemName] = i;
+                }
+            }
+        }
+
+        private void RemoveNameIndex(TElement element)
+        {
+            var name = element.Definition?.Name;
+            if (!string.IsNullOrEmpty(name))
+            {
+                _nameToIndex.Remove(name);
+            }
+
+            var index = _elements.IndexOf(element);
+            for (var i = index + 1; i < Count; i++)
+            {
+                var elemName = _elements[i].Definition?.Name;
+                if (!string.IsNullOrEmpty(elemName) && _nameToIndex.TryGetValue(elemName, out var oldIndex) && oldIndex == i)
+                {
+                    _nameToIndex[elemName] = i - 1;
+                }
+            }
+        }
+
+        private void InvalidatePathCacheFrom(int index)
+        {
+            var keysToRemove = new List<int>();
+
+            foreach (var kvp in _pathByIndex)
+            {
+                if (kvp.Key >= index)
+                {
+                    keysToRemove.Add(kvp.Key);
+                }
+            }
+
+            foreach (var key in keysToRemove)
+            {
+                _pathByIndex.Remove(key);
+            }
+        }
+
+        private string ComputePath(int index, IElement element)
+        {
+            if (_ownerElement == null)
+            {
+                return element.Definition?.Name ?? string.Empty;
+            }
+
+            return _ownerElement.Path + NamePathSeparator + (element.Definition?.Name ?? index.ToString());
+        }
+    }
+}

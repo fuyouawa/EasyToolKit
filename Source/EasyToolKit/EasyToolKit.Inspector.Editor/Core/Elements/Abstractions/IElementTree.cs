@@ -32,6 +32,8 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public IReadOnlyList<object> Targets { get; }
 
+        public Type TargetType { get; }
+
         /// <summary>
         /// Gets or sets whether to draw the <see cref="MonoScript"/> object field in the inspector.
         /// </summary>
@@ -57,12 +59,6 @@ namespace EasyToolKit.Inspector.Editor
         SerializedProperty GetUnityPropertyByPath(string propertyPath);
 
         /// <summary>
-        /// Marks a property as dirty, indicating it needs to be updated.
-        /// </summary>
-        /// <param name="property">The property to mark as dirty.</param>
-        void SetPropertyDirty(InspectorProperty property);
-
-        /// <summary>
         /// Queues a callback to be executed during the next update cycle.
         /// </summary>
         /// <param name="action">The callback action to queue.</param>
@@ -78,7 +74,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Prepare the drawing process for the property tree.
         /// This method updates the serialized object and prepares the tree for drawing.
         /// </summary>
-        void PrepareDraw();
+        void BeginDraw();
 
         /// <summary>
         /// Draws all elements in the tree.
@@ -89,6 +85,6 @@ namespace EasyToolKit.Inspector.Editor
         /// Finish the drawing process for the property tree.
         /// This method applies modified properties and processes pending callbacks.
         /// </summary>
-        void FinishDraw();
+        void EndDraw();
     }
 }

@@ -48,7 +48,7 @@ namespace EasyToolKit.Inspector.Editor
                     }
 
                     // Filter non-serializable fields
-                    if (!InspectorPropertyInfoUtility.IsSerializableField(fieldInfo) && !showInInspector)
+                    if (!InspectorPropertyUtility.IsSerializableField(fieldInfo) && !showInInspector)
                     {
                         continue;
                     }
@@ -155,44 +155,9 @@ namespace EasyToolKit.Inspector.Editor
             return true;
         }
 
-        /// <summary>
-        /// Gets the definition of a child at the specified index
-        /// </summary>
-        /// <param name="childIndex">The index of the child</param>
-        /// <returns>Definition of the child</returns>
-        protected override IElementDefinition GetChildDefinition(int childIndex)
+        protected override IElementDefinition[] GetChildrenDefinitions()
         {
-            if (childIndex < 0 || childIndex >= _definitions.Count)
-                throw new ArgumentOutOfRangeException(nameof(childIndex));
-
-            return _definitions[childIndex];
-        }
-
-        /// <summary>
-        /// Converts a child name to its index
-        /// </summary>
-        /// <param name="name">The name of the child</param>
-        /// <returns>The index of the child, or -1 if not found</returns>
-        protected override int ChildNameToIndex(string name)
-        {
-            for (int i = 0; i < _definitions.Count; i++)
-            {
-                if (_definitions[i].Name == name)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        /// <summary>
-        /// Calculates the number of children
-        /// </summary>
-        /// <returns>The number of childreh</returns>
-        protected override int CalculateChildCount()
-        {
-            return _definitions.Count;
+            return _definitions.ToArray();
         }
 
         /// <summary>

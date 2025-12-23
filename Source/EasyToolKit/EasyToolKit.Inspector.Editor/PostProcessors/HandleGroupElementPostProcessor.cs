@@ -90,7 +90,6 @@ namespace EasyToolKit.Inspector.Editor
 
             foreach (var child in childrenToMove)
             {
-                parentCollection.Remove(child);
                 groupElement.Children.Add(child);
             }
         }

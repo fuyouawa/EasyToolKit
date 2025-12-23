@@ -75,22 +75,14 @@ namespace EasyToolKit.Inspector.Editor
         GUIContent Label { get; set; }
 
         /// <summary>
-        /// Gets the index of this element among its parent's children.
-        /// </summary>
-        int ChildIndex { get; }
-
-        /// <summary>
-        /// Gets the number of frames to skip drawing this element. Decremented by one each time <see cref="Draw(GUIContent)"/> is called (if greater than zero).
-        /// </summary>
-        int SkipFrameCount { get; }
-
-        /// <summary>
         /// Gets all custom attribute infos applied to this value element.
         /// </summary>
         /// <returns>An array of attributes.</returns>
         IReadOnlyList<ElementAttributeInfo> GetAttributeInfos();
 
         DrawerChain GetDrawerChain();
+
+        void Update(bool force = false);
 
         /// <summary>
         /// Draws this element in the inspector with the specified label.

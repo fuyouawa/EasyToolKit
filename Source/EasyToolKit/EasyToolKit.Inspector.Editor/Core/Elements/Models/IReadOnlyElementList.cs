@@ -16,6 +16,8 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>The element with the specified name.</returns>
         TElement this[string name] { get; }
 
+        IElement OwnerElement { get; }
+
         /// <summary>
         /// Gets the zero-based index of the first occurrence of an element with the specified name.
         /// </summary>
@@ -31,12 +33,6 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="index">The zero-based index of the element.</param>
         /// <returns>The full path of the element.</returns>
         string GetPath(int index);
-
-        /// <summary>
-        /// Recursively enumerates all elements and their descendants in the collection.
-        /// </summary>
-        /// <returns>An enumerable collection of all descendant elements.</returns>
-        IEnumerable<TElement> Recurse();
 
         /// <summary>
         /// Updates the collection.

@@ -10,6 +10,5 @@
         /// Gets the property definition that describes this property.
         /// </summary>
         new IPropertyDefinition Definition { get; }
-
       }
 }

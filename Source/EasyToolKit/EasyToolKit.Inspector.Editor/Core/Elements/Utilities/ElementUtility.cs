@@ -70,7 +70,7 @@ namespace EasyToolKit.Inspector.Editor
 
         public static string GetKey(IElement element)
         {
-            var key1 = TwoWaySerializationBinder.Default.BindToName(element.SharedContext.Tree.Targets[0].GetType());
+            var key1 = TwoWaySerializationBinder.Default.BindToName(element.SharedContext.Tree.TargetType);
             var key2 = element.Path;
             return string.Join("+", key1, key2);
         }

@@ -1,15 +1,11 @@
-using System;
+﻿using System;
 using System.Reflection;
 using EasyToolKit.Core;
 using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    /// <summary>
-    /// Utility class providing helper methods for inspecting and determining property information
-    /// related to Unity serialization and inspector display.
-    /// </summary>
-    public static class InspectorPropertyInfoUtility
+    public static class InspectorPropertyUtility
     {
         /// <summary>
         /// Determines if a type is satisfied of unity property drawer.
@@ -61,33 +57,5 @@ namespace EasyToolKit.Inspector.Editor
 
             return !nonSerialized && fieldInfo.IsDefined<SerializeField>();
         }
-
-        /// <summary>
-        /// Determines if a type can have child properties in the inspector.
-        /// Uses lenient criteria that excludes basic value types, delegates, and Unity Object types.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        /// <returns>True if the type can have children; otherwise false.</returns>
-        public static bool IsAllowChildrenTypeLeniently(Type type)
-        {
-            return !type.IsBasicValueType() &&
-                   !typeof(Delegate).IsAssignableFrom(type) &&
-                   !typeof(UnityEngine.Object).IsAssignableFrom(type);
-        }
-
-        // public static bool IsAllowChildrenField(FieldInfo fieldInfo)
-        // {
-        //     if (!IsAllowChildrenTypeLeniently(fieldInfo.FieldType))
-        //     {
-        //         return false;
-        //     }
-        //
-        //     if (fieldInfo.IsDefined<ShowInInspectorAttribute>())
-        //     {
-        //         return true;
-        //     }
-        //
-        //     return IsSerializableField(fieldInfo);
-        // }
     }
 }

@@ -38,8 +38,8 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementPostProcessorPriorityAttribute"/> class.
         /// </summary>
-        /// <param name="value">The priority value for the post processor. Defaults to <see cref="ElementPostProcessorPriorityLevel.Lowest"/>.</param>
-        public ElementPostProcessorPriorityAttribute(double value = ElementPostProcessorPriorityLevel.Lowest)
+        /// <param name="value">The priority value for the post processor..</param>
+        public ElementPostProcessorPriorityAttribute(double value = 0.0)
         {
             Priority = new Priority(value);
         }
