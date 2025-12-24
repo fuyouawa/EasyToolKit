@@ -12,14 +12,14 @@
             _orderedCollectionOperation = collectionOperation;
         }
 
-        public void InsertWeakItem(ref object collection, int index, object value)
+        public void InsertWeakItemAt(ref object collection, int index, object value)
         {
-            _orderedCollectionOperation.InsertWeakItem(ref collection, index, value);
+            _orderedCollectionOperation.InsertWeakItemAt(ref collection, index, value);
         }
 
-        public void RemoveWeakItem(ref object collection, int index)
+        public void RemoveWeakItemAt(ref object collection, int index)
         {
-            _orderedCollectionOperation.RemoveWeakItem(ref collection, index);
+            _orderedCollectionOperation.RemoveWeakItemAt(ref collection, index);
         }
     }
 
@@ -36,24 +36,24 @@
             _orderedCollectionOperation = collectionOperation;
         }
 
-        public void InsertWeakItem(ref object collection, int index, object value)
+        public void InsertWeakItemAt(ref object collection, int index, object value)
         {
-            _orderedCollectionOperation.InsertWeakItem(ref collection, index, value);
+            _orderedCollectionOperation.InsertWeakItemAt(ref collection, index, value);
         }
 
-        public void RemoveWeakItem(ref object collection, int index)
+        public void RemoveWeakItemAt(ref object collection, int index)
         {
-            _orderedCollectionOperation.RemoveWeakItem(ref collection, index);
+            _orderedCollectionOperation.RemoveWeakItemAt(ref collection, index);
         }
 
-        public void InsertItem(ref TCollection collection, int index, TElement value)
+        public void InsertItemAt(ref TCollection collection, int index, TElement value)
         {
-            _orderedCollectionOperation.InsertItem(ref collection, index, value);
+            _orderedCollectionOperation.InsertItemAt(ref collection, index, value);
         }
 
-        public void RemoveItem(ref TCollection collection, int index)
+        public void RemoveItemAt(ref TCollection collection, int index)
         {
-            _orderedCollectionOperation.RemoveItem(ref collection, index);
+            _orderedCollectionOperation.RemoveItemAt(ref collection, index);
         }
     }
 }

@@ -52,7 +52,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="index">The zero-based index at which value should be inserted</param>
         /// <param name="value">The element to insert</param>
         /// <exception cref="ArgumentOutOfRangeException">index is less than 0 or greater than the count of elements in the list</exception>
-        public override void InsertItem(ref TCollection collection, int index, TElement value)
+        public override void InsertItemAt(ref TCollection collection, int index, TElement value)
         {
             if (collection == null)
                 throw new ArgumentNullException(nameof(collection));
@@ -69,7 +69,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="collection">The list collection</param>
         /// <param name="index">The zero-based index of the element to remove</param>
         /// <exception cref="ArgumentOutOfRangeException">index is less than 0 or greater than or equal to the count of elements in the list</exception>
-        public override void RemoveItem(ref TCollection collection, int index)
+        public override void RemoveItemAt(ref TCollection collection, int index)
         {
             if (collection == null)
                 throw new ArgumentNullException(nameof(collection));

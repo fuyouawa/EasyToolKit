@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         Type ItemType { get; }
 
-        object AddWeakItem(int targetIndex, object value);
+        void AddWeakItem(int targetIndex, object value);
         void RemoveWeakItem(int targetIndex, object value);
     }
 

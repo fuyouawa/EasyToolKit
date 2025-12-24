@@ -9,22 +9,22 @@ namespace EasyToolKit.Inspector.Editor
         {
         }
 
-        public abstract void InsertItem(ref TCollection collection, int index, TValue value);
+        public abstract void InsertItemAt(ref TCollection collection, int index, TValue value);
 
-        public abstract void RemoveItem(ref TCollection collection, int index);
+        public abstract void RemoveItemAt(ref TCollection collection, int index);
 
-        public virtual void InsertWeakItem(ref object collection, int index, object value)
+        public virtual void InsertWeakItemAt(ref object collection, int index, object value)
         {
             var castCollection = (TCollection)collection;
             var castValue = (TValue)value;
-            InsertItem(ref castCollection, index, castValue);
+            InsertItemAt(ref castCollection, index, castValue);
             collection = castCollection;
         }
 
-        public virtual void RemoveWeakItem(ref object collection, int index)
+        public virtual void RemoveWeakItemAt(ref object collection, int index)
         {
             var castCollection = (TCollection)collection;
-            RemoveItem(ref castCollection, index);
+            RemoveItemAt(ref castCollection, index);
             collection = castCollection;
         }
     }

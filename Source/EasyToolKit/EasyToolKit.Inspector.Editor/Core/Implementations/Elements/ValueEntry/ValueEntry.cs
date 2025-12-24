@@ -16,6 +16,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     public class ValueEntry<TValue> : IValueEntry<TValue>
     {
         private static readonly bool IsInstantiableType = typeof(TValue).IsInstantiable();
+        private static readonly bool IsStructuralType = typeof(TValue).IsStructuralType();
 
         private readonly TValue[] _values;
         private readonly IValueOperation<TValue> _operation;
@@ -85,6 +86,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             get => SmartValue;
             set => SmartValue = (TValue)value;
         }
+
+        protected IValueOperation<TValue> Operation => _operation;
 
         /// <summary>
         /// Gets or sets the strongly-typed value.
@@ -192,6 +195,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 IsDirty = true;
                 _cachedState = null;
+                OwnerElement.SharedContext.TriggerEvent(this, new ValueDirtyEventArgs());
             }
         }
 
@@ -322,9 +326,30 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             var first = _values[0];
             for (int i = 1; i < _values.Length; i++)
             {
-                if (!EqualityComparer<TValue>.Default.Equals(first, _values[i]))
+                if (IsStructuralType)
                 {
-                    return ValueEntryState.Mixed;
+                    if (first.GetType() != _values[i].GetType())
+                    {
+                        return ValueEntryState.Mixed;
+                    }
+                }
+                else
+                {
+                    if (!EqualityComparer<TValue>.Default.Equals(first, _values[i]))
+                    {
+                        return ValueEntryState.Mixed;
+                    }
+                }
+            }
+
+            if (IsStructuralType)
+            {
+                for (int i = 1; i < _values.Length; i++)
+                {
+                    if (!EqualityComparer<TValue>.Default.Equals(first, _values[i]))
+                    {
+                        return ValueEntryState.TypeConsistent;
+                    }
                 }
             }
 

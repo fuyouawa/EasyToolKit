@@ -135,8 +135,8 @@ namespace EasyToolKit.Core
         public static bool IsUnityBuiltInType(this Type type)
         {
             return type == typeof(Vector2) || type == typeof(Vector2Int) || type == typeof(Vector3) || type == typeof(Vector3Int) ||
-                type == typeof(Vector4) || type == typeof(Quaternion) || type == typeof(Color) || type == typeof(Color32) ||
-                type == typeof(Rect) || type == typeof(RectInt) || type == typeof(Bounds) || type == typeof(BoundsInt);
+                   type == typeof(Vector4) || type == typeof(Quaternion) || type == typeof(Color) || type == typeof(Color32) ||
+                   type == typeof(Rect) || type == typeof(RectInt) || type == typeof(Bounds) || type == typeof(BoundsInt);
         }
 
         public static bool IsIntegerType(this Type type)
@@ -181,12 +181,20 @@ namespace EasyToolKit.Core
             return type == typeof(string);
         }
 
+        public static bool IsStructuralType([NotNull] this Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            return !type.IsBasicValueType() && !type.IsInheritsFrom<UnityEngine.Object>();
+        }
+
         public static bool IsBasicValueType([NotNull] this Type type)
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            return type.IsEnum || type.IsStringType() || type.IsBooleanType() | type.IsFloatingPointType() || type.IsIntegerType();
+            return type.IsEnum || type.IsStringType() || type.IsBooleanType() || type.IsFloatingPointType() || type.IsIntegerType();
         }
 
         public static bool IsUnityObjectType([NotNull] this Type type)
@@ -195,11 +203,6 @@ namespace EasyToolKit.Core
                 throw new ArgumentNullException(nameof(type));
 
             return type.IsInheritsFrom<UnityEngine.Object>();
-        }
-
-        public static bool IsBasicOrUnityObject([NotNull] this Type type)
-        {
-            return type.IsBasicValueType() || type.IsUnityObjectType();
         }
 
         public static bool IsNullableType(this Type type)
@@ -317,8 +320,10 @@ namespace EasyToolKit.Core
                 {
                     yield return members[i];
                 }
+
                 yield break;
             }
+
             flags |= BindingFlags.DeclaredOnly;
 
             var currentType = type;
