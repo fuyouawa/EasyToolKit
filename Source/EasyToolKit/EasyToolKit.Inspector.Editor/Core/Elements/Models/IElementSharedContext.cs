@@ -7,7 +7,7 @@ namespace EasyToolKit.Inspector.Editor
     /// and each IElement holds a reference to this shared context. The context provides access to tree-level
     /// services and resolver factories using dependency injection.
     /// </summary>
-    public interface IElementSharedContext
+    public interface IElementSharedContext : IDisposable
     {
         /// <summary>
         /// Gets the update identifier that increments every frame.

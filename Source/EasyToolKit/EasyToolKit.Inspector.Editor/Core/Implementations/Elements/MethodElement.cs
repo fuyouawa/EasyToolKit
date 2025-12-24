@@ -19,7 +19,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public MethodElement(
             [NotNull] IMethodDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IValueElement logicalParent)
+            [CanBeNull] IElement logicalParent)
             : base(definition, sharedContext, logicalParent)
         {
         }

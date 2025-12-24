@@ -1,4 +1,4 @@
-﻿namespace EasyToolKit.Inspector.Editor
+namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
     /// Property element interface representing properties on an object.

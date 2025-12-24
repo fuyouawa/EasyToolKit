@@ -42,7 +42,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the element factory instance owned by this tree.
         /// </summary>
-        IElementFactory Factory { get; }
+        IElementFactory ElementFactory { get; }
 
         /// <summary>
         /// Enumerates all elements in the tree.
@@ -71,7 +71,7 @@ namespace EasyToolKit.Inspector.Editor
         void QueueCallbackUntilRepaint(Action action);
 
         /// <summary>
-        /// Prepare the drawing process for the property tree.
+        /// Begins the drawing process for the property tree.
         /// This method updates the serialized object and prepares the tree for drawing.
         /// </summary>
         void BeginDraw();
@@ -82,7 +82,7 @@ namespace EasyToolKit.Inspector.Editor
         public void DrawElements();
 
         /// <summary>
-        /// Finish the drawing process for the property tree.
+        /// Ends the drawing process for the property tree.
         /// This method applies modified properties and processes pending callbacks.
         /// </summary>
         void EndDraw();

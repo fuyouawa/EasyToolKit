@@ -255,7 +255,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             foreach (var childDefinition in childrenDefinitions)
             {
-                var childElement = SharedContext.Tree.Factory.CreateElement(childDefinition, this);
+                var childElement = SharedContext.Tree.ElementFactory.CreateElement(childDefinition, this);
                 childrenList.Insert(childrenList.Count, childElement);
             }
 

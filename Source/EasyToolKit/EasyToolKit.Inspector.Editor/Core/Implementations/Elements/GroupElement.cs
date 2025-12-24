@@ -21,7 +21,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public GroupElement(
             [NotNull] IGroupDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IValueElement logicalParent)
+            [CanBeNull] IElement logicalParent)
             : base(definition, sharedContext, logicalParent)
         {
         }

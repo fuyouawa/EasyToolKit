@@ -28,7 +28,7 @@ namespace EasyToolKit.Inspector.Editor
                 .WithGroupAttributes(beginGroupAttributeType, endGroupAttributeType)
                 .WithName(groupName)
                 .CreateDefinition();
-            var groupElement = (IGroupElement)element.SharedContext.Tree.Factory.CreateElement(groupDefinition, null);
+            var groupElement = element.SharedContext.Tree.ElementFactory.CreateGroupElement(groupDefinition, null);
 
             var parentCollection = ElementUtility.GetParentCollection(element);
             var elementIndex = parentCollection.IndexOf(element);

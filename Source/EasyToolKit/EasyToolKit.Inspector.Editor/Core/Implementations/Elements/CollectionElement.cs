@@ -9,7 +9,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public CollectionElement(
             [NotNull] IValueDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IValueElement logicalParent)
+            [CanBeNull] IElement logicalParent)
             : base(definition, sharedContext, logicalParent)
         {
         }
