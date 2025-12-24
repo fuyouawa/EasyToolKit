@@ -23,7 +23,7 @@ namespace EasyToolKit.Inspector.Editor
 
             for (int i = 0; i < Element.SharedContext.Tree.Targets.Count; i++)
             {
-                var target = Element.LogicalParent.ValueEntry.GetWeakValue(i);
+                var target = Element.LogicalParent.CastValue().ValueEntry.GetWeakValue(i);
                 if (target == null)
                     continue;
                 var referencedObject = Element.SharedContext.Tree.Targets[i];

@@ -41,7 +41,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private IValueOperation GetPropertyOperation()
         {
-            var ownerType = Element.LogicalParent!.ValueEntry.ValueType;
+            var ownerType = Element.LogicalParent.CastValue().ValueEntry.ValueType;
             var operationType = typeof(MemberValueOperation<,>).MakeGenericType(ownerType, Element.ValueEntry.ValueType);
             return operationType.CreateInstance<IValueOperation>(((IMemberDefinition)Element.Definition).MemberInfo);
         }
@@ -49,7 +49,7 @@ namespace EasyToolKit.Inspector.Editor
         private ICollectionOperation GetCollectionOperation()
         {
             var collectionElement = (ICollectionElement)Element;
-            var ownerType = collectionElement.LogicalParent!.ValueEntry.ValueType;
+            var ownerType = collectionElement.LogicalParent.CastValue().ValueEntry.ValueType;
             var collectionType = collectionElement.ValueEntry.ValueType;
 
             if (collectionType.IsImplementsOpenGenericType(typeof(IList<>)))

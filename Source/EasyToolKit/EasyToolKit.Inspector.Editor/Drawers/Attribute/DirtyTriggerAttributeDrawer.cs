@@ -58,7 +58,7 @@ namespace EasyToolKit.Inspector.Editor
             }
             else
             {
-                Element.LogicalParent!.ValueEntry.MarkDirty();
+                Element.LogicalParent.CastValue().ValueEntry.MarkDirty();
             }
         }
     }

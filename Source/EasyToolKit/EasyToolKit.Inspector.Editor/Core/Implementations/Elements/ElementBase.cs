@@ -37,7 +37,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Gets the logical parent element that owns this element in the code structure.
         /// </summary>
-        public IValueElement LogicalParent { get; }
+        public IElement LogicalParent { get; }
 
         /// <summary>
         /// Gets the current parent element in the element tree hierarchy.
@@ -58,7 +58,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         protected ElementBase(
             [NotNull] IElementDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IValueElement logicalParent)
+            [CanBeNull] IElement logicalParent)
         {
             Definition = definition ?? throw new ArgumentNullException(nameof(definition));
             SharedContext = sharedContext ?? throw new ArgumentNullException(nameof(sharedContext));
@@ -202,6 +202,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                         _children.Add(child);
                     }
                 }
+                OnCreatedChildren();
             }
 
             // Initialize attribute resolver (after children)
@@ -236,6 +237,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             _children.AfterElementMoved -= OnChildrenElementMoved;
 
             SharedContext.UnregisterEventHandler<ElementMovedEventArgs>(OnElementMoved);
+        }
+
+        protected virtual void OnCreatedChildren()
+        {
         }
 
         /// <summary>

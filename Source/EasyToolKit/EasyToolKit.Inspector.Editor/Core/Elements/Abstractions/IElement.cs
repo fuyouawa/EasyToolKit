@@ -37,7 +37,7 @@ namespace EasyToolKit.Inspector.Editor
         /// or custom elements created dynamically by users.
         /// </para>
         /// </remarks>
-        [CanBeNull] IValueElement LogicalParent { get; }
+        [CanBeNull] IElement LogicalParent { get; }
 
         /// <summary>
         /// Gets the current parent element in the element tree hierarchy.

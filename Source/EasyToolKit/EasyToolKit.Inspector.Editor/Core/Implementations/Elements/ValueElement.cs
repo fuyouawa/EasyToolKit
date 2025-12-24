@@ -36,6 +36,14 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
         }
 
+        /// <summary>
+        /// Gets the value entry that manages the underlying value storage and change notifications.
+        /// This is built based on the runtime type of the value in <see cref="BaseValueEntry"/>.
+        /// </summary>
+        /// <remarks>
+        /// <para>When the runtime type equals the declared type, this is the same as <see cref="BaseValueEntry"/>.</para>
+        /// <para>When the runtime type is a derived type, this is a type wrapper around <see cref="BaseValueEntry"/>.</para>
+        /// </remarks>
         public IValueEntry ValueEntry
         {
             get
@@ -58,7 +66,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public ValueElement(
             [NotNull] IValueDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IValueElement logicalParent)
+            [CanBeNull] IElement logicalParent)
             : base(definition, sharedContext, logicalParent)
         {
         }
@@ -101,6 +109,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return valueEntry;
         }
 
+        /// <summary>
+        /// Creates a wrapper value entry for managing the underlying value storage.
+        /// </summary>
+        /// <param name="runtimeType">The runtime type of the value.</param>
+        /// <returns>A value entry instance for this element.</returns>
         protected virtual IValueEntry CreateWrapperValueEntry(Type runtimeType)
         {
             var valueEntryType = typeof(ValueEntryWrapper<,>).MakeGenericType(runtimeType, _baseValueEntry.ValueType);

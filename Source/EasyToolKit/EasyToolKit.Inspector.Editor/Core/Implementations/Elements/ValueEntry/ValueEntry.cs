@@ -370,7 +370,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             // For child elements, get the owner from the parent's value entry
-            return _ownerElement.LogicalParent?.ValueEntry.GetWeakValue(targetIndex);
+            return _ownerElement.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
         }
 
         /// <summary>
@@ -386,15 +386,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return; // Root elements don't need to update the target
             }
 
-            _ownerElement.LogicalParent?.ValueEntry.SetWeakValue(targetIndex, owner);
-        }
-
-        /// <summary>
-        /// Releases all resources used by this value entry.
-        /// </summary>
-        public void Dispose()
-        {
-            _queuedChanges.Clear();
+            _ownerElement.LogicalParent.CastValue().ValueEntry.SetWeakValue(targetIndex, owner);
         }
     }
 }

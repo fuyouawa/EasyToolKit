@@ -36,7 +36,7 @@ namespace EasyToolKit.Inspector.Editor
                 : label.text;
             if (GUILayout.Button(buttonLabel))
             {
-                foreach (var target in Element.LogicalParent!.ValueEntry.EnumerateWeakValues())
+                foreach (var target in Element.LogicalParent.CastValue().ValueEntry.EnumerateWeakValues())
                 {
                     if (target == null)
                         continue;

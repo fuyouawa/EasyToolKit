@@ -20,7 +20,7 @@ namespace EasyToolKit.Inspector.Editor
                     return valueElement.ValueEntry.ValueType;
                 case ElementAttributeSource.Member:
                 case ElementAttributeSource.ListPassToElement:
-                    return element.LogicalParent!.ValueEntry.ValueType;
+                    return element.LogicalParent.CastValue().ValueEntry.ValueType;
                 default:
                     throw new IndexOutOfRangeException();
             }
@@ -41,7 +41,7 @@ namespace EasyToolKit.Inspector.Editor
                     return valueElement.ValueEntry.WeakSmartValue;
                 case ElementAttributeSource.Member:
                 case ElementAttributeSource.ListPassToElement:
-                    return element.LogicalParent!.ValueEntry.WeakSmartValue;
+                    return element.LogicalParent.CastValue().ValueEntry.WeakSmartValue;
                 default:
                     throw new IndexOutOfRangeException();
             }
@@ -62,7 +62,7 @@ namespace EasyToolKit.Inspector.Editor
                     return valueElement.ValueEntry.GetWeakValue(targetIndex);
                 case ElementAttributeSource.Member:
                 case ElementAttributeSource.ListPassToElement:
-                    return element.LogicalParent!.ValueEntry.GetWeakValue(targetIndex);
+                    return element.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
                 default:
                     throw new IndexOutOfRangeException();
             }

@@ -15,7 +15,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Draw(GUIContent label)
         {
-            foreach (var target in Element.LogicalParent!.ValueEntry.EnumerateWeakValues())
+            foreach (var target in Element.LogicalParent.CastValue().ValueEntry.EnumerateWeakValues())
             {
                 if (target == null)
                     continue;

@@ -157,7 +157,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected virtual void DoAddItem(int targetIndex, object valueToAdd)
         {
-            var parent = Element.LogicalParent!.ValueEntry.GetWeakValue(targetIndex);
+            var parent = Element.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
             ValueEntry.EnqueueChange(() =>
             {
                 ValueEntry.AddWeakItem(targetIndex, valueToAdd);
@@ -178,7 +178,7 @@ namespace EasyToolKit.Inspector.Editor
             // Use the new ordered collection operation
             if (_orderedCollectionAccessor != null)
             {
-                var parent = Element.LogicalParent!.ValueEntry.GetWeakValue(targetIndex);
+                var parent = Element.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
                 ValueEntry.EnqueueChange(() =>
                 {
                     _orderedCollectionAccessor.InsertWeakItem(targetIndex, index, valueToAdd);
@@ -202,7 +202,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected virtual void DoRemoveItemAt(int targetIndex, int index)
         {
-            var parent = Element.LogicalParent!.ValueEntry.GetWeakValue(targetIndex);
+            var parent = Element.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
             if (_customRemoveIndexFunction != null)
             {
                 _customRemoveIndexFunction.Invoke(parent, index);
@@ -229,7 +229,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private void DoRemoveItem(int targetIndex, object valueToRemove)
         {
-            var parent = Element.LogicalParent.ValueEntry.GetWeakValue(targetIndex);
+            var parent = Element.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
             if (_customRemoveItemFunction != null)
             {
                 _customRemoveItemFunction.Invoke(parent, valueToRemove);
@@ -246,7 +246,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected virtual object GetValueToAdd(int targetIndex)
         {
-            var parent = Element.LogicalParent.ValueEntry.GetWeakValue(targetIndex);
+            var parent = Element.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
             if (_customCreateItemFunction != null)
             {
                 return _customCreateItemFunction.Invoke(parent);

@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using EasyToolKit.Core;
+using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
 {
     public static class ElementExtensions
     {
-        public static IValueElement AsValue(this IElement element)
+        public static IValueElement CastValue(this IElement element)
         {
-            return element as IValueElement;
+            return Cast<IValueElement>(element);
+        }
+
+        private static T Cast<T>(this IElement element)
+            where T : IElement
+        {
+            if (element is T e)
+            {
+                return e;
+            }
+            throw new InvalidCastException($"Element '{element}' is not of type '{typeof(T)}'");
         }
 
         public static void Draw(this IElement element)

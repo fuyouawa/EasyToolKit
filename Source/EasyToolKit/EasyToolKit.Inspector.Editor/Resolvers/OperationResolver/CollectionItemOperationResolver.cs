@@ -16,7 +16,7 @@ namespace EasyToolKit.Inspector.Editor
         protected override void Initialize()
         {
             var itemElement = (ICollectionItemElement)Element;
-            var collectionType = Element.LogicalParent!.ValueEntry.ValueType;
+            var collectionType = Element.LogicalParent.CastValue().ValueEntry.ValueType;
             var valueType = Element.Definition.ValueType;
 
             Type operationType;
