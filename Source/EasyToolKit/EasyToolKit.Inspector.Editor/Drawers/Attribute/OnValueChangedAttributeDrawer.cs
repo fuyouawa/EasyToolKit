@@ -34,7 +34,7 @@ namespace EasyToolKit.Inspector.Editor
                         _methodInfo = targetType.GetMethodEx(Attribute.Method, BindingFlagsHelper.All);
                     }
 
-                    ValueEntry.PostValueChanged += OnValueChanged;
+                    ValueEntry.AfterValueChanged += OnValueChanged;
                 }
                 catch (Exception e)
                 {

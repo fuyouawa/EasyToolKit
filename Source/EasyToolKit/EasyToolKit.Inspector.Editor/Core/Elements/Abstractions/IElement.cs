@@ -36,10 +36,6 @@ namespace EasyToolKit.Inspector.Editor
         /// This property can be <c>null</c> for root elements, group elements,
         /// or custom elements created dynamically by users.
         /// </para>
-        /// <para>
-        /// If the current element is an <see cref="ICollectionItemElement"/>,
-        /// this property returns the <see cref="ICollectionElement"/> that contains this item.
-        /// </para>
         /// </remarks>
         [CanBeNull] IValueElement LogicalParent { get; }
 
@@ -73,6 +69,9 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets or sets the label displayed in the inspector.
         /// </summary>
         GUIContent Label { get; set; }
+
+        [CanBeNull] IReadOnlyElementList<IElement> LogicalChildren { get; }
+        [CanBeNull] IElementList<IElement> Children { get; }
 
         /// <summary>
         /// Gets all custom attribute infos applied to this value element.

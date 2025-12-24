@@ -11,8 +11,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// </summary>
     public class ValueElement : ElementBase, IValueElement
     {
-        private IReadOnlyElementList<IElement> _logicalChildren;
-        private IElementList<IElement> _children;
         private IValueEntry _valueEntry;
 
         /// <summary>
@@ -20,49 +18,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public new IValueDefinition Definition => (IValueDefinition)base.Definition;
 
-        /// <summary>
-        /// Gets the child elements defined by the code structure.
-        /// These are immutable and determined solely by the definition.
-        /// </summary>
-        public IReadOnlyElementList<IElement> LogicalChildren
-        {
-            get
-            {
-                if (_logicalChildren == null && CanHaveChildren())
-                {
-                    _logicalChildren = CreateLogicalChildren();
-                }
-
-                return _logicalChildren;
-            }
-        }
-
-        /// <summary>
-        /// Gets child elements that were added or removed at runtime.
-        /// This collection is mutable and reflects runtime modifications.
-        /// </summary>
-        public IElementList<IElement> Children
-        {
-            get
-            {
-                if (_children == null && CanHaveChildren())
-                {
-                    var childrenList = new ElementList<IElement>(this);
-                    _children = childrenList;
-
-                    // Initialize with logical children
-                    if (_logicalChildren != null)
-                    {
-                        foreach (var child in _logicalChildren)
-                        {
-                            childrenList.Insert(childrenList.Count, child);
-                        }
-                    }
-                }
-
-                return _children;
-            }
-        }
 
         /// <summary>
         /// Gets the value entry that manages the underlying value storage and change notifications.
@@ -94,37 +49,16 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
         }
 
-        protected virtual bool CanHaveChildren()
+        protected override bool CanHaveChildren()
         {
             var valueType = Definition.ValueType;
             // Check if it's a plain value type or UnityEngine.Object reference
-            return !valueType.IsBasicValueType() && !typeof(UnityEngine.Object).IsAssignableFrom(valueType);
+            return !valueType.IsBasicValueType() && !typeof(UnityEngine.Object).IsAssignableFrom(valueType) && base.CanHaveChildren();
         }
 
-        protected override void Update(bool force)
+        protected override void Update(bool forceUpdate)
         {
             ValueEntry.Update();
-        }
-
-        /// <summary>
-        /// Creates the logical children list based on the structure resolver.
-        /// </summary>
-        /// <returns>A read-only list of child elements defined by the structure.</returns>
-        private IReadOnlyElementList<IElement> CreateLogicalChildren()
-        {
-            var factory = SharedContext.GetResolverFactory<IStructureResolver>();
-            var resolver = factory.CreateResolver(this);
-            var childrenDefinitions = resolver.GetChildrenDefinitions();
-
-            var childrenList = new ElementList<IElement>(this);
-
-            foreach (var childDefinition in childrenDefinitions)
-            {
-                var childElement = SharedContext.Tree.Factory.CreateElement(childDefinition, this);
-                childrenList.Insert(childrenList.Count, childElement);
-            }
-
-            return childrenList;
         }
 
         /// <summary>
@@ -136,18 +70,17 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             var valueType = Definition.ValueType;
             var valueEntryType = typeof(ValueEntry<>).MakeGenericType(valueType);
 
-            return valueEntryType.CreateInstance<IValueEntry>(this);
+            var valueEntry = valueEntryType.CreateInstance<IValueEntry>(this);
+            valueEntry.AfterValueChanged += OnValueChanged;
+            return valueEntry;
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public override void Dispose()
+        private void OnValueChanged(object sender, ValueChangedEventArgs eventArgs)
         {
-            _logicalChildren?.ClearCache();
-            _children?.ClearCache();
-
-            base.Dispose();
+            if (eventArgs.OldValue.GetType() != eventArgs.NewValue.GetType())
+            {
+                Refresh();
+            }
         }
     }
 }

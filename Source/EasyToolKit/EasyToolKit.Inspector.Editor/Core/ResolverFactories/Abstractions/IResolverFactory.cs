@@ -1,7 +1,9 @@
-﻿namespace EasyToolKit.Inspector.Editor
+﻿using JetBrains.Annotations;
+
+namespace EasyToolKit.Inspector.Editor
 {
     public interface IResolverFactory<TResolver> where TResolver : IResolver
     {
-        TResolver CreateResolver(IElement element);
+        [CanBeNull] TResolver CreateResolver(IElement element);
     }
 }

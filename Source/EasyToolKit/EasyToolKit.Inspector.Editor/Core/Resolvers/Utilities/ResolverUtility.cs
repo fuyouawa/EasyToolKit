@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using EasyToolKit.Core;
+using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
 {
     public static class ResolverUtility
     {
+        [CanBeNull]
         public static Type GetResolverType(IElement element, Type resolverBaseType)
         {
             var resolverType = HandlerUtility.GetElementTypes(element, type => type.IsInheritsFrom(resolverBaseType)).FirstOrDefault();
-            if (resolverType == null)
-            {
-                throw new Exception($"Cannot get resolver type '{resolverBaseType}' for property '{element}'");
-            }
-
             return resolverType;
         }
     }

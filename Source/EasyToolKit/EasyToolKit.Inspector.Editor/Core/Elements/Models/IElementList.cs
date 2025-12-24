@@ -11,12 +11,12 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Occurs before the element list is moved.
         /// </summary>
-        event EventHandler<ElementMovedEventArgs> PreElementMoved;
+        event EventHandler<ElementMovedEventArgs> BeforeElementMoved;
 
         /// <summary>
         /// Occurs after the element list is moved.
         /// </summary>
-        event EventHandler<ElementMovedEventArgs> PostElementMoved;
+        event EventHandler<ElementMovedEventArgs> AfterElementMoved;
 
         /// <summary>
         /// Inserts an element at the specified index.

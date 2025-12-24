@@ -25,12 +25,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Occurs before the element list is changed.
         /// </summary>
-        public event EventHandler<ElementMovedEventArgs> PreElementMoved;
+        public event EventHandler<ElementMovedEventArgs> BeforeElementMoved;
 
         /// <summary>
         /// Occurs after the element list is changed.
         /// </summary>
-        public event EventHandler<ElementMovedEventArgs> PostElementMoved;
+        public event EventHandler<ElementMovedEventArgs> AfterElementMoved;
 
         /// <summary>
         /// Gets the element that owns this list.
@@ -55,13 +55,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="name">The name of the element to get.</param>
         /// <returns>The element with the specified name.</returns>
         public TElement this[string name] => GetElement(name);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ElementList{TElement}"/> class.
-        /// </summary>
-        public ElementList() : this(null)
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementList{TElement}"/> class.
@@ -125,17 +118,16 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             ValidateInsertIndex(index);
 
-            var args = new ElementMovedEventArgs(ElementListChangeType.Insert, index, element, element.Parent, _ownerElement);
-            OnPreElementChanged(args);
+            var eventArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, index, element.Parent, _ownerElement, ElementMovedTiming.Before);
+            OnBeforeElementChanged(eventArgs);
 
             _elements.Insert(index, element);
-            //TODO refactor: coupling
-            ((ElementBase)(object)element).OnChangeParent(_ownerElement);
 
             UpdateNameIndexAfterInsert(index, element);
             InvalidatePathCacheFrom(index);
 
-            OnPostElementChanged(args);
+            var postArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, index, element.Parent, _ownerElement, ElementMovedTiming.After);
+            OnAfterElementChanged(postArgs);
         }
 
         /// <summary>
@@ -148,17 +140,16 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             ValidateIndex(index);
 
             var element = _elements[index];
-            var args = new ElementMovedEventArgs(ElementListChangeType.Remove, index, element, _ownerElement, null);
-            OnPreElementChanged(args);
+            var eventArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, index, _ownerElement, null, ElementMovedTiming.Before);
+            OnBeforeElementChanged(eventArgs);
 
             RemoveNameIndex(element);
             _elements.RemoveAt(index);
-            //TODO refactor: coupling
-            ((ElementBase)(object)element).OnChangeParent(null);
 
             InvalidatePathCacheFrom(index);
 
-            OnPostElementChanged(args);
+            var postArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, index, _ownerElement, null, ElementMovedTiming.After);
+            OnAfterElementChanged(postArgs);
         }
 
         /// <summary>
@@ -259,21 +250,21 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Raises the <see cref="PreElementMoved"/> event.
+        /// Raises the <see cref="BeforeElementMoved"/> event.
         /// </summary>
         /// <param name="args">The event arguments containing change details.</param>
-        protected virtual void OnPreElementChanged(ElementMovedEventArgs args)
+        protected virtual void OnBeforeElementChanged(ElementMovedEventArgs args)
         {
-            PreElementMoved?.Invoke(this, args);
+            BeforeElementMoved?.Invoke(_ownerElement, args);
         }
 
         /// <summary>
-        /// Raises the <see cref="PostElementMoved"/> event.
+        /// Raises the <see cref="AfterElementMoved"/> event.
         /// </summary>
         /// <param name="args">The event arguments containing change details.</param>
-        protected virtual void OnPostElementChanged(ElementMovedEventArgs args)
+        protected virtual void OnAfterElementChanged(ElementMovedEventArgs args)
         {
-            PostElementMoved?.Invoke(this, args);
+            AfterElementMoved?.Invoke(_ownerElement, args);
         }
 
         private void ValidateIndex(int index)
@@ -367,12 +358,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         private string ComputePath(int index, IElement element)
         {
-            if (_ownerElement == null)
-            {
-                return element.Definition?.Name ?? string.Empty;
-            }
-
-            return _ownerElement.Path + NamePathSeparator + (element.Definition?.Name ?? index.ToString());
+            return _ownerElement.Path + NamePathSeparator + element.Definition.Name;
         }
     }
 }

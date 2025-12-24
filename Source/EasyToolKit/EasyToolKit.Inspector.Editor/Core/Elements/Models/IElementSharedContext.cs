@@ -1,6 +1,4 @@
-using EasyToolKit.Core;
-using JetBrains.Annotations;
-using UnityEditor;
+using System;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -23,6 +21,12 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets a reference to the element tree that this context belongs to.
         /// </summary>
         IElementTree Tree { get; }
+
+        void RegisterEventHandler<TEventArgs>(EventHandler<TEventArgs> handler) where TEventArgs : EventArgs;
+
+        void UnregisterEventHandler<TEventArgs>(EventHandler<TEventArgs> handler) where TEventArgs : EventArgs;
+
+        void TriggerEvent(object sender, EventArgs eventArgs);
 
         /// <summary>
         /// Gets the resolver factory of the specified type from the internal dependency injection container.

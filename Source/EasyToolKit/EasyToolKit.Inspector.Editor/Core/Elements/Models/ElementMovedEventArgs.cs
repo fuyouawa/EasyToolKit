@@ -18,6 +18,22 @@ namespace EasyToolKit.Inspector.Editor
         Remove,
     }
 
+    /// <summary>
+    /// Specifies the timing of the element moved event.
+    /// </summary>
+    public enum ElementMovedTiming
+    {
+        /// <summary>
+        /// The event is raised before the element is moved.
+        /// </summary>
+        Before,
+
+        /// <summary>
+        /// The event is raised after the element is moved.
+        /// </summary>
+        After,
+    }
+
     public class ElementMovedEventArgs : EventArgs
     {
         /// <summary>
@@ -25,16 +41,16 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="changeType">The type of change that occurred.</param>
         /// <param name="index">The zero-based index at which the change occurred.</param>
-        /// <param name="element">The element affected by the change.</param>
         /// <param name="oldParent">The previous parent element of the element.</param>
         /// <param name="newParent">The new parent element of the element (null if removed).</param>
-        public ElementMovedEventArgs(ElementListChangeType changeType, int index, IElement element, IElement oldParent, IElement newParent)
+        /// <param name="timing">The timing of the event (pre or post).</param>
+        public ElementMovedEventArgs(ElementListChangeType changeType, int index, IElement oldParent, IElement newParent, ElementMovedTiming timing)
         {
             ChangeType = changeType;
             Index = index;
-            Element = element;
             OldParent = oldParent;
             NewParent = newParent;
+            Timing = timing;
         }
 
         /// <summary>
@@ -48,11 +64,6 @@ namespace EasyToolKit.Inspector.Editor
         public int Index { get; }
 
         /// <summary>
-        /// Gets the element affected by the change.
-        /// </summary>
-        public IElement Element { get; }
-
-        /// <summary>
         /// Gets the previous parent element of the element.
         /// </summary>
         public IElement OldParent { get; }
@@ -61,5 +72,10 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets the new parent element of the element (null if removed).
         /// </summary>
         public IElement NewParent { get; }
+
+        /// <summary>
+        /// Gets the timing of the event (pre or post).
+        /// </summary>
+        public ElementMovedTiming Timing { get; }
     }
 }

@@ -7,7 +7,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public IValueOperationResolver CreateResolver(IElement element)
         {
             var resolverType = ResolverUtility.GetResolverType(element, typeof(IValueOperationResolver));
-            return resolverType.CreateInstance<IValueOperationResolver>();
+            return resolverType?.CreateInstance<IValueOperationResolver>();
         }
     }
 }

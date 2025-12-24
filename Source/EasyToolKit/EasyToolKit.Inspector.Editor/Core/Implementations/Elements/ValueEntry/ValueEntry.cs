@@ -23,11 +23,42 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         private int? _lastUpdateId;
         private ValueEntryState? _cachedState;
+        private readonly IValueElement _ownerElement;
+
+        /// <summary>
+        /// Occurs before a value is changed.
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> BeforeValueChanged;
+
+        /// <summary>
+        /// Occurs after a value has been changed.
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> AfterValueChanged;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueEntry{TValue}"/> class.
+        /// </summary>
+        /// <param name="ownerElement">The value element that owns this value entry.</param>
+        public ValueEntry([NotNull] IValueElement ownerElement)
+        {
+            _ownerElement = ownerElement ?? throw new ArgumentNullException(nameof(ownerElement));
+
+            var factory = _ownerElement.SharedContext.GetResolverFactory<IValueOperationResolver>();
+            var resolver = factory.CreateResolver(_ownerElement);
+            if (resolver == null)
+            {
+                throw new InvalidOperationException($"Can not create value operation resolver for value entry of '{_ownerElement}'.");
+            }
+
+            _operation = (IValueOperation<TValue>)resolver.GetOperation();
+
+            _values = new TValue[_ownerElement.SharedContext.Tree.Targets.Count];
+        }
 
         /// <summary>
         /// Gets the value element that owns this value entry.
         /// </summary>
-        public IValueElement OwnerElement { get; }
+        public IValueElement OwnerElement => _ownerElement;
 
         /// <summary>
         /// Gets a value indicating whether the value is read-only.
@@ -94,31 +125,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Occurs before a value is changed.
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> PreValueChanged;
-
-        /// <summary>
-        /// Occurs after a value has been changed.
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> PostValueChanged;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValueEntry{TValue}"/> class.
-        /// </summary>
-        /// <param name="ownerElement">The value element that owns this value entry.</param>
-        public ValueEntry([NotNull] IValueElement ownerElement)
-        {
-            OwnerElement = ownerElement ?? throw new ArgumentNullException(nameof(ownerElement));
-
-            var factory = OwnerElement.SharedContext.GetResolverFactory<IValueOperationResolver>();
-            var resolver = factory.CreateResolver(OwnerElement);
-            _operation = (IValueOperation<TValue>)resolver.GetOperation();
-
-            _values = new TValue[OwnerElement.SharedContext.Tree.Targets.Count];
-        }
-
-        /// <summary>
         /// Gets the weakly-typed value at the specified target index.
         /// </summary>
         /// <param name="targetIndex">The zero-based index of the target object.</param>
@@ -157,7 +163,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             if (IsReadOnly)
             {
-                Debug.LogWarning($"Value '{OwnerElement.Path}' cannot be edited.");
+                Debug.LogWarning($"Value '{_ownerElement.Path}' cannot be edited.");
                 return;
             }
 
@@ -167,12 +173,14 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
-            OnPreValueChanged(targetIndex, oldValue, value);
+            var eventArgs = new ValueChangedEventArgs(targetIndex, oldValue, value, ValueChangedTiming.Before);
+            BeforeValueChanged?.Invoke(_ownerElement, eventArgs);
 
             _values[targetIndex] = value;
             MarkDirty();
 
-            OnPostValueChanged(targetIndex, oldValue, value);
+            eventArgs = new ValueChangedEventArgs(targetIndex, oldValue, value, ValueChangedTiming.After);
+            AfterValueChanged?.Invoke(_ownerElement, eventArgs);
         }
 
         /// <summary>
@@ -215,7 +223,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
-            var tree = OwnerElement.SharedContext.Tree;
+            var tree = _ownerElement.SharedContext.Tree;
             var targets = tree.Targets;
 
             // Record undo for Unity objects
@@ -223,7 +231,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 if (targets[i] is UnityEngine.Object unityObj)
                 {
-                    Undo.RecordObject(unityObj, $"Change {OwnerElement.Path}");
+                    Undo.RecordObject(unityObj, $"Change {_ownerElement.Path}");
                 }
             }
 
@@ -232,6 +240,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 change();
             }
+
             _queuedChanges.Clear();
 
             // Apply value changes
@@ -257,15 +266,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public void Update()
         {
-            if (_lastUpdateId == OwnerElement.SharedContext.UpdateId)
+            if (_lastUpdateId == _ownerElement.SharedContext.UpdateId)
             {
                 return;
             }
 
-            _lastUpdateId = OwnerElement.SharedContext.UpdateId;
+            _lastUpdateId = _ownerElement.SharedContext.UpdateId;
             _cachedState = null;
 
-            var tree = OwnerElement.SharedContext.Tree;
+            var tree = _ownerElement.SharedContext.Tree;
             bool clearDirty = true;
 
             for (int i = 0; i < tree.Targets.Count; i++)
@@ -323,46 +332,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Raises the <see cref="PreValueChanged"/> event.
-        /// </summary>
-        /// <param name="targetIndex">The index of the target object whose value is changing.</param>
-        /// <param name="oldValue">The old value.</param>
-        /// <param name="newValue">The new value.</param>
-        private void OnPreValueChanged(int targetIndex, TValue oldValue, TValue newValue)
-        {
-            PreValueChanged?.Invoke(this, new ValueChangedEventArgs(targetIndex, oldValue, newValue));
-        }
-
-        /// <summary>
-        /// Raises the <see cref="PostValueChanged"/> event.
-        /// </summary>
-        /// <param name="targetIndex">The index of the target object whose value changed.</param>
-        /// <param name="oldValue">The old value.</param>
-        /// <param name="newValue">The new value.</param>
-        private void OnPostValueChanged(int targetIndex, TValue oldValue, TValue newValue)
-        {
-            var args = new ValueChangedEventArgs(targetIndex, oldValue, newValue);
-            PostValueChanged?.Invoke(this, args);
-
-            // Queue callback until repaint for proper GUI timing
-            OwnerElement.SharedContext.Tree.QueueCallbackUntilRepaint(() =>
-            {
-                try
-                {
-                    PostValueChanged?.Invoke(this, args);
-                }
-                catch (ExitGUIException)
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Debug.LogException(e);
-                }
-            });
-        }
-
-        /// <summary>
         /// Gets the owner object for the specified target index.
         /// </summary>
         /// <param name="targetIndex">The target index.</param>
@@ -370,13 +339,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private object GetOwner(int targetIndex)
         {
             // For root elements, the owner is the target itself
-            if (OwnerElement.Definition is IRootDefinition)
+            if (_ownerElement.Definition is IRootDefinition)
             {
-                return OwnerElement.SharedContext.Tree.Targets[targetIndex];
+                return _ownerElement.SharedContext.Tree.Targets[targetIndex];
             }
 
             // For child elements, get the owner from the parent's value entry
-            return OwnerElement.LogicalParent?.ValueEntry.GetWeakValue(targetIndex);
+            return _ownerElement.LogicalParent?.ValueEntry.GetWeakValue(targetIndex);
         }
 
         /// <summary>
@@ -387,12 +356,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private void SetOwner(int targetIndex, object owner)
         {
             // For child elements, update the owner in the parent's value entry
-            if (OwnerElement.Definition is IRootDefinition)
+            if (_ownerElement.Definition is IRootDefinition)
             {
                 return; // Root elements don't need to update the target
             }
 
-            OwnerElement.LogicalParent?.ValueEntry.SetWeakValue(targetIndex, owner);
+            _ownerElement.LogicalParent?.ValueEntry.SetWeakValue(targetIndex, owner);
         }
 
         /// <summary>

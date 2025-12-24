@@ -11,10 +11,5 @@
         /// Gets the group definition that describes this group.
         /// </summary>
         new IGroupDefinition Definition { get; }
-
-        /// <summary>
-        /// Gets the collection of elements contained within this group.
-        /// </summary>
-        IElementList<IElement> Children { get; }
     }
 }

@@ -8,7 +8,7 @@
             elementList.Insert(elementList.Count, element);
         }
 
-        public static bool Remove<TElement>(this IElementList<TElement> elementList, TElement element)
+        public static bool TryRemove<TElement>(this IElementList<TElement> elementList, TElement element)
             where TElement : IElement
         {
             var index = elementList.IndexOf(element);
@@ -19,6 +19,12 @@
 
             elementList.RemoveAt(index);
             return true;
+        }
+
+        public static bool Contains<TElement>(this IElementList<TElement> elementList, TElement element)
+            where TElement : IElement
+        {
+            return elementList.IndexOf(element) != -1;
         }
     }
 }

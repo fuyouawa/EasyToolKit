@@ -38,10 +38,5 @@ namespace EasyToolKit.Inspector.Editor
         /// Updates the collection.
         /// </summary>
         void Update();
-
-        /// <summary>
-        /// Clears all cached elements in the collection.
-        /// </summary>
-        void ClearCache();
     }
 }

@@ -15,7 +15,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public IPostProcessorChainResolver CreateResolver(IElement element)
         {
             var resolverType = ResolverUtility.GetResolverType(element, typeof(IPostProcessorChainResolver));
-            return resolverType.CreateInstance<IPostProcessorChainResolver>();
+            return resolverType?.CreateInstance<IPostProcessorChainResolver>();
         }
     }
 }
