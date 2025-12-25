@@ -62,6 +62,11 @@ namespace EasyToolKit.Inspector.Editor
                 throw new ArgumentException($"Parent '{parent}' must be a method element for method parameter definition", nameof(parent));
             }
 
+            if (definition is IRootDefinition rootDefinition)
+            {
+                return factory.CreateRootElement(rootDefinition);
+            }
+
             if (definition is IMethodDefinition methodDefinition)
             {
                 return factory.CreateMethodElement(methodDefinition, parent);

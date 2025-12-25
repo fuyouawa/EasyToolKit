@@ -20,5 +20,11 @@
         /// The tree factory handles the creation of root elements and manages the overall structure of inspector UI.
         /// </summary>
         public static IElementTreeFactory TreeFactory { get; }
+
+        static InspectorElements()
+        {
+            Configurator = new Implementations.ElementConfigurator();
+            TreeFactory = new Implementations.ElementTreeFactory();
+        }
     }
 }

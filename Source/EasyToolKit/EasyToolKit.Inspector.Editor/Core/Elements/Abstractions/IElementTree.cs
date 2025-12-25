@@ -45,13 +45,6 @@ namespace EasyToolKit.Inspector.Editor
         IElementFactory ElementFactory { get; }
 
         /// <summary>
-        /// Enumerates all elements in the tree.
-        /// </summary>
-        /// <param name="includeChildren">If <c>true</c>, includes all descendant elements; otherwise, only immediate children.</param>
-        /// <returns>An enumerable collection of elements.</returns>
-        IEnumerable<IElement> EnumerateTree(bool includeChildren);
-
-        /// <summary>
         /// Gets a Unity <see cref="SerializedProperty"/> by its path.
         /// </summary>
         /// <param name="propertyPath">The Unity property path.</param>

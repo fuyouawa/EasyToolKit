@@ -159,5 +159,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             return new CollectionItemElement(definition, _sharedContext, parent);
         }
+
+        public IRootElement CreateRootElement(IRootDefinition definition)
+        {
+            if (definition == null)
+                throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
+
+            return new RootElement(definition, _sharedContext);
+        }
     }
 }

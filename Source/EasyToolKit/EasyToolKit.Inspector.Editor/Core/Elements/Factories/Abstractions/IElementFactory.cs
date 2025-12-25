@@ -91,5 +91,12 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="parent">The optional logical parent collection element that contains this item.</param>
         /// <returns>A new collection item element instance.</returns>
         [NotNull] ICollectionItemElement CreateCollectionItemElement([NotNull] ICollectionItemDefinition definition, [CanBeNull] ICollectionElement parent);
+
+        /// <summary>
+        /// Creates a root element from the given root definition.
+        /// </summary>
+        /// <param name="definition">The root definition describing the root element to create.</param>
+        /// <returns>A new root element instance.</returns>
+        [NotNull] IRootElement CreateRootElement([NotNull] IRootDefinition definition);
     }
 }
