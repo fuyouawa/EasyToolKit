@@ -12,16 +12,16 @@ namespace EasyToolKit.TileWorldPro.Editor
     {
         public static bool IsInDesigner = false;
 
-        private static ITileWorldDataStore _temporaryDataStore;
-        private readonly static GUIContent TempContent = new GUIContent();
+        private static ITileWorldDataStore s_temporaryDataStore;
+        private static readonly GUIContent TempContent = new GUIContent();
 
         private TileWorldAsset _target;
 
-        private InspectorProperty _baseRangeProperty;
-        private InspectorProperty _tileSizeProperty;
-        private InspectorProperty _chunkSizeProperty;
-        private InspectorProperty _terrainDefinitionSetProperty;
-        private InspectorProperty _dataStoreProperty;
+        private IElement _baseRangeElement;
+        private IElement _tileSizeElement;
+        private IElement _chunkSizeElement;
+        private IElement _terrainDefinitionSetElement;
+        private IElement _dataStoreElement;
         private bool _isInitialized = false;
 
         private LocalPersistentContext<bool> _dataStoreExpanded;
@@ -31,7 +31,7 @@ namespace EasyToolKit.TileWorldPro.Editor
             base.OnEnable();
             _target = (TileWorldAsset)target;
 
-            _dataStoreExpanded = Tree.LogicRootProperty.GetPersistentContext(nameof(_dataStoreExpanded), true);
+            _dataStoreExpanded = Tree.RootElement.GetPersistentContext(nameof(_dataStoreExpanded), true);
         }
 
         protected override void DrawTree()
@@ -40,21 +40,21 @@ namespace EasyToolKit.TileWorldPro.Editor
 
             if (!_isInitialized)
             {
-                _baseRangeProperty = Tree.LogicRootProperty.Children["_baseRange"];
-                _tileSizeProperty = Tree.LogicRootProperty.Children["_tileSize"];
-                _chunkSizeProperty = Tree.LogicRootProperty.Children["_chunkSize"];
-                _terrainDefinitionSetProperty = Tree.LogicRootProperty.Children["_terrainDefinitionSet"];
-                _dataStoreProperty = Tree.LogicRootProperty.Children["_dataStore"];
+                _baseRangeElement = Tree.RootElement.Children!["_baseRange"];
+                _tileSizeElement = Tree.RootElement.Children["_tileSize"];
+                _chunkSizeElement = Tree.RootElement.Children["_chunkSize"];
+                _terrainDefinitionSetElement = Tree.RootElement.Children["_terrainDefinitionSet"];
+                _dataStoreElement = Tree.RootElement.Children["_dataStore"];
                 _isInitialized = true;
             }
 
-            _baseRangeProperty.Draw();
-            _tileSizeProperty.Draw();
-            _chunkSizeProperty.Draw();
+            _baseRangeElement.Draw();
+            _tileSizeElement.Draw();
+            _chunkSizeElement.Draw();
 
             if (IsInDesigner)
             {
-                _terrainDefinitionSetProperty.Draw();
+                _terrainDefinitionSetElement.Draw();
             }
 
             var dataStoreNames = TileWorldDataStoreUtility.GetDataStoreNamesCache();
@@ -74,7 +74,7 @@ namespace EasyToolKit.TileWorldPro.Editor
                 {
                     var dataStoreType =
                         TileWorldDataStoreUtility.GetDataStoreTypeByName(dataStoreNames[selectedDataStoreIndex]);
-                    _temporaryDataStore = _target.DataStore;
+                    s_temporaryDataStore = _target.DataStore;
                     _target.DataStore = Activator.CreateInstance(dataStoreType) as ITileWorldDataStore;
                 }
                 else
@@ -82,7 +82,7 @@ namespace EasyToolKit.TileWorldPro.Editor
                     _target.DataStore = null;
                 }
 
-                _dataStoreProperty.Refresh();
+                _dataStoreElement.Refresh();
             }
 
             if (_target.DataStore != null)
@@ -95,7 +95,7 @@ namespace EasyToolKit.TileWorldPro.Editor
 
                 if (_dataStoreExpanded.Value)
                 {
-                    _dataStoreProperty.Draw(null);
+                    _dataStoreElement.Draw(null);
                 }
 
                 EasyEditorGUI.EndBox();
@@ -103,16 +103,16 @@ namespace EasyToolKit.TileWorldPro.Editor
                 if (GUILayout.Button("清理无效地形"))
                 {
                     _target.ClearInvalidTerrains();
-                    _dataStoreProperty.ValueEntry.WeakValues.ForceMakeDirty();
+                    _dataStoreElement.CastValue().ValueEntry.MarkDirty();
                 }
 
-                if (_temporaryDataStore != null)
+                if (s_temporaryDataStore != null)
                 {
                     if (GUILayout.Button("转移数据"))
                     {
-                        _target.DataStore.TransferData(_temporaryDataStore);
-                        _temporaryDataStore.Dispose();
-                        _temporaryDataStore = null;
+                        _target.DataStore.TransferData(s_temporaryDataStore);
+                        s_temporaryDataStore.Dispose();
+                        s_temporaryDataStore = null;
                     }
                 }
             }

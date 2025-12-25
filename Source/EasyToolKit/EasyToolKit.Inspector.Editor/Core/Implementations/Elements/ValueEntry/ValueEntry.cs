@@ -20,8 +20,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         private readonly Type[] _runtimeValueTypes;
         private readonly TValue[] _values;
-        private readonly IValueOperation<TValue> _operation;
-        private readonly List<Action> _queuedChanges = new List<Action>();
+        private IValueOperation<TValue> _operation;
+        private Action _pendingChanges;
 
         private int? _lastUpdateId;
         private ValueEntryState? _cachedState;
@@ -45,15 +45,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             _ownerElement = ownerElement ?? throw new ArgumentNullException(nameof(ownerElement));
 
-            var factory = _ownerElement.SharedContext.GetResolverFactory<IValueOperationResolver>();
-            var resolver = factory.CreateResolver(_ownerElement);
-            if (resolver == null)
-            {
-                throw new InvalidOperationException($"Can not create value operation resolver for value entry of '{_ownerElement}'.");
-            }
-
-            _operation = (IValueOperation<TValue>)resolver.GetOperation();
-
             _values = new TValue[_ownerElement.SharedContext.Tree.Targets.Count];
             _runtimeValueTypes = new Type[_ownerElement.SharedContext.Tree.Targets.Count];
         }
@@ -66,7 +57,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Gets a value indicating whether the value is read-only.
         /// </summary>
-        public bool IsReadOnly => _operation.IsReadOnly;
+        public bool IsReadOnly => Operation.IsReadOnly;
 
         /// <summary>
         /// Gets the number of target objects that this value entry manages.
@@ -101,7 +92,29 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             set => SmartValue = (TValue)value;
         }
 
-        protected IValueOperation<TValue> Operation => _operation;
+        /// <summary>
+        /// Gets the value operation for this entry.
+        /// </summary>
+        protected IValueOperation<TValue> Operation
+        {
+            get
+            {
+                if (_operation == null)
+                {
+                    var factory = _ownerElement.SharedContext.GetResolverFactory<IValueOperationResolver>();
+                    var resolver = factory.CreateResolver(_ownerElement);
+                    if (resolver == null)
+                    {
+                        throw new InvalidOperationException($"Can not create value operation resolver for value entry of '{_ownerElement}'.");
+                    }
+
+                    resolver.Element = _ownerElement;
+
+                    _operation = (IValueOperation<TValue>)resolver.GetOperation();
+                }
+                return _operation;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the strongly-typed value.
@@ -227,7 +240,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="action">The action representing the change to be applied.</param>
         public void EnqueueChange(Action action)
         {
-            _queuedChanges.Add(action);
+            _pendingChanges += action;
             MarkDirty();
         }
 
@@ -236,7 +249,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public void ApplyChanges()
         {
-            if (!IsDirty && _queuedChanges.Count == 0)
+            if (!IsDirty)
             {
                 return;
             }
@@ -253,13 +266,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 }
             }
 
-            // Apply queued changes
-            foreach (var change in _queuedChanges)
-            {
-                change();
-            }
-
-            _queuedChanges.Clear();
+            _pendingChanges?.Invoke();
+            _pendingChanges = null;
 
             // Apply value changes
             for (int i = 0; i < _values.Length; i++)
@@ -270,7 +278,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                     continue;
                 }
 
-                _operation.SetValue(ref owner, _values[i]);
+                Operation.SetValue(ref owner, _values[i]);
                 SetOwner(i, owner);
             }
 
@@ -304,8 +312,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                     continue;
                 }
 
-                var value = _operation.GetValue(ref owner);
-                var runtimeValueType = _operation.GetValueRuntimeType(ref owner);
+                var value = Operation.GetValue(ref owner);
+                var runtimeValueType = Operation.GetValueRuntimeType(ref owner);
 
                 // Auto-instantiate null values for instantiable types
                 if (value == null && IsInstantiableType)
@@ -380,10 +388,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>The owner object.</returns>
         private object GetOwner(int targetIndex)
         {
-            // For root elements, the owner is the target itself
-            if (_ownerElement.Definition is IRootDefinition)
+            // For root elements, the owner is the target index
+            if (_ownerElement.Definition.Flags.IsRoot())
             {
-                return _ownerElement.SharedContext.Tree.Targets[targetIndex];
+                return targetIndex;
             }
 
             // For child elements, get the owner from the parent's value entry

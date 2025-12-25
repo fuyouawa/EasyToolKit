@@ -3,7 +3,7 @@ using EasyToolKit.Core;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
 {
-    public class DefaultValueStructureResolverFactory : IValueStructureResolverFactory
+    public class DefaultStructureResolverFactory : IStructureResolverFactory
     {
         public IStructureResolver CreateResolver(IElement element)
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EasyToolKit.Core;
+using EasyToolKit.Core.Editor;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
@@ -15,8 +16,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     {
         private readonly object[] _targets;
         private readonly IElementSharedContext _sharedContext;
-        private readonly List<Action> _pendingCallbacks = new List<Action>();
-        private readonly List<Action> _pendingCallbacksUntilRepaint = new List<Action>();
+        private readonly HashSet<IValueElement> _dirtyValueElements = new HashSet<IValueElement>();
+        private Action _pendingCallbacks;
+        private Action _pendingCallbacksUntilRepaint;
         private bool _disposed;
 
         /// <summary>
@@ -113,7 +115,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
 
-            _pendingCallbacks.Add(action);
+            _pendingCallbacks += action;
         }
 
         /// <summary>
@@ -127,7 +129,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
 
-            _pendingCallbacksUntilRepaint.Add(action);
+            _pendingCallbacksUntilRepaint += action;
         }
 
         /// <summary>
@@ -168,7 +170,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public void DrawElements()
         {
-            foreach (var element in RootElement.Children!)
+            Assert.IsTrue(RootElement.Children != null, "Root element has no children.");
+            foreach (var element in RootElement.Children)
             {
                 try
                 {
@@ -193,6 +196,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             DoPendingCallbacks();
             SerializedObject?.ApplyModifiedProperties();
+
+            var changed = ApplyChanges();
+            if (changed)
+            {
+                EasyGUIHelper.RequestRepaint();
+            }
 
             DoPendingCallbacks();
             Undo.FlushUndoRecordObjects();
@@ -219,8 +228,42 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         private void Update()
         {
+            ApplyChanges();
             ++UpdateId;
-            RootElement?.Update(true);
+            RootElement?.Update();
+        }
+
+        private bool ApplyChanges()
+        {
+            bool changed = false;
+
+            int restDirtyElementsCount;
+            do
+            {
+                var tempDirtyValueElements = new List<IValueElement>(_dirtyValueElements);
+                _dirtyValueElements.Clear();
+                foreach (var property in tempDirtyValueElements)
+                {
+                    property.ValueEntry.ApplyChanges();
+                    changed = true;
+                }
+
+                restDirtyElementsCount = _dirtyValueElements.Count;
+            } while (restDirtyElementsCount > 0);
+
+            if (changed)
+            {
+                if (SerializedObject != null)
+                {
+                    foreach (var targetObject in SerializedObject.targetObjects)
+                    {
+                        EasyEditorUtility.SetUnityObjectDirty(targetObject);
+                    }
+                }
+            }
+
+            Assert.IsTrue(_dirtyValueElements.Count == 0, "Dirty value elements count is not zero.");
+            return changed;
         }
 
         /// <summary>
@@ -229,44 +272,34 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         private void DoPendingCallbacks()
         {
-            // Execute regular pending callbacks
-            if (_pendingCallbacks.Count > 0)
+            if (_pendingCallbacks != null)
             {
-                var callbacks = _pendingCallbacks.ToArray();
-                _pendingCallbacks.Clear();
+                try
+                {
+                    _pendingCallbacks();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
 
-                foreach (var callback in callbacks)
+                _pendingCallbacks = null;
+            }
+
+            if (_pendingCallbacksUntilRepaint != null)
+            {
+                if (Event.current.type == EventType.Repaint)
                 {
                     try
                     {
-                        callback?.Invoke();
+                        _pendingCallbacksUntilRepaint();
                     }
                     catch (Exception e)
                     {
                         Debug.LogException(e);
                     }
-                }
-            }
 
-            // Execute repaint callbacks only during repaint event
-            if (_pendingCallbacksUntilRepaint.Count > 0)
-            {
-                if (Event.current.type == EventType.Repaint)
-                {
-                    var callbacks = _pendingCallbacksUntilRepaint.ToArray();
-                    _pendingCallbacksUntilRepaint.Clear();
-
-                    foreach (var callback in callbacks)
-                    {
-                        try
-                        {
-                            callback?.Invoke();
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogException(e);
-                        }
-                    }
+                    _pendingCallbacksUntilRepaint = null;
                 }
             }
         }

@@ -5,7 +5,7 @@
     {
         protected override void Process(IElement element)
         {
-            element.Update(force: true);
+            element.Update(forceUpdate: true);
         }
     }
 }

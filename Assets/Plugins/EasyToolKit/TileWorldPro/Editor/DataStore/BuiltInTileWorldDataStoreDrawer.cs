@@ -13,7 +13,7 @@ namespace EasyToolKit.TileWorldPro.Editor
         private int? _tilesCount;
         private int? _bakedTilesCount;
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             var value = ValueEntry.SmartValue;
             EditorGUILayout.LabelField("区块数量", value.Chunks.Count.ToString());
@@ -40,14 +40,14 @@ namespace EasyToolKit.TileWorldPro.Editor
                 {
                     value.RemoveChunk(chunkPosition);
                 }
-                Property.ValueEntry.WeakValues.ForceMakeDirty();
+                ValueEntry.MarkDirty();
             }
 
             if (GUILayout.Button("删除所有区块"))
             {
                 value.ClearAllChunks();
                 _tilesCount = 0;
-                Property.ValueEntry.WeakValues.ForceMakeDirty();
+                ValueEntry.MarkDirty();
             }
 
             EasyEditorGUI.Title("烘焙数据");
@@ -64,7 +64,7 @@ namespace EasyToolKit.TileWorldPro.Editor
             {
                 value.ClearAllBakedChunks();
                 _bakedTilesCount = 0;
-                Property.ValueEntry.WeakValues.ForceMakeDirty();
+                ValueEntry.MarkDirty();
             }
         }
     }

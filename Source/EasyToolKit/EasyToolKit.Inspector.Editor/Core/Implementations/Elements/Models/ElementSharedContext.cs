@@ -33,11 +33,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>A collection of default service descriptors for resolver factories.</returns>
         public static IEnumerable<ServiceDescriptor> GetDefaultServiceDescriptors()
         {
-            yield return ServiceDescriptor.Singleton<IAttributeResolverFactory, DefaultAttributeResolverFactory>();
-            yield return ServiceDescriptor.Singleton<IValueStructureResolverFactory, DefaultValueStructureResolverFactory>();
-            yield return ServiceDescriptor.Singleton<IValueOperationResolverFactory, DefaultValueOperationResolverFactory>();
-            yield return ServiceDescriptor.Singleton<IDrawerChainResolverFactory, DefaultDrawerChainResolverFactory>();
-            yield return ServiceDescriptor.Singleton<IPostProcessorChainResolverFactory, DefaultPostProcessorChainResolverFactory>();
+            yield return ServiceDescriptor.Singleton<IResolverFactory<IAttributeResolver>, DefaultAttributeResolverFactory>();
+            yield return ServiceDescriptor.Singleton<IResolverFactory<IStructureResolver>, DefaultStructureResolverFactory>();
+            yield return ServiceDescriptor.Singleton<IResolverFactory<IValueOperationResolver>, DefaultValueOperationResolverFactory>();
+            yield return ServiceDescriptor.Singleton<IResolverFactory<IDrawerChainResolver>, DefaultDrawerChainResolverFactory>();
+            yield return ServiceDescriptor.Singleton<IResolverFactory<IPostProcessorChainResolver>, DefaultPostProcessorChainResolverFactory>();
         }
 
         /// <summary>

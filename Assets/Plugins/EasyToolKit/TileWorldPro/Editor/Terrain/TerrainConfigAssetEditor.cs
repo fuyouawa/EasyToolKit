@@ -89,7 +89,7 @@ namespace EasyToolKit.TileWorldPro.Editor
         protected override void OnEnable()
         {
             base.OnEnable();
-            _isHelpBoxExpanded = Tree.LogicRootProperty.GetPersistentContext(nameof(_isHelpBoxExpanded), false);
+            _isHelpBoxExpanded = Tree.RootElement.GetPersistentContext(nameof(_isHelpBoxExpanded), false);
         }
 
         protected override void DrawTree()
@@ -130,21 +130,21 @@ namespace EasyToolKit.TileWorldPro.Editor
 
             EasyEditorGUI.EndBox();
 
-            Tree.DrawProperties();
+            Tree.DrawElements();
             Tree.EndDraw();
         }
     }
 
     public class TerrainConfigAsset_RuleConfigDrawer : EasyValueDrawer<TerrainConfigAsset.RuleConfig>
     {
-        private InspectorProperty _ruleTypeProperty;
+        private IElement _ruleTypeElement;
 
         protected override void Initialize()
         {
-            _ruleTypeProperty = Property.Children["_ruleType"];
+            _ruleTypeElement = Element.Children!["_ruleType"];
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             var value = ValueEntry.SmartValue;
 
@@ -169,7 +169,7 @@ namespace EasyToolKit.TileWorldPro.Editor
                             gridType = TerrainRuleGridType.Empty;
                         }
                         value.Sudoku[index] = gridType;
-                        ValueEntry.Values.ForceMakeDirty();
+                        ValueEntry.MarkDirty();
                     }
 
                     if (Event.current.type == EventType.Repaint)
@@ -181,7 +181,7 @@ namespace EasyToolKit.TileWorldPro.Editor
             }
             EditorGUILayout.EndVertical();
 
-            _ruleTypeProperty.Draw();
+            _ruleTypeElement.Draw();
 
             EditorGUILayout.EndHorizontal();
         }

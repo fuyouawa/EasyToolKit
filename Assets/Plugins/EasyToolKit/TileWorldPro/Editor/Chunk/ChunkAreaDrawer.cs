@@ -7,7 +7,7 @@ namespace EasyToolKit.TileWorldPro.Editor
 {
     public class ChunkAreaDrawer : EasyValueDrawer<ChunkArea>
     {
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             var value = ValueEntry.SmartValue;
 

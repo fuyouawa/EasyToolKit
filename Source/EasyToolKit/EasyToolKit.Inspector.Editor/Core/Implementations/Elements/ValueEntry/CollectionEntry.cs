@@ -15,8 +15,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// <typeparam name="TItem">The type of items in the collection.</typeparam>
     public class CollectionEntry<TCollection, TItem> : ValueEntry<TCollection>, ICollectionEntry<TCollection, TItem>
     {
-        private readonly ICollectionOperation<TCollection, TItem> _operation;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectionEntry{TCollection, TItem}"/> class.
         /// </summary>
@@ -25,7 +23,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <exception cref="InvalidOperationException">Thrown when collection operation resolver cannot be created.</exception>
         public CollectionEntry([NotNull] IValueElement ownerElement) : base(ownerElement)
         {
-            _operation = (ICollectionOperation<TCollection, TItem>)base.Operation;
         }
 
         /// <summary>
@@ -40,7 +37,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 if (RuntimeValueType != null)
                 {
                     var collection = WeakSmartValue;
-                    return _operation.GetItemRuntimeType(ref collection);
+                    return Operation.GetItemRuntimeType(ref collection);
                 }
 
                 return null;
@@ -50,7 +47,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Gets the collection operation that handles collection-specific operations.
         /// </summary>
-        protected new ICollectionOperation<TCollection, TItem> Operation => _operation;
+        protected new ICollectionOperation<TCollection, TItem> Operation => (ICollectionOperation<TCollection, TItem>)base.Operation;
 
         /// <summary>
         /// Adds a weakly-typed item to the collection for the specified target.
@@ -78,7 +75,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             var collection = GetValue(targetIndex);
-            _operation.AddItem(ref collection, value);
+            Operation.AddItem(ref collection, value);
             SetValue(targetIndex, collection);
             MarkDirty();
         }
@@ -107,7 +104,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             var collection = GetValue(targetIndex);
-            _operation.RemoveItem(ref collection, value);
+            Operation.RemoveItem(ref collection, value);
             SetValue(targetIndex, collection);
             MarkDirty();
         }

@@ -8,17 +8,17 @@ namespace EasyToolKit.TileWorldPro.Editor
     [DrawerPriority(DrawerPriorityLevel.Value + 100)]
     public class TileCoordinateDrawer : EasyValueDrawer<TileCoordinate>
     {
-        private InspectorProperty _coordinateProperty;
+        private IElement _coordinateElement;
 
         protected override void Initialize()
         {
             base.Initialize();
-            _coordinateProperty = Property.Children["_coordinate"];
+            _coordinateElement = Element.Children!["_coordinate"];
         }
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
-            _coordinateProperty.Draw(label);
+            _coordinateElement.Draw(label);
         }
     }
 }

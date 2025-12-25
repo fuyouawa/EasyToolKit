@@ -12,7 +12,7 @@ namespace EasyToolKit.TileWorldPro.Editor
         {
             Tree.BeginDraw();
             EditorGUILayout.LabelField("地形GUID", ((ChunkTerrainObject)target).TerrainDefinition.Guid.ToString("D"));
-            Tree.DrawProperties();
+            Tree.DrawElements();
             Tree.EndDraw();
         }
     }

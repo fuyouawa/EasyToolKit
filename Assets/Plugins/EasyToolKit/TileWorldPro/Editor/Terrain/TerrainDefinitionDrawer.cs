@@ -19,7 +19,7 @@ namespace EasyToolKit.TileWorldPro.Editor
     {
         private static readonly Color SelectedButtonColor = new Color(0, 0.7f, 1f, 1);
 
-        protected override void DrawProperty(GUIContent label)
+        protected override void Draw(GUIContent label)
         {
             CallNextDrawer(label);
 

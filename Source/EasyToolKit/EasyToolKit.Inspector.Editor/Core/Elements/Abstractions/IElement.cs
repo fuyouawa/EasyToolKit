@@ -81,7 +81,8 @@ namespace EasyToolKit.Inspector.Editor
 
         DrawerChain GetDrawerChain();
 
-        void Update(bool force = false);
+        void Refresh();
+        void Update(bool forceUpdate = false);
 
         /// <summary>
         /// Draws this element in the inspector with the specified label.

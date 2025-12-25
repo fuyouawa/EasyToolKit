@@ -21,7 +21,7 @@ namespace EasyToolKit.TileWorldPro.Editor
         protected override void DrawTree()
         {
             Tree.BeginDraw();
-            Tree.DrawProperties();
+            Tree.DrawElements();
             EasyEditorGUI.Title("构建操作", textAlignment: TextAlignment.Center);
             if (GUILayout.Button("重新构建"))
             {

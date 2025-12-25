@@ -19,7 +19,7 @@ namespace EasyToolKit.TileWorldPro.Editor
                 MetroBoxGroupAttributeDrawer.BeginDraw(TempContent.SetText("地形规则集"), null);
             }
 
-            Tree.DrawProperties();
+            Tree.DrawElements();
 
             if (!IsInlineEditor)
             {

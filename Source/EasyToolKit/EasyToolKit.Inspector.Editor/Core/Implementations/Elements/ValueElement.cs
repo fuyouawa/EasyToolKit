@@ -51,7 +51,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 if (_valueEntry == null)
                 {
-                    return _baseValueEntry;
+                    return BaseValueEntry;
                 }
 
                 return _valueEntry;
@@ -79,7 +79,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return valueType.IsStructuralType() && base.CanHaveChildren();
         }
 
-        protected override void Update(bool forceUpdate)
+        protected override void OnUpdate(bool forceUpdate)
         {
             _baseValueEntry.Update();
 

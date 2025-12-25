@@ -1,4 +1,5 @@
 using System;
+using EasyToolKit.Core;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -27,6 +28,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public abstract Type ValueType { get; }
 
+        /// <summary>
+        /// Gets the runtime type of the value
+        /// </summary>
+        /// <param name="owner">Owner object</param>
+        /// <returns>Runtime type of the value</returns>
         public virtual Type GetValueRuntimeType(ref object owner)
         {
             return GetWeakValue(ref owner).GetType();
@@ -45,6 +51,33 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="owner">Owner object</param>
         /// <param name="value">Value to set</param>
         public abstract void SetWeakValue(ref object owner, object value);
+
+        Type IValueOperation.GetValueRuntimeType(ref object owner)
+        {
+            var o = owner;
+            Assert.IsTrue(owner.GetType() == OwnerType,
+                () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
+            return GetValueRuntimeType(ref owner);
+        }
+
+        object IValueOperation.GetWeakValue(ref object owner)
+        {
+            var o = owner;
+            Assert.IsTrue(owner.GetType() == OwnerType,
+                () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
+            return GetWeakValue(ref owner);
+        }
+
+        void IValueOperation.SetWeakValue(ref object owner, object value)
+        {
+            var o = owner;
+            Assert.IsTrue(owner.GetType() == OwnerType,
+                () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
+
+            Assert.IsTrue(value == null || value.GetType() == ValueType,
+                () => $"Value type mismatch. Expected: {ValueType}, Actual: {value?.GetType()}");
+            SetWeakValue(ref owner, value);
+        }
     }
 
     /// <summary>
@@ -95,6 +128,22 @@ namespace EasyToolKit.Inspector.Editor
         {
             var castValue = (TValue)value;
             SetValue(ref owner, castValue);
+        }
+
+        TValue IValueOperation<TValue>.GetValue(ref object owner)
+        {
+            var o = owner;
+            Assert.IsTrue(owner.GetType() == OwnerType,
+                () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
+            return GetValue(ref owner);
+        }
+
+        void IValueOperation<TValue>.SetValue(ref object owner, TValue value)
+        {
+            var o = owner;
+            Assert.IsTrue(owner.GetType() == OwnerType,
+                () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
+            SetValue(ref owner, value);
         }
     }
 }

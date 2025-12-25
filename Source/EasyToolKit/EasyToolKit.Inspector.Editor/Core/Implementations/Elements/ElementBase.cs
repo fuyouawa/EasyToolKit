@@ -159,11 +159,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Refreshes all element state, forcing recreation of resolvers and children.
         /// </summary>
-        protected virtual void Refresh()
+        public virtual void Refresh()
         {
             // Initialize structure resolver (before children)
             var factory = SharedContext.GetResolverFactory<IStructureResolver>();
             _structureResolver = factory.CreateResolver(this);
+            if (_structureResolver != null)
+            {
+                _structureResolver.Element = this;
+            }
 
             // Recreate children if needed
             if (CanHaveChildren())
@@ -208,10 +212,18 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             // Initialize attribute resolver (after children)
             var attributeFactory = SharedContext.GetResolverFactory<IAttributeResolver>();
             _attributeResolver = attributeFactory.CreateResolver(this);
+            if (_attributeResolver != null)
+            {
+                _attributeResolver.Element = this;
+            }
 
             // Initialize drawer chain resolver (after children)
             var drawerFactory = SharedContext.GetResolverFactory<IDrawerChainResolver>();
             _drawerChainResolver = drawerFactory.CreateResolver(this);
+            if (_drawerChainResolver != null)
+            {
+                _drawerChainResolver.Element = this;
+            }
         }
 
         protected virtual bool CanHaveChildren()
@@ -219,8 +231,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return _structureResolver != null;
         }
 
-        protected virtual void Update(bool forceUpdate)
+        protected virtual void OnUpdate(bool forceUpdate)
         {
+            if (Children != null)
+            {
+                foreach (var child in Children)
+                {
+                    child.Update(forceUpdate);
+                }
+            }
         }
 
         /// <summary>
@@ -275,7 +294,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             _lastUpdateId = SharedContext.UpdateId;
-            Update(forceUpdate);
+            OnUpdate(forceUpdate);
         }
 
         void IDisposable.Dispose()
