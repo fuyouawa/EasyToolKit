@@ -33,6 +33,20 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public Type ItemType => typeof(TItem);
 
+        public Type RuntimeItemType
+        {
+            get
+            {
+                if (RuntimeValueType != null)
+                {
+                    var collection = WeakSmartValue;
+                    return _operation.GetItemRuntimeType(ref collection);
+                }
+
+                return null;
+            }
+        }
+
         /// <summary>
         /// Gets the collection operation that handles collection-specific operations.
         /// </summary>

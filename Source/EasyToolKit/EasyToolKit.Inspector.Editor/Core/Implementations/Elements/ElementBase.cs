@@ -247,7 +247,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Creates the logical children list based on the structure resolver.
         /// </summary>
         /// <returns>A read-only list of child elements defined by the structure.</returns>
-        private IReadOnlyElementList<IElement> CreateLogicalChildren()
+        protected virtual IReadOnlyElementList<IElement> CreateLogicalChildren()
         {
             var childrenDefinitions = _structureResolver.GetChildrenDefinitions();
 

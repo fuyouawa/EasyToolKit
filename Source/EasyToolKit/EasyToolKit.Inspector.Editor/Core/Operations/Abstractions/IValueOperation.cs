@@ -23,6 +23,8 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         Type ValueType { get; }
 
+        Type GetValueRuntimeType(ref object owner);
+
         /// <summary>
         /// Gets the value
         /// </summary>

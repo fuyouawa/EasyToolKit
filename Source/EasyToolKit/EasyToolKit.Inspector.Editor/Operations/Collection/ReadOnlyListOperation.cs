@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EasyToolKit.Core;
 using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
@@ -21,6 +22,11 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets whether the collection is read-only (always returns true)
         /// </summary>
         public override bool IsReadOnly => true;
+
+        public override Type GetItemRuntimeType(ref TCollection collection)
+        {
+            return collection.GetType().GetArgumentsOfInheritedOpenGenericType(typeof(IReadOnlyList<>))[0];
+        }
 
         public override void AddItem(ref TCollection collection, TElement value)
         {

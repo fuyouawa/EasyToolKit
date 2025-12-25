@@ -6,6 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         int TargetCount { get; }
         Type ValueType { get; }
+        Type RuntimeValueType { get; }
 
         object WeakSmartValue { get; set; }
 

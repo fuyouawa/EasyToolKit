@@ -37,6 +37,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public Type ItemType => _baseCollectionEntry.ItemType;
 
+        public Type RuntimeItemType => _baseCollectionEntry.RuntimeItemType;
+
         /// <summary>
         /// Gets the underlying collection entry.
         /// </summary>

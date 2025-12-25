@@ -5,6 +5,7 @@ namespace EasyToolKit.Inspector.Editor
     public interface ICollectionOperation : IValueOperation
     {
         Type ItemType { get; }
+        Type GetItemRuntimeType(ref object collection);
 
         void AddWeakItem(ref object collection, object value);
 

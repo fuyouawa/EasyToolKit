@@ -30,6 +30,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 if (_baseValueEntry == null)
                 {
                     _baseValueEntry = CreateBaseValueEntry();
+                    _baseValueEntry.AfterValueChanged += OnValueChanged;
                 }
 
                 return _baseValueEntry;
@@ -84,12 +85,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             if (_baseValueEntry.State == ValueEntryState.TypeConsistent || _baseValueEntry.State == ValueEntryState.Consistent)
             {
-                var runtimeType = _baseValueEntry.WeakSmartValue.GetType();
+                var runtimeType = _baseValueEntry.RuntimeValueType;
                 if (_valueEntry == null ||
-                    (_valueEntry is IValueEntryWrapper && _valueEntry.WeakSmartValue.GetType() != runtimeType) ||
+                    (_valueEntry is IValueEntryWrapper && _valueEntry.RuntimeValueType != runtimeType) ||
                     runtimeType != _baseValueEntry.ValueType)
                 {
-                    _valueEntry = CreateWrapperValueEntry(runtimeType);
+                    _valueEntry = CreateWrapperValueEntry();
                     Refresh();
                 }
             }
@@ -101,24 +102,18 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>A value entry instance for this element.</returns>
         protected virtual IValueEntry CreateBaseValueEntry()
         {
-            var valueType = Definition.ValueType;
-            var valueEntryType = typeof(ValueEntry<>).MakeGenericType(valueType);
-
-            var valueEntry = valueEntryType.CreateInstance<IValueEntry>(this);
-            valueEntry.AfterValueChanged += OnValueChanged;
-            return valueEntry;
+            var valueEntryType = typeof(ValueEntry<>).MakeGenericType(Definition.ValueType);
+            return valueEntryType.CreateInstance<IValueEntry>(this);
         }
 
         /// <summary>
         /// Creates a wrapper value entry for managing the underlying value storage.
         /// </summary>
-        /// <param name="runtimeType">The runtime type of the value.</param>
         /// <returns>A value entry instance for this element.</returns>
-        protected virtual IValueEntry CreateWrapperValueEntry(Type runtimeType)
+        protected virtual IValueEntry CreateWrapperValueEntry()
         {
-            var valueEntryType = typeof(ValueEntryWrapper<,>).MakeGenericType(runtimeType, _baseValueEntry.ValueType);
-            var valueEntry = valueEntryType.CreateInstance<IValueEntry>(_baseValueEntry);
-            return valueEntry;
+            var valueEntryType = typeof(ValueEntryWrapper<,>).MakeGenericType(_baseValueEntry.RuntimeValueType, _baseValueEntry.ValueType);
+            return valueEntryType.CreateInstance<IValueEntry>(_baseValueEntry);
         }
 
         private void OnValueChanged(object sender, ValueChangedEventArgs eventArgs)

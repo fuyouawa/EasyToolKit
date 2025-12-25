@@ -18,6 +18,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private static readonly bool IsInstantiableType = typeof(TValue).IsInstantiable();
         private static readonly bool IsStructuralType = typeof(TValue).IsStructuralType();
 
+        private readonly Type[] _runtimeValueTypes;
         private readonly TValue[] _values;
         private readonly IValueOperation<TValue> _operation;
         private readonly List<Action> _queuedChanges = new List<Action>();
@@ -54,6 +55,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             _operation = (IValueOperation<TValue>)resolver.GetOperation();
 
             _values = new TValue[_ownerElement.SharedContext.Tree.Targets.Count];
+            _runtimeValueTypes = new Type[_ownerElement.SharedContext.Tree.Targets.Count];
         }
 
         /// <summary>
@@ -76,6 +78,18 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// This is the type as declared in the value definition.
         /// </summary>
         public Type ValueType => typeof(TValue);
+
+        public Type RuntimeValueType
+        {
+            get
+            {
+                if (typeof(TValue).IsValueType || State == ValueEntryState.Consistent || State == ValueEntryState.TypeConsistent)
+                {
+                    return _runtimeValueTypes[0];
+                }
+                return typeof(TValue);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the value as a weakly-typed object.
@@ -291,6 +305,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 }
 
                 var value = _operation.GetValue(ref owner);
+                var runtimeValueType = _operation.GetValueRuntimeType(ref owner);
 
                 // Auto-instantiate null values for instantiable types
                 if (value == null && IsInstantiableType)
@@ -304,6 +319,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 }
 
                 _values[i] = value;
+                _runtimeValueTypes[i] = runtimeValueType;
             }
 
             if (clearDirty)
@@ -324,11 +340,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             var first = _values[0];
+            var firstRuntimeType = _runtimeValueTypes[0];
             for (int i = 1; i < _values.Length; i++)
             {
                 if (IsStructuralType)
                 {
-                    if (first.GetType() != _values[i].GetType())
+                    if (firstRuntimeType != _runtimeValueTypes[i])
                     {
                         return ValueEntryState.Mixed;
                     }

@@ -8,8 +8,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// </summary>
     public class MethodElement : ElementBase, IMethodElement
     {
-        private IReadOnlyElementListWrapper<IMethodParameterElement, IElement> _logicalChildrenWrapper;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodElement"/> class.
         /// </summary>
@@ -32,7 +30,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Gets the collection of parameter elements for this method.
         /// </summary>
-        public new IReadOnlyElementList<IMethodParameterElement> LogicalChildren => _logicalChildrenWrapper;
+        public new IReadOnlyElementList<IMethodParameterElement> LogicalChildren =>
+            ((IReadOnlyElementListBoxedWrapper<IElement, IMethodParameterElement>)base.LogicalChildren)!.DerivedList;
 
         /// <summary>
         /// Determines whether this element can have children.
@@ -44,12 +43,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Called after children are created. Initializes the type-safe wrapper for logical children.
+        /// Creates the logical children list based on the structure resolver.
+        /// Wraps the base element list to expose strongly-typed parameter elements.
         /// </summary>
-        protected override void OnCreatedChildren()
+        /// <returns>A read-only list of parameter elements for this method.</returns>
+        protected override IReadOnlyElementList<IElement> CreateLogicalChildren()
         {
-            base.OnCreatedChildren();
-            _logicalChildrenWrapper = new ReadOnlyElementListWrapper<IMethodParameterElement, IElement>(base.LogicalChildren!);
+            var baseLogicalChildren = base.CreateLogicalChildren();
+            var wrapper = new ReadOnlyElementListWrapper<IMethodParameterElement, IElement>(baseLogicalChildren);
+            return new ReadOnlyElementListBoxedWrapper<IElement, IMethodParameterElement>(wrapper);
         }
     }
 }

@@ -64,6 +64,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public Type ValueType => _baseValueEntry.ValueType;
 
+        public Type RuntimeValueType => _baseValueEntry.RuntimeValueType;
+
         /// <summary>
         /// Gets or sets the value as a weakly-typed object.
         /// </summary>

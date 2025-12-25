@@ -26,6 +26,11 @@ namespace EasyToolKit.Inspector.Editor
 
         public Type ItemType => _collectionOperation.ItemType;
 
+        public Type GetValueRuntimeType(ref object owner)
+        {
+            return _auxiliaryOperation.GetValueRuntimeType(ref owner);
+        }
+
         public object GetWeakValue(ref object owner)
         {
             return _auxiliaryOperation.GetWeakValue(ref owner);
@@ -34,6 +39,11 @@ namespace EasyToolKit.Inspector.Editor
         public void SetWeakValue(ref object owner, object value)
         {
             _auxiliaryOperation.SetWeakValue(ref owner, value);
+        }
+
+        public Type GetItemRuntimeType(ref object collection)
+        {
+            return _collectionOperation.GetItemRuntimeType(ref collection);
         }
 
         public void AddWeakItem(ref object collection, object value)

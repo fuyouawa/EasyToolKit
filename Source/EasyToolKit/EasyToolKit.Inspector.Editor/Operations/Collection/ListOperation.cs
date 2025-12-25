@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EasyToolKit.Core;
 using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
@@ -17,6 +18,11 @@ namespace EasyToolKit.Inspector.Editor
     {
         public ListOperation(Type ownerType) : base(ownerType)
         {
+        }
+
+        public override Type GetItemRuntimeType(ref TCollection collection)
+        {
+            return collection.GetType().GetArgumentsOfInheritedOpenGenericType(typeof(IList<>))[0];
         }
 
         /// <summary>

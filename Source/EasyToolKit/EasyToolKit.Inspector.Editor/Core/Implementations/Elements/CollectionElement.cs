@@ -1,11 +1,11 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using EasyToolKit.Core;
+using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
 {
     public class CollectionElement : ValueElement, ICollectionElement
     {
-        private IReadOnlyElementListWrapper<ICollectionItemElement, IElement> _logicalChildrenWrapper;
-
         public CollectionElement(
             [NotNull] IValueDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
@@ -15,7 +15,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         public ICollectionDefinition Definition => (ICollectionDefinition)base.Definition;
-        public IReadOnlyElementList<ICollectionItemElement> LogicalChildren => _logicalChildrenWrapper;
+
+        public IReadOnlyElementList<ICollectionItemElement> LogicalChildren =>
+            ((IReadOnlyElementListBoxedWrapper<IElement, ICollectionItemElement>)base.LogicalChildren)!.DerivedList;
+
+        public ICollectionEntry BaseValueEntry  => (ICollectionEntry)base.BaseValueEntry;
         public ICollectionEntry ValueEntry => (ICollectionEntry)base.ValueEntry;
 
         protected override bool CanHaveChildren()
@@ -23,10 +27,27 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return true;
         }
 
-        protected override void OnCreatedChildren()
+        protected override IReadOnlyElementList<IElement> CreateLogicalChildren()
         {
-            base.OnCreatedChildren();
-            _logicalChildrenWrapper = new ReadOnlyElementListWrapper<ICollectionItemElement, IElement>(base.LogicalChildren!);
+            var baseLogicalChildren = base.CreateLogicalChildren();
+            var wrapper = new ReadOnlyElementListWrapper<ICollectionItemElement, IElement>(baseLogicalChildren);
+            return new ReadOnlyElementListBoxedWrapper<IElement, ICollectionItemElement>(wrapper);
+        }
+
+        protected override IValueEntry CreateBaseValueEntry()
+        {
+            var valueEntryType = typeof(CollectionEntry<,>).MakeGenericType(Definition.ValueType, Definition.ItemType);
+            return valueEntryType.CreateInstance<IValueEntry>(this);
+        }
+
+        protected override IValueEntry CreateWrapperValueEntry()
+        {
+            var valueEntryType = typeof(CollectionEntryWrapper<,,,>).MakeGenericType(
+                BaseValueEntry.RuntimeValueType,
+                BaseValueEntry.RuntimeItemType,
+                BaseValueEntry.ValueType,
+                BaseValueEntry.ItemType);
+            return valueEntryType.CreateInstance<IValueEntry>(BaseValueEntry);
         }
     }
 }

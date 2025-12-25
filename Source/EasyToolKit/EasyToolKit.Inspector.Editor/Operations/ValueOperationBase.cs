@@ -27,6 +27,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public abstract Type ValueType { get; }
 
+        public virtual Type GetValueRuntimeType(ref object owner)
+        {
+            return GetWeakValue(ref owner).GetType();
+        }
+
         /// <summary>
         /// Gets the value
         /// </summary>

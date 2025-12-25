@@ -14,23 +14,36 @@ namespace EasyToolKit.Inspector.Editor
 
         public virtual Type OwnerType { get; }
 
-        public abstract Type ValueType { get; }
-
+        public abstract Type CollectionType { get; }
         public abstract Type ItemType { get; }
+
+        public abstract Type GetItemRuntimeType(ref object collection);
+
+        public virtual Type GetCollectionRuntimeType(ref object owner)
+        {
+            throw new NotSupportedException($"Getting runtime type for '{owner}' is not supported for collection operations.");
+        }
 
         public virtual object GetWeakValue(ref object owner)
         {
-            throw new NotSupportedException("Getting values is not supported for collection operations.");
+            throw new NotSupportedException($"Getting values for '{owner}' is not supported for collection operations.");
         }
 
         public virtual void SetWeakValue(ref object owner, object value)
         {
-            throw new NotSupportedException("Setting values is not supported for collection operations.");
+            throw new NotSupportedException($"Setting values for '{owner}' is not supported for collection operations.");
         }
 
         public abstract void AddWeakItem(ref object collection, object value);
 
         public abstract void RemoveWeakItem(ref object collection, object value);
+
+        Type IValueOperation.ValueType => CollectionType;
+
+        Type IValueOperation.GetValueRuntimeType(ref object owner)
+        {
+            return GetCollectionRuntimeType(ref owner);
+        }
     }
 
     public abstract class CollectionOperationBase<TCollection, TItem> : CollectionOperationBase, ICollectionOperation<TCollection, TItem>
@@ -39,7 +52,7 @@ namespace EasyToolKit.Inspector.Editor
         {
         }
 
-        public override Type ValueType => typeof(TCollection);
+        public override Type CollectionType => typeof(TCollection);
 
         public override Type ItemType => typeof(TItem);
 
@@ -53,6 +66,7 @@ namespace EasyToolKit.Inspector.Editor
             throw new NotSupportedException("Setting values is not supported for collection operations.");
         }
 
+        public abstract Type GetItemRuntimeType(ref TCollection collection);
         public abstract void AddItem(ref TCollection collection, TItem value);
 
         public abstract void RemoveItem(ref TCollection collection, TItem value);
@@ -82,6 +96,12 @@ namespace EasyToolKit.Inspector.Editor
             var castValue = (TItem)value;
             RemoveItem(ref castCollection, castValue);
             collection = castCollection;
+        }
+
+        public override Type GetItemRuntimeType(ref object collection)
+        {
+            var castCollection = (TCollection)collection;
+            return GetItemRuntimeType(ref castCollection);
         }
     }
 }

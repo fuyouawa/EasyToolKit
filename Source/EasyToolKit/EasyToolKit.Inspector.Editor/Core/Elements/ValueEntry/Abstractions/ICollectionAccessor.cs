@@ -5,6 +5,7 @@ namespace EasyToolKit.Inspector.Editor
     public interface ICollectionAccessor : IValueAccessor
     {
         Type ItemType { get; }
+        Type RuntimeItemType { get; }
 
         void AddWeakItem(int targetIndex, object value);
         void RemoveWeakItem(int targetIndex, object value);
