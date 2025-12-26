@@ -157,11 +157,11 @@ MonoBehaviour:
   inner:
     jjss: 26
     ddbba: 0
-    assdaad: {x: 0.94, y: 0}
+    assdaad: {x: 1.68, y: 0}
   kk:
     m_PersistentCalls:
       m_Calls: []
-  jjjjjss: 000000005a00000000000000590000001c000000
+  jjjjjss: 3000000000000000700000000000000000000000
 --- !u!4 &288710752
 Transform:
   m_ObjectHideFlags: 0

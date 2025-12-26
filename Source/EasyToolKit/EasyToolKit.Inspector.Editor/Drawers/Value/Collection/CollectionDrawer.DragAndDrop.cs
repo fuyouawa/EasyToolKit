@@ -47,7 +47,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private void EndDropZone()
         {
-            if (_orderedCollectionAccessor == null || _insertAt == null) return;
+            if (_orderedCollectionAccessor == null) return;
 
             if (_dropZone.IsReadyToClaim)
             {
@@ -55,6 +55,7 @@ namespace EasyToolKit.Inspector.Editor
                 CollectionDrawerStaticContext.CurrentDroppingPropertyInfo = Element;
                 object droppedObject = _dropZone.ClaimObject();
 
+                Assert.IsTrue(_insertAt != null, "InsertAt is null");
                 if (_dropZone.IsCrossWindowDrag)
                 {
                     // If it's a cross-window drag, the changes will for some reason be lost if we don't do this.
@@ -74,6 +75,7 @@ namespace EasyToolKit.Inspector.Editor
                 var droppedObjects = HandleUnityObjectsDrop();
                 if (droppedObjects != null)
                 {
+                    Assert.IsTrue(_insertAt != null, "InsertAt is null");
                     foreach (var obj in droppedObjects)
                     {
                         object[] values = new object[Element.SharedContext.Tree.Targets.Count];

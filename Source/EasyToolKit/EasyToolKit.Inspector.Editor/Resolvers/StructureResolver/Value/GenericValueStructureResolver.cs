@@ -130,16 +130,19 @@ namespace EasyToolKit.Inspector.Editor
             if (!type.IsGenericType)
                 return false;
 
-            var genericType = type.GetGenericTypeDefinition();
-
-            if (genericType.IsInheritsFrom(typeof(ICollection<>)) || genericType.IsInheritsFrom(typeof(IReadOnlyCollection<>)))
+            if (!type.IsImplementsOpenGenericType(typeof(IReadOnlyCollection<>)) &&
+                !type.IsImplementsOpenGenericType(typeof(ICollection<>)))
                 return false;
+
+            var isOrdered = type.IsImplementsOpenGenericType(typeof(IReadOnlyList<>)) ||
+                            type.IsImplementsOpenGenericType(typeof(IList<>));
 
             var elementType = type.GetArgumentsOfInheritedOpenGenericType(typeof(IEnumerable<>))[0];
             if (memberInfo is FieldInfo fieldInfo)
             {
                 collectionDefinition = InspectorElements.Configurator.FieldCollection()
                     .WithFieldInfo(fieldInfo)
+                    .WithIsOrdered(isOrdered)
                     .WithItemType(elementType)
                     .CreateDefinition();
             }
@@ -147,6 +150,7 @@ namespace EasyToolKit.Inspector.Editor
             {
                 collectionDefinition = InspectorElements.Configurator.PropertyCollection()
                     .WithPropertyInfo(propertyInfo)
+                    .WithIsOrdered(isOrdered)
                     .WithItemType(elementType)
                     .CreateDefinition();
             }

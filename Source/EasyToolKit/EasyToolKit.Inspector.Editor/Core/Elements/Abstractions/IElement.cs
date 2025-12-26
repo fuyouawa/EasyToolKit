@@ -70,6 +70,8 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         GUIContent Label { get; set; }
 
+        bool IsDrawing { get; }
+
         [CanBeNull] IReadOnlyElementList<IElement> LogicalChildren { get; }
         [CanBeNull] IElementList<IElement> Children { get; }
 
@@ -81,7 +83,8 @@ namespace EasyToolKit.Inspector.Editor
 
         DrawerChain GetDrawerChain();
 
-        void Refresh();
+        void Request(Action action);
+        void RequestRefresh();
         void Update(bool forceUpdate = false);
 
         /// <summary>

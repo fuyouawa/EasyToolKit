@@ -15,6 +15,13 @@ namespace EasyToolKit.Inspector.Editor
         Type ItemType { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this collection is ordered (can be accessed by index).
+        /// Ordered collections include arrays, lists, and other indexable sequences.
+        /// Unordered collections include sets, dictionaries, and other non-indexable collections.
+        /// </summary>
+        bool IsOrdered { get; set; }
+
+        /// <summary>
         /// Creates a new <see cref="ICollectionDefinition"/> instance based on the current configuration.
         /// </summary>
         /// <returns>A new collection definition instance.</returns>

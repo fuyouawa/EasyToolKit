@@ -137,6 +137,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
         }
 
+        public bool IsDrawing => _isDrawing;
+
         /// <summary>
         /// Gets all custom attribute infos applied to this element.
         /// </summary>
@@ -155,6 +157,18 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             ValidateDisposed();
             return _drawerChainResolver.GetDrawerChain();
+        }
+
+        public void Request(Action action)
+        {
+            if (_isDrawing)
+            {
+                SharedContext.Tree.QueueCallbackUntilRepaint(action);
+            }
+            else
+            {
+                action();
+            }
         }
 
         /// <summary>
@@ -180,63 +194,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Refreshes all element state, forcing recreation of resolvers and children.
         /// </summary>
-        public virtual void Refresh()
+        public void RequestRefresh()
         {
             ValidateDisposed();
-            // Initialize structure resolver (before children)
-            var factory = SharedContext.GetResolverFactory<IStructureResolver>();
-            _structureResolver = factory.CreateResolver(this);
-            if (_structureResolver != null)
-            {
-                _structureResolver.Element = this;
-            }
-
-            // Recreate children if needed
-            if (CanHaveChildren())
-            {
-                Assert.IsFalse(_isDrawing, "Element is drawing when refreshing children.");
-
-                if (_logicalChildren != null)
-                {
-                    foreach (var logicalChild in _logicalChildren)
-                    {
-                        (logicalChild as IDisposable)?.Dispose();
-                    }
-
-#if UNITY_ASSERTIONS
-                    foreach (var logicalChild in _logicalChildren)
-                    {
-                        Assert.IsFalse(_children.Contains(logicalChild),
-                            () => $"Disposed logical child '{logicalChild}' is still in children list.");
-                    }
-#endif
-                }
-
-                (_logicalChildren as IDisposable)?.Dispose();
-                // Recreate logical children
-                _logicalChildren = CreateLogicalChildren();
-
-                var oldChildren = new List<IElement>(_children ?? Enumerable.Empty<IElement>());
-                (_children as IDisposable)?.Dispose();
-                // Recreate children list
-                _children = CreateChildren(oldChildren);
-            }
-
-            // Initialize attribute resolver (after children)
-            var attributeFactory = SharedContext.GetResolverFactory<IAttributeResolver>();
-            _attributeResolver = attributeFactory.CreateResolver(this);
-            if (_attributeResolver != null)
-            {
-                _attributeResolver.Element = this;
-            }
-
-            // Initialize drawer chain resolver (after children)
-            var drawerFactory = SharedContext.GetResolverFactory<IDrawerChainResolver>();
-            _drawerChainResolver = drawerFactory.CreateResolver(this);
-            if (_drawerChainResolver != null)
-            {
-                _drawerChainResolver.Element = this;
-            }
+            Request(Refresh);
         }
 
         protected virtual bool CanHaveChildren()
@@ -296,7 +257,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         [NotNull]
         protected virtual IElementList<IElement> CreateChildren(IReadOnlyList<IElement> oldChildren)
         {
-            var children = new DelayedElementList<IElement>(this, oldChildren.Concat(_logicalChildren!));
+            var children = new RequestedElementList<IElement>(this, oldChildren.Concat(_logicalChildren!));
             children.BeforeElementMoved += OnChildrenElementMoved;
             children.AfterElementMoved += OnChildrenElementMoved;
             return children;
@@ -321,14 +282,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="args">The event arguments containing element move details.</param>
         private void OnElementMoved(object sender, ElementMovedEventArgs args)
         {
-            Assert.IsFalse(_isDrawing, "Element is drawing when moving element.");
-
             var element = sender as IElement;
             if (args.Timing == ElementMovedTiming.After)
             {
                 if (element == this)
                 {
-                    Parent = args.NewParent;
+                    Request(() => Parent = args.NewParent);
                     return;
                 }
 
@@ -356,6 +315,65 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return $"{Path}:{typeName.Substring(0, typeName.Length - suffix.Length)}";
         }
 
+
+        private void Refresh()
+        {
+            // Initialize structure resolver (before children)
+            var factory = SharedContext.GetResolverFactory<IStructureResolver>();
+            _structureResolver = factory.CreateResolver(this);
+            if (_structureResolver != null)
+            {
+                _structureResolver.Element = this;
+            }
+
+            // Recreate children if needed
+            if (CanHaveChildren())
+            {
+                Assert.IsFalse(_isDrawing, "Element is drawing when refreshing children.");
+
+                if (_logicalChildren != null)
+                {
+                    foreach (var logicalChild in _logicalChildren)
+                    {
+                        (logicalChild as IDisposable)?.Dispose();
+                    }
+
+#if UNITY_ASSERTIONS
+                    foreach (var logicalChild in _logicalChildren)
+                    {
+                        Assert.IsFalse(_children.Contains(logicalChild),
+                            () => $"Disposed logical child '{logicalChild}' is still in children list.");
+                    }
+#endif
+                }
+
+                (_logicalChildren as IDisposable)?.Dispose();
+                // Recreate logical children
+                _logicalChildren = CreateLogicalChildren();
+
+                var oldChildren = new List<IElement>(_children ?? Enumerable.Empty<IElement>());
+                (_children as IDisposable)?.Dispose();
+                // Recreate children list
+                _children = CreateChildren(oldChildren);
+            }
+
+            // Initialize attribute resolver (after children)
+            var attributeFactory = SharedContext.GetResolverFactory<IAttributeResolver>();
+            _attributeResolver = attributeFactory.CreateResolver(this);
+            if (_attributeResolver != null)
+            {
+                _attributeResolver.Element = this;
+            }
+
+            // Initialize drawer chain resolver (after children)
+            var drawerFactory = SharedContext.GetResolverFactory<IDrawerChainResolver>();
+            _drawerChainResolver = drawerFactory.CreateResolver(this);
+            if (_drawerChainResolver != null)
+            {
+                _drawerChainResolver.Element = this;
+            }
+        }
+
         void IElement.Update(bool forceUpdate)
         {
             if (_lastUpdateId == SharedContext.UpdateId && !forceUpdate)
@@ -365,7 +383,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             if (_lastUpdateId == null)
             {
-                Refresh();
+                RequestRefresh();
             }
 
             _lastUpdateId = SharedContext.UpdateId;

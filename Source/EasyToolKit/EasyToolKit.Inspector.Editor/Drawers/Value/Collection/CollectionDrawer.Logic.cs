@@ -213,7 +213,7 @@ namespace EasyToolKit.Inspector.Editor
                 ValueEntry.EnqueueChange(() =>
                 {
                     var valueToRemove = Element.LogicalChildren[index].ValueEntry.GetWeakValue(targetIndex);
-                    _orderedCollectionAccessor.RemoveWeakItem(targetIndex, index);
+                    _orderedCollectionAccessor.RemoveItemAt(targetIndex, index);
                     _onRemovedItemCallback?.Invoke(parent, valueToRemove);
                 });
             }

@@ -82,7 +82,7 @@ namespace EasyToolKit.TileWorldPro.Editor
                     _target.DataStore = null;
                 }
 
-                _dataStoreElement.Refresh();
+                _dataStoreElement.RequestRefresh();
             }
 
             if (_target.DataStore != null)

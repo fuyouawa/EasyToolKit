@@ -19,23 +19,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public IReadOnlyElementList<ICollectionItemElement> LogicalChildren =>
             ((IReadOnlyElementListBoxedWrapper<IElement, ICollectionItemElement>)base.LogicalChildren)!.DerivedList;
 
-        public ICollectionEntry BaseValueEntry  => (ICollectionEntry)base.BaseValueEntry;
+        public ICollectionEntry BaseValueEntry => (ICollectionEntry)base.BaseValueEntry;
         public ICollectionEntry ValueEntry => (ICollectionEntry)base.ValueEntry;
 
         protected override bool CanHaveChildren()
         {
             return true;
-        }
-
-        protected override void OnUpdate(bool forceUpdate)
-        {
-            base.OnUpdate(forceUpdate);
-
-            var minimumItemCount = ValueEntry.GetMinimumItemCount();
-            if (minimumItemCount > LogicalChildren.Count)
-            {
-                Refresh();
-            }
         }
 
         protected override IReadOnlyElementList<IElement> CreateLogicalChildren()
@@ -47,17 +36,19 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         protected override IValueEntry CreateBaseValueEntry()
         {
-            var valueEntryType = typeof(CollectionEntry<,>).MakeGenericType(Definition.ValueType, Definition.ItemType);
+            var valueEntryType = (Definition.IsOrdered ? typeof(OrderedCollectionEntry<,>) : typeof(CollectionEntry<,>))
+                .MakeGenericType(Definition.ValueType, Definition.ItemType);
             return valueEntryType.CreateInstance<IValueEntry>(this);
         }
 
         protected override IValueEntry CreateWrapperValueEntry()
         {
-            var valueEntryType = typeof(CollectionEntryWrapper<,,,>).MakeGenericType(
-                BaseValueEntry.RuntimeValueType,
-                BaseValueEntry.RuntimeItemType,
-                BaseValueEntry.ValueType,
-                BaseValueEntry.ItemType);
+            var valueEntryType = (Definition.IsOrdered ? typeof(OrderedCollectionEntryWrapper<,,,>) : typeof(CollectionEntryWrapper<,,,>))
+                .MakeGenericType(
+                    BaseValueEntry.RuntimeValueType,
+                    BaseValueEntry.RuntimeItemType,
+                    BaseValueEntry.ValueType,
+                    BaseValueEntry.ItemType);
             return valueEntryType.CreateInstance<IValueEntry>(BaseValueEntry);
         }
 
@@ -70,7 +61,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         private void OnCollectionChanged(object sender, CollectionChangedEventArgs e)
         {
-            Refresh();
+            RequestRefresh();
         }
     }
 }

@@ -927,6 +927,13 @@
             For dictionaries, this represents the type of values.
             </summary>
         </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionConfiguration.IsOrdered">
+            <summary>
+            Gets or sets a value indicating whether this collection is ordered (can be accessed by index).
+            Ordered collections include arrays, lists, and other indexable sequences.
+            Unordered collections include sets, dictionaries, and other non-indexable collections.
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.ICollectionConfiguration.CreateDefinition">
             <summary>
             Creates a new <see cref="T:EasyToolKit.Inspector.Editor.ICollectionDefinition"/> instance based on the current configuration.
@@ -1152,6 +1159,31 @@
             <param name="configuration">The configuration instance.</param>
             <returns>The configuration instance for method chaining.</returns>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionConfigurationExtensions.WithIsOrdered``1(``0,System.Boolean)">
+            <summary>
+            Sets whether the collection is ordered (can be accessed by index).
+            </summary>
+            <typeparam name="TConfiguration">The collection configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="isOrdered">True if the collection is ordered; false otherwise.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionConfigurationExtensions.AsOrdered``1(``0)">
+            <summary>
+            Marks the collection as ordered (can be accessed by index).
+            </summary>
+            <typeparam name="TConfiguration">The collection configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionConfigurationExtensions.AsUnordered``1(``0)">
+            <summary>
+            Marks the collection as unordered (cannot be accessed by index).
+            </summary>
+            <typeparam name="TConfiguration">The collection configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.CollectionItemConfigurationExtensions">
             <summary>
             Extension methods for <see cref="T:EasyToolKit.Inspector.Editor.ICollectionItemConfiguration"/> interfaces.
@@ -1331,6 +1363,13 @@
             <summary>
             Gets the type of elements contained in this collection.
             For dictionaries, this represents the type of values.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ICollectionDefinition.IsOrdered">
+            <summary>
+            Gets a value indicating whether this collection is ordered (can be accessed by index).
+            Ordered collections include arrays, lists, and other indexable sequences.
+            Unordered collections include sets, dictionaries, and other non-indexable collections.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ICollectionItemDefinition">
@@ -2419,6 +2458,13 @@
             For dictionaries, this represents the type of values.
             </summary>
         </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.CollectionConfiguration.IsOrdered">
+            <summary>
+            Gets or sets a value indicating whether this collection is ordered (can be accessed by index).
+            Ordered collections include arrays, lists, and other indexable sequences.
+            Unordered collections include sets, dictionaries, and other non-indexable collections.
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionConfiguration.CreateDefinition">
             <summary>
             Creates a new <see cref="T:EasyToolKit.Inspector.Editor.ICollectionDefinition"/> instance based on the current configuration.
@@ -2637,7 +2683,7 @@
             Inherits from <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition"/> and extends it with collection-specific metadata.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Type,System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Type,System.Type,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition"/> class.
             </summary>
@@ -2645,11 +2691,19 @@
             <param name="name">The name of the element.</param>
             <param name="valueType">The type of the collection.</param>
             <param name="itemType">The type of elements contained in this collection.</param>
+            <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.ItemType">
             <summary>
             Gets the type of elements contained in this collection.
             For dictionaries, this represents the type of values.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.IsOrdered">
+            <summary>
+            Gets a value indicating whether this collection is ordered (can be accessed by index).
+            Ordered collections include arrays, lists, and other indexable sequences.
+            Unordered collections include sets, dictionaries, and other non-indexable collections.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.CollectionItemDefinition">
@@ -2701,7 +2755,7 @@
             Represents collection fields on an object, providing both collection-specific metadata and reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.FieldInfo,System.Boolean,System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.FieldInfo,System.Boolean,System.Type,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition"/> class.
             </summary>
@@ -2710,6 +2764,7 @@
             <param name="fieldInfo">The field information.</param>
             <param name="itemType">The type of elements contained in this collection.</param>
             <param name="asUnityProperty">Whether this field should be treated as a Unity property.</param>
+            <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.FieldInfo">
             <summary>
@@ -2837,7 +2892,7 @@
             Represents collection properties on an object, providing both collection-specific metadata and reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.PropertyInfo,System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.PropertyInfo,System.Type,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition"/> class.
             </summary>
@@ -2845,6 +2900,7 @@
             <param name="name">The name of the element.</param>
             <param name="propertyInfo">The property information.</param>
             <param name="itemType">The type of elements contained in this collection.</param>
+            <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition.PropertyInfo">
             <summary>
@@ -2981,7 +3037,7 @@
             </summary>
             <param name="label">The label to display. If null, uses the element's default label.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Refresh">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.RequestRefresh">
             <summary>
             Refreshes all element state, forcing recreation of resolvers and children.
             </summary>

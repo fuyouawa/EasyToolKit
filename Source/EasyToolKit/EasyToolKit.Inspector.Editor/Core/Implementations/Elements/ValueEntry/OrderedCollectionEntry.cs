@@ -13,8 +13,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// <typeparam name="TItem">The type of items in the collection.</typeparam>
     public class OrderedCollectionEntry<TCollection, TItem> : CollectionEntry<TCollection, TItem>, IOrderedCollectionEntry<TCollection, TItem>
     {
-        private readonly IOrderedCollectionOperation<TCollection, TItem> _operation;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="OrderedCollectionEntry{TCollection, TItem}"/> class.
         /// </summary>
@@ -23,13 +21,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <exception cref="InvalidOperationException">Thrown when ordered collection operation resolver cannot be created.</exception>
         public OrderedCollectionEntry([NotNull] IValueElement ownerElement) : base(ownerElement)
         {
-            _operation = (IOrderedCollectionOperation<TCollection, TItem>)base.Operation;
         }
 
         /// <summary>
         /// Gets the ordered collection operation that handles ordered collection-specific operations.
         /// </summary>
-        protected new IOrderedCollectionOperation<TCollection, TItem> Operation => _operation;
+        protected new IOrderedCollectionOperation<TCollection, TItem> Operation =>
+            (IOrderedCollectionOperation<TCollection, TItem>)base.Operation;
 
         public object GetWeakItemAt(int targetIndex, int itemIndex)
         {
@@ -61,13 +59,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             var collection = GetValue(targetIndex);
-            var removedItem = _operation.GetItemAt(ref collection, itemIndex);
+            var removedItem = Operation.GetItemAt(ref collection, itemIndex);
 
             var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.RemoveAt, removedItem, itemIndex, CollectionChangedTiming.Before);
             OnBeforeCollectionChanged(eventArgs);
 
             collection = GetValue(targetIndex);
-            _operation.RemoveItemAt(ref collection, itemIndex);
+            Operation.RemoveItemAt(ref collection, itemIndex);
             SetValue(targetIndex, collection);
             MarkDirty();
 
@@ -78,7 +76,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public TItem GetItemAt(int targetIndex, int itemIndex)
         {
             var collection = GetValue(targetIndex);
-            return _operation.GetItemAt(ref collection, itemIndex);
+            return Operation.GetItemAt(ref collection, itemIndex);
         }
 
         /// <summary>
@@ -99,7 +97,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             OnBeforeCollectionChanged(eventArgs);
 
             var collection = GetValue(targetIndex);
-            _operation.InsertItemAt(ref collection, itemIndex, value);
+            Operation.InsertItemAt(ref collection, itemIndex, value);
             SetValue(targetIndex, collection);
             MarkDirty();
 

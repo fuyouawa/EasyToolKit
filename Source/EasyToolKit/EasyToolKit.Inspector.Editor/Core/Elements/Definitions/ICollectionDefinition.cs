@@ -13,5 +13,12 @@ namespace EasyToolKit.Inspector.Editor
         /// For dictionaries, this represents the type of values.
         /// </summary>
         Type ItemType { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this collection is ordered (can be accessed by index).
+        /// Ordered collections include arrays, lists, and other indexable sequences.
+        /// Unordered collections include sets, dictionaries, and other non-indexable collections.
+        /// </summary>
+        bool IsOrdered { get; }
     }
 }

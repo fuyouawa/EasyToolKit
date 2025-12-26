@@ -43,7 +43,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             return new FieldCollectionDefinition(ElementFlags.Field | ElementFlags.Collection | ElementFlags.Value, Name, FieldInfo, AsUnityProperty,
-                ItemType);
+                ItemType, IsOrdered);
         }
 
         IFieldDefinition IFieldConfiguration.CreateDefinition()

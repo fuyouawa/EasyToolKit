@@ -37,7 +37,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             return new PropertyCollectionDefinition(ElementFlags.Property | ElementFlags.Collection | ElementFlags.Value, Name, PropertyInfo,
-                ItemType);
+                ItemType, IsOrdered);
         }
 
         IPropertyDefinition IPropertyConfiguration.CreateDefinition()

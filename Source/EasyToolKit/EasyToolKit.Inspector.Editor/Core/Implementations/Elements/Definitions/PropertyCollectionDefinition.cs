@@ -15,8 +15,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="name">The name of the element.</param>
         /// <param name="propertyInfo">The property information.</param>
         /// <param name="itemType">The type of elements contained in this collection.</param>
-        public PropertyCollectionDefinition(ElementFlags flags, string name, PropertyInfo propertyInfo, System.Type itemType)
-            : base(flags, name, propertyInfo.PropertyType, itemType)
+        /// <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
+        public PropertyCollectionDefinition(ElementFlags flags, string name, PropertyInfo propertyInfo, System.Type itemType, bool isOrdered)
+            : base(flags, name, propertyInfo.PropertyType, itemType, isOrdered)
         {
             PropertyInfo = propertyInfo;
         }

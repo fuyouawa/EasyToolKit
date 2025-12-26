@@ -93,9 +93,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                         (_valueEntry is IValueEntryWrapper && _valueEntry.RuntimeValueType != runtimeType))
                     {
                         _valueEntry = CreateWrapperValueEntry();
-                        Refresh();
+                        RequestRefresh();
                     }
                 }
+            }
+
+            if (_valueEntry == null)
+            {
+                _valueEntry = _baseValueEntry;
+                RequestRefresh();
             }
         }
 
@@ -128,7 +134,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             if (eventArgs.OldValue.GetType() != eventArgs.NewValue.GetType())
             {
-                Refresh();
+                RequestRefresh();
             }
         }
     }

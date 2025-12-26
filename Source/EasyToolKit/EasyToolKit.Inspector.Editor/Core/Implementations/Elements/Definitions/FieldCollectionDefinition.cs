@@ -16,8 +16,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="fieldInfo">The field information.</param>
         /// <param name="itemType">The type of elements contained in this collection.</param>
         /// <param name="asUnityProperty">Whether this field should be treated as a Unity property.</param>
-        public FieldCollectionDefinition(ElementFlags flags, string name, FieldInfo fieldInfo, bool asUnityProperty, System.Type itemType)
-            : base(flags, name, fieldInfo.FieldType, itemType)
+        /// <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
+        public FieldCollectionDefinition(ElementFlags flags, string name, FieldInfo fieldInfo, bool asUnityProperty, System.Type itemType, bool isOrdered)
+            : base(flags, name, fieldInfo.FieldType, itemType, isOrdered)
         {
             FieldInfo = fieldInfo;
             AsUnityProperty = asUnityProperty;

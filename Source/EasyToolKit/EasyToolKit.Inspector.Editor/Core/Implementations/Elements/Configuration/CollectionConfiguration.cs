@@ -16,6 +16,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public Type ItemType { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this collection is ordered (can be accessed by index).
+        /// Ordered collections include arrays, lists, and other indexable sequences.
+        /// Unordered collections include sets, dictionaries, and other non-indexable collections.
+        /// </summary>
+        public bool IsOrdered { get; set; }
+
+        /// <summary>
         /// Creates a new <see cref="ICollectionDefinition"/> instance based on the current configuration.
         /// </summary>
         /// <returns>A new collection definition instance.</returns>
@@ -36,7 +43,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new InvalidOperationException("Name cannot be null or whitespace");
             }
 
-            return new CollectionDefinition(ElementFlags.Collection, Name, ValueType, ItemType);
+            return new CollectionDefinition(ElementFlags.Collection, Name, ValueType, ItemType, IsOrdered);
         }
     }
 }
