@@ -15,18 +15,16 @@ namespace EasyToolKit.Inspector.Editor
         {
             if (label == null)
             {
-                for (var i = 0; i < Element.Children!.Count; i++)
+                foreach (var child in Element.Children)
                 {
-                    var child = Element.Children[i];
                     child.Draw(child.Label);
                 }
             }
             else
             {
                 EditorGUI.indentLevel++;
-                for (var i = 0; i < Element.Children!.Count; i++)
+                foreach (var child in Element.Children)
                 {
-                    var child = Element.Children[i];
                     child.Draw(child.Label);
                 }
                 EditorGUI.indentLevel--;

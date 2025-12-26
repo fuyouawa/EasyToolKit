@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EasyToolKit.Core;
 using JetBrains.Annotations;
 using UnityEditor;
@@ -13,12 +14,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// </summary>
     public abstract class ElementBase : IElement
     {
-        private IReadOnlyElementList<IElement> _logicalChildren;
-        private IElementList<IElement> _children;
+        [CanBeNull] private IReadOnlyElementList<IElement> _logicalChildren;
+        [CanBeNull] private IElementList<IElement> _children;
         private int? _lastUpdateId;
         private string _path;
         private GUIContent _label;
         private bool _disposed;
+        private bool _isDrawing;
 
         private IStructureResolver _structureResolver;
         private IAttributeResolver _attributeResolver;
@@ -73,7 +75,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Gets the hierarchical path of this element.
         /// </summary>
-        public string Path
+        public virtual string Path
         {
             get
             {
@@ -113,13 +115,27 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Gets the child elements defined by the code structure.
         /// These are immutable and determined solely by the definition.
         /// </summary>
-        public IReadOnlyElementList<IElement> LogicalChildren => _logicalChildren;
+        public IReadOnlyElementList<IElement> LogicalChildren
+        {
+            get
+            {
+                ValidateDisposed();
+                return _logicalChildren;
+            }
+        }
 
         /// <summary>
         /// Gets child elements that were added or removed at runtime.
         /// This collection is mutable and reflects runtime modifications.
         /// </summary>
-        public IElementList<IElement> Children => _children;
+        public IElementList<IElement> Children
+        {
+            get
+            {
+                ValidateDisposed();
+                return _children;
+            }
+        }
 
         /// <summary>
         /// Gets all custom attribute infos applied to this element.
@@ -127,6 +143,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>An array of element attribute infos.</returns>
         public IReadOnlyList<ElementAttributeInfo> GetAttributeInfos()
         {
+            ValidateDisposed();
             return _attributeResolver.GetAttributeInfos();
         }
 
@@ -136,6 +153,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>The drawer chain containing all applicable drawers.</returns>
         public DrawerChain GetDrawerChain()
         {
+            ValidateDisposed();
             return _drawerChainResolver.GetDrawerChain();
         }
 
@@ -145,6 +163,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="label">The label to display. If null, uses the element's default label.</param>
         public virtual void Draw(GUIContent label)
         {
+            ValidateDisposed();
             ((IElement)this).Update();
 
             var chain = GetDrawerChain();
@@ -152,7 +171,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             if (chain.MoveNext() && chain.Current != null)
             {
+                _isDrawing = true;
                 chain.Current.Draw(label);
+                _isDrawing = false;
             }
         }
 
@@ -161,6 +182,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public virtual void Refresh()
         {
+            ValidateDisposed();
             // Initialize structure resolver (before children)
             var factory = SharedContext.GetResolverFactory<IStructureResolver>();
             _structureResolver = factory.CreateResolver(this);
@@ -172,6 +194,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             // Recreate children if needed
             if (CanHaveChildren())
             {
+                Assert.IsFalse(_isDrawing, "Element is drawing when refreshing children.");
+
                 if (_logicalChildren != null)
                 {
                     foreach (var logicalChild in _logicalChildren)
@@ -182,31 +206,19 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 #if UNITY_ASSERTIONS
                     foreach (var logicalChild in _logicalChildren)
                     {
-                        Assert.IsFalse(_children.Contains(logicalChild));
+                        Assert.IsFalse(_children.Contains(logicalChild),
+                            () => $"Disposed logical child '{logicalChild}' is still in children list.");
                     }
 #endif
                 }
 
+                (_logicalChildren as IDisposable)?.Dispose();
                 // Recreate logical children
                 _logicalChildren = CreateLogicalChildren();
 
+                (_children as IDisposable)?.Dispose();
                 // Recreate children list
-                if (_children == null)
-                {
-                    _children = new ElementList<IElement>(this);
-                    _children.BeforeElementMoved += OnChildrenElementMoved;
-                    _children.AfterElementMoved += OnChildrenElementMoved;
-                }
-
-                // Initialize with logical children
-                if (_logicalChildren != null)
-                {
-                    foreach (var child in _logicalChildren)
-                    {
-                        _children.Add(child);
-                    }
-                }
-                OnCreatedChildren();
+                _children = CreateChildren();
             }
 
             // Initialize attribute resolver (after children)
@@ -233,13 +245,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         protected virtual void OnUpdate(bool forceUpdate)
         {
-            if (Children != null)
-            {
-                foreach (var child in Children)
-                {
-                    child.Update(forceUpdate);
-                }
-            }
         }
 
         /// <summary>
@@ -247,38 +252,101 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         protected virtual void Dispose()
         {
+            if (_logicalChildren != null)
+            {
+                foreach (var child in _logicalChildren)
+                {
+                    child.Dispose();
+                }
+            }
+
             if (Parent != null)
             {
                 Parent.Children.TryRemove(this);
             }
 
-            _children.BeforeElementMoved -= OnChildrenElementMoved;
-            _children.AfterElementMoved -= OnChildrenElementMoved;
+            if (_children != null)
+            {
+                _children.BeforeElementMoved -= OnChildrenElementMoved;
+                _children.AfterElementMoved -= OnChildrenElementMoved;
+            }
 
             SharedContext.UnregisterEventHandler<ElementMovedEventArgs>(OnElementMoved);
-        }
 
-        protected virtual void OnCreatedChildren()
-        {
+            (_logicalChildren as IDisposable)?.Dispose();
+            (_children as IDisposable)?.Dispose();
         }
 
         /// <summary>
         /// Creates the logical children list based on the structure resolver.
         /// </summary>
         /// <returns>A read-only list of child elements defined by the structure.</returns>
+        [NotNull]
         protected virtual IReadOnlyElementList<IElement> CreateLogicalChildren()
         {
             var childrenDefinitions = _structureResolver.GetChildrenDefinitions();
 
-            var childrenList = new ElementList<IElement>(this);
-
-            foreach (var childDefinition in childrenDefinitions)
-            {
-                var childElement = SharedContext.Tree.ElementFactory.CreateElement(childDefinition, this);
-                childrenList.Insert(childrenList.Count, childElement);
-            }
+            var childrenList = new ElementList<IElement>(this,
+                childrenDefinitions.Select(definition => SharedContext.Tree.ElementFactory.CreateElement(definition, this)));
 
             return childrenList;
+        }
+
+        [NotNull]
+        protected virtual IElementList<IElement> CreateChildren()
+        {
+            var old = _children ?? Enumerable.Empty<IElement>();
+            _children = new DelayedElementList<IElement>(this, old.Concat(_logicalChildren!));
+            _children.BeforeElementMoved += OnChildrenElementMoved;
+            _children.AfterElementMoved += OnChildrenElementMoved;
+            return _children;
+        }
+
+        /// <summary>
+        /// Handles the <see cref="ElementList{TElement}.AfterElementMoved"/> event from children collection.
+        /// Triggers the event through the shared context to notify the entire element tree.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="args">The event arguments containing element move details.</param>
+        private void OnChildrenElementMoved(object sender, ElementMovedEventArgs args)
+        {
+            SharedContext.TriggerEvent(this, args);
+        }
+
+        /// <summary>
+        /// Handles the <see cref="ElementMovedEventArgs"/> event from the shared context.
+        /// Updates parent-child relationships when elements are moved in the tree.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="args">The event arguments containing element move details.</param>
+        private void OnElementMoved(object sender, ElementMovedEventArgs args)
+        {
+            Assert.IsFalse(_isDrawing, "Element is drawing when moving element.");
+
+            var element = sender as IElement;
+            if (args.Timing == ElementMovedTiming.After)
+            {
+                if (element == this)
+                {
+                    Parent = args.NewParent;
+                    return;
+                }
+
+                if (args.ChangeType == ElementListChangeType.Insert && args.NewParent != this)
+                {
+                    // Element was moved to another parent but still exists in our children list
+                    // This indicates the element needs to be updated/removed
+                    _children?.TryRemove(element);
+                }
+            }
+        }
+
+        protected void ValidateDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
         }
 
         void IElement.Update(bool forceUpdate)
@@ -305,43 +373,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             Dispose();
 
             _disposed = true;
-        }
-
-        /// <summary>
-        /// Handles the <see cref="ElementList{TElement}.AfterElementMoved"/> event from children collection.
-        /// Triggers the event through the shared context to notify the entire element tree.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="args">The event arguments containing element move details.</param>
-        private void OnChildrenElementMoved(object sender, ElementMovedEventArgs args)
-        {
-            SharedContext.TriggerEvent(this, args);
-        }
-
-        /// <summary>
-        /// Handles the <see cref="ElementMovedEventArgs"/> event from the shared context.
-        /// Updates parent-child relationships when elements are moved in the tree.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="args">The event arguments containing element move details.</param>
-        private void OnElementMoved(object sender, ElementMovedEventArgs args)
-        {
-            var element = sender as IElement;
-            if (args.Timing == ElementMovedTiming.After)
-            {
-                if (element == this)
-                {
-                    Parent = args.NewParent;
-                    return;
-                }
-
-                if (args.ChangeType == ElementListChangeType.Insert && args.NewParent != this)
-                {
-                    // Element was moved to another parent but still exists in our children list
-                    // This indicates the element needs to be updated/removed
-                    _children?.TryRemove(element);
-                }
-            }
         }
     }
 }

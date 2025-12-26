@@ -797,6 +797,275 @@
             <param name="allowInheritance">是否允许通过继承关系匹配泛型定义。</param>
             <returns></returns>
         </member>
+        <member name="T:EasyToolKit.Core.DependencyResolutionException">
+            <summary>
+            Exception thrown when a service cannot be resolved.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DependencyResolutionException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DependencyResolutionException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IServiceContainer">
+            <summary>
+            Represents a dependency injection container.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IServiceContainer.CreateScope">
+            <summary>
+            Creates a new service scope.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IServiceProvider">
+            <summary>
+            Defines a mechanism for retrieving service objects.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IServiceProvider.GetService(System.Type)">
+            <summary>
+            Gets the service object of the specified type.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IServiceScope">
+            <summary>
+            Represents a scope for service resolution.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IServiceScope.ServiceProvider">
+            <summary>
+            The service provider for this scope.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ServiceContainer">
+            <summary>
+            Implementation of a dependency injection container.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.#ctor(System.Collections.Generic.IEnumerable{EasyToolKit.Core.ServiceDescriptor})">
+            <summary>
+            Initializes a new instance.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.GetService(System.Type)">
+            <summary>
+            Gets the service object of the specified type.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.CreateScope">
+            <summary>
+            Creates a new service scope.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.Dispose">
+            <summary>
+            Cleans up resources.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ServiceContainer.ServiceScope">
+            <summary>
+            Service scope implementation.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.ServiceScope.#ctor(EasyToolKit.Core.ServiceContainer)">
+            <summary>
+            Initializes a new instance.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ServiceContainer.ServiceScope.ServiceProvider">
+            <summary>
+            The service provider for this scope.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.ServiceScope.GetService(System.Type)">
+            <summary>
+            Gets a service instance from the scope.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.ServiceScope.Dispose">
+            <summary>
+            Disposes the scope and its scoped instances.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ServiceContainer.ServiceScope.ScopedServiceProvider">
+            <summary>
+            Scoped service provider implementation.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.ServiceScope.ScopedServiceProvider.#ctor(EasyToolKit.Core.ServiceContainer.ServiceScope)">
+            <summary>
+            Initializes a new instance.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainer.ServiceScope.ScopedServiceProvider.GetService(System.Type)">
+            <summary>
+            Gets the service object of the specified type.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ServiceContainerBuilder">
+            <summary>
+            Builder for creating service containers.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainerBuilder.Build(System.Collections.Generic.IEnumerable{EasyToolKit.Core.ServiceDescriptor})">
+            <summary>
+            Creates a new service container with the specified registrations.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceContainerBuilder.Build(EasyToolKit.Core.ServiceDescriptor[])">
+            <summary>
+            Creates a new service container from a collection of descriptors.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ServiceDescriptor">
+            <summary>
+            Describes a service registration.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ServiceDescriptor.ServiceType">
+            <summary>
+            The service type.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ServiceDescriptor.ImplementationType">
+            <summary>
+            The implementation type.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ServiceDescriptor.Lifetime">
+            <summary>
+            The lifetime of the service.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ServiceDescriptor.ImplementationInstance">
+            <summary>
+            The implementation instance (for singleton registrations).
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ServiceDescriptor.ImplementationFactory">
+            <summary>
+            The implementation factory (for factory-based registrations).
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Transient``2">
+            <summary>
+            Creates a transient service descriptor.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Transient(System.Type,System.Type)">
+            <summary>
+            Creates a transient service descriptor.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Transient``1(System.Func{EasyToolKit.Core.IServiceProvider,``0})">
+            <summary>
+            Creates a transient service descriptor using a factory.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Singleton``2">
+            <summary>
+            Creates a singleton service descriptor.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Singleton(System.Type,System.Type)">
+            <summary>
+            Creates a singleton service descriptor.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Singleton``1(System.Func{EasyToolKit.Core.IServiceProvider,``0})">
+            <summary>
+            Creates a singleton service descriptor using a factory.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Singleton``1(``0)">
+            <summary>
+            Creates a singleton service descriptor using an existing instance.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Scoped``2">
+            <summary>
+            Creates a scoped service descriptor.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Scoped(System.Type,System.Type)">
+            <summary>
+            Creates a scoped service descriptor.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceDescriptor.Scoped``1(System.Func{EasyToolKit.Core.IServiceProvider,``0})">
+            <summary>
+            Creates a scoped service descriptor using a factory.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ServiceLifetime">
+            <summary>
+            Specifies the lifetime of a service in the container.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ServiceLifetime.Transient">
+            <summary>
+            A new instance is created for each resolution.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ServiceLifetime.Singleton">
+            <summary>
+            A single instance is created and reused for all resolutions.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ServiceLifetime.Scoped">
+            <summary>
+            A single instance is created per scope.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ServiceProviderExtensions">
+            <summary>
+            Extension methods for <see cref="T:EasyToolKit.Core.IServiceProvider"/> providing generic typed APIs.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceProviderExtensions.GetService``1(EasyToolKit.Core.IServiceProvider)">
+            <summary>
+            Gets the service object of the specified type.
+            </summary>
+            <typeparam name="T">The type of service object to get.</typeparam>
+            <param name="provider">The service provider.</param>
+            <returns>A service object of type <typeparamref name="T"/>, or null if there is no such service.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="provider"/> is null.</exception>
+        </member>
+        <member name="T:EasyToolKit.Core.ServiceRegistry">
+            <summary>
+            Manages service registrations and resolutions.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceRegistry.Add(EasyToolKit.Core.ServiceDescriptor)">
+            <summary>
+            Adds a service descriptor to the registry.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceRegistry.GetDescriptor(System.Type)">
+            <summary>
+            Gets the service descriptor for the specified type.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceRegistry.GetDescriptors">
+            <summary>
+            Gets all service descriptors.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceRegistry.CacheFactory(System.Type,System.Func{EasyToolKit.Core.IServiceProvider,System.Object})">
+            <summary>
+            Caches a factory for a service type.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ServiceRegistry.GetCachedFactory(System.Type)">
+            <summary>
+            Gets the cached factory for a service type.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Core.EasyEventHandler`1">
             <summary>
             事件处理器
@@ -854,6 +1123,218 @@
             <summary>
             <para>确保会在Unity线程触发</para>
             </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsEqual``1(``0,``0,System.String)">
+            <summary>
+            Asserts that two values are equal.
+            </summary>
+            <typeparam name="T">Type of values to compare.</typeparam>
+            <param name="x">First value.</param>
+            <param name="y">Second value.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsEqual``1(``0,``0,System.Func{System.String})">
+            <summary>
+            Asserts that two values are equal with lazy message evaluation.
+            </summary>
+            <typeparam name="T">Type of values to compare.</typeparam>
+            <param name="x">First value.</param>
+            <param name="y">Second value.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotEqual``1(``0,``0,System.String)">
+            <summary>
+            Asserts that two values are not equal.
+            </summary>
+            <typeparam name="T">Type of values to compare.</typeparam>
+            <param name="x">First value.</param>
+            <param name="y">Second value.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotEqual``1(``0,``0,System.Func{System.String})">
+            <summary>
+            Asserts that two values are not equal with lazy message evaluation.
+            </summary>
+            <typeparam name="T">Type of values to compare.</typeparam>
+            <param name="x">First value.</param>
+            <param name="y">Second value.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNull(System.Object,System.String)">
+            <summary>
+            Asserts that an object is null.
+            </summary>
+            <param name="target">Object to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNull(System.Object,System.Func{System.String})">
+            <summary>
+            Asserts that an object is null with lazy message evaluation.
+            </summary>
+            <param name="target">Object to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNull``1(``0,System.String)">
+            <summary>
+            Asserts that a value is null.
+            </summary>
+            <typeparam name="T">Type of value to check.</typeparam>
+            <param name="target">Value to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNull``1(``0,System.Func{System.String})">
+            <summary>
+            Asserts that a value is null with lazy message evaluation.
+            </summary>
+            <typeparam name="T">Type of value to check.</typeparam>
+            <param name="target">Value to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotNull(System.Object,System.String)">
+            <summary>
+            Asserts that an object is not null.
+            </summary>
+            <param name="target">Object to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotNull(System.Object,System.Func{System.String})">
+            <summary>
+            Asserts that an object is not null with lazy message evaluation.
+            </summary>
+            <param name="target">Object to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotNull``1(``0,System.String)">
+            <summary>
+            Asserts that a value is not null.
+            </summary>
+            <typeparam name="T">Type of value to check.</typeparam>
+            <param name="target">Value to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotNull``1(``0,System.Func{System.String})">
+            <summary>
+            Asserts that a value is not null with lazy message evaluation.
+            </summary>
+            <typeparam name="T">Type of value to check.</typeparam>
+            <param name="target">Value to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsTrue(System.Boolean,System.String)">
+            <summary>
+            Asserts that a condition is true.
+            </summary>
+            <param name="cond">Condition to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsTrue(System.Boolean,System.Func{System.String})">
+            <summary>
+            Asserts that a condition is true with lazy message evaluation.
+            </summary>
+            <param name="cond">Condition to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsTrue(System.Nullable{System.Boolean},System.String)">
+            <summary>
+            Asserts that a nullable boolean is true.
+            </summary>
+            <param name="cond">Nullable condition to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsTrue(System.Nullable{System.Boolean},System.Func{System.String})">
+            <summary>
+            Asserts that a nullable boolean is true with lazy message evaluation.
+            </summary>
+            <param name="cond">Nullable condition to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsFalse(System.Boolean,System.String)">
+            <summary>
+            Asserts that a condition is false.
+            </summary>
+            <param name="cond">Condition to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsFalse(System.Boolean,System.Func{System.String})">
+            <summary>
+            Asserts that a condition is false with lazy message evaluation.
+            </summary>
+            <param name="cond">Condition to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsFalse(System.Nullable{System.Boolean},System.String)">
+            <summary>
+            Asserts that a nullable boolean is false.
+            </summary>
+            <param name="cond">Nullable condition to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsFalse(System.Nullable{System.Boolean},System.Func{System.String})">
+            <summary>
+            Asserts that a nullable boolean is false with lazy message evaluation.
+            </summary>
+            <param name="cond">Nullable condition to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotNullOrEmpty(System.String,System.String)">
+            <summary>
+            Asserts that a string is not null or empty.
+            </summary>
+            <param name="value">String to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotNullOrEmpty(System.String,System.Func{System.String})">
+            <summary>
+            Asserts that a string is not null or empty with lazy message evaluation.
+            </summary>
+            <param name="value">String to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotNullOrEmpty``1(System.Collections.Generic.IList{``0},System.String)">
+            <summary>
+            Asserts that a list is not null or empty.
+            </summary>
+            <typeparam name="T">Type of list elements.</typeparam>
+            <param name="value">List to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNotNullOrEmpty``1(System.Collections.Generic.IList{``0},System.Func{System.String})">
+            <summary>
+            Asserts that a list is not null or empty with lazy message evaluation.
+            </summary>
+            <typeparam name="T">Type of list elements.</typeparam>
+            <param name="value">List to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNullOrEmpty(System.String,System.String)">
+            <summary>
+            Asserts that a string is null or empty.
+            </summary>
+            <param name="value">String to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNullOrEmpty(System.String,System.Func{System.String})">
+            <summary>
+            Asserts that a string is null or empty with lazy message evaluation.
+            </summary>
+            <param name="value">String to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNullOrEmpty``1(System.Collections.Generic.IList{``0},System.String)">
+            <summary>
+            Asserts that a list is null or empty.
+            </summary>
+            <typeparam name="T">Type of list elements.</typeparam>
+            <param name="value">List to check.</param>
+            <param name="message">Error message.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Assert.IsNullOrEmpty``1(System.Collections.Generic.IList{``0},System.Func{System.String})">
+            <summary>
+            Asserts that a list is null or empty with lazy message evaluation.
+            </summary>
+            <typeparam name="T">Type of list elements.</typeparam>
+            <param name="value">List to check.</param>
+            <param name="messageGetter">Function to generate error message only when assertion fails.</param>
         </member>
         <member name="P:EasyToolKit.Core.PooledGameObject.Target">
             <summary>

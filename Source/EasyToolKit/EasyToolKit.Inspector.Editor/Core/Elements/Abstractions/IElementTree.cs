@@ -25,7 +25,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the root element of the tree.
         /// </summary>
-        IRootElement RootElement { get; }
+        IRootElement Root { get; }
 
         /// <summary>
         /// Gets the target objects when multiple objects are selected in the inspector.

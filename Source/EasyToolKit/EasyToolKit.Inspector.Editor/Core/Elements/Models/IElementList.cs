@@ -30,5 +30,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <param name="index">The zero-based index of the element to remove.</param>
         void RemoveAt(int index);
+
+        void Clear();
     }
 }

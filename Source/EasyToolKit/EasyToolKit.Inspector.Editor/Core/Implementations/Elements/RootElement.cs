@@ -24,5 +24,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             : base(definition, sharedContext, null)
         {
         }
+
+        /// <summary>
+        /// Gets the hierarchical path of this element.
+        /// </summary>
+        public override string Path => Definition.Name;
+
+        protected override bool CanHaveChildren()
+        {
+            return true;
+        }
     }
 }

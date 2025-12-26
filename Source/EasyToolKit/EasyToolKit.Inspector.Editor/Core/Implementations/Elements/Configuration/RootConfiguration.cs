@@ -22,7 +22,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             if (Name.IsNullOrWhiteSpace())
             {
-                throw new InvalidOperationException("Name cannot be null or whitespace");
+                Name = "$Root$";
             }
 
             return new RootDefinition(ElementFlags.Root | ElementFlags.Value, Name, ValueType);

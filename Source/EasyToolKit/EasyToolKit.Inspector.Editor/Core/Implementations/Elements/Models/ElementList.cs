@@ -11,11 +11,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// Maintains cached elements and paths for efficient access, with change notifications via events.
     /// </summary>
     /// <typeparam name="TElement">The type of elements in this collection.</typeparam>
-    public class ElementList<TElement> : IElementList<TElement>
+    public class ElementList<TElement> : IElementList<TElement>, IDisposable
         where TElement : IElement
     {
         private const string NamePathSeparator = ".";
 
+        private bool _disposed;
         private readonly IElement _ownerElement;
 
         private readonly List<TElement> _elements;
@@ -33,14 +34,61 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public event EventHandler<ElementMovedEventArgs> AfterElementMoved;
 
         /// <summary>
-        /// Gets the element that owns this list.
+        /// Initializes a new instance of the <see cref="ElementList{TElement}"/> class.
         /// </summary>
-        public IElement OwnerElement => _ownerElement;
+        /// <param name="ownerElement">The element that owns this list.</param>
+        public ElementList([NotNull] IElement ownerElement)
+        {
+            _ownerElement = ownerElement ?? throw new ArgumentNullException(nameof(ownerElement));
+            _elements = new List<TElement>();
+            _nameToIndex = new Dictionary<string, int>();
+            _pathByIndex = new Dictionary<int, string>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ElementList{TElement}"/> class with optional initial elements.
+        /// </summary>
+        /// <param name="ownerElement">The element that owns this list.</param>
+        /// <param name="initialElements">The optional initial elements to populate the list.</param>
+        public ElementList([NotNull] IElement ownerElement, [CanBeNull] IEnumerable<TElement> initialElements)
+            : this(ownerElement)
+        {
+            if (initialElements == null)
+            {
+                return;
+            }
+
+            var index = 0;
+            foreach (var element in initialElements)
+            {
+                if (element == null)
+                {
+                    continue;
+                }
+
+                _elements.Add(element);
+
+                var name = element.Definition?.Name;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    _nameToIndex[name] = index;
+                }
+
+                index++;
+            }
+        }
 
         /// <summary>
         /// Gets the number of elements in the collection.
         /// </summary>
-        public int Count => _elements.Count;
+        public int Count
+        {
+            get
+            {
+                ValidateDisposed();
+                return _elements.Count;
+            }
+        }
 
         /// <summary>
         /// Gets the element at the specified index.
@@ -57,16 +105,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public TElement this[string name] => GetElement(name);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementList{TElement}"/> class.
+        /// Gets the element that owns this list.
         /// </summary>
-        /// <param name="ownerElement">The element that owns this list.</param>
-        public ElementList([NotNull] IElement ownerElement)
-        {
-            _ownerElement = ownerElement ?? throw new ArgumentNullException(nameof(ownerElement));
-            _elements = new List<TElement>();
-            _nameToIndex = new Dictionary<string, int>();
-            _pathByIndex = new Dictionary<int, string>();
-        }
+        public IElement OwnerElement => _ownerElement;
 
         /// <summary>
         /// Gets the element at the specified index.
@@ -76,8 +117,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <exception cref="ArgumentOutOfRangeException">Thrown when index is out of range.</exception>
         public TElement GetElement(int index)
         {
+            ValidateDisposed();
             ValidateIndex(index);
-            return _elements[index];
+            var element = _elements[index];
+            element.Update();
+            return element;
         }
 
         /// <summary>
@@ -89,6 +133,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <exception cref="KeyNotFoundException">Thrown when no element with the specified name exists.</exception>
         public TElement GetElement([NotNull] string name)
         {
+            ValidateDisposed();
             if (name == null)
             {
                 throw new ArgumentNullException(nameof(name));
@@ -100,7 +145,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new KeyNotFoundException($"The element list does not contain an element with name '{name}'.");
             }
 
-            return _elements[index];
+            return GetElement(index);
         }
 
         /// <summary>
@@ -109,8 +154,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="index">The zero-based index at which to insert the element.</param>
         /// <param name="element">The element to insert.</param>
         /// <exception cref="ArgumentNullException">Thrown when element is null.</exception>
-        public void Insert(int index, TElement element)
+        public virtual void Insert(int index, TElement element)
         {
+            ValidateDisposed();
             if (element == null)
             {
                 throw new ArgumentNullException(nameof(element));
@@ -135,8 +181,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         /// <param name="index">The zero-based index of the element to remove.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when index is out of range.</exception>
-        public void RemoveAt(int index)
+        public virtual void RemoveAt(int index)
         {
+            ValidateDisposed();
             ValidateIndex(index);
 
             var element = _elements[index];
@@ -152,6 +199,14 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             OnAfterElementChanged(postArgs);
         }
 
+        public virtual void Clear()
+        {
+            ValidateDisposed();
+            _elements.Clear();
+            _nameToIndex.Clear();
+            _pathByIndex.Clear();
+        }
+
         /// <summary>
         /// Gets the zero-based index of the first occurrence of an element with the specified name.
         /// </summary>
@@ -159,6 +214,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>The zero-based index of the first occurrence of the element, or -1 if not found.</returns>
         public int IndexOf(string name)
         {
+            ValidateDisposed();
             if (name == null)
             {
                 return -1;
@@ -176,6 +232,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>The zero-based index of the element, or -1 if not found.</returns>
         public int IndexOf(TElement element)
         {
+            ValidateDisposed();
             return _elements.IndexOf(element);
         }
 
@@ -186,6 +243,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>The full path of the element.</returns>
         public string GetPath(int index)
         {
+            ValidateDisposed();
             ValidateIndex(index);
 
             if (_pathByIndex.TryGetValue(index, out var path))
@@ -205,6 +263,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public void Update()
         {
+            ValidateDisposed();
             for (var i = Count - 1; i >= 0; i--)
             {
                 var element = _elements[i];
@@ -216,27 +275,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Clears all cached elements and their associated data in the collection.
-        /// </summary>
-        public void ClearCache()
-        {
-            for (var i = 0; i < Count; i++)
-            {
-                var element = _elements[i];
-                element.Dispose();
-            }
-
-            _elements.Clear();
-            _nameToIndex.Clear();
-            _pathByIndex.Clear();
-        }
-
-        /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>An enumerator for the collection.</returns>
         public IEnumerator<TElement> GetEnumerator()
         {
+            ValidateDisposed();
             return _elements.GetEnumerator();
         }
 
@@ -246,6 +290,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <returns>An enumerator for the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
+            ValidateDisposed();
             return GetEnumerator();
         }
 
@@ -293,26 +338,20 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             for (var i = 0; i < Count; i++)
             {
                 var element = _elements[i];
-                var name = element.Definition?.Name;
-                if (!string.IsNullOrEmpty(name) && !_nameToIndex.ContainsKey(name))
-                {
-                    _nameToIndex[name] = i;
-                }
+                var name = element.Definition.Name;
+                _nameToIndex.TryAdd(name, i);
             }
         }
 
         private void UpdateNameIndexAfterInsert(int index, TElement element)
         {
-            var name = element.Definition?.Name;
-            if (!string.IsNullOrEmpty(name))
-            {
-                _nameToIndex[name] = index;
-            }
+            var name = element.Definition.Name;
+            _nameToIndex[name] = index;
 
             for (var i = index + 1; i < Count; i++)
             {
-                var elemName = _elements[i].Definition?.Name;
-                if (!string.IsNullOrEmpty(elemName) && _nameToIndex.TryGetValue(elemName, out var oldIndex) && oldIndex == i - 1)
+                var elemName = _elements[i].Definition.Name;
+                if (_nameToIndex.TryGetValue(elemName, out var oldIndex) && oldIndex == i - 1)
                 {
                     _nameToIndex[elemName] = i;
                 }
@@ -321,17 +360,14 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         private void RemoveNameIndex(TElement element)
         {
-            var name = element.Definition?.Name;
-            if (!string.IsNullOrEmpty(name))
-            {
-                _nameToIndex.Remove(name);
-            }
+            var name = element.Definition.Name;
+            _nameToIndex.Remove(name);
 
             var index = _elements.IndexOf(element);
             for (var i = index + 1; i < Count; i++)
             {
-                var elemName = _elements[i].Definition?.Name;
-                if (!string.IsNullOrEmpty(elemName) && _nameToIndex.TryGetValue(elemName, out var oldIndex) && oldIndex == i)
+                var elemName = _elements[i].Definition.Name;
+                if (_nameToIndex.TryGetValue(elemName, out var oldIndex) && oldIndex == i)
                 {
                     _nameToIndex[elemName] = i - 1;
                 }
@@ -359,6 +395,25 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private string ComputePath(int index, IElement element)
         {
             return _ownerElement.Path + NamePathSeparator + element.Definition.Name;
+        }
+
+        private void ValidateDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
+        }
+
+        void IDisposable.Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _elements.Clear();
+            _nameToIndex.Clear();
+            _pathByIndex.Clear();
+            _disposed = true;
         }
     }
 }

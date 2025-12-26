@@ -78,7 +78,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 {
                     return _runtimeValueTypes[0];
                 }
-                return typeof(TValue);
+                return null;
             }
         }
 
@@ -222,7 +222,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 IsDirty = true;
                 _cachedState = null;
-                OwnerElement.SharedContext.TriggerEvent(this, new ValueDirtyEventArgs());
+                OwnerElement.SharedContext.TriggerEvent(_ownerElement, new ValueDirtyEventArgs());
             }
         }
 

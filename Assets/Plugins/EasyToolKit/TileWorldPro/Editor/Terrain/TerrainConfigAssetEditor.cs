@@ -89,7 +89,7 @@ namespace EasyToolKit.TileWorldPro.Editor
         protected override void OnEnable()
         {
             base.OnEnable();
-            _isHelpBoxExpanded = Tree.RootElement.GetPersistentContext(nameof(_isHelpBoxExpanded), false);
+            _isHelpBoxExpanded = Tree.Root.GetPersistentContext(nameof(_isHelpBoxExpanded), false);
         }
 
         protected override void DrawTree()

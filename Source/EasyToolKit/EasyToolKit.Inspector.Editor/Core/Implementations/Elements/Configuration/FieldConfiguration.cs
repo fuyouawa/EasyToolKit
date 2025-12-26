@@ -34,7 +34,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new InvalidOperationException("FieldInfo cannot be null");
             }
 
-            if (Name.IsNotNullOrWhiteSpace())
+            if (Name.IsNullOrWhiteSpace())
             {
                 Name = FieldInfo.Name;
             }

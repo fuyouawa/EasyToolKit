@@ -86,12 +86,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (_baseValueEntry.State == ValueEntryState.TypeConsistent || _baseValueEntry.State == ValueEntryState.Consistent)
             {
                 var runtimeType = _baseValueEntry.RuntimeValueType;
-                if (_valueEntry == null ||
-                    (_valueEntry is IValueEntryWrapper && _valueEntry.RuntimeValueType != runtimeType) ||
-                    runtimeType != _baseValueEntry.ValueType)
+                Assert.IsTrue(runtimeType != null, "Runtime type is null");
+                if (runtimeType != _baseValueEntry.ValueType)
                 {
-                    _valueEntry = CreateWrapperValueEntry();
-                    Refresh();
+                    if (_valueEntry == null ||
+                        (_valueEntry is IValueEntryWrapper && _valueEntry.RuntimeValueType != runtimeType))
+                    {
+                        _valueEntry = CreateWrapperValueEntry();
+                        Refresh();
+                    }
                 }
             }
         }

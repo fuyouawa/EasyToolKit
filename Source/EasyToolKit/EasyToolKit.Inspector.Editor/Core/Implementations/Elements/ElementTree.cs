@@ -38,7 +38,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Gets the root element of the element tree hierarchy.
         /// Represents the top-level container for all inspector elements.
         /// </summary>
-        public IRootElement RootElement { get; }
+        public IRootElement Root { get; }
 
         /// <summary>
         /// Gets the target objects associated with this element tree.
@@ -50,7 +50,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Gets the type of the target object.
         /// All targets are guaranteed to have the same type.
         /// </summary>
-        public Type TargetType => RootElement.Definition.ValueType;
+        public Type TargetType => Root.Definition.ValueType;
 
         /// <summary>
         /// Gets or sets whether to draw the <see cref="MonoScript"/> object field in the inspector.
@@ -84,11 +84,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             // Create element factory
             ElementFactory = new ElementFactory(_sharedContext);
 
-            RootElement = ElementFactory.CreateRootElement(
+            Root = ElementFactory.CreateRootElement(
                 InspectorElements.Configurator.Root()
                     .WithValueType(targets[0].GetType())
                     .WithName("$ROOT$")
                     .CreateDefinition());
+
+            _sharedContext.RegisterEventHandler<ValueDirtyEventArgs>(OnEvent);
         }
 
         /// <summary>
@@ -165,27 +167,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         /// <summary>
         /// Draws all elements in the tree.
-        /// Iterates through all top-level elements and invokes their draw methods.
-        /// Handles exceptions gracefully and logs them to the Unity console.
         /// </summary>
         public void DrawElements()
         {
-            Assert.IsTrue(RootElement.Children != null, "Root element has no children.");
-            foreach (var element in RootElement.Children)
-            {
-                try
-                {
-                    element.Draw(null);
-                }
-                catch (Exception e) when (e is ExitGUIException || e.InnerException is ExitGUIException)
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    Debug.LogException(e);
-                }
-            }
+            Root.Draw(null);
         }
 
         /// <summary>
@@ -216,7 +201,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (_disposed)
                 return;
 
-            RootElement?.Dispose();
+            _sharedContext.UnregisterEventHandler<ValueDirtyEventArgs>(OnEvent);
+            Root?.Dispose();
             _sharedContext?.Dispose();
 
             _disposed = true;
@@ -230,7 +216,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             ApplyChanges();
             ++UpdateId;
-            RootElement?.Update();
+            Root?.Update();
         }
 
         private bool ApplyChanges()
@@ -242,9 +228,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 var tempDirtyValueElements = new List<IValueElement>(_dirtyValueElements);
                 _dirtyValueElements.Clear();
-                foreach (var property in tempDirtyValueElements)
+                foreach (var element in tempDirtyValueElements)
                 {
-                    property.ValueEntry.ApplyChanges();
+                    element.ValueEntry.ApplyChanges();
                     changed = true;
                 }
 
@@ -301,6 +287,14 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
                     _pendingCallbacksUntilRepaint = null;
                 }
+            }
+        }
+
+        private void OnEvent(object sender, ValueDirtyEventArgs e)
+        {
+            if (sender is IValueElement element)
+            {
+                _dirtyValueElements.Add(element);
             }
         }
     }

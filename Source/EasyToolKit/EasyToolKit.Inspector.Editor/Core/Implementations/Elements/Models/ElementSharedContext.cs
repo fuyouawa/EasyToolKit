@@ -12,8 +12,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// </summary>
     public sealed class ElementSharedContext : IElementSharedContext
     {
+        private readonly IElementTree _tree;
         private readonly IServiceContainer _serviceContainer;
         private readonly EventHandlerList _eventHandlers;
+        private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance with the specified tree and service container.
@@ -22,7 +24,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="serviceContainer">The dependency injection container for resolver factories.</param>
         public ElementSharedContext(IElementTree tree, [CanBeNull] IServiceContainer serviceContainer = null)
         {
-            Tree = tree ?? throw new ArgumentNullException(nameof(tree));
+            _tree = tree ?? throw new ArgumentNullException(nameof(tree));
             _serviceContainer = serviceContainer ?? CreateDefaultServiceContainer();
             _eventHandlers = new EventHandlerList();
         }
@@ -49,12 +51,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return ServiceContainerBuilder.Build(GetDefaultServiceDescriptors());
         }
 
-        public int UpdateId => Tree.UpdateId;
+        public int UpdateId => _tree.UpdateId;
 
-        public IElementTree Tree { get; }
+        public IElementTree Tree => _tree;
 
         public void RegisterEventHandler<TEventArgs>(EventHandler<TEventArgs> handler) where TEventArgs : EventArgs
         {
+            ValidateDisposed();
             if (handler == null)
                 throw new ArgumentNullException(nameof(handler));
 
@@ -63,6 +66,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         public void UnregisterEventHandler<TEventArgs>(EventHandler<TEventArgs> handler) where TEventArgs : EventArgs
         {
+            ValidateDisposed();
             if (handler == null)
                 throw new ArgumentNullException(nameof(handler));
 
@@ -71,16 +75,18 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         public void TriggerEvent(object sender, EventArgs eventArgs)
         {
+            ValidateDisposed();
             if (eventArgs == null)
                 throw new ArgumentNullException(nameof(eventArgs));
 
             var eventType = eventArgs.GetType();
-            var handler = _eventHandlers[eventType] as EventHandler;
-            handler?.Invoke(sender, eventArgs);
+            var handler = _eventHandlers[eventType];
+            handler?.DynamicInvoke(sender, eventArgs);
         }
 
         public IResolverFactory<TResolver> GetResolverFactory<TResolver>() where TResolver : IResolver
         {
+            ValidateDisposed();
             var factoryType = typeof(IResolverFactory<TResolver>);
             var factory = _serviceContainer.GetService(factoryType);
 
@@ -99,9 +105,21 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return typedFactory;
         }
 
+        private void ValidateDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
+        }
+
         void IDisposable.Dispose()
         {
+            if (_disposed)
+                return;
+
             _serviceContainer.Dispose();
+            _disposed = true;
         }
     }
 }

@@ -17,8 +17,8 @@ public class TestInner
 public class TestInspector : MonoBehaviour
 {
     public int jj;
-    // public float bb;
-    // public Vector2 assd;
+    public float bb;
+    public Vector2 assd;
     //
     // public TestInner inner;
     //

@@ -77,5 +77,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             _derivedList.RemoveAt(index);
         }
+
+        public void Clear()
+        {
+            _derivedList.Clear();
+        }
     }
 }

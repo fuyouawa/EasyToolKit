@@ -31,7 +31,7 @@ namespace EasyToolKit.TileWorldPro.Editor
             base.OnEnable();
             _target = (TileWorldAsset)target;
 
-            _dataStoreExpanded = Tree.RootElement.GetPersistentContext(nameof(_dataStoreExpanded), true);
+            _dataStoreExpanded = Tree.Root.GetPersistentContext(nameof(_dataStoreExpanded), true);
         }
 
         protected override void DrawTree()
@@ -40,11 +40,11 @@ namespace EasyToolKit.TileWorldPro.Editor
 
             if (!_isInitialized)
             {
-                _baseRangeElement = Tree.RootElement.Children!["_baseRange"];
-                _tileSizeElement = Tree.RootElement.Children["_tileSize"];
-                _chunkSizeElement = Tree.RootElement.Children["_chunkSize"];
-                _terrainDefinitionSetElement = Tree.RootElement.Children["_terrainDefinitionSet"];
-                _dataStoreElement = Tree.RootElement.Children["_dataStore"];
+                _baseRangeElement = Tree.Root.Children!["_baseRange"];
+                _tileSizeElement = Tree.Root.Children["_tileSize"];
+                _chunkSizeElement = Tree.Root.Children["_chunkSize"];
+                _terrainDefinitionSetElement = Tree.Root.Children["_terrainDefinitionSet"];
+                _dataStoreElement = Tree.Root.Children["_dataStore"];
                 _isInitialized = true;
             }
 

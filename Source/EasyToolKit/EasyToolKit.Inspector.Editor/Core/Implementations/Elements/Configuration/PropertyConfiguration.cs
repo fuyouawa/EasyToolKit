@@ -27,7 +27,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new InvalidOperationException("PropertyInfo cannot be null");
             }
 
-            if (Name.IsNotNullOrWhiteSpace())
+            if (Name.IsNullOrWhiteSpace())
             {
                 Name = PropertyInfo.Name;
             }

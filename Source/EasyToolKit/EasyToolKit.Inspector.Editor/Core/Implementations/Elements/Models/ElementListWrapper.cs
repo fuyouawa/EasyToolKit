@@ -72,5 +72,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             _baseList.RemoveAt(index);
         }
+
+        public void Clear()
+        {
+            _baseList.Clear();
+        }
     }
 }

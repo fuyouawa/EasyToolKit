@@ -81,8 +81,12 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         protected virtual void OnDisable()
         {
+            if (_tree != null)
+            {
+                _tree.Dispose();
+                _tree = null;
+            }
         }
-
 
         /// <summary>
         /// Ensures the static initialization is performed once.
