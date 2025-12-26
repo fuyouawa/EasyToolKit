@@ -83,7 +83,7 @@ namespace EasyToolKit.Inspector.Editor
         {
             if (_tree != null)
             {
-                _tree.Dispose();
+                (_tree as IDisposable)?.Dispose();
                 _tree = null;
             }
         }

@@ -30,7 +30,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 if (_baseValueEntry == null)
                 {
                     _baseValueEntry = CreateBaseValueEntry();
-                    _baseValueEntry.AfterValueChanged += OnValueChanged;
+                    PostProcessBaseValueEntry(_baseValueEntry);
                 }
 
                 return _baseValueEntry;
@@ -107,6 +107,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             var valueEntryType = typeof(ValueEntry<>).MakeGenericType(Definition.ValueType);
             return valueEntryType.CreateInstance<IValueEntry>(this);
+        }
+
+        protected virtual void PostProcessBaseValueEntry(IValueEntry baseValueEntry)
+        {
+            baseValueEntry.AfterValueChanged += OnValueChanged;
         }
 
         /// <summary>

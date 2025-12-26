@@ -38,15 +38,20 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         IOrderedCollectionEntry<TBaseCollection, TBaseItem> IOrderedCollectionEntryWrapper<TCollection, TItem, TBaseCollection, TBaseItem>.BaseValueEntry =>
             _baseOrderedCollectionEntry;
 
+        public object GetWeakItemAt(int targetIndex, int itemIndex)
+        {
+            return _baseOrderedCollectionEntry.GetWeakItemAt(targetIndex, itemIndex);
+        }
+
         /// <summary>
         /// Inserts a weakly-typed item at the specified index in the collection for the specified target.
         /// </summary>
         /// <param name="targetIndex">The zero-based index of the target object.</param>
         /// <param name="itemIndex">The zero-based index at which to insert the item.</param>
         /// <param name="value">The item to insert.</param>
-        public void InsertWeakItem(int targetIndex, int itemIndex, object value)
+        public void InsertWeakItemAt(int targetIndex, int itemIndex, object value)
         {
-            _baseOrderedCollectionEntry.InsertWeakItem(targetIndex, itemIndex, value);
+            _baseOrderedCollectionEntry.InsertWeakItemAt(targetIndex, itemIndex, value);
         }
 
         /// <summary>
@@ -54,9 +59,14 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         /// <param name="targetIndex">The zero-based index of the target object.</param>
         /// <param name="itemIndex">The zero-based index of the item to remove.</param>
-        public void RemoveItem(int targetIndex, int itemIndex)
+        public void RemoveItemAt(int targetIndex, int itemIndex)
         {
-            _baseOrderedCollectionEntry.RemoveItem(targetIndex, itemIndex);
+            _baseOrderedCollectionEntry.RemoveItemAt(targetIndex, itemIndex);
+        }
+
+        public TItem GetItemAt(int targetIndex, int itemIndex)
+        {
+            return (TItem)_baseOrderedCollectionEntry.GetItemAt(targetIndex, itemIndex);
         }
 
         /// <summary>
@@ -65,9 +75,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="targetIndex">The zero-based index of the target object.</param>
         /// <param name="itemIndex">The zero-based index at which to insert the item.</param>
         /// <param name="value">The item to insert.</param>
-        public void InsertItem(int targetIndex, int itemIndex, TItem value)
+        public void InsertItemAt(int targetIndex, int itemIndex, TItem value)
         {
-            _baseOrderedCollectionEntry.InsertItem(targetIndex, itemIndex, value);
+            _baseOrderedCollectionEntry.InsertItemAt(targetIndex, itemIndex, value);
         }
     }
 }

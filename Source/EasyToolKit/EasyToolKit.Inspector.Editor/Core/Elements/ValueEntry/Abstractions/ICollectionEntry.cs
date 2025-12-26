@@ -1,6 +1,9 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
-    public interface ICollectionEntry : IValueEntry, ICollectionAccessor
+    /// <summary>
+    /// Defines a collection value entry with change tracking and notifications.
+    /// </summary>
+    public interface ICollectionEntry : IValueEntry, ICollectionAccessor, ICollectionChangeHandler
     {
     }
 

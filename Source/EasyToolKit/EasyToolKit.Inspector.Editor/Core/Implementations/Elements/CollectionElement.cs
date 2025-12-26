@@ -27,6 +27,17 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return true;
         }
 
+        protected override void OnUpdate(bool forceUpdate)
+        {
+            base.OnUpdate(forceUpdate);
+
+            var minimumItemCount = ValueEntry.GetMinimumItemCount();
+            if (minimumItemCount > LogicalChildren.Count)
+            {
+                Refresh();
+            }
+        }
+
         protected override IReadOnlyElementList<IElement> CreateLogicalChildren()
         {
             var baseLogicalChildren = base.CreateLogicalChildren();
@@ -48,6 +59,18 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 BaseValueEntry.ValueType,
                 BaseValueEntry.ItemType);
             return valueEntryType.CreateInstance<IValueEntry>(BaseValueEntry);
+        }
+
+        protected override void PostProcessBaseValueEntry(IValueEntry baseValueEntry)
+        {
+            base.PostProcessBaseValueEntry(baseValueEntry);
+            var collectionEntry = (ICollectionEntry)baseValueEntry;
+            collectionEntry.AfterCollectionChanged += OnCollectionChanged;
+        }
+
+        private void OnCollectionChanged(object sender, CollectionChangedEventArgs e)
+        {
+            Refresh();
         }
     }
 }

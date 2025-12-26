@@ -8,7 +8,7 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Represents the entire element tree of an inspector, managing the hierarchy, drawing, and state of all elements.
     /// </summary>
-    public interface IElementTree : IDisposable
+    public interface IElementTree
     {
         /// <summary>
         /// Gets the update identifier that increments every frame.

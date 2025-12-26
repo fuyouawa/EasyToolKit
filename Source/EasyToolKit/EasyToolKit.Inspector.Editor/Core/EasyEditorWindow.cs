@@ -619,7 +619,7 @@ namespace EasyToolKit.Inspector.Editor
                     for (int i = 0; i < toDestroy; i++)
                     {
                         var e = _propertyTrees[_propertyTrees.Length - i - 1];
-                        if (e != null) e.Dispose();
+                        if (e != null) (e as IDisposable)?.Dispose();
                     }
                 }
 
@@ -640,7 +640,7 @@ namespace EasyToolKit.Inspector.Editor
 
                     if (newTarget == null)
                     {
-                        if (_propertyTrees[i] != null) _propertyTrees[i].Dispose();
+                        if (_propertyTrees[i] != null) (_propertyTrees[i] as IDisposable)?.Dispose();
                         _propertyTrees[i] = null;
                         if (_editors[i]) DestroyImmediate(_editors[i]);
                         _editors[i] = null;
@@ -653,7 +653,7 @@ namespace EasyToolKit.Inspector.Editor
                             var unityObject = newTarget as UnityEngine.Object;
                             if (unityObject)
                             {
-                                if (_propertyTrees[i] != null) _propertyTrees[i].Dispose();
+                                if (_propertyTrees[i] != null) (_propertyTrees[i] as IDisposable)?.Dispose();
                                 _propertyTrees[i] = null;
                                 if (_editors[i]) DestroyImmediate(_editors[i]);
                                 _editors[i] = UnityEditor.Editor.CreateEditor(unityObject);
@@ -665,7 +665,7 @@ namespace EasyToolKit.Inspector.Editor
                             }
                             else
                             {
-                                if (_propertyTrees[i] != null) _propertyTrees[i].Dispose();
+                                if (_propertyTrees[i] != null) (_propertyTrees[i] as IDisposable)?.Dispose();
                                 _propertyTrees[i] = null;
                                 if (_editors[i]) DestroyImmediate(_editors[i]);
                                 _editors[i] = null;
@@ -673,7 +673,7 @@ namespace EasyToolKit.Inspector.Editor
                         }
                         else
                         {
-                            if (_propertyTrees[i] != null) _propertyTrees[i].Dispose();
+                            if (_propertyTrees[i] != null) (_propertyTrees[i] as IDisposable)?.Dispose();
                             if (_editors[i]) DestroyImmediate(_editors[i]);
                             _editors[i] = null;
 
@@ -803,7 +803,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     if (_propertyTrees[i] != null)
                     {
-                        _propertyTrees[i].Dispose();
+                        (_propertyTrees[i] as IDisposable)?.Dispose();
                         _propertyTrees[i] = null;
                     }
                 }

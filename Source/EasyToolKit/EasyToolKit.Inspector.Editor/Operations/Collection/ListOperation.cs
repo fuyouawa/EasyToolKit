@@ -10,7 +10,6 @@ namespace EasyToolKit.Inspector.Editor
     /// Handles list-specific operations like indexed access, insertion, and removal.
     /// Implements IOrderedCollectionOperationResolver for position-based operations.
     /// </summary>
-    /// <typeparam name="TOwner">The owner type of the collection</typeparam>
     /// <typeparam name="TCollection">The type of the collection (must implement IList{TElement})</typeparam>
     /// <typeparam name="TElement">The type of elements in the collection</typeparam>
     public class ListOperation<TCollection, TElement> : OrderedCollectionOperationBase<TCollection, TElement>
@@ -23,6 +22,11 @@ namespace EasyToolKit.Inspector.Editor
         public override Type GetItemRuntimeType(ref TCollection collection)
         {
             return collection.GetType().GetArgumentsOfInheritedOpenGenericType(typeof(IList<>))[0];
+        }
+
+        public override int GetItemCount(ref TCollection collection)
+        {
+            return collection.Count;
         }
 
         /// <summary>
@@ -49,6 +53,17 @@ namespace EasyToolKit.Inspector.Editor
                 throw new ArgumentNullException(nameof(collection));
 
             collection.Remove(value);
+        }
+
+        public override TElement GetItemAt(ref TCollection collection, int index)
+        {
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
+
+            if (index < 0 || index >= collection.Count)
+                throw new ArgumentOutOfRangeException(nameof(index), "Index was out of range. Must be non-negative and less than the size of the collection.");
+
+            return collection[index];
         }
 
         /// <summary>

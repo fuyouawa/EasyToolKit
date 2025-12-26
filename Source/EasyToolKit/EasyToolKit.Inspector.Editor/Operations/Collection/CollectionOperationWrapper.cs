@@ -46,6 +46,11 @@ namespace EasyToolKit.Inspector.Editor
             return _collectionOperation.GetItemRuntimeType(ref collection);
         }
 
+        public int GetWeakItemCount(ref object collection)
+        {
+            return _collectionOperation.GetWeakItemCount(ref collection);
+        }
+
         public void AddWeakItem(ref object collection, object value)
         {
             _collectionOperation.AddWeakItem(ref collection, value);
@@ -67,6 +72,8 @@ namespace EasyToolKit.Inspector.Editor
             ICollectionOperation<TCollection, TItem> collectionOperation)
             : base(auxiliaryOperation, collectionOperation)
         {
+            _auxiliaryOperation = auxiliaryOperation;
+            _collectionOperation = collectionOperation;
         }
 
         public TCollection GetValue(ref object owner)
@@ -77,6 +84,11 @@ namespace EasyToolKit.Inspector.Editor
         public void SetValue(ref object owner, TCollection value)
         {
             _auxiliaryOperation.SetValue(ref owner, value);
+        }
+
+        public int GetItemCount(ref TCollection collection)
+        {
+            return _collectionOperation.GetItemCount(ref collection);
         }
 
         public void AddItem(ref TCollection collection, TItem value)

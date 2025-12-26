@@ -28,6 +28,11 @@ namespace EasyToolKit.Inspector.Editor
             return collection.GetType().GetArgumentsOfInheritedOpenGenericType(typeof(IReadOnlyList<>))[0];
         }
 
+        public override int GetItemCount(ref TCollection collection)
+        {
+            return collection.Count;
+        }
+
         public override void AddItem(ref TCollection collection, TElement value)
         {
             throw new NotSupportedException("Modifying a read-only list is not supported.");

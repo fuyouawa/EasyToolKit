@@ -181,7 +181,7 @@ namespace EasyToolKit.Inspector.Editor
                 var parent = Element.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
                 ValueEntry.EnqueueChange(() =>
                 {
-                    _orderedCollectionAccessor.InsertWeakItem(targetIndex, index, valueToAdd);
+                    _orderedCollectionAccessor.InsertWeakItemAt(targetIndex, index, valueToAdd);
                     _onAddedItemCallback?.Invoke(parent, valueToAdd);
                 });
             }

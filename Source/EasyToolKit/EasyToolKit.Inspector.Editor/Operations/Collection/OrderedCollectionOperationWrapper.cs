@@ -1,28 +1,5 @@
 ﻿namespace EasyToolKit.Inspector.Editor
 {
-    public class OrderedCollectionOperationWrapper : CollectionOperationWrapper, IOrderedCollectionOperation
-    {
-        private readonly IOrderedCollectionOperation _orderedCollectionOperation;
-
-        public OrderedCollectionOperationWrapper(
-            IValueOperation auxiliaryOperation,
-            IOrderedCollectionOperation collectionOperation)
-            : base(auxiliaryOperation, collectionOperation)
-        {
-            _orderedCollectionOperation = collectionOperation;
-        }
-
-        public void InsertWeakItemAt(ref object collection, int index, object value)
-        {
-            _orderedCollectionOperation.InsertWeakItemAt(ref collection, index, value);
-        }
-
-        public void RemoveWeakItemAt(ref object collection, int index)
-        {
-            _orderedCollectionOperation.RemoveWeakItemAt(ref collection, index);
-        }
-    }
-
     public class OrderedCollectionOperationWrapper<TCollection, TElement> : CollectionOperationWrapper<TCollection, TElement>,
         IOrderedCollectionOperation<TCollection, TElement>
     {
@@ -36,6 +13,11 @@
             _orderedCollectionOperation = collectionOperation;
         }
 
+        public object GetWeakItemAt(ref object collection, int index)
+        {
+            return _orderedCollectionOperation.GetWeakItemAt(ref collection, index);
+        }
+
         public void InsertWeakItemAt(ref object collection, int index, object value)
         {
             _orderedCollectionOperation.InsertWeakItemAt(ref collection, index, value);
@@ -44,6 +26,11 @@
         public void RemoveWeakItemAt(ref object collection, int index)
         {
             _orderedCollectionOperation.RemoveWeakItemAt(ref collection, index);
+        }
+
+        public TElement GetItemAt(ref TCollection collection, int index)
+        {
+            return _orderedCollectionOperation.GetItemAt(ref collection, index);
         }
 
         public void InsertItemAt(ref TCollection collection, int index, TElement value)

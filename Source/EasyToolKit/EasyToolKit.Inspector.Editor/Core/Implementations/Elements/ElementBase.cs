@@ -12,7 +12,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// Provides a base implementation of the <see cref="IElement"/> interface,
     /// serving as the foundation for all inspector element implementations.
     /// </summary>
-    public abstract class ElementBase : IElement
+    public abstract class ElementBase : IElement, IDisposable
     {
         [CanBeNull] private IReadOnlyElementList<IElement> _logicalChildren;
         [CanBeNull] private IElementList<IElement> _children;
@@ -200,7 +200,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 {
                     foreach (var logicalChild in _logicalChildren)
                     {
-                        logicalChild.Dispose();
+                        (logicalChild as IDisposable)?.Dispose();
                     }
 
 #if UNITY_ASSERTIONS
@@ -216,9 +216,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 // Recreate logical children
                 _logicalChildren = CreateLogicalChildren();
 
+                var oldChildren = new List<IElement>(_children ?? Enumerable.Empty<IElement>());
                 (_children as IDisposable)?.Dispose();
                 // Recreate children list
-                _children = CreateChildren();
+                _children = CreateChildren(oldChildren);
             }
 
             // Initialize attribute resolver (after children)
@@ -256,7 +257,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 foreach (var child in _logicalChildren)
                 {
-                    child.Dispose();
+                    (child as IDisposable)?.Dispose();
                 }
             }
 
@@ -286,20 +287,19 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             var childrenDefinitions = _structureResolver.GetChildrenDefinitions();
 
-            var childrenList = new ElementList<IElement>(this,
+            var children = new ElementList<IElement>(this,
                 childrenDefinitions.Select(definition => SharedContext.Tree.ElementFactory.CreateElement(definition, this)));
 
-            return childrenList;
+            return children;
         }
 
         [NotNull]
-        protected virtual IElementList<IElement> CreateChildren()
+        protected virtual IElementList<IElement> CreateChildren(IReadOnlyList<IElement> oldChildren)
         {
-            var old = _children ?? Enumerable.Empty<IElement>();
-            _children = new DelayedElementList<IElement>(this, old.Concat(_logicalChildren!));
-            _children.BeforeElementMoved += OnChildrenElementMoved;
-            _children.AfterElementMoved += OnChildrenElementMoved;
-            return _children;
+            var children = new DelayedElementList<IElement>(this, oldChildren.Concat(_logicalChildren!));
+            children.BeforeElementMoved += OnChildrenElementMoved;
+            children.AfterElementMoved += OnChildrenElementMoved;
+            return children;
         }
 
         /// <summary>
@@ -347,6 +347,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 throw new ObjectDisposedException(GetType().Name);
             }
+        }
+
+        public override string ToString()
+        {
+            var typeName = GetType().Name;
+            var suffix = "Element";
+            return $"{Path}:{typeName.Substring(0, typeName.Length - suffix.Length)}";
         }
 
         void IElement.Update(bool forceUpdate)

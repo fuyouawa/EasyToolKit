@@ -39,11 +39,27 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         public Type RuntimeItemType => _baseCollectionEntry.RuntimeItemType;
 
+        public event EventHandler<CollectionChangedEventArgs> BeforeCollectionChanged
+        {
+            add => _baseCollectionEntry.BeforeCollectionChanged += value;
+            remove => _baseCollectionEntry.BeforeCollectionChanged -= value;
+        }
+        public event EventHandler<CollectionChangedEventArgs> AfterCollectionChanged
+        {
+            add => _baseCollectionEntry.AfterCollectionChanged += value;
+            remove => _baseCollectionEntry.AfterCollectionChanged -= value;
+        }
+
         /// <summary>
         /// Gets the underlying collection entry.
         /// </summary>
         ICollectionEntry<TBaseCollection, TBaseItem> ICollectionEntryWrapper<TCollection, TItem, TBaseCollection, TBaseItem>.BaseValueEntry =>
             _baseCollectionEntry;
+
+        public int GetItemCount(int targetIndex)
+        {
+            return _baseCollectionEntry.GetItemCount(targetIndex);
+        }
 
         /// <summary>
         /// Adds a weakly-typed item to the collection for the specified target.

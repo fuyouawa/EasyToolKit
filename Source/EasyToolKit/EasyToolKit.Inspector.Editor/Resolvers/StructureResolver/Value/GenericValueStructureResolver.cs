@@ -102,6 +102,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     return definition;
                 }
+
                 return InspectorElements.Configurator.Field()
                     .WithFieldInfo(fieldInfo)
                     .CreateDefinition();
@@ -113,6 +114,7 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     return definition;
                 }
+
                 return InspectorElements.Configurator.Property()
                     .WithPropertyInfo(propertyInfo)
                     .CreateDefinition();
@@ -130,7 +132,7 @@ namespace EasyToolKit.Inspector.Editor
 
             var genericType = type.GetGenericTypeDefinition();
 
-            if (genericType != typeof(ICollection<>) || genericType != typeof(IReadOnlyCollection<>))
+            if (genericType.IsInheritsFrom(typeof(ICollection<>)) || genericType.IsInheritsFrom(typeof(IReadOnlyCollection<>)))
                 return false;
 
             var elementType = type.GetArgumentsOfInheritedOpenGenericType(typeof(IEnumerable<>))[0];
@@ -152,6 +154,7 @@ namespace EasyToolKit.Inspector.Editor
             {
                 return false;
             }
+
             return true;
         }
 

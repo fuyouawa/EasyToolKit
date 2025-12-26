@@ -7,6 +7,7 @@ namespace EasyToolKit.Inspector.Editor
         Type ItemType { get; }
         Type RuntimeItemType { get; }
 
+        int GetItemCount(int targetIndex);
         void AddWeakItem(int targetIndex, object value);
         void RemoveWeakItem(int targetIndex, object value);
     }
@@ -19,12 +20,14 @@ namespace EasyToolKit.Inspector.Editor
 
     public interface IOrderedCollectionAccessor : ICollectionAccessor
     {
-        void InsertWeakItem(int targetIndex, int itemIndex, object value);
-        void RemoveItem(int targetIndex, int itemIndex);
+        object GetWeakItemAt(int targetIndex, int itemIndex);
+        void InsertWeakItemAt(int targetIndex, int itemIndex, object value);
+        void RemoveItemAt(int targetIndex, int itemIndex);
     }
 
     public interface IOrderedCollectionAccessor<TCollection, TItem> : ICollectionAccessor<TCollection, TItem>, IOrderedCollectionAccessor
     {
-        void InsertItem(int targetIndex, int itemIndex, TItem value);
+        TItem GetItemAt(int targetIndex, int itemIndex);
+        void InsertItemAt(int targetIndex, int itemIndex, TItem value);
     }
 }

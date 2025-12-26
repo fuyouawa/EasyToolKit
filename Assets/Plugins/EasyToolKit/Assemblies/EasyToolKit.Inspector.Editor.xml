@@ -2166,6 +2166,26 @@
             Updates the collection.
             </summary>
         </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ICollectionChangeHandler">
+            <summary>
+            Defines a handler for collection change events with before/after notifications.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.ICollectionChangeHandler.BeforeCollectionChanged">
+            <summary>
+            Occurs before a collection is changed.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.ICollectionChangeHandler.AfterCollectionChanged">
+            <summary>
+            Occurs after a collection has been changed.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ICollectionEntry">
+            <summary>
+            Defines a collection value entry with change tracking and notifications.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.ICollectionEntryWrapper">
             <summary>
             Base interface for collection entry wrappers.
@@ -2225,6 +2245,91 @@
         <member name="P:EasyToolKit.Inspector.Editor.IValueEntryWrapper`2.BaseValueEntry">
             <summary>
             Gets the underlying value entry.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.CollectionChangeType">
+            <summary>
+            Specifies the type of collection change.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.CollectionChangeType.Add">
+            <summary>
+            An item was added to the collection.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.CollectionChangeType.Remove">
+            <summary>
+            An item was removed from the collection.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.CollectionChangeType.Insert">
+            <summary>
+            An item was inserted at a specific index in the collection.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.CollectionChangeType.RemoveAt">
+            <summary>
+            An item was removed from a specific index in the collection.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.CollectionChangeType.Clear">
+            <summary>
+            The collection was cleared.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.CollectionChangedTiming">
+            <summary>
+            Specifies the timing of the collection changed event.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.CollectionChangedTiming.Before">
+            <summary>
+            The event is raised before the collection is changed.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.CollectionChangedTiming.After">
+            <summary>
+            The event is raised after the collection has been changed.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs">
+            <summary>
+            Provides data for collection change events.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.#ctor(System.Int32,EasyToolKit.Inspector.Editor.CollectionChangeType,System.Object,System.Nullable{System.Int32},EasyToolKit.Inspector.Editor.CollectionChangedTiming)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs"/> class.
+            </summary>
+            <param name="targetIndex">The zero-based index of the target object.</param>
+            <param name="changeType">The type of collection change.</param>
+            <param name="item">The item involved in the change operation.</param>
+            <param name="itemIndex">The zero-based index of the item in the collection (if applicable).</param>
+            <param name="timing">The timing of the event (pre or post).</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.TargetIndex">
+            <summary>
+            Gets the zero-based index of the target object.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.ChangeType">
+            <summary>
+            Gets the type of collection change.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.Item">
+            <summary>
+            Gets the item involved in the change operation.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.ItemIndex">
+            <summary>
+            Gets the zero-based index of the item in the collection, if applicable.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.Timing">
+            <summary>
+            Gets the timing of the event (pre or post).
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ValueChangedTiming">
@@ -3940,6 +4045,16 @@
             <typeparam name="TCollection">The type of the collection.</typeparam>
             <typeparam name="TItem">The type of items in the collection.</typeparam>
         </member>
+        <member name="E:EasyToolKit.Inspector.Editor.Implementations.CollectionEntry`2.BeforeCollectionChanged">
+            <summary>
+            Occurs before a collection is changed.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.Implementations.CollectionEntry`2.AfterCollectionChanged">
+            <summary>
+            Occurs after a collection has been changed.
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionEntry`2.#ctor(EasyToolKit.Inspector.Editor.IValueElement)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.CollectionEntry`2"/> class.
@@ -3987,6 +4102,18 @@
             </summary>
             <param name="targetIndex">The zero-based index of the target object.</param>
             <param name="value">The item to remove.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionEntry`2.OnBeforeCollectionChanged(EasyToolKit.Inspector.Editor.CollectionChangedEventArgs)">
+            <summary>
+            Raises the <see cref="E:EasyToolKit.Inspector.Editor.Implementations.CollectionEntry`2.BeforeCollectionChanged"/> event.
+            </summary>
+            <param name="eventArgs">The event arguments containing information about the collection change.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionEntry`2.OnAfterCollectionChanged(EasyToolKit.Inspector.Editor.CollectionChangedEventArgs)">
+            <summary>
+            Raises the <see cref="E:EasyToolKit.Inspector.Editor.Implementations.CollectionEntry`2.AfterCollectionChanged"/> event.
+            </summary>
+            <param name="eventArgs">The event arguments containing information about the collection change.</param>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.CollectionEntryWrapper`4">
             <summary>
@@ -4065,7 +4192,7 @@
             Gets the ordered collection operation that handles ordered collection-specific operations.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntry`2.InsertWeakItem(System.Int32,System.Int32,System.Object)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntry`2.InsertWeakItemAt(System.Int32,System.Int32,System.Object)">
             <summary>
             Inserts a weakly-typed item at the specified index in the collection for the specified target.
             </summary>
@@ -4073,14 +4200,14 @@
             <param name="itemIndex">The zero-based index at which to insert the item.</param>
             <param name="value">The item to insert.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntry`2.RemoveItem(System.Int32,System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntry`2.RemoveItemAt(System.Int32,System.Int32)">
             <summary>
             Removes the item at the specified index from the collection for the specified target.
             </summary>
             <param name="targetIndex">The zero-based index of the target object.</param>
             <param name="itemIndex">The zero-based index of the item to remove.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntry`2.InsertItem(System.Int32,System.Int32,`1)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntry`2.InsertItemAt(System.Int32,System.Int32,`1)">
             <summary>
             Inserts a strongly-typed item at the specified index in the collection for the specified target.
             </summary>
@@ -4111,7 +4238,7 @@
             Gets the underlying ordered collection entry.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntryWrapper`4.InsertWeakItem(System.Int32,System.Int32,System.Object)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntryWrapper`4.InsertWeakItemAt(System.Int32,System.Int32,System.Object)">
             <summary>
             Inserts a weakly-typed item at the specified index in the collection for the specified target.
             </summary>
@@ -4119,14 +4246,14 @@
             <param name="itemIndex">The zero-based index at which to insert the item.</param>
             <param name="value">The item to insert.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntryWrapper`4.RemoveItem(System.Int32,System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntryWrapper`4.RemoveItemAt(System.Int32,System.Int32)">
             <summary>
             Removes the item at the specified index from the collection for the specified target.
             </summary>
             <param name="targetIndex">The zero-based index of the target object.</param>
             <param name="itemIndex">The zero-based index of the item to remove.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntryWrapper`4.InsertItem(System.Int32,System.Int32,`1)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.OrderedCollectionEntryWrapper`4.InsertItemAt(System.Int32,System.Int32,`1)">
             <summary>
             Inserts a strongly-typed item at the specified index in the collection for the specified target.
             </summary>
@@ -4665,7 +4792,6 @@
             Handles list-specific operations like indexed access, insertion, and removal.
             Implements IOrderedCollectionOperationResolver for position-based operations.
             </summary>
-            <typeparam name="TOwner">The owner type of the collection</typeparam>
             <typeparam name="TCollection">The type of the collection (must implement IList{TElement})</typeparam>
             <typeparam name="TElement">The type of elements in the collection</typeparam>
         </member>

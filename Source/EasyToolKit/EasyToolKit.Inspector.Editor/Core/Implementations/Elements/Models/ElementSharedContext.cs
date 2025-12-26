@@ -10,7 +10,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// Provides shared context for elements within an element tree. Each tree has a single instance
     /// that all elements reference for accessing tree-level services and resolver factories.
     /// </summary>
-    public sealed class ElementSharedContext : IElementSharedContext
+    public sealed class ElementSharedContext : IElementSharedContext, IDisposable
     {
         private readonly IElementTree _tree;
         private readonly IServiceContainer _serviceContainer;

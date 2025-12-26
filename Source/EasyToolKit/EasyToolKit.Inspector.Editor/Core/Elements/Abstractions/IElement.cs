@@ -11,7 +11,7 @@ namespace EasyToolKit.Inspector.Editor
     /// in the Unity inspector, providing essential properties and methods for element management,
     /// hierarchy traversal, and rendering.
     /// </summary>
-    public interface IElement : IDisposable
+    public interface IElement
     {
         /// <summary>
         /// Gets the definition that describes this element.

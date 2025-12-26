@@ -29,7 +29,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Gets the ordered collection operation that handles ordered collection-specific operations.
         /// </summary>
-        protected IOrderedCollectionOperation<TCollection, TItem> Operation => _operation;
+        protected new IOrderedCollectionOperation<TCollection, TItem> Operation => _operation;
+
+        public object GetWeakItemAt(int targetIndex, int itemIndex)
+        {
+            return GetItemAt(targetIndex, itemIndex);
+        }
 
         /// <summary>
         /// Inserts a weakly-typed item at the specified index in the collection for the specified target.
@@ -37,9 +42,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="targetIndex">The zero-based index of the target object.</param>
         /// <param name="itemIndex">The zero-based index at which to insert the item.</param>
         /// <param name="value">The item to insert.</param>
-        public void InsertWeakItem(int targetIndex, int itemIndex, object value)
+        public void InsertWeakItemAt(int targetIndex, int itemIndex, object value)
         {
-            InsertItem(targetIndex, itemIndex, (TItem)value);
+            InsertItemAt(targetIndex, itemIndex, (TItem)value);
         }
 
         /// <summary>
@@ -47,7 +52,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         /// <param name="targetIndex">The zero-based index of the target object.</param>
         /// <param name="itemIndex">The zero-based index of the item to remove.</param>
-        public void RemoveItem(int targetIndex, int itemIndex)
+        public void RemoveItemAt(int targetIndex, int itemIndex)
         {
             if (IsReadOnly)
             {
@@ -56,9 +61,24 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             var collection = GetValue(targetIndex);
+            var removedItem = _operation.GetItemAt(ref collection, itemIndex);
+
+            var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.RemoveAt, removedItem, itemIndex, CollectionChangedTiming.Before);
+            OnBeforeCollectionChanged(eventArgs);
+
+            collection = GetValue(targetIndex);
             _operation.RemoveItemAt(ref collection, itemIndex);
             SetValue(targetIndex, collection);
             MarkDirty();
+
+            eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.RemoveAt, removedItem, itemIndex, CollectionChangedTiming.After);
+            OnAfterCollectionChanged(eventArgs);
+        }
+
+        public TItem GetItemAt(int targetIndex, int itemIndex)
+        {
+            var collection = GetValue(targetIndex);
+            return _operation.GetItemAt(ref collection, itemIndex);
         }
 
         /// <summary>
@@ -67,7 +87,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="targetIndex">The zero-based index of the target object.</param>
         /// <param name="itemIndex">The zero-based index at which to insert the item.</param>
         /// <param name="value">The item to insert.</param>
-        public void InsertItem(int targetIndex, int itemIndex, TItem value)
+        public void InsertItemAt(int targetIndex, int itemIndex, TItem value)
         {
             if (IsReadOnly)
             {
@@ -75,10 +95,16 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
+            var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Insert, value, itemIndex, CollectionChangedTiming.Before);
+            OnBeforeCollectionChanged(eventArgs);
+
             var collection = GetValue(targetIndex);
             _operation.InsertItemAt(ref collection, itemIndex, value);
             SetValue(targetIndex, collection);
             MarkDirty();
+
+            eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Insert, value, itemIndex, CollectionChangedTiming.After);
+            OnAfterCollectionChanged(eventArgs);
         }
     }
 }

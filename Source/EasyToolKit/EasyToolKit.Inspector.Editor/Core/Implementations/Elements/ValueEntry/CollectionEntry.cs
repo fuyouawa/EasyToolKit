@@ -16,6 +16,16 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     public class CollectionEntry<TCollection, TItem> : ValueEntry<TCollection>, ICollectionEntry<TCollection, TItem>
     {
         /// <summary>
+        /// Occurs before a collection is changed.
+        /// </summary>
+        public event EventHandler<CollectionChangedEventArgs> BeforeCollectionChanged;
+
+        /// <summary>
+        /// Occurs after a collection has been changed.
+        /// </summary>
+        public event EventHandler<CollectionChangedEventArgs> AfterCollectionChanged;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CollectionEntry{TCollection, TItem}"/> class.
         /// </summary>
         /// <param name="ownerElement">The value element that owns this collection entry.</param>
@@ -49,6 +59,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         protected new ICollectionOperation<TCollection, TItem> Operation => (ICollectionOperation<TCollection, TItem>)base.Operation;
 
+        public int GetItemCount(int targetIndex)
+        {
+            var collection = GetValue(targetIndex);
+            return Operation.GetItemCount(ref collection);
+        }
+
         /// <summary>
         /// Adds a weakly-typed item to the collection for the specified target.
         /// </summary>
@@ -74,10 +90,16 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
+            var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Add, value, null, CollectionChangedTiming.Before);
+            OnBeforeCollectionChanged(eventArgs);
+
             var collection = GetValue(targetIndex);
             Operation.AddItem(ref collection, value);
             SetValue(targetIndex, collection);
             MarkDirty();
+
+            eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Add, value, null, CollectionChangedTiming.After);
+            OnAfterCollectionChanged(eventArgs);
         }
 
         /// <summary>
@@ -103,10 +125,34 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
+            var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Remove, value, null, CollectionChangedTiming.Before);
+            OnBeforeCollectionChanged(eventArgs);
+
             var collection = GetValue(targetIndex);
             Operation.RemoveItem(ref collection, value);
             SetValue(targetIndex, collection);
             MarkDirty();
+
+            eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Remove, value, null, CollectionChangedTiming.After);
+            OnAfterCollectionChanged(eventArgs);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="BeforeCollectionChanged"/> event.
+        /// </summary>
+        /// <param name="eventArgs">The event arguments containing information about the collection change.</param>
+        protected virtual void OnBeforeCollectionChanged(CollectionChangedEventArgs eventArgs)
+        {
+            BeforeCollectionChanged?.Invoke(OwnerElement, eventArgs);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="AfterCollectionChanged"/> event.
+        /// </summary>
+        /// <param name="eventArgs">The event arguments containing information about the collection change.</param>
+        protected virtual void OnAfterCollectionChanged(CollectionChangedEventArgs eventArgs)
+        {
+            AfterCollectionChanged?.Invoke(OwnerElement, eventArgs);
         }
     }
 }

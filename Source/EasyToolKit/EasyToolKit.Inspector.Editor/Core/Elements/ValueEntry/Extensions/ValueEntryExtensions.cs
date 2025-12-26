@@ -5,19 +5,19 @@ namespace EasyToolKit.Inspector.Editor
 {
     public static class ValueEntryExtensions
     {
-        public static IEnumerable EnumerateWeakValues(this IValueEntry valueEntry)
+        public static IEnumerable EnumerateWeakValues(this IValueAccessor valueAccessor)
         {
-            for (int i = 0; i < valueEntry.TargetCount; i++)
+            for (int i = 0; i < valueAccessor.TargetCount; i++)
             {
-                yield return valueEntry.GetWeakValue(i);
+                yield return valueAccessor.GetWeakValue(i);
             }
         }
 
-        public static IEnumerable<TValue> EnumerateValues<TValue>(this IValueEntry<TValue> valueEntry)
+        public static IEnumerable<TValue> EnumerateValues<TValue>(this IValueAccessor<TValue> valueAccessor)
         {
-            for (int i = 0; i < valueEntry.TargetCount; i++)
+            for (int i = 0; i < valueAccessor.TargetCount; i++)
             {
-                yield return valueEntry.GetValue(i);
+                yield return valueAccessor.GetValue(i);
             }
         }
     }

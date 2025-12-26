@@ -34,6 +34,7 @@ namespace EasyToolKit.Inspector.Editor
             throw new NotSupportedException($"Setting values for '{owner}' is not supported for collection operations.");
         }
 
+        public abstract int GetWeakItemCount(ref object collection);
         public abstract void AddWeakItem(ref object collection, object value);
 
         public abstract void RemoveWeakItem(ref object collection, object value);
@@ -46,6 +47,14 @@ namespace EasyToolKit.Inspector.Editor
             Assert.IsTrue(owner.GetType() == OwnerType,
                 () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
             return GetCollectionRuntimeType(ref owner);
+        }
+
+        int ICollectionOperation.GetWeakItemCount(ref object collection)
+        {
+            var c = collection;
+            Assert.IsTrue(collection.GetType() == CollectionType,
+                () => $"Collection type mismatch. Expected: {CollectionType}, Actual: {c.GetType()}");
+            return GetWeakItemCount(ref collection);
         }
 
         object IValueOperation.GetWeakValue(ref object owner)
@@ -119,6 +128,8 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         public abstract Type GetItemRuntimeType(ref TCollection collection);
+
+        public abstract int GetItemCount(ref TCollection collection);
         public abstract void AddItem(ref TCollection collection, TItem value);
 
         public abstract void RemoveItem(ref TCollection collection, TItem value);
@@ -132,6 +143,12 @@ namespace EasyToolKit.Inspector.Editor
         {
             var castValue = (TCollection)value;
             SetValue(ref owner, castValue);
+        }
+
+        public override int GetWeakItemCount(ref object collection)
+        {
+            var castCollection = (TCollection)collection;
+            return GetItemCount(ref castCollection);
         }
 
         public override void AddWeakItem(ref object collection, object value)
@@ -170,22 +187,6 @@ namespace EasyToolKit.Inspector.Editor
             Assert.IsTrue(owner.GetType() == OwnerType,
                 () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
             SetValue(ref owner, value);
-        }
-
-        void ICollectionOperation<TCollection, TItem>.AddItem(ref TCollection collection, TItem value)
-        {
-            var c = collection;
-            Assert.IsTrue(collection.GetType() == typeof(TCollection),
-                () => $"Collection type mismatch. Expected: {typeof(TCollection)}, Actual: {c.GetType()}");
-            AddItem(ref collection, value);
-        }
-
-        void ICollectionOperation<TCollection, TItem>.RemoveItem(ref TCollection collection, TItem value)
-        {
-            var c = collection;
-            Assert.IsTrue(collection.GetType() == typeof(TCollection),
-                () => $"Collection type mismatch. Expected: {typeof(TCollection)}, Actual: {c.GetType()}");
-            RemoveItem(ref collection, value);
         }
     }
 }

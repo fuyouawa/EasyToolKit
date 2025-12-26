@@ -154,6 +154,14 @@ MonoBehaviour:
   jj: 181
   bb: 1.43
   assd: {x: 1.22, y: 0}
+  inner:
+    jjss: 26
+    ddbba: 0
+    assdaad: {x: 0.94, y: 0}
+  kk:
+    m_PersistentCalls:
+      m_Calls: []
+  jjjjjss: 000000005a00000000000000590000001c000000
 --- !u!4 &288710752
 Transform:
   m_ObjectHideFlags: 0

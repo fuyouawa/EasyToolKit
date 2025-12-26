@@ -12,7 +12,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// Default implementation of <see cref="IElementTree"/> that manages the inspector element tree hierarchy.
     /// Handles element creation, drawing, and update coordination for all elements in the inspector.
     /// </summary>
-    public class ElementTree : IElementTree
+    public class ElementTree : IElementTree, IDisposable
     {
         private readonly object[] _targets;
         private readonly IElementSharedContext _sharedContext;
@@ -202,8 +202,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
 
             _sharedContext.UnregisterEventHandler<ValueDirtyEventArgs>(OnEvent);
-            Root?.Dispose();
-            _sharedContext?.Dispose();
+            (Root as IDisposable)?.Dispose();
+            (_sharedContext as IDisposable)?.Dispose();
 
             _disposed = true;
         }
