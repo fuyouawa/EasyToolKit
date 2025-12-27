@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
@@ -12,6 +13,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// </summary>
     public class GroupElement : ElementBase, IGroupElement
     {
+        private IEnumerable<IElement> _initialChildren;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GroupElement"/> class.
         /// </summary>
@@ -30,5 +33,29 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Gets the group definition that describes this group.
         /// </summary>
         public new IGroupDefinition Definition => (IGroupDefinition)base.Definition;
+
+        public void InitializeChildren(IEnumerable<IElement> children)
+        {
+            _initialChildren = children;
+        }
+
+        protected override bool CanHaveChildren()
+        {
+            return true;
+        }
+
+        protected override void OnCreatedChildren()
+        {
+            base.OnCreatedChildren();
+            if (_initialChildren != null)
+            {
+                var logicalChildren = (IElementList<IElement>)LogicalChildren;
+                foreach (var child in _initialChildren)
+                {
+                    logicalChildren.Add(child);
+                    Children.Add(child);
+                }
+            }
+        }
     }
 }

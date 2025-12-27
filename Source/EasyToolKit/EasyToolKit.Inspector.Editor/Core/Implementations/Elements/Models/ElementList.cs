@@ -164,7 +164,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             ValidateInsertIndex(index);
 
-            var eventArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, index, element.Parent, _ownerElement, ElementMovedTiming.Before);
+            var eventArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, element, index, element.Parent, _ownerElement, ElementMovedTiming.Before);
             OnBeforeElementChanged(eventArgs);
 
             _elements.Insert(index, element);
@@ -172,7 +172,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             UpdateNameIndexAfterInsert(index, element);
             InvalidatePathCacheFrom(index);
 
-            var postArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, index, element.Parent, _ownerElement, ElementMovedTiming.After);
+            var postArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, element, index, element.Parent, _ownerElement, ElementMovedTiming.After);
             OnAfterElementChanged(postArgs);
         }
 
@@ -187,7 +187,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             ValidateIndex(index);
 
             var element = _elements[index];
-            var eventArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, index, _ownerElement, null, ElementMovedTiming.Before);
+            var eventArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, element, index, _ownerElement, null, ElementMovedTiming.Before);
             OnBeforeElementChanged(eventArgs);
 
             RemoveNameIndex(element);
@@ -195,7 +195,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             InvalidatePathCacheFrom(index);
 
-            var postArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, index, _ownerElement, null, ElementMovedTiming.After);
+            var postArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, element, index, _ownerElement, null, ElementMovedTiming.After);
             OnAfterElementChanged(postArgs);
         }
 

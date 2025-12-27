@@ -98,11 +98,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 }
             }
 
-            if (_valueEntry == null)
-            {
-                _valueEntry = _baseValueEntry;
-                RequestRefresh();
-            }
+            // if (_valueEntry == null)
+            // {
+            //     _valueEntry = _baseValueEntry;
+            //     RequestRefresh();
+            // }
         }
 
         /// <summary>

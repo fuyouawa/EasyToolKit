@@ -4,9 +4,6 @@ using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    /// <summary>
-    /// Abstract base class for attribute resolver in the <see cref="InspectorProperty"/> system
-    /// </summary>
     public abstract class AttributeResolverBase : ResolverBase, IAttributeResolver
     {
         private bool _isInitialized;

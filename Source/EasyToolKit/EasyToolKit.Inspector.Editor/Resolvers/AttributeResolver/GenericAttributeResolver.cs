@@ -5,10 +5,7 @@ using System.Reflection;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    /// <summary>
-    /// Default implementation of attribute resolution for <see cref="InspectorProperty"/>
-    /// </summary>
-    public class DefaultAttributeResolver : AttributeResolverBase
+    public class GenericAttributeResolver : AttributeResolverBase
     {
         private ElementAttributeInfo[] _attributeInfos;
 

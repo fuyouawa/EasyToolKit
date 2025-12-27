@@ -17,8 +17,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private readonly object[] _targets;
         private readonly IElementSharedContext _sharedContext;
         private readonly HashSet<IValueElement> _dirtyValueElements = new HashSet<IValueElement>();
-        private Action _pendingCallbacks;
-        private Action _pendingCallbacksUntilRepaint;
+        private readonly Queue<Action> _pendingCallbacks = new Queue<Action>();
+        private readonly Queue<Action> _pendingCallbacksUntilRepaint = new Queue<Action>();
         private bool _disposed;
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
 
-            _pendingCallbacks += action;
+            _pendingCallbacks.Enqueue(action);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
 
-            _pendingCallbacksUntilRepaint += action;
+            _pendingCallbacksUntilRepaint.Enqueue(action);
         }
 
         /// <summary>
@@ -258,34 +258,35 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         private void DoPendingCallbacks()
         {
-            if (_pendingCallbacks != null)
+            while (_pendingCallbacks.Count > 0)
             {
+                var callback = _pendingCallbacks.Dequeue();
                 try
                 {
-                    _pendingCallbacks();
+                    callback();
                 }
                 catch (Exception e)
                 {
                     Debug.LogException(e);
                 }
-
-                _pendingCallbacks = null;
             }
 
-            if (_pendingCallbacksUntilRepaint != null)
+            if (_pendingCallbacksUntilRepaint.Count > 0)
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    try
+                    while (_pendingCallbacksUntilRepaint.Count > 0)
                     {
-                        _pendingCallbacksUntilRepaint();
+                        var callback = _pendingCallbacksUntilRepaint.Dequeue();
+                        try
+                        {
+                            callback();
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogException(e);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                    }
-
-                    _pendingCallbacksUntilRepaint = null;
                 }
             }
         }

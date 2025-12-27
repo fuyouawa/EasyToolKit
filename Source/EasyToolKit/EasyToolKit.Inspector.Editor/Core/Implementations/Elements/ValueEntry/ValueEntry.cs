@@ -21,7 +21,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private readonly Type[] _runtimeValueTypes;
         private readonly TValue[] _values;
         private IValueOperation<TValue> _operation;
-        private Action _pendingChanges;
+        private readonly Queue<Action> _pendingChanges;
 
         private int? _lastUpdateId;
         private ValueEntryState? _cachedState;
@@ -47,6 +47,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             _values = new TValue[_ownerElement.SharedContext.Tree.Targets.Count];
             _runtimeValueTypes = new Type[_ownerElement.SharedContext.Tree.Targets.Count];
+            _pendingChanges = new Queue<Action>();
         }
 
         /// <summary>
@@ -240,7 +241,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="action">The action representing the change to be applied.</param>
         public void EnqueueChange(Action action)
         {
-            _pendingChanges += action;
+            _pendingChanges.Enqueue(action);
             MarkDirty();
         }
 
@@ -266,8 +267,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 }
             }
 
-            _pendingChanges?.Invoke();
-            _pendingChanges = null;
+            while (_pendingChanges.Count > 0)
+            {
+                var change = _pendingChanges.Dequeue();
+                change?.Invoke();
+            }
 
             // Apply value changes
             for (int i = 0; i < _values.Length; i++)

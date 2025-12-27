@@ -10,7 +10,8 @@ namespace EasyToolKit.Inspector.Editor
     {
         protected override bool CanProcess(IElement element)
         {
-            return element.GetAttribute<BeginGroupAttribute>(includeDerived: true) != null;
+            return element.GetAttribute<BeginGroupAttribute>(includeDerived: true) != null &&
+                   !element.Definition.Flags.IsGroup();
         }
 
         protected override void Process()
@@ -45,56 +46,57 @@ namespace EasyToolKit.Inspector.Editor
 
                 childrenToMove.AddRange(valueElement.Children);
             }
-            else if (beginGroupAttribute.EndAfterThisProperty)
-            {
-                childrenToMove.Add(Element);
-            }
             else
             {
-                var groupCatalogue = beginGroupAttribute.GroupCatalogue;
-                var subGroupStack = new Stack<IElement>();
-                for (int i = elementIndex + 1; i < parentCollection.Count; i++)
+                childrenToMove.Add(Element);
+                if (!beginGroupAttribute.EndAfterThisProperty)
                 {
-                    var child = parentCollection[i];
-
-                    var childBeginGroupAttribute = (BeginGroupAttribute)child.GetAttribute(beginGroupAttributeType);
-                    if (childBeginGroupAttribute != null)
+                    var groupCatalogue = beginGroupAttribute.GroupCatalogue;
+                    var subGroupStack = new Stack<IElement>();
+                    for (int i = elementIndex + 1; i < parentCollection.Count; i++)
                     {
-                        var childGroupName = childBeginGroupAttribute.GroupCatalogue;
-                        bool isSubGroup = groupCatalogue.IsNotNullOrEmpty() &&
-                                          childGroupName.IsNotNullOrEmpty() &&
-                                          childGroupName.StartsWith(groupCatalogue) &&
-                                          childGroupName[groupCatalogue.Length] == '/';
+                        var child = parentCollection[i];
 
-                        if (isSubGroup)
+                        var childBeginGroupAttribute = (BeginGroupAttribute)child.GetAttribute(beginGroupAttributeType);
+                        if (childBeginGroupAttribute != null)
                         {
-                            subGroupStack.Push(child);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
+                            var childGroupName = childBeginGroupAttribute.GroupCatalogue;
+                            bool isSubGroup = groupCatalogue.IsNotNullOrEmpty() &&
+                                              childGroupName.IsNotNullOrEmpty() &&
+                                              childGroupName.StartsWith(groupCatalogue) &&
+                                              childGroupName[groupCatalogue.Length] == '/';
 
-                    var childEndGroupAttribute = child.GetAttribute(endGroupAttributeType);
-                    if (childEndGroupAttribute != null)
-                    {
-                        if (subGroupStack.Count > 0)
-                        {
-                            subGroupStack.Pop();
+                            if (isSubGroup)
+                            {
+                                subGroupStack.Push(child);
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-                        else
+
+                        var childEndGroupAttribute = child.GetAttribute(endGroupAttributeType);
+                        if (childEndGroupAttribute != null)
                         {
-                            break;
+                            if (subGroupStack.Count > 0)
+                            {
+                                subGroupStack.Pop();
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
                     }
                 }
             }
 
-            foreach (var child in childrenToMove)
+            parentCollection.OwnerElement.Request(() =>
             {
-                groupElement.Children.Add(child);
-            }
+                groupElement.InitializeChildren(childrenToMove);
+                groupElement.Update();
+            });
         }
     }
 }

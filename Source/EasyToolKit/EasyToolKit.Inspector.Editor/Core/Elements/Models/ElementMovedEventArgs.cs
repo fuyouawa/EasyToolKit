@@ -40,13 +40,15 @@ namespace EasyToolKit.Inspector.Editor
         /// Initializes a new instance of the <see cref="ElementMovedEventArgs"/> class.
         /// </summary>
         /// <param name="changeType">The type of change that occurred.</param>
+        /// <param name="element">The element that was moved.</param>
         /// <param name="index">The zero-based index at which the change occurred.</param>
         /// <param name="oldParent">The previous parent element of the element.</param>
         /// <param name="newParent">The new parent element of the element (null if removed).</param>
         /// <param name="timing">The timing of the event (pre or post).</param>
-        public ElementMovedEventArgs(ElementListChangeType changeType, int index, IElement oldParent, IElement newParent, ElementMovedTiming timing)
+        public ElementMovedEventArgs(ElementListChangeType changeType, IElement element, int index, IElement oldParent, IElement newParent, ElementMovedTiming timing)
         {
             ChangeType = changeType;
+            Element = element;
             Index = index;
             OldParent = oldParent;
             NewParent = newParent;
@@ -57,6 +59,11 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets the type of change that occurred.
         /// </summary>
         public ElementListChangeType ChangeType { get; }
+
+        /// <summary>
+        /// Gets the element that was moved.
+        /// </summary>
+        public IElement Element { get; }
 
         /// <summary>
         /// Gets the zero-based index at which the change occurred.

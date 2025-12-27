@@ -1,4 +1,6 @@
-﻿namespace EasyToolKit.Inspector.Editor
+﻿using System.Collections.Generic;
+
+namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
     /// Group element interface for organizing elements in the inspector tree.
@@ -11,5 +13,7 @@
         /// Gets the group definition that describes this group.
         /// </summary>
         new IGroupDefinition Definition { get; }
+
+        void InitializeChildren(IEnumerable<IElement> children);
     }
 }

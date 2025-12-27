@@ -23,7 +23,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private bool _isDrawing;
 
         private IStructureResolver _structureResolver;
-        [CanBeNull]  private IAttributeResolver _attributeResolver;
+        [CanBeNull] private IAttributeResolver _attributeResolver;
         [CanBeNull] private IDrawerChainResolver _drawerChainResolver;
         [CanBeNull] private IPostProcessorChainResolver _postProcessorChainResolver;
 
@@ -185,7 +185,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             if (_isDrawing)
             {
-                SharedContext.Tree.QueueCallbackUntilRepaint(action);
+                SharedContext.Tree.QueueCallback(action);
             }
             else
             {
@@ -229,6 +229,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         protected virtual void OnUpdate(bool forceUpdate)
         {
+            _children?.Update();
+            _logicalChildren?.Update();
         }
 
         /// <summary>
@@ -268,10 +270,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         [NotNull]
         protected virtual IReadOnlyElementList<IElement> CreateLogicalChildren()
         {
-            var childrenDefinitions = _structureResolver.GetChildrenDefinitions();
+            var childrenDefinitions = _structureResolver?.GetChildrenDefinitions();
 
             var children = new ElementList<IElement>(this,
-                childrenDefinitions.Select(definition => SharedContext.Tree.ElementFactory.CreateElement(definition, this)));
+                childrenDefinitions?.Select(definition => SharedContext.Tree.ElementFactory.CreateElement(definition, this)));
 
             return children;
         }
@@ -283,6 +285,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             children.BeforeElementMoved += OnChildrenElementMoved;
             children.AfterElementMoved += OnChildrenElementMoved;
             return children;
+        }
+
+        protected virtual void OnCreatedChildren()
+        {
         }
 
         /// <summary>
@@ -304,10 +310,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="args">The event arguments containing element move details.</param>
         private void OnElementMoved(object sender, ElementMovedEventArgs args)
         {
-            var element = sender as IElement;
             if (args.Timing == ElementMovedTiming.After)
             {
-                if (element == this)
+                if (args.Element == this)
                 {
                     Request(() => Parent = args.NewParent);
                     return;
@@ -317,7 +322,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 {
                     // Element was moved to another parent but still exists in our children list
                     // This indicates the element needs to be updated/removed
-                    _children?.TryRemove(element);
+                    _children?.TryRemove(args.Element);
                 }
             }
         }
@@ -338,7 +343,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
 
-        private void Refresh()
+        protected virtual void Refresh()
         {
             {
                 // Initialize structure resolver (before children)
@@ -379,6 +384,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 (_children as IDisposable)?.Dispose();
                 // Recreate children list
                 _children = CreateChildren(oldChildren);
+
+                OnCreatedChildren();
             }
 
             {
