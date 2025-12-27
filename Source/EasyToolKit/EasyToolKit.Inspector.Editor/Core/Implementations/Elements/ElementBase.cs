@@ -23,8 +23,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private bool _isDrawing;
 
         private IStructureResolver _structureResolver;
-        private IAttributeResolver _attributeResolver;
-        private IDrawerChainResolver _drawerChainResolver;
+        [CanBeNull]  private IAttributeResolver _attributeResolver;
+        [CanBeNull] private IDrawerChainResolver _drawerChainResolver;
+        [CanBeNull] private IPostProcessorChainResolver _postProcessorChainResolver;
 
         /// <summary>
         /// Gets the definition that describes this element.
@@ -146,6 +147,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public IReadOnlyList<ElementAttributeInfo> GetAttributeInfos()
         {
             ValidateDisposed();
+            if (_attributeResolver == null)
+            {
+                return Array.Empty<ElementAttributeInfo>();
+            }
+
             return _attributeResolver.GetAttributeInfos();
         }
 
@@ -156,7 +162,23 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public DrawerChain GetDrawerChain()
         {
             ValidateDisposed();
+            if (_drawerChainResolver == null)
+            {
+                return new DrawerChain(this, Array.Empty<IEasyDrawer>());
+            }
+
             return _drawerChainResolver.GetDrawerChain();
+        }
+
+        public PostProcessorChain GetPostProcessorChain()
+        {
+            ValidateDisposed();
+            if (_postProcessorChainResolver == null)
+            {
+                return new PostProcessorChain(this, Array.Empty<IPostProcessor>());
+            }
+
+            return _postProcessorChainResolver.GetPostProcessorChain();
         }
 
         public void Request(Action action)
@@ -318,12 +340,14 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         private void Refresh()
         {
-            // Initialize structure resolver (before children)
-            var factory = SharedContext.GetResolverFactory<IStructureResolver>();
-            _structureResolver = factory.CreateResolver(this);
-            if (_structureResolver != null)
             {
-                _structureResolver.Element = this;
+                // Initialize structure resolver (before children)
+                var factory = SharedContext.GetResolverFactory<IStructureResolver>();
+                _structureResolver = factory.CreateResolver(this);
+                if (_structureResolver != null)
+                {
+                    _structureResolver.Element = this;
+                }
             }
 
             // Recreate children if needed
@@ -357,20 +381,46 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 _children = CreateChildren(oldChildren);
             }
 
-            // Initialize attribute resolver (after children)
-            var attributeFactory = SharedContext.GetResolverFactory<IAttributeResolver>();
-            _attributeResolver = attributeFactory.CreateResolver(this);
-            if (_attributeResolver != null)
             {
-                _attributeResolver.Element = this;
+                // Initialize attribute resolver (after children)
+                var factory = SharedContext.GetResolverFactory<IAttributeResolver>();
+                _attributeResolver = factory.CreateResolver(this);
+                if (_attributeResolver != null)
+                {
+                    _attributeResolver.Element = this;
+                }
             }
 
-            // Initialize drawer chain resolver (after children)
-            var drawerFactory = SharedContext.GetResolverFactory<IDrawerChainResolver>();
-            _drawerChainResolver = drawerFactory.CreateResolver(this);
-            if (_drawerChainResolver != null)
             {
-                _drawerChainResolver.Element = this;
+                // Initialize drawer chain resolver (after children)
+                var factory = SharedContext.GetResolverFactory<IDrawerChainResolver>();
+                _drawerChainResolver = factory.CreateResolver(this);
+                if (_drawerChainResolver != null)
+                {
+                    _drawerChainResolver.Element = this;
+                }
+            }
+
+            {
+                // Initialize post processor chain resolver (after children)
+                var factory = SharedContext.GetResolverFactory<IPostProcessorChainResolver>();
+                _postProcessorChainResolver = factory.CreateResolver(this);
+                if (_postProcessorChainResolver != null)
+                {
+                    _postProcessorChainResolver.Element = this;
+                }
+            }
+
+            PostProcess();
+        }
+
+        private void PostProcess()
+        {
+            var chain = GetPostProcessorChain();
+            chain.Reset();
+            while (chain.MoveNext() && chain.Current != null)
+            {
+                chain.Current.Process();
             }
         }
 

@@ -8,27 +8,27 @@ namespace EasyToolKit.Inspector.Editor
     /// in the post processor chain. Higher priority post processors are executed before lower priority post processors.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class ElementPostProcessorPriorityAttribute : Attribute, IPriorityAccessor
+    public class PostProcessorPriorityAttribute : Attribute, IPriorityAccessor
     {
         /// <summary>
         /// Represents the lowest possible post processor priority.
         /// </summary>
-        public static readonly Priority LowestPriority = new Priority(ElementPostProcessorPriorityLevel.Lowest);
+        public static readonly Priority LowestPriority = new Priority(PostProcessorPriorityLevel.Lowest);
 
         /// <summary>
         /// Represents the standard priority for validation post processors.
         /// </summary>
-        public static readonly Priority ValidationPriority = new Priority(ElementPostProcessorPriorityLevel.Validation);
+        public static readonly Priority ValidationPriority = new Priority(PostProcessorPriorityLevel.Validation);
 
         /// <summary>
         /// Represents the priority for cleanup post processors.
         /// </summary>
-        public static readonly Priority CleanupPriority = new Priority(ElementPostProcessorPriorityLevel.Cleanup);
+        public static readonly Priority CleanupPriority = new Priority(PostProcessorPriorityLevel.Cleanup);
 
         /// <summary>
         /// Represents the highest standard post processor priority.
         /// </summary>
-        public static readonly Priority SuperPriority = new Priority(ElementPostProcessorPriorityLevel.Super);
+        public static readonly Priority SuperPriority = new Priority(PostProcessorPriorityLevel.Super);
 
         /// <summary>
         /// Gets the priority value for the post processor.
@@ -36,10 +36,10 @@ namespace EasyToolKit.Inspector.Editor
         public Priority Priority { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementPostProcessorPriorityAttribute"/> class.
+        /// Initializes a new instance of the <see cref="PostProcessorPriorityAttribute"/> class.
         /// </summary>
         /// <param name="value">The priority value for the post processor..</param>
-        public ElementPostProcessorPriorityAttribute(double value = 0.0)
+        public PostProcessorPriorityAttribute(double value = 0.0)
         {
             Priority = new Priority(value);
         }

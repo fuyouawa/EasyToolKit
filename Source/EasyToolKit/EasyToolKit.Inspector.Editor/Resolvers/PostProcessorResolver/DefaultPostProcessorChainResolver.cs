@@ -10,30 +10,30 @@ namespace EasyToolKit.Inspector.Editor
     /// </summary>
     public class DefaultPostProcessorChainResolver : PostProcessorChainResolverBase
     {
-        private ElementPostProcessorChain _chain;
+        private PostProcessorChain _chain;
 
         protected override void Initialize()
         {
             // Get default post processor types for the element
-            var postProcessorTypes = ElementPostProcessorUtility.GetPostProcessorTypes(Element);
-            var postProcessors = new List<IElementPostProcessor>();
+            var postProcessorTypes = PostProcessorUtility.GetPostProcessorTypes(Element);
+            var postProcessors = new List<IPostProcessor>();
 
             // Create and initialize post processor instances
             foreach (var postProcessorType in postProcessorTypes)
             {
-                var postProcessor = postProcessorType.CreateInstance<IElementPostProcessor>();
+                var postProcessor = postProcessorType.CreateInstance<IPostProcessor>();
                 postProcessors.Add(postProcessor);
             }
 
             // Create and cache the post processor chain
-            _chain = new ElementPostProcessorChain(Element, postProcessors);
+            _chain = new PostProcessorChain(Element, postProcessors);
         }
 
         /// <summary>
         /// Gets the post processor chain for the element by discovering and initializing appropriate post processors
         /// </summary>
         /// <returns>The post processor chain</returns>
-        protected override ElementPostProcessorChain GetPostProcessorChain()
+        protected override PostProcessorChain GetPostProcessorChain()
         {
             return _chain;
         }

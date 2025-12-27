@@ -9,6 +9,6 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets the post processor chain for the element
         /// </summary>
         /// <returns>The post processor chain</returns>
-        ElementPostProcessorChain GetPostProcessorChain();
+        PostProcessorChain GetPostProcessorChain();
     }
 }

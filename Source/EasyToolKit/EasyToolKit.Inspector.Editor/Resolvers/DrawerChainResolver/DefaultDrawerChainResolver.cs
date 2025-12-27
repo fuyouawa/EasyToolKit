@@ -21,7 +21,6 @@ namespace EasyToolKit.Inspector.Editor
             foreach (var drawerType in drawerTypes)
             {
                 var drawer = drawerType.CreateInstance<IEasyDrawer>();
-                drawer.Element = Element;
                 drawers.Add(drawer);
             }
 

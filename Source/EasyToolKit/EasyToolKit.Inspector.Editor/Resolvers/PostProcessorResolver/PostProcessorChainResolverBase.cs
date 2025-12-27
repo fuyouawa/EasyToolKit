@@ -23,7 +23,7 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <returns>The post processor chain</returns>
         [MustUseReturnValue]
-        protected abstract ElementPostProcessorChain GetPostProcessorChain();
+        protected abstract PostProcessorChain GetPostProcessorChain();
 
         private void EnsureInitialize()
         {
@@ -34,7 +34,7 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        ElementPostProcessorChain IPostProcessorChainResolver.GetPostProcessorChain()
+        PostProcessorChain IPostProcessorChainResolver.GetPostProcessorChain()
         {
             EnsureInitialize();
             return GetPostProcessorChain();

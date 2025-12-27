@@ -4,7 +4,7 @@
     {
         private IElement _element;
 
-        IElement IResolver.Element
+        IElement IHandler.Element
         {
             get => _element;
             set => _element = value;

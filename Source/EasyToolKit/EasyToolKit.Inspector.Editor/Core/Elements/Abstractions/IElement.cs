@@ -81,8 +81,6 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>An array of attributes.</returns>
         IReadOnlyList<ElementAttributeInfo> GetAttributeInfos();
 
-        DrawerChain GetDrawerChain();
-
         void Request(Action action);
         void RequestRefresh();
         void Update(bool forceUpdate = false);

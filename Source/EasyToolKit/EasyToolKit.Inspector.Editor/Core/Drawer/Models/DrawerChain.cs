@@ -26,7 +26,10 @@ namespace EasyToolKit.Inspector.Editor
             {
                 if (_index >= 0 && _index < _drawers.Length)
                 {
-                    return _drawers[_index];
+                    var result = _drawers[_index];
+                    result.Element = Element;
+                    result.Chain = this;
+                    return result;
                 }
                 return null;
             }

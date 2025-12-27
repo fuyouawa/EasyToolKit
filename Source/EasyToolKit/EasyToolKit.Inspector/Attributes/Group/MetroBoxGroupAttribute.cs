@@ -13,6 +13,8 @@ namespace EasyToolKit.Inspector
         public string Label { get; set; }
         public string IconTextureGetter { get; set; }
 
+        public override string GroupName => GroupCatalogue + "/" + Label;
+
         public MetroBoxGroupAttribute(string label)
         {
             Label = label;

@@ -39,6 +39,8 @@ namespace EasyToolKit.Inspector
 
         public bool IsDefinedExpanded => _expanded.HasValue;
 
+        public override string GroupName => GroupCatalogue + "/" + Label;
+
         public MetroFoldoutGroupAttribute(string label, string tooltip = null)
         {
             Label = label;

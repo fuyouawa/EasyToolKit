@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector.Editor
     /// These constants define the standard priority ranges used by different types of post processors.
     /// Higher values indicate higher priority (executed earlier in the post processor chain).
     /// </summary>
-    public static class ElementPostProcessorPriorityLevel
+    public static class PostProcessorPriorityLevel
     {
         /// <summary>
         /// The lowest priority level for post processors that should execute last.

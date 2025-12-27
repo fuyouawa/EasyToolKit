@@ -13,6 +13,8 @@ namespace EasyToolKit.Inspector
         public string Label { get; set; }
         public bool? Expanded { get; set; }
 
+        public override string GroupName => GroupCatalogue + "/" + Label;
+
         public FoldoutBoxGroupAttribute(string label)
         {
             Label = label;

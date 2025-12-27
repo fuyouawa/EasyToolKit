@@ -11,22 +11,25 @@ namespace EasyToolKit.Inspector.Editor
     /// sequential iteration through post processors while automatically skipping post processors
     /// that should be skipped during the processing.
     /// </summary>
-    public class ElementPostProcessorChain : IEnumerable<IElementPostProcessor>, IEnumerator<IElementPostProcessor>
+    public class PostProcessorChain : IEnumerable<IPostProcessor>, IEnumerator<IPostProcessor>
     {
-        private readonly IElementPostProcessor[] _postProcessors;
+        private readonly IPostProcessor[] _postProcessors;
         private int _index = -1;
 
         /// <summary>
         /// Gets the current post processor in the iteration.
         /// Returns null if the iteration is before the first post processor or after the last post processor.
         /// </summary>
-        public IElementPostProcessor Current
+        public IPostProcessor Current
         {
             get
             {
                 if (_index >= 0 && _index < _postProcessors.Length)
                 {
-                    return _postProcessors[_index];
+                    var result = _postProcessors[_index];
+                    result.Element = Element;
+                    result.Chain = this;
+                    return result;
                 }
                 return null;
             }
@@ -35,7 +38,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets all post processors in this chain, including those that may be skipped during iteration.
         /// </summary>
-        public IElementPostProcessor[] PostProcessors => _postProcessors;
+        public IPostProcessor[] PostProcessors => _postProcessors;
 
         /// <summary>
         /// Gets the inspector element associated with this post processor chain.
@@ -43,11 +46,11 @@ namespace EasyToolKit.Inspector.Editor
         public IElement Element { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementPostProcessorChain"/> class.
+        /// Initializes a new instance of the <see cref="PostProcessorChain"/> class.
         /// </summary>
         /// <param name="element">The inspector element this post processor chain is associated with.</param>
         /// <param name="postProcessors">The collection of post processors to include in the chain.</param>
-        public ElementPostProcessorChain(IElement element, IEnumerable<IElementPostProcessor> postProcessors)
+        public PostProcessorChain(IElement element, IEnumerable<IPostProcessor> postProcessors)
         {
             Element = element;
             _postProcessors = postProcessors.ToArray();
@@ -77,9 +80,9 @@ namespace EasyToolKit.Inspector.Editor
         /// Returns an enumerator that iterates through all post processors in the chain.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through all post processors.</returns>
-        public IEnumerator<IElementPostProcessor> GetEnumerator()
+        public IEnumerator<IPostProcessor> GetEnumerator()
         {
-            return ((IEnumerable<IElementPostProcessor>)_postProcessors).GetEnumerator();
+            return ((IEnumerable<IPostProcessor>)_postProcessors).GetEnumerator();
         }
 
         /// <summary>

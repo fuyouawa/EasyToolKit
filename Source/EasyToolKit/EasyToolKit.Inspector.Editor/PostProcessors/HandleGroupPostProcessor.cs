@@ -5,50 +5,53 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    [ElementPostProcessorPriority(ElementPostProcessorPriorityLevel.Super)]
-    public class HandleGroupElementPostProcessor : ElementPostProcessor
+    [PostProcessorPriority(PostProcessorPriorityLevel.Super)]
+    public class HandleGroupPostProcessor : PostProcessor
     {
         protected override bool CanProcess(IElement element)
         {
             return element.GetAttribute<BeginGroupAttribute>(includeDerived: true) != null;
         }
 
-        protected override void Process(IElement element)
+        protected override void Process()
         {
-            var beginGroupAttributeInfo = element.GetAttributeInfos()
+            var beginGroupAttributeInfo = Element.GetAttributeInfos()
                 .First(info => info.Attribute is BeginGroupAttribute);
 
             var beginGroupAttribute = (BeginGroupAttribute)beginGroupAttributeInfo.Attribute;
             var beginGroupAttributeType = beginGroupAttribute.GetType();
-            var endGroupAttributeType =
-                InspectorAttributeUtility.GetCorrespondGroupAttributeType(beginGroupAttributeType);
+            var endGroupAttributeType = InspectorAttributeUtility.GetCorrespondGroupAttributeType(beginGroupAttributeType);
 
-            var groupName = beginGroupAttribute.GroupName;
             var groupDefinition = InspectorElements.Configurator.Group()
                 .WithGroupAttributes(beginGroupAttributeType, endGroupAttributeType)
-                .WithName(groupName)
+                .WithName(beginGroupAttribute.GroupName)
                 .CreateDefinition();
-            var groupElement = element.SharedContext.Tree.ElementFactory.CreateGroupElement(groupDefinition, null);
+            var groupElement = Element.SharedContext.Tree.ElementFactory.CreateGroupElement(groupDefinition, null);
 
-            var parentCollection = ElementUtility.GetParentCollection(element);
-            var elementIndex = parentCollection.IndexOf(element);
+            var parentCollection = ElementUtility.GetParentCollection(Element);
+            var elementIndex = parentCollection.IndexOf(Element);
             parentCollection.Insert(elementIndex, groupElement);
 
             var childrenToMove = new List<IElement>();
 
             if (beginGroupAttributeInfo.Source == ElementAttributeSource.Type)
             {
-                var valueElement = (IValueElement)element;
+                var valueElement = (IValueElement)Element;
                 if (valueElement.Children == null)
                 {
-                    Debug.LogWarning($"Can not use BeginGroupAttribute on a value element '{element}' that can not have children.");
+                    Debug.LogWarning($"Can not use BeginGroupAttribute on a value element '{Element}' that can not have children.");
                     return;
                 }
 
                 childrenToMove.AddRange(valueElement.Children);
             }
+            else if (beginGroupAttribute.EndAfterThisProperty)
+            {
+                childrenToMove.Add(Element);
+            }
             else
             {
+                var groupCatalogue = beginGroupAttribute.GroupCatalogue;
                 var subGroupStack = new Stack<IElement>();
                 for (int i = elementIndex + 1; i < parentCollection.Count; i++)
                 {
@@ -57,11 +60,11 @@ namespace EasyToolKit.Inspector.Editor
                     var childBeginGroupAttribute = (BeginGroupAttribute)child.GetAttribute(beginGroupAttributeType);
                     if (childBeginGroupAttribute != null)
                     {
-                        var childGroupName = childBeginGroupAttribute.GroupName;
-                        bool isSubGroup = groupName.IsNotNullOrEmpty() &&
+                        var childGroupName = childBeginGroupAttribute.GroupCatalogue;
+                        bool isSubGroup = groupCatalogue.IsNotNullOrEmpty() &&
                                           childGroupName.IsNotNullOrEmpty() &&
-                                          childGroupName.StartsWith(groupName) &&
-                                          childGroupName[groupName.Length] == '/';
+                                          childGroupName.StartsWith(groupCatalogue) &&
+                                          childGroupName[groupCatalogue.Length] == '/';
 
                         if (isSubGroup)
                         {

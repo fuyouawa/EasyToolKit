@@ -101,6 +101,11 @@
             <param name="element">The inspector element to check.</param>
             <returns>True if the handler can handle the element; otherwise, false.</returns>
         </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IHandler.Element">
+            <summary>
+            Gets or sets the <see cref="T:EasyToolKit.Inspector.Editor.IElement"/> that this drawer is associated with.
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.IHandler.CanHandle(EasyToolKit.Inspector.Editor.IElement)">
             <summary>
             Determines whether this handler can process the specified element.
@@ -196,11 +201,6 @@
             </summary>
             <param name="other">A DrawerPriority to compare with this instance.</param>
             <returns>A value that indicates the relative order of the objects being compared.</returns>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IEasyDrawer.Element">
-            <summary>
-            Gets or sets the <see cref="T:EasyToolKit.Inspector.Editor.IElement"/> that this drawer is associated with.
-            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.EasyDrawerExtensions">
             <summary>
@@ -4656,7 +4656,7 @@
             <param name="owner">Owner object</param>
             <param name="value">Value to set</param>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ElementPostProcessorChain">
+        <member name="T:EasyToolKit.Inspector.Editor.PostProcessorChain">
             <summary>
             Represents a chain of post processors that can be iterated over during element processing.
             This class implements both <see cref="T:System.Collections.Generic.IEnumerable`1"/> and <see cref="T:System.Collections.Generic.IEnumerator`1"/> interfaces to allow
@@ -4664,129 +4664,129 @@
             that should be skipped during the processing.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.Current">
+        <member name="P:EasyToolKit.Inspector.Editor.PostProcessorChain.Current">
             <summary>
             Gets the current post processor in the iteration.
             Returns null if the iteration is before the first post processor or after the last post processor.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.PostProcessors">
+        <member name="P:EasyToolKit.Inspector.Editor.PostProcessorChain.PostProcessors">
             <summary>
             Gets all post processors in this chain, including those that may be skipped during iteration.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.Element">
+        <member name="P:EasyToolKit.Inspector.Editor.PostProcessorChain.Element">
             <summary>
             Gets the inspector element associated with this post processor chain.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.#ctor(EasyToolKit.Inspector.Editor.IElement,System.Collections.Generic.IEnumerable{EasyToolKit.Inspector.Editor.IElementPostProcessor})">
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorChain.#ctor(EasyToolKit.Inspector.Editor.IElement,System.Collections.Generic.IEnumerable{EasyToolKit.Inspector.Editor.IPostProcessor})">
             <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ElementPostProcessorChain"/> class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.PostProcessorChain"/> class.
             </summary>
             <param name="element">The inspector element this post processor chain is associated with.</param>
             <param name="postProcessors">The collection of post processors to include in the chain.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.MoveNext">
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorChain.MoveNext">
             <summary>
             Advances the enumerator to the next post processor in the chain.
             </summary>
             <returns>true if the enumerator was successfully advanced to the next post processor; false if the enumerator has passed the end of the collection.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.Reset">
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorChain.Reset">
             <summary>
             Sets the enumerator to its initial position, which is before the first post processor in the chain.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.GetEnumerator">
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorChain.GetEnumerator">
             <summary>
             Returns an enumerator that iterates through all post processors in the chain.
             </summary>
             <returns>An enumerator that can be used to iterate through all post processors.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.System#Collections#IEnumerable#GetEnumerator">
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorChain.System#Collections#IEnumerable#GetEnumerator">
             <summary>
             Returns an enumerator that iterates through all post processors in the chain.
             </summary>
             <returns>An enumerator that can be used to iterate through all post processors.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementPostProcessorChain.System#IDisposable#Dispose">
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorChain.System#IDisposable#Dispose">
             <summary>
             Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             Resets the enumerator position.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityAttribute">
+        <member name="T:EasyToolKit.Inspector.Editor.PostProcessorPriorityAttribute">
             <summary>
             Attribute used to specify the priority of a post processor.
             This attribute can be applied to post processor classes to control their execution order
             in the post processor chain. Higher priority post processors are executed before lower priority post processors.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityAttribute.LowestPriority">
+        <member name="F:EasyToolKit.Inspector.Editor.PostProcessorPriorityAttribute.LowestPriority">
             <summary>
             Represents the lowest possible post processor priority.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityAttribute.ValidationPriority">
+        <member name="F:EasyToolKit.Inspector.Editor.PostProcessorPriorityAttribute.ValidationPriority">
             <summary>
             Represents the standard priority for validation post processors.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityAttribute.CleanupPriority">
+        <member name="F:EasyToolKit.Inspector.Editor.PostProcessorPriorityAttribute.CleanupPriority">
             <summary>
             Represents the priority for cleanup post processors.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityAttribute.SuperPriority">
+        <member name="F:EasyToolKit.Inspector.Editor.PostProcessorPriorityAttribute.SuperPriority">
             <summary>
             Represents the highest standard post processor priority.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityAttribute.Priority">
+        <member name="P:EasyToolKit.Inspector.Editor.PostProcessorPriorityAttribute.Priority">
             <summary>
             Gets the priority value for the post processor.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityAttribute.#ctor(System.Double)">
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorPriorityAttribute.#ctor(System.Double)">
             <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityAttribute"/> class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.PostProcessorPriorityAttribute"/> class.
             </summary>
             <param name="value">The priority value for the post processor..</param>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityLevel">
+        <member name="T:EasyToolKit.Inspector.Editor.PostProcessorPriorityLevel">
             <summary>
             Provides standard priority levels for post processors.
             These constants define the standard priority ranges used by different types of post processors.
             Higher values indicate higher priority (executed earlier in the post processor chain).
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityLevel.Lowest">
+        <member name="F:EasyToolKit.Inspector.Editor.PostProcessorPriorityLevel.Lowest">
             <summary>
             The lowest priority level for post processors that should execute last.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityLevel.Validation">
+        <member name="F:EasyToolKit.Inspector.Editor.PostProcessorPriorityLevel.Validation">
             <summary>
             The standard priority level for validation post processors that handle property validation.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityLevel.Cleanup">
+        <member name="F:EasyToolKit.Inspector.Editor.PostProcessorPriorityLevel.Cleanup">
             <summary>
             The priority level for cleanup post processors that handle resource cleanup.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementPostProcessorPriorityLevel.Super">
+        <member name="F:EasyToolKit.Inspector.Editor.PostProcessorPriorityLevel.Super">
             <summary>
             The highest standard priority level for post processors that should execute first.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ElementPostProcessorUtility">
+        <member name="T:EasyToolKit.Inspector.Editor.PostProcessorUtility">
             <summary>
             Utility class for post processor operations
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementPostProcessorUtility.GetPostProcessorTypes(EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorUtility.GetPostProcessorTypes(EasyToolKit.Inspector.Editor.IElement)">
             <summary>
             Gets the post processor types that can handle the specified element
             </summary>
@@ -4830,11 +4830,6 @@
             Gets the post processor chain for the element
             </summary>
             <returns>The post processor chain</returns>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IResolver.Element">
-            <summary>
-            Gets or sets the <see cref="T:EasyToolKit.Inspector.Editor.IElement"/> that this resolver is associated with.
-            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IStructureResolver">
             <summary>

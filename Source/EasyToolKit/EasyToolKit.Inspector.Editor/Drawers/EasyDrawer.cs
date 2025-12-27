@@ -10,15 +10,22 @@ namespace EasyToolKit.Inspector.Editor
     {
         private bool _isInitialized;
         private IElement _element;
+        private DrawerChain _chain;
 
-        IElement IEasyDrawer.Element
+        IElement IHandler.Element
         {
             get => _element;
             set => _element = value;
         }
 
-        public IElement Element => _element;
+        DrawerChain IEasyDrawer.Chain
+        {
+            get => _chain;
+            set => _chain = value;
+        }
 
+        public IElement Element => _element;
+        public DrawerChain Chain => _chain;
         public bool SkipWhenDrawing { get; set; }
 
         protected virtual bool CanDraw(IElement element)
@@ -28,10 +35,9 @@ namespace EasyToolKit.Inspector.Editor
 
         protected bool CallNextDrawer(GUIContent label)
         {
-            var chain = Element.GetDrawerChain();
-            if (chain.MoveNext() && chain.Current != null)
+            if (_chain.MoveNext() && _chain.Current != null)
             {
-                chain.Current.Draw(label);
+                _chain.Current.Draw(label);
                 return true;
             }
             return false;
