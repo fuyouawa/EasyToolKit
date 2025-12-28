@@ -1,12 +1,16 @@
 ﻿using System;
 using EasyToolKit.ThirdParty.OdinSerializer;
+using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
 {
     public static class ElementUtility
     {
-        public static Type GetOwnerTypeWithAttribute(IElement element, Attribute attribute)
+        public static Type GetOwnerTypeWithAttribute([NotNull] ILogicalElement element, [NotNull] Attribute attribute)
         {
+            if (element == null) throw new ArgumentNullException(nameof(element));
+            if (attribute == null) throw new ArgumentNullException(nameof(attribute));
+
             var source = element.GetAttributeInfo(attribute)?.Source;
             if (source == null)
             {
@@ -26,8 +30,11 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        public static object GetOwnerWithAttribute(IElement element, Attribute attribute)
+        public static object GetOwnerWithAttribute([NotNull] ILogicalElement element, [NotNull] Attribute attribute)
         {
+            if (element == null) throw new ArgumentNullException(nameof(element));
+            if (attribute == null) throw new ArgumentNullException(nameof(attribute));
+
             var source = element.GetAttributeInfo(attribute)?.Source;
             if (source == null)
             {
@@ -47,8 +54,11 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        public static object GetOwnerWithAttribute(IElement element, Attribute attribute, int targetIndex)
+        public static object GetOwnerWithAttribute([NotNull] ILogicalElement element, [NotNull] Attribute attribute, int targetIndex)
         {
+            if (element == null) throw new ArgumentNullException(nameof(element));
+            if (attribute == null) throw new ArgumentNullException(nameof(attribute));
+
             var source = element.GetAttributeInfo(attribute)?.Source;
             if (source == null)
             {
@@ -75,8 +85,10 @@ namespace EasyToolKit.Inspector.Editor
             return string.Join("+", key1, key2);
         }
 
-        public static IElementList<IElement> GetParentCollection(IElement element)
+        public static IElementList<IElement> GetParentCollection([NotNull] IElement element)
         {
+            if (element == null) throw new ArgumentNullException(nameof(element));
+
             if (element.Parent == null)
             {
                 throw new ArgumentException($"Element '{element}' has no parent collection.", nameof(element));

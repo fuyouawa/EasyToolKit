@@ -11,11 +11,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodDefinition"/> class.
         /// </summary>
-        /// <param name="flags">The flags of the element.</param>
+        /// <param name="roles">The flags of the element.</param>
         /// <param name="name">The name of the element.</param>
         /// <param name="methodInfo">The method information.</param>
-        public MethodDefinition(ElementFlags flags, string name, MethodInfo methodInfo)
-            : base(flags, name)
+        public MethodDefinition(ElementRoles roles, string name, MethodInfo methodInfo)
+            : base(roles, name)
         {
             MethodInfo = methodInfo;
         }

@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// Method element implementation for function handling in the inspector tree.
     /// Represents methods that can be invoked with parameters and displayed in the inspector.
     /// </summary>
-    public class MethodElement : ElementBase, IMethodElement
+    public class MethodElement : LogicalElementBase, IMethodElement
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodElement"/> class.
@@ -17,7 +17,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public MethodElement(
             [NotNull] IMethodDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IElement logicalParent)
+            [CanBeNull] ILogicalElement logicalParent)
             : base(definition, sharedContext, logicalParent)
         {
         }
@@ -31,7 +31,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Gets the collection of parameter elements for this method.
         /// </summary>
         public new IReadOnlyElementList<IMethodParameterElement> LogicalChildren =>
-            ((IReadOnlyElementListBoxedWrapper<IElement, IMethodParameterElement>)base.LogicalChildren)!.DerivedList;
+            ((IReadOnlyElementListBoxedWrapper<ILogicalElement, IMethodParameterElement>)base.LogicalChildren)!.DerivedList;
 
         /// <summary>
         /// Determines whether this element can have children.
@@ -47,11 +47,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Wraps the base element list to expose strongly-typed parameter elements.
         /// </summary>
         /// <returns>A read-only list of parameter elements for this method.</returns>
-        protected override IReadOnlyElementList<IElement> CreateLogicalChildren()
+        protected override IReadOnlyElementList<ILogicalElement> CreateLogicalChildren()
         {
             var baseLogicalChildren = base.CreateLogicalChildren();
-            var wrapper = new ReadOnlyElementListWrapper<IMethodParameterElement, IElement>(baseLogicalChildren);
-            return new ReadOnlyElementListBoxedWrapper<IElement, IMethodParameterElement>(wrapper);
+            var wrapper = new ReadOnlyElementListWrapper<IMethodParameterElement, ILogicalElement>(baseLogicalChildren);
+            return new ReadOnlyElementListBoxedWrapper<ILogicalElement, IMethodParameterElement>(wrapper);
         }
     }
 }

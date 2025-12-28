@@ -11,12 +11,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodParameterDefinition"/> class.
         /// </summary>
-        /// <param name="flags">The flags of the element.</param>
+        /// <param name="roles">The flags of the element.</param>
         /// <param name="name">The name of the element.</param>
         /// <param name="parameterInfo">The parameter information.</param>
         /// <param name="parameterIndex">The index of this parameter in the method's parameter list.</param>
-        public MethodParameterDefinition(ElementFlags flags, string name, ParameterInfo parameterInfo, int parameterIndex)
-            : base(flags, name, parameterInfo.ParameterType)
+        public MethodParameterDefinition(ElementRoles roles, string name, ParameterInfo parameterInfo, int parameterIndex)
+            : base(roles, name, parameterInfo.ParameterType)
         {
             ParameterInfo = parameterInfo;
             ParameterIndex = parameterIndex;

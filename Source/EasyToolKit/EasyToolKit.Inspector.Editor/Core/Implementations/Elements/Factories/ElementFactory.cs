@@ -27,12 +27,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="definition">The value definition describing the value element to create.</param>
         /// <param name="parent">The optional logical parent element in the code structure.</param>
         /// <returns>A new value element instance.</returns>
-        public IValueElement CreateValueElement(IValueDefinition definition, IElement parent)
+        public IValueElement CreateValueElement(IValueDefinition definition)
         {
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new ValueElement(definition, _sharedContext, parent);
+            return new ValueElement(definition, _sharedContext, null);
         }
 
         /// <summary>
@@ -67,14 +67,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Creates a group element from the given group definition.
         /// </summary>
         /// <param name="definition">The group definition describing the group to create.</param>
-        /// <param name="parent">The optional logical parent element in the code structure.</param>
         /// <returns>A new group element instance.</returns>
-        public IGroupElement CreateGroupElement(IGroupDefinition definition, IElement parent)
+        public IGroupElement CreateGroupElement(IGroupDefinition definition)
         {
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new GroupElement(definition, _sharedContext, parent);
+            return new GroupElement(definition, _sharedContext);
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         /// <param name="definition">The method definition describing the method to create.</param>
         /// <param name="parent">The optional logical parent element in the code structure.</param>
-        public IMethodElement CreateMethodElement(IMethodDefinition definition, IElement parent)
+        public IMethodElement CreateMethodElement(IMethodDefinition definition, ILogicalElement parent)
         {
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
@@ -110,7 +109,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <param name="definition">The collection definition describing the collection to create.</param>
         /// <param name="parent">The optional logical parent element in the code structure.</param>
         /// <returns>A new collection element instance.</returns>
-        public ICollectionElement CreateCollectionElement(ICollectionDefinition definition, IElement parent)
+        public ICollectionElement CreateCollectionElement(ICollectionDefinition definition, ILogicalElement parent)
         {
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);

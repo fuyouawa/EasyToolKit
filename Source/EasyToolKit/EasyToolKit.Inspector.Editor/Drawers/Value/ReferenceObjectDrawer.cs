@@ -86,7 +86,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            if (_settings?.HideFoldout == true || Element.Definition.Flags.IsCollection())
+            if (_settings?.HideFoldout == true || Element.Definition.Roles.IsCollection())
             {
                 CallNextDrawer(label);
                 return;

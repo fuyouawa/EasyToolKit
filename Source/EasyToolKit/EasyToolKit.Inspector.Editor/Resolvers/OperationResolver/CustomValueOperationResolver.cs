@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         protected override bool CanResolveElement(IValueElement element)
         {
-            return element.Definition.Flags.IsCustomValue();
+            return element.Definition.Roles.IsCustomValue();
         }
 
         protected override IValueOperation GetOperation()

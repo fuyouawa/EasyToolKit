@@ -10,7 +10,7 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override bool CanResolveElement(IValueElement element)
         {
-            return element.Definition.Flags.IsCollectionItem();
+            return element.Definition.Roles.IsCollectionItem();
         }
 
         protected override void Initialize()

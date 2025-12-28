@@ -32,7 +32,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = PropertyInfo.Name;
             }
 
-            return new PropertyDefinition(ElementFlags.Property | ElementFlags.Value, Name, PropertyInfo);
+            return new PropertyDefinition(ElementRoles.Property | ElementRoles.Value, Name, PropertyInfo);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = "$Root$";
             }
 
-            return new RootDefinition(ElementFlags.Root | ElementFlags.Value, Name, ValueType);
+            return new RootDefinition(ElementRoles.Root | ElementRoles.Value, Name, ValueType);
         }
     }
 }

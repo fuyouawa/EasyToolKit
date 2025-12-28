@@ -42,7 +42,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = FieldInfo.Name;
             }
 
-            return new FieldCollectionDefinition(ElementFlags.Field | ElementFlags.Collection | ElementFlags.Value, Name, FieldInfo, AsUnityProperty,
+            return new FieldCollectionDefinition(ElementRoles.Field | ElementRoles.Collection | ElementRoles.Value, Name, FieldInfo, AsUnityProperty,
                 ItemType, IsOrdered);
         }
 

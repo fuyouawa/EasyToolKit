@@ -9,18 +9,18 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementDefinition"/> class.
         /// </summary>
-        /// <param name="flags">The flags of the element.</param>
+        /// <param name="roles">The flags of the element.</param>
         /// <param name="name">The name of the element.</param>
-        protected ElementDefinition(ElementFlags flags, string name)
+        protected ElementDefinition(ElementRoles roles, string name)
         {
-            Flags = flags;
+            Roles = roles;
             Name = name;
         }
 
         /// <summary>
         /// Gets the flags of the element.
         /// </summary>
-        public ElementFlags Flags { get; }
+        public ElementRoles Roles { get; }
 
         /// <summary>
         /// Gets the name of the element.

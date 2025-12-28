@@ -16,9 +16,8 @@ namespace EasyToolKit.Inspector.Editor
         /// Creates a value element from the given value definition.
         /// </summary>
         /// <param name="definition">The value definition describing the value element to create.</param>
-        /// <param name="parent">The optional logical parent element in the code structure.</param>
         /// <returns>A new value element instance.</returns>
-        [NotNull] IValueElement CreateValueElement([NotNull] IValueDefinition definition, [CanBeNull] IElement parent);
+        [NotNull] IValueElement CreateValueElement([NotNull] IValueDefinition definition);
 
         /// <summary>
         /// Creates a field element from the given field definition.
@@ -40,9 +39,8 @@ namespace EasyToolKit.Inspector.Editor
         /// Creates a group element from the given group definition.
         /// </summary>
         /// <param name="definition">The group definition describing the group to create.</param>
-        /// <param name="parent">The optional logical parent element in the code structure.</param>
         /// <returns>A new group element instance.</returns>
-        [NotNull] IGroupElement CreateGroupElement([NotNull] IGroupDefinition definition, [CanBeNull] IElement parent);
+        [NotNull] IGroupElement CreateGroupElement([NotNull] IGroupDefinition definition);
 
         /// <summary>
         /// Creates a method element from the given method definition.
@@ -50,7 +48,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="definition">The method definition describing the method to create.</param>
         /// <param name="parent">The optional logical parent element in the code structure.</param>
         /// <returns>A new method element instance.</returns>
-        [NotNull] IMethodElement CreateMethodElement([NotNull] IMethodDefinition definition, [CanBeNull] IElement parent);
+        [NotNull] IMethodElement CreateMethodElement([NotNull] IMethodDefinition definition, [CanBeNull] ILogicalElement parent);
 
         /// <summary>
         /// Creates a method parameter element from the given method parameter definition.
@@ -66,7 +64,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="definition">The collection definition describing the collection to create.</param>
         /// <param name="parent">The optional logical parent element in the code structure.</param>
         /// <returns>A new collection element instance.</returns>
-        [NotNull] ICollectionElement CreateCollectionElement([NotNull] ICollectionDefinition definition, [CanBeNull] IElement parent);
+        [NotNull] ICollectionElement CreateCollectionElement([NotNull] ICollectionDefinition definition, [CanBeNull] ILogicalElement parent);
 
         /// <summary>
         /// Creates a property collection element from the given property collection definition.

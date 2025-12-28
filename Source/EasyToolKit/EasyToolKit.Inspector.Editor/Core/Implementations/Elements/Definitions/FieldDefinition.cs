@@ -11,12 +11,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldDefinition"/> class.
         /// </summary>
-        /// <param name="flags">The flags of the element.</param>
+        /// <param name="roles">The flags of the element.</param>
         /// <param name="name">The name of the element.</param>
         /// <param name="fieldInfo">The field information.</param>
         /// <param name="asUnityProperty">Whether this field should be treated as a Unity property.</param>
-        public FieldDefinition(ElementFlags flags, string name, FieldInfo fieldInfo, bool asUnityProperty)
-            : base(flags, name, fieldInfo.FieldType)
+        public FieldDefinition(ElementRoles roles, string name, FieldInfo fieldInfo, bool asUnityProperty)
+            : base(roles, name, fieldInfo.FieldType)
         {
             FieldInfo = fieldInfo;
             AsUnityProperty = asUnityProperty;

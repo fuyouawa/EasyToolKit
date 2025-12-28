@@ -11,7 +11,7 @@ namespace EasyToolKit.Core
             bool needStartFlag = false,
             Type resultType = null)
         {
-            if (code.IsNullOrWhiteSpace())
+            if (code.IsNullOrWhiteSpace() || targetType == null)
             {
                 return new PrimitiveValueResolver(code);
             }
@@ -35,7 +35,7 @@ namespace EasyToolKit.Core
 
         public static ICodeValueResolver<T> Create<T>(string code, Type targetType = null, bool needStartFlag = false)
         {
-            if (code.IsNullOrWhiteSpace())
+            if (code.IsNullOrWhiteSpace() || targetType == null)
             {
                 return new PrimitiveValueResolver<T>(code);
             }

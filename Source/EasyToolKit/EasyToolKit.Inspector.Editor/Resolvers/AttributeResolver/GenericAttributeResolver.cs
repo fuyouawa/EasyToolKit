@@ -11,16 +11,16 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override bool CanResolve(IElement element)
         {
-            return !element.Definition.Flags.IsGroup();
+            return !element.Definition.Roles.IsGroup();
         }
 
         protected override void Initialize()
         {
             var attributeInfos = new List<ElementAttributeInfo>();
 
-            if (Element.Definition.Flags.IsCollectionItem() && Element.LogicalParent != null)
+            if (Element.Definition.Roles.IsCollectionItem() && Element is ILogicalElement logicalElement && logicalElement.LogicalParent != null)
             {
-                var passToListElementAttributes = Element.LogicalParent.EnumerateAttributes()
+                var passToListElementAttributes = logicalElement.LogicalParent.EnumerateAttributes()
                     .Where(attr => attr is CanPassToListElementAttribute { PassToListElements: true });
                 foreach (var attribute in passToListElementAttributes)
                 {

@@ -151,17 +151,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55181b21d01c7114a91830ab8f44f4ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jj: 181
-  bb: 1.43
-  assd: {x: 1.22, y: 0}
+  jj: 0
+  bb: 1.49
+  assd: {x: 2.42, y: 0}
   inner:
-    jjss: 26
+    jjss: 49
     ddbba: 0
-    assdaad: {x: 1.68, y: 0}
+    assdaad: {x: 0, y: 0}
   kk:
     m_PersistentCalls:
       m_Calls: []
-  jjjjjss: 3000000000000000700000000000000000000000
+  jjjjjss: 59000000000000000000000000000000
 --- !u!4 &288710752
 Transform:
   m_ObjectHideFlags: 0

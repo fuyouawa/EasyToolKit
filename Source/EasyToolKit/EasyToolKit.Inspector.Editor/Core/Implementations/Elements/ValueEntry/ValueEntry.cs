@@ -393,7 +393,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private object GetOwner(int targetIndex)
         {
             // For root elements, the owner is the target index
-            if (_ownerElement.Definition.Flags.IsRoot())
+            if (_ownerElement.Definition.Roles.IsRoot())
             {
                 return targetIndex;
             }

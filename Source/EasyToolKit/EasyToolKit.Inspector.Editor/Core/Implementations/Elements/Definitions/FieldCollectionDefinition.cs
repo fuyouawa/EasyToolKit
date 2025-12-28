@@ -11,14 +11,14 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldCollectionDefinition"/> class.
         /// </summary>
-        /// <param name="flags">The flags of the element.</param>
+        /// <param name="roles">The flags of the element.</param>
         /// <param name="name">The name of the element.</param>
         /// <param name="fieldInfo">The field information.</param>
         /// <param name="itemType">The type of elements contained in this collection.</param>
         /// <param name="asUnityProperty">Whether this field should be treated as a Unity property.</param>
         /// <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
-        public FieldCollectionDefinition(ElementFlags flags, string name, FieldInfo fieldInfo, bool asUnityProperty, System.Type itemType, bool isOrdered)
-            : base(flags, name, fieldInfo.FieldType, itemType, isOrdered)
+        public FieldCollectionDefinition(ElementRoles roles, string name, FieldInfo fieldInfo, bool asUnityProperty, System.Type itemType, bool isOrdered)
+            : base(roles, name, fieldInfo.FieldType, itemType, isOrdered)
         {
             FieldInfo = fieldInfo;
             AsUnityProperty = asUnityProperty;

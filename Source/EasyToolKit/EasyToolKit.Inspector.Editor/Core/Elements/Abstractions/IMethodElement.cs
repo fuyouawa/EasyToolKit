@@ -4,7 +4,7 @@
     /// Method element interface for function handling in the inspector tree.
     /// Represents methods that can be invoked with parameters and displayed in the inspector.
     /// </summary>
-    public interface IMethodElement : IElement
+    public interface IMethodElement : ILogicalElement
     {
         /// <summary>
         /// Gets the method definition that describes this method.

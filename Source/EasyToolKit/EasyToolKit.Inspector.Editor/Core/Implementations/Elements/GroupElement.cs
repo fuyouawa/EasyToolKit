@@ -13,19 +13,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// </summary>
     public class GroupElement : ElementBase, IGroupElement
     {
-        private IEnumerable<IElement> _initialChildren;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="GroupElement"/> class.
         /// </summary>
         /// <param name="definition">The group definition that describes this element.</param>
         /// <param name="sharedContext">The shared context providing access to tree-level services.</param>
-        /// <param name="logicalParent">The logical parent element in the code structure.</param>
         public GroupElement(
             [NotNull] IGroupDefinition definition,
-            [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IElement logicalParent)
-            : base(definition, sharedContext, logicalParent)
+            [NotNull] IElementSharedContext sharedContext)
+            : base(definition, sharedContext)
         {
         }
 
@@ -34,26 +30,19 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public new IGroupDefinition Definition => (IGroupDefinition)base.Definition;
 
-        public void InitializeChildren(IEnumerable<IElement> children)
-        {
-            _initialChildren = children;
-        }
+        public ILogicalElement AssociatedElement { get; set; }
 
-        protected override bool CanHaveChildren()
+        public override string Path
         {
-            return true;
-        }
-
-        protected override void OnCreatedChildren()
-        {
-            base.OnCreatedChildren();
-            if (_initialChildren != null)
+            get
             {
-                var logicalChildren = (IElementList<IElement>)LogicalChildren;
-                foreach (var child in _initialChildren)
+                if (AssociatedElement != null)
                 {
-                    logicalChildren.Add(child);
-                    Children.Add(child);
+                    return $"{AssociatedElement.Path}+Group:{Definition.Name}";
+                }
+                else
+                {
+                    return $"$CUSTOM$+Group:{Definition.Name}";
                 }
             }
         }

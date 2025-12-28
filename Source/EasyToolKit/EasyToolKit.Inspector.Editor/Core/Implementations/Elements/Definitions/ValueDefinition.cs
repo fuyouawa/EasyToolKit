@@ -10,11 +10,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueDefinition"/> class.
         /// </summary>
-        /// <param name="flags">The flags of the element.</param>
+        /// <param name="roles">The flags of the element.</param>
         /// <param name="name">The name of the element.</param>
         /// <param name="valueType">The type of the value.</param>
-        public ValueDefinition(ElementFlags flags, string name, Type valueType)
-            : base(flags, name)
+        public ValueDefinition(ElementRoles roles, string name, Type valueType)
+            : base(roles, name)
         {
             ValueType = valueType;
         }

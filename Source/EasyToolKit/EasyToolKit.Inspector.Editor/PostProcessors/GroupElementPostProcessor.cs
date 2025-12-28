@@ -5,18 +5,40 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    [PostProcessorPriority(PostProcessorPriorityLevel.Super)]
-    public class HandleGroupPostProcessor : PostProcessor
+    [PostProcessorPriority(PostProcessorPriorityLevel.Super - 1)]
+    public class GroupElementPostProcessor : PostProcessor
     {
         protected override bool CanProcess(IElement element)
         {
-            return element.GetAttribute<BeginGroupAttribute>(includeDerived: true) != null &&
-                   !element.Definition.Flags.IsGroup();
+            return !element.Definition.Roles.IsGroup();
         }
 
         protected override void Process()
         {
-            var beginGroupAttributeInfo = Element.GetAttributeInfos()
+            if (Element.Children == null)
+            {
+                CallNextProcessor();
+                return;
+            }
+
+            int elementIndex = 0;
+            for (; elementIndex < Element.Children.Count; elementIndex++)
+            {
+                var child = Element.Children[elementIndex];
+                if (child.GetAttribute<BeginGroupAttribute>(includeDerived: true) != null)
+                {
+                    break;
+                }
+            }
+
+            if (elementIndex == Element.Children.Count)
+            {
+                CallNextProcessor();
+                return;
+            }
+
+            var elementChild = Element.Children[elementIndex];
+            var beginGroupAttributeInfo = elementChild.GetAttributeInfos()
                 .First(info => info.Attribute is BeginGroupAttribute);
 
             var beginGroupAttribute = (BeginGroupAttribute)beginGroupAttributeInfo.Attribute;
@@ -27,20 +49,18 @@ namespace EasyToolKit.Inspector.Editor
                 .WithGroupAttributes(beginGroupAttributeType, endGroupAttributeType)
                 .WithName(beginGroupAttribute.GroupName)
                 .CreateDefinition();
-            var groupElement = Element.SharedContext.Tree.ElementFactory.CreateGroupElement(groupDefinition, null);
+            var groupElement = Element.SharedContext.Tree.ElementFactory.CreateGroupElement(groupDefinition);
 
-            var parentCollection = ElementUtility.GetParentCollection(Element);
-            var elementIndex = parentCollection.IndexOf(Element);
-            parentCollection.Insert(elementIndex, groupElement);
+            Element.Children.Insert(elementIndex, groupElement);
 
             var childrenToMove = new List<IElement>();
 
             if (beginGroupAttributeInfo.Source == ElementAttributeSource.Type)
             {
-                var valueElement = (IValueElement)Element;
+                var valueElement = (IValueElement)elementChild;
                 if (valueElement.Children == null)
                 {
-                    Debug.LogWarning($"Can not use BeginGroupAttribute on a value element '{Element}' that can not have children.");
+                    Debug.LogWarning($"Can not use BeginGroupAttribute on a value element '{elementChild}' that can not have children.");
                     return;
                 }
 
@@ -48,14 +68,14 @@ namespace EasyToolKit.Inspector.Editor
             }
             else
             {
-                childrenToMove.Add(Element);
+                childrenToMove.Add(elementChild);
                 if (!beginGroupAttribute.EndAfterThisProperty)
                 {
                     var groupCatalogue = beginGroupAttribute.GroupCatalogue;
                     var subGroupStack = new Stack<IElement>();
-                    for (int i = elementIndex + 1; i < parentCollection.Count; i++)
+                    for (int i = elementIndex + 1; i < Element.Children.Count; i++)
                     {
-                        var child = parentCollection[i];
+                        var child = Element.Children[i];
 
                         var childBeginGroupAttribute = (BeginGroupAttribute)child.GetAttribute(beginGroupAttributeType);
                         if (childBeginGroupAttribute != null)
@@ -92,11 +112,15 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            parentCollection.OwnerElement.Request(() =>
+            Element.Request(() =>
             {
-                groupElement.InitializeChildren(childrenToMove);
                 groupElement.Update();
+                foreach (var child in childrenToMove)
+                {
+                    groupElement.Children.Add(child);
+                }
             });
+            CallNextProcessor();
         }
     }
 }

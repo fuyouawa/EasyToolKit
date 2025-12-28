@@ -32,7 +32,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = MethodInfo.Name;
             }
 
-            return new MethodDefinition(ElementFlags.Method, Name, MethodInfo);
+            return new MethodDefinition(ElementRoles.Method, Name, MethodInfo);
         }
     }
 }

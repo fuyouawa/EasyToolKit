@@ -7,7 +7,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         protected override bool CanDraw(IElement element)
         {
-            return element.Definition.Flags.IsGroup();
+            return element.Definition.Roles.IsGroup();
         }
 
         protected override void Draw(GUIContent label)

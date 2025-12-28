@@ -13,7 +13,9 @@ namespace EasyToolKit.Inspector.Editor
 
         protected override void Initialize()
         {
-            var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
+            var targetType = Element.AssociatedElement == null
+                ? null
+                : ElementUtility.GetOwnerTypeWithAttribute(Element.AssociatedElement, Attribute);
 
             _labelResolver = CodeValueResolver.Create<string>(Attribute.Label, targetType, true);
         }
@@ -33,7 +35,9 @@ namespace EasyToolKit.Inspector.Editor
         {
             EasyEditorGUI.BeginBox();
             EasyEditorGUI.BeginBoxHeader();
-            var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
+            var resolveTarget = Element.AssociatedElement == null
+                ? null
+                : ElementUtility.GetOwnerWithAttribute(Element.AssociatedElement, Attribute);
             var labelText = _labelResolver.Resolve(resolveTarget);
             Element.State.Expanded = EasyEditorGUI.Foldout(Element.State.Expanded, EditorHelper.TempContent(labelText));
             EasyEditorGUI.EndBoxHeader();

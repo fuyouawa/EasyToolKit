@@ -20,7 +20,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         protected override bool CanDrawElement(IValueElement element)
         {
-            return element.Definition.Flags.IsCollection();
+            return element.Definition.Roles.IsCollection();
         }
 
         public new ICollectionElement Element => base.Element as ICollectionElement;

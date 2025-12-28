@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector.Editor
     public static class ElementFactoryExtensions
     {
         [NotNull]
-        public static IElement CreateElement(this IElementFactory factory, [NotNull] IElementDefinition definition, [CanBeNull] IElement parent)
+        public static IElement CreateElement(this IElementFactory factory, [NotNull] IElementDefinition definition, [CanBeNull] ILogicalElement parent)
         {
             if (definition is IFieldCollectionDefinition fieldCollectionDefinition)
             {
@@ -74,7 +74,7 @@ namespace EasyToolKit.Inspector.Editor
 
             if (definition is IGroupDefinition groupDefinition)
             {
-                return factory.CreateGroupElement(groupDefinition, parent);
+                return factory.CreateGroupElement(groupDefinition);
             }
 
             if (definition is ICollectionDefinition collectionDefinition)
@@ -84,7 +84,7 @@ namespace EasyToolKit.Inspector.Editor
 
             if (definition is IValueDefinition valueDefinition)
             {
-                return factory.CreateValueElement(valueDefinition, parent);
+                return factory.CreateValueElement(valueDefinition);
             }
 
             throw new ArgumentException($"Definition '{definition}' is not a valid element definition", nameof(definition));

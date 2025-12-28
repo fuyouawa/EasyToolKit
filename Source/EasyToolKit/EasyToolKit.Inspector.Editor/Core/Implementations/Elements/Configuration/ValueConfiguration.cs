@@ -31,7 +31,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new InvalidOperationException("Name cannot be null or whitespace");
             }
 
-            return new ValueDefinition(ElementFlags.Value, Name, ValueType);
+            return new ValueDefinition(ElementRoles.Value, Name, ValueType);
         }
     }
 }

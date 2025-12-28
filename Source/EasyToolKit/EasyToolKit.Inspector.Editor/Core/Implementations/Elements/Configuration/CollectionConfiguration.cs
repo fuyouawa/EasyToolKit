@@ -43,7 +43,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new InvalidOperationException("Name cannot be null or whitespace");
             }
 
-            return new CollectionDefinition(ElementFlags.Collection, Name, ValueType, ItemType, IsOrdered);
+            return new CollectionDefinition(ElementRoles.Collection, Name, ValueType, ItemType, IsOrdered);
         }
     }
 }

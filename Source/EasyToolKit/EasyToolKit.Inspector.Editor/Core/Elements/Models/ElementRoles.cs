@@ -3,14 +3,14 @@
 namespace EasyToolKit.Inspector.Editor
 {
     /// <summary>
-    /// Specifies the flags that define the nature and role of an element in the inspector tree.
-    /// Elements can have multiple flags to represent complex characteristics (e.g., a Property with Value).
+    /// Specifies the roles that define the nature and role of an element in the inspector tree.
+    /// Elements can have multiple roles to represent complex characteristics (e.g., a Property with Value).
     /// </summary>
     [Flags]
-    public enum ElementFlags
+    public enum ElementRoles
     {
         /// <summary>
-        /// No flags set.
+        /// No roles set.
         /// </summary>
         None = 0,
 
@@ -18,23 +18,20 @@ namespace EasyToolKit.Inspector.Editor
         /// Root element of the inspector tree.
         /// </summary>
         /// <remarks>
-        /// Always combined with Value flag.
+        /// Always combined with <see cref="Value"/>.
         /// </remarks>
         Root = 1 << 0,
 
         /// <summary>
         /// Data-containing element that can be displayed and edited.
         /// </summary>
-        /// <remarks>
-        /// Always combined with at least one data-specific flag (Root, Field, Property, Collection, or CollectionItem).
-        /// </remarks>
         Value = 1 << 1,
 
         /// <summary>
         /// Field element representing a class field.
         /// </summary>
         /// <remarks>
-        /// Always combined with Value flag.
+        /// Always combined with <see cref="Value"/>.
         /// </remarks>
         Field = 1 << 2,
 
@@ -42,7 +39,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Property element representing a class property.
         /// </summary>
         /// <remarks>
-        /// Always combined with Value flag.
+        /// Always combined with <see cref="Value"/>.
         /// </remarks>
         Property = 1 << 3,
 
@@ -50,7 +47,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Collection element (Array, List, Dictionary).
         /// </summary>
         /// <remarks>
-        /// Always combined with Value flag.
+        /// Always combined with <see cref="Value"/>.
         /// </remarks>
         Collection = 1 << 4,
 
@@ -58,7 +55,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Individual item within a collection.
         /// </summary>
         /// <remarks>
-        /// Always combined with Value flag.
+        /// Always combined with <see cref="Value"/>.
         /// </remarks>
         CollectionItem = 1 << 5,
 
@@ -71,7 +68,7 @@ namespace EasyToolKit.Inspector.Editor
         /// Method parameter element representing an individual parameter for method invocation.
         /// </summary>
         /// <remarks>
-        /// Always combined with Value flag.
+        /// Always combined with <see cref="Value"/>.
         /// </remarks>
         MethodParameter = 1 << 8,
 

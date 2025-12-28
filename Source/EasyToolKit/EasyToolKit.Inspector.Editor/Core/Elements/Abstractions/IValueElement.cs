@@ -8,7 +8,7 @@ namespace EasyToolKit.Inspector.Editor
     /// Can represent fields, properties, or dynamically created custom values,
     /// and supports independent insertion into the element tree.
     /// </summary>
-    public interface IValueElement : IElement
+    public interface IValueElement : ILogicalElement
     {
         /// <summary>
         /// Gets the value definition that describes this value element.
@@ -25,7 +25,7 @@ namespace EasyToolKit.Inspector.Editor
         /// or when <see cref="IFieldDefinition.AsUnityProperty"/> is <c>true</c>.
         /// </para>
         /// </remarks>
-        [CanBeNull] new IReadOnlyElementList<IElement> LogicalChildren { get; }
+        [CanBeNull] new IReadOnlyElementList<ILogicalElement> LogicalChildren { get; }
 
         /// <summary>
         /// Gets child elements that were added or removed at runtime (e.g., by user interaction).

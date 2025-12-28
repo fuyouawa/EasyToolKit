@@ -8,6 +8,8 @@ namespace EasyToolKit.Inspector.Editor
         private TAttribute _attribute;
         private ElementAttributeSource? _attributeSource;
 
+        public new ILogicalElement Element => base.Element as ILogicalElement;
+
         public TAttribute Attribute
         {
             get
@@ -32,6 +34,20 @@ namespace EasyToolKit.Inspector.Editor
                 return _attributeSource.Value;
             }
         }
+
+        protected override bool CanDraw(IElement element)
+        {
+            if (element is ILogicalElement logicalElement)
+            {
+                return CanDrawElement(logicalElement);
+            }
+            return false;
+        }
+
+        protected virtual bool CanDrawElement(ILogicalElement element)
+        {
+            return true;
+        }
     }
 
     public abstract class EasyAttributeDrawer<TAttribute, TValue> : EasyAttributeDrawer<TAttribute>
@@ -39,7 +55,7 @@ namespace EasyToolKit.Inspector.Editor
     {
         private IValueEntry<TValue> _valueEntry;
 
-        new IValueElement Element => base.Element as IValueElement;
+        public new IValueElement Element => base.Element as IValueElement;
 
         public IValueEntry<TValue> ValueEntry
         {
@@ -67,11 +83,6 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         protected virtual bool CanDrawValueType(Type valueType)
-        {
-            return true;
-        }
-
-        protected virtual bool CanDrawElement(IValueElement element)
         {
             return true;
         }

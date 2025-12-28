@@ -11,7 +11,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the flags of the element.
         /// </summary>
-        ElementFlags Flags { get; }
+        ElementRoles Roles { get; }
 
         /// <summary>
         /// Gets the name of the element.

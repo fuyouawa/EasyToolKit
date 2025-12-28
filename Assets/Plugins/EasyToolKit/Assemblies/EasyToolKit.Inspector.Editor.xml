@@ -630,19 +630,6 @@
             update identifier used to prevent logic from executing multiple times within a single frame.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IElement.LogicalParent">
-            <summary>
-            Gets the logical parent element that owns this element in the code structure.
-            This represents the static parent relationship defined by the element's definition and does not change
-            during runtime modifications or tree restructuring operations.
-            </summary>
-            <remarks>
-            <para>
-            This property can be <c>null</c> for root elements, group elements,
-            or custom elements created dynamically by users.
-            </para>
-            </remarks>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.IElement.Parent">
             <summary>
             Gets the current parent element in the element tree hierarchy.
@@ -651,7 +638,7 @@
             </summary>
             <remarks>
             <para>
-            When an element is initialized, its same as <see cref="P:EasyToolKit.Inspector.Editor.IElement.LogicalParent"/>.
+            When an element is initialized, its same as <see cref="!:LogicalParent"/>.
             </para>
             <para>
             If the current element is in a hover state (removed from its original parent but not yet added to a new parent),
@@ -674,11 +661,67 @@
             Gets or sets the label displayed in the inspector.
             </summary>
         </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IElement.Phases">
+            <summary>
+            Gets the current phase of this element.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IElement.Children">
+            <summary>
+            Gets the runtime child collection for this element.
+            </summary>
+            <remarks>
+            <para>
+            This property can be <c>null</c> for elements that cannot have children.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IElement.AssociatedElements">
+            <summary>
+            Gets the collection of associated elements that should be disposed when this element is disposed or refreshed.
+            </summary>
+            <remarks>
+            <para>
+            Associated elements are dynamically created elements that are not part of the logical children hierarchy
+            but have a lifecycle dependency on this element. Examples include custom user-created values or
+            group elements created during post-processing.
+            </para>
+            <para>
+            When this element is disposed or refreshed, all associated elements are automatically disposed
+            to prevent element leaks.
+            </para>
+            <para>
+            This collection is mutable and can be modified to add or remove associated elements.
+            </para>
+            </remarks>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.IElement.GetAttributeInfos">
             <summary>
             Gets all custom attribute infos applied to this value element.
             </summary>
             <returns>An array of attributes.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElement.Request(System.Action,System.Boolean)">
+            <summary>
+            Requests an action that modifies the tree structure to be executed safely.
+            If the element is currently drawing, the action is queued and executed after drawing completes.
+            Otherwise, the action is executed immediately unless <paramref name="forceDelay"/> is <c>true</c>.
+            </summary>
+            <param name="action">The action to execute that may modify tree structure.</param>
+            <param name="forceDelay">
+            If <c>true</c>, forces the action to be queued and executed after drawing completes, even if not currently drawing.
+            If <c>false</c>, executes immediately when not drawing.
+            </param>
+            <remarks>
+            Use this method for operations that add, remove, or move elements to prevent modifying
+            the tree during the drawing phase, which would cause rendering inconsistencies.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElement.RequestRefresh">
+            <summary>
+            Requests a refresh of the element structure, forcing recreation of resolvers and children.
+            The refresh occurs through <see cref="M:EasyToolKit.Inspector.Editor.IElement.Request(System.Action,System.Boolean)"/> to ensure safe execution during drawing.
+            </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.IElement.Draw(UnityEngine.GUIContent)">
             <summary>
@@ -797,6 +840,34 @@
             <summary>
             Gets the group definition that describes this group.
             </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ILogicalElement.LogicalParent">
+            <summary>
+            Gets the logical parent element that owns this element in the code structure.
+            This represents the static parent relationship defined by the element's definition and does not change
+            during runtime modifications or tree restructuring operations.
+            </summary>
+            <remarks>
+            <para>
+            This property can be <c>null</c> for root elements, group elements,
+            or custom elements created dynamically by users.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ILogicalElement.LogicalChildren">
+            <summary>
+            Gets the child elements defined by the code structure.
+            These represent the static hierarchy determined by the element's definition and are immutable.
+            </summary>
+            <remarks>
+            <para>
+            Logical children are created during initialization based on the <see cref="T:EasyToolKit.Inspector.Editor.IStructureResolver"/>
+            and remain constant throughout the element's lifecycle.
+            </para>
+            <para>
+            This property can be <c>null</c> for elements that cannot have children.
+            </para>
+            </remarks>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IMethodElement">
             <summary>
@@ -1389,7 +1460,7 @@
             It serves as the base interface for all element definitions.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.IElementDefinition.Flags">
+        <member name="P:EasyToolKit.Inspector.Editor.IElementDefinition.Roles">
             <summary>
             Gets the flags of the element.
             </summary>
@@ -1501,127 +1572,214 @@
             Gets the type of the element.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ElementFlagsExtensions">
+        <member name="T:EasyToolKit.Inspector.Editor.ElementPhaseExtensions">
             <summary>
-            Extension methods for <see cref="T:EasyToolKit.Inspector.Editor.ElementFlags"/> to provide convenient flag checking operations.
+            Extension methods for <see cref="T:EasyToolKit.Inspector.Editor.ElementPhases"/> to provide convenient phase checking operations.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsRoot(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsDrawing(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element is currently being drawn in the inspector UI.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if the element has the Drawing phase set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsPendingRefresh(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element is waiting to be refreshed.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if the element has the PendingRefresh phase set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsRefreshing(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element is currently being refreshed.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if the element has the Refreshing phase set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsJustRefreshed(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element has just completed a refresh operation.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if the element has the JustRefreshed phase set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsUpdating(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element is currently being updated.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if the element has the Updating phase set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsNone(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element has no phases set.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if no phases are set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.HasAny(EasyToolKit.Inspector.Editor.ElementPhases,EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Checks if the element has any of the specified phases set.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <param name="phasesToCheck">The phases to check against.</param>
+            <returns>True if any of the specified phases are set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.Has(EasyToolKit.Inspector.Editor.ElementPhases,EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Checks if the element has all of the specified phases set.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <param name="phasesToCheck">The phases that must all be set.</param>
+            <returns>True if all specified phases are set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.Add(EasyToolKit.Inspector.Editor.ElementPhases,EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Sets the specified phase(s) on the element.
+            </summary>
+            <param name="phases">The original element phase.</param>
+            <param name="phasesToSet">The phase(s) to set.</param>
+            <returns>New element phase with the specified phases set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.Remove(EasyToolKit.Inspector.Editor.ElementPhases,EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Removes the specified phase(s) from the element.
+            </summary>
+            <param name="phases">The original element phase.</param>
+            <param name="phasesToRemove">The phase(s) to remove.</param>
+            <returns>New element phase with the specified phases removed.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.Toggle(EasyToolKit.Inspector.Editor.ElementPhases,EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Toggles the specified phase(s) on the element.
+            </summary>
+            <param name="phases">The original element phase.</param>
+            <param name="phasesToToggle">The phase(s) to toggle.</param>
+            <returns>New element phase with the specified phases toggled.</returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ElementRolesExtensions">
+            <summary>
+            Extension methods for <see cref="T:EasyToolKit.Inspector.Editor.ElementRoles"/> to provide convenient role checking operations.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsRoot(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element is a root element.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the Root flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the Root role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsValue(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsValue(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element contains data that can be displayed or edited.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the Value flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the Value role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsField(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsField(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element represents a class field.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the Field flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the Field role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsProperty(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsProperty(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element represents a class property.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the Property flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the Property role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsCollection(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsCollection(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element represents a collection (Array, List, or Dictionary).
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the Collection flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the Collection role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsCollectionItem(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsCollectionItem(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element represents an individual item within a collection.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the CollectionItem flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the CollectionItem role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsMethod(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsMethod(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element represents a method that can be invoked in the inspector.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the Method flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the Method role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsMethodParameter(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsMethodParameter(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element represents a method parameter for method invocation.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the MethodParameter flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the MethodParameter role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsGroup(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsGroup(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element is a group for organizing related elements in the UI.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if the element has the Group flag set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if the element has the Group role set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsMember(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsMember(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
             Determines if the element is a member (Field or Property or Method).
             </summary>
-            <param name="flags">The element flags to check.</param>
+            <param name="roles">The element roles to check.</param>
             <returns>True if the element represents a class member.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.IsNone(EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.IsNone(EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
-            Determines if the element has no flags set.
+            Determines if the element has no roles set.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <returns>True if no flags are set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <returns>True if no roles are set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.HasAny(EasyToolKit.Inspector.Editor.ElementFlags,EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.HasAny(EasyToolKit.Inspector.Editor.ElementRoles,EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
-            Checks if the element has any of the specified flags set.
+            Checks if the element has any of the specified roles set.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <param name="flagsToCheck">The flags to check against.</param>
-            <returns>True if any of the specified flags are set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <param name="rolesToCheck">The roles to check against.</param>
+            <returns>True if any of the specified roles are set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.Has(EasyToolKit.Inspector.Editor.ElementFlags,EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.Has(EasyToolKit.Inspector.Editor.ElementRoles,EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
-            Checks if the element has all of the specified flags set.
+            Checks if the element has all of the specified roles set.
             </summary>
-            <param name="flags">The element flags to check.</param>
-            <param name="flagsToCheck">The flags that must all be set.</param>
-            <returns>True if all specified flags are set.</returns>
+            <param name="roles">The element roles to check.</param>
+            <param name="rolesToCheck">The roles that must all be set.</param>
+            <returns>True if all specified roles are set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.Set(EasyToolKit.Inspector.Editor.ElementFlags,EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.Add(EasyToolKit.Inspector.Editor.ElementRoles,EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
-            Sets the specified flag(s) on the element.
+            Sets the specified role(s) on the element.
             </summary>
-            <param name="flags">The original element flags.</param>
-            <param name="flagsToSet">The flag(s) to set.</param>
-            <returns>New element flags with the specified flags set.</returns>
+            <param name="roles">The original element roles.</param>
+            <param name="rolesToSet">The role(s) to set.</param>
+            <returns>New element roles with the specified roles set.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.Remove(EasyToolKit.Inspector.Editor.ElementFlags,EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.Remove(EasyToolKit.Inspector.Editor.ElementRoles,EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
-            Removes the specified flag(s) from the element.
+            Removes the specified role(s) from the element.
             </summary>
-            <param name="flags">The original element flags.</param>
-            <param name="flagsToRemove">The flag(s) to remove.</param>
-            <returns>New element flags with the specified flags removed.</returns>
+            <param name="roles">The original element roles.</param>
+            <param name="rolesToRemove">The role(s) to remove.</param>
+            <returns>New element roles with the specified roles removed.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementFlagsExtensions.Toggle(EasyToolKit.Inspector.Editor.ElementFlags,EasyToolKit.Inspector.Editor.ElementFlags)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementRolesExtensions.Toggle(EasyToolKit.Inspector.Editor.ElementRoles,EasyToolKit.Inspector.Editor.ElementRoles)">
             <summary>
-            Toggles the specified flag(s) on the element.
+            Toggles the specified role(s) on the element.
             </summary>
-            <param name="flags">The original element flags.</param>
-            <param name="flagsToToggle">The flag(s) to toggle.</param>
-            <returns>New element flags with the specified flags toggled.</returns>
+            <param name="roles">The original element roles.</param>
+            <param name="rolesToToggle">The role(s) to toggle.</param>
+            <returns>New element roles with the specified roles toggled.</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IElementConfigurator">
             <summary>
@@ -1715,12 +1873,11 @@
             with consistent initialization through the shared context.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateValueElement(EasyToolKit.Inspector.Editor.IValueDefinition,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateValueElement(EasyToolKit.Inspector.Editor.IValueDefinition)">
             <summary>
             Creates a value element from the given value definition.
             </summary>
             <param name="definition">The value definition describing the value element to create.</param>
-            <param name="parent">The optional logical parent element in the code structure.</param>
             <returns>A new value element instance.</returns>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateFieldElement(EasyToolKit.Inspector.Editor.IFieldDefinition,EasyToolKit.Inspector.Editor.IValueElement)">
@@ -1739,15 +1896,14 @@
             <param name="parent">The optional logical parent value element in the code structure.</param>
             <returns>A new property element instance.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateGroupElement(EasyToolKit.Inspector.Editor.IGroupDefinition,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateGroupElement(EasyToolKit.Inspector.Editor.IGroupDefinition)">
             <summary>
             Creates a group element from the given group definition.
             </summary>
             <param name="definition">The group definition describing the group to create.</param>
-            <param name="parent">The optional logical parent element in the code structure.</param>
             <returns>A new group element instance.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateMethodElement(EasyToolKit.Inspector.Editor.IMethodDefinition,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateMethodElement(EasyToolKit.Inspector.Editor.IMethodDefinition,EasyToolKit.Inspector.Editor.ILogicalElement)">
             <summary>
             Creates a method element from the given method definition.
             </summary>
@@ -1763,7 +1919,7 @@
             <param name="parent">The optional logical parent method element that contains this parameter.</param>
             <returns>A new method parameter element instance.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateCollectionElement(EasyToolKit.Inspector.Editor.ICollectionDefinition,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.CreateCollectionElement(EasyToolKit.Inspector.Editor.ICollectionDefinition,EasyToolKit.Inspector.Editor.ILogicalElement)">
             <summary>
             Creates a collection element from the given collection definition.
             </summary>
@@ -1867,83 +2023,6 @@
             Attribute is defined on a list/collection type/field but is passed to each element
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.ElementFlags">
-            <summary>
-            Specifies the flags that define the nature and role of an element in the inspector tree.
-            Elements can have multiple flags to represent complex characteristics (e.g., a Property with Value).
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.None">
-            <summary>
-            No flags set.
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.Root">
-            <summary>
-            Root element of the inspector tree.
-            </summary>
-            <remarks>
-            Always combined with Value flag.
-            </remarks>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.Value">
-            <summary>
-            Data-containing element that can be displayed and edited.
-            </summary>
-            <remarks>
-            Always combined with at least one data-specific flag (Root, Field, Property, Collection, or CollectionItem).
-            </remarks>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.Field">
-            <summary>
-            Field element representing a class field.
-            </summary>
-            <remarks>
-            Always combined with Value flag.
-            </remarks>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.Property">
-            <summary>
-            Property element representing a class property.
-            </summary>
-            <remarks>
-            Always combined with Value flag.
-            </remarks>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.Collection">
-            <summary>
-            Collection element (Array, List, Dictionary).
-            </summary>
-            <remarks>
-            Always combined with Value flag.
-            </remarks>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.CollectionItem">
-            <summary>
-            Individual item within a collection.
-            </summary>
-            <remarks>
-            Always combined with Value flag.
-            </remarks>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.Method">
-            <summary>
-            Method element representing a class method that can be invoked in the inspector.
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.MethodParameter">
-            <summary>
-            Method parameter element representing an individual parameter for method invocation.
-            </summary>
-            <remarks>
-            Always combined with Value flag.
-            </remarks>
-        </member>
-        <member name="F:EasyToolKit.Inspector.Editor.ElementFlags.Group">
-            <summary>
-            Group element for organizing related elements in the inspector UI.
-            </summary>
-        </member>
         <member name="T:EasyToolKit.Inspector.Editor.ElementListChangeType">
             <summary>
             Specifies the type of change that occurred to an element list.
@@ -1974,11 +2053,12 @@
             The event is raised after the element is moved.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.#ctor(EasyToolKit.Inspector.Editor.ElementListChangeType,System.Int32,EasyToolKit.Inspector.Editor.IElement,EasyToolKit.Inspector.Editor.IElement,EasyToolKit.Inspector.Editor.ElementMovedTiming)">
+        <member name="M:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.#ctor(EasyToolKit.Inspector.Editor.ElementListChangeType,EasyToolKit.Inspector.Editor.IElement,System.Int32,EasyToolKit.Inspector.Editor.IElement,EasyToolKit.Inspector.Editor.IElement,EasyToolKit.Inspector.Editor.ElementMovedTiming)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ElementMovedEventArgs"/> class.
             </summary>
             <param name="changeType">The type of change that occurred.</param>
+            <param name="element">The element that was moved.</param>
             <param name="index">The zero-based index at which the change occurred.</param>
             <param name="oldParent">The previous parent element of the element.</param>
             <param name="newParent">The new parent element of the element (null if removed).</param>
@@ -1987,6 +2067,11 @@
         <member name="P:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.ChangeType">
             <summary>
             Gets the type of change that occurred.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.Element">
+            <summary>
+            Gets the element that was moved.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.Index">
@@ -2007,6 +2092,116 @@
         <member name="P:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.Timing">
             <summary>
             Gets the timing of the event (pre or post).
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ElementPhases">
+            <summary>
+            Specifies the processing phases of an element during its lifecycle in the inspector.
+            Elements can be in multiple phases simultaneously to represent concurrent states.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.None">
+            <summary>
+            No phase set.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.Drawing">
+            <summary>
+            The element is currently being drawn in the inspector UI.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.PendingRefresh">
+            <summary>
+            The element is waiting to be refreshed.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.Refreshing">
+            <summary>
+            The element is currently being refreshed.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.JustRefreshed">
+            <summary>
+            The element has just completed a refresh operation.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.Updating">
+            <summary>
+            The element is currently being updated.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ElementRoles">
+            <summary>
+            Specifies the roles that define the nature and role of an element in the inspector tree.
+            Elements can have multiple roles to represent complex characteristics (e.g., a Property with Value).
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.None">
+            <summary>
+            No roles set.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.Root">
+            <summary>
+            Root element of the inspector tree.
+            </summary>
+            <remarks>
+            Always combined with <see cref="F:EasyToolKit.Inspector.Editor.ElementRoles.Value"/>.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.Value">
+            <summary>
+            Data-containing element that can be displayed and edited.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.Field">
+            <summary>
+            Field element representing a class field.
+            </summary>
+            <remarks>
+            Always combined with <see cref="F:EasyToolKit.Inspector.Editor.ElementRoles.Value"/>.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.Property">
+            <summary>
+            Property element representing a class property.
+            </summary>
+            <remarks>
+            Always combined with <see cref="F:EasyToolKit.Inspector.Editor.ElementRoles.Value"/>.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.Collection">
+            <summary>
+            Collection element (Array, List, Dictionary).
+            </summary>
+            <remarks>
+            Always combined with <see cref="F:EasyToolKit.Inspector.Editor.ElementRoles.Value"/>.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.CollectionItem">
+            <summary>
+            Individual item within a collection.
+            </summary>
+            <remarks>
+            Always combined with <see cref="F:EasyToolKit.Inspector.Editor.ElementRoles.Value"/>.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.Method">
+            <summary>
+            Method element representing a class method that can be invoked in the inspector.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.MethodParameter">
+            <summary>
+            Method parameter element representing an individual parameter for method invocation.
+            </summary>
+            <remarks>
+            Always combined with <see cref="F:EasyToolKit.Inspector.Editor.ElementRoles.Value"/>.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementRoles.Group">
+            <summary>
+            Group element for organizing related elements in the inspector UI.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IElementList`1">
@@ -2683,11 +2878,11 @@
             Inherits from <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition"/> and extends it with collection-specific metadata.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Type,System.Type,System.Boolean)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type,System.Type,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="valueType">The type of the collection.</param>
             <param name="itemType">The type of elements contained in this collection.</param>
@@ -2712,11 +2907,11 @@
             Similar to dynamically created custom values, representing individual element items in collections.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionItemDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Type,System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionItemDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type,System.Int32)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.CollectionItemDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="valueType">The type of the value.</param>
             <param name="itemIndex">The index of this item within its parent collection.</param>
@@ -2732,14 +2927,14 @@
             It serves as the base interface for all element definitions.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition.Flags">
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition.Roles">
             <summary>
             Gets the flags of the element.
             </summary>
@@ -2755,11 +2950,11 @@
             Represents collection fields on an object, providing both collection-specific metadata and reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.FieldInfo,System.Boolean,System.Type,System.Boolean)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.FieldInfo,System.Boolean,System.Type,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="fieldInfo">The field information.</param>
             <param name="itemType">The type of elements contained in this collection.</param>
@@ -2782,11 +2977,11 @@
             Provides consistent access to field reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.FieldInfo,System.Boolean)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.FieldInfo,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="fieldInfo">The field information.</param>
             <param name="asUnityProperty">Whether this field should be treated as a Unity property.</param>
@@ -2807,11 +3002,11 @@
             Defines the start and end attributes that create logical groupings of elements.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.GroupDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Type,System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.GroupDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type,System.Type)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.GroupDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="beginGroupAttributeType">The type of the attribute that begins this group.</param>
             <param name="endGroupAttributeType">The type of the attribute that ends this group.</param>
@@ -2848,11 +3043,11 @@
             Provides metadata for methods that can be invoked or displayed in the inspector interface.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.MethodInfo)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.MethodInfo)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="methodInfo">The method information.</param>
         </member>
@@ -2867,11 +3062,11 @@
             Similar to dynamically created custom values, representing individual parameter items for method invocation.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.ParameterInfo,System.Int32)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.ParameterInfo,System.Int32)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="parameterInfo">The parameter information.</param>
             <param name="parameterIndex">The index of this parameter in the method's parameter list.</param>
@@ -2892,11 +3087,11 @@
             Represents collection properties on an object, providing both collection-specific metadata and reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.PropertyInfo,System.Type,System.Boolean)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.PropertyInfo,System.Type,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="propertyInfo">The property information.</param>
             <param name="itemType">The type of elements contained in this collection.</param>
@@ -2913,11 +3108,11 @@
             Provides consistent access to property reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.PropertyDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Reflection.PropertyInfo)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.PropertyDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.PropertyInfo)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.PropertyDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="propertyInfo">The property information.</param>
         </member>
@@ -2932,11 +3127,11 @@
             An abstract concept similar to dynamically created values, used to represent Unity instances.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.RootDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.RootDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.RootDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="valueType">The type of the value.</param>
         </member>
@@ -2945,11 +3140,11 @@
             Base implementation of <see cref="T:EasyToolKit.Inspector.Editor.IValueDefinition"/> for all data-containing elements.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementFlags,System.String,System.Type)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition"/> class.
             </summary>
-            <param name="flags">The flags of the element.</param>
+            <param name="roles">The flags of the element.</param>
             <param name="name">The name of the element.</param>
             <param name="valueType">The type of the value.</param>
         </member>
@@ -2974,11 +3169,6 @@
             Gets the element shared context that provides access to tree-level services and resolver factories.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementBase.LogicalParent">
-            <summary>
-            Gets the logical parent element that owns this element in the code structure.
-            </summary>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Parent">
             <summary>
             Gets the current parent element in the element tree hierarchy.
@@ -2989,13 +3179,12 @@
             Gets the runtime state of this element.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.#ctor(EasyToolKit.Inspector.Editor.IElementDefinition,EasyToolKit.Inspector.Editor.IElementSharedContext,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.#ctor(EasyToolKit.Inspector.Editor.IElementDefinition,EasyToolKit.Inspector.Editor.IElementSharedContext)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ElementBase"/> class.
             </summary>
             <param name="definition">The definition that describes this element.</param>
             <param name="sharedContext">The shared context providing access to tree-level services.</param>
-            <param name="logicalParent">The logical parent element in the code structure.</param>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Path">
             <summary>
@@ -3007,16 +3196,15 @@
             Gets or sets the label displayed in the inspector.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementBase.LogicalChildren">
-            <summary>
-            Gets the child elements defined by the code structure.
-            These are immutable and determined solely by the definition.
-            </summary>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Children">
             <summary>
             Gets child elements that were added or removed at runtime.
             This collection is mutable and reflects runtime modifications.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Phases">
+            <summary>
+            Gets the current phase of this element.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.GetAttributeInfos">
@@ -3046,12 +3234,6 @@
             <summary>
             Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.CreateLogicalChildren">
-            <summary>
-            Creates the logical children list based on the structure resolver.
-            </summary>
-            <returns>A read-only list of child elements defined by the structure.</returns>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.OnChildrenElementMoved(System.Object,EasyToolKit.Inspector.Editor.ElementMovedEventArgs)">
             <summary>
@@ -3278,7 +3460,7 @@
             <param name="sharedContext">The shared context providing access to tree-level services.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="sharedContext"/> is null.</exception>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateValueElement(EasyToolKit.Inspector.Editor.IValueDefinition,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateValueElement(EasyToolKit.Inspector.Editor.IValueDefinition)">
             <summary>
             Creates a value element from the given value definition.
             </summary>
@@ -3302,15 +3484,14 @@
             <param name="parent">The optional logical parent value element in the code structure.</param>
             <returns>A new property element instance.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateGroupElement(EasyToolKit.Inspector.Editor.IGroupDefinition,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateGroupElement(EasyToolKit.Inspector.Editor.IGroupDefinition)">
             <summary>
             Creates a group element from the given group definition.
             </summary>
             <param name="definition">The group definition describing the group to create.</param>
-            <param name="parent">The optional logical parent element in the code structure.</param>
             <returns>A new group element instance.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateMethodElement(EasyToolKit.Inspector.Editor.IMethodDefinition,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateMethodElement(EasyToolKit.Inspector.Editor.IMethodDefinition,EasyToolKit.Inspector.Editor.ILogicalElement)">
             <summary>
             Creates a method element from the given method definition.
             </summary>
@@ -3325,7 +3506,7 @@
             <param name="parent">The optional logical parent method element that contains this parameter.</param>
             <returns>A new method parameter element instance.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateCollectionElement(EasyToolKit.Inspector.Editor.ICollectionDefinition,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateCollectionElement(EasyToolKit.Inspector.Editor.ICollectionDefinition,EasyToolKit.Inspector.Editor.ILogicalElement)">
             <summary>
             Creates a collection element from the given collection definition.
             </summary>
@@ -3440,18 +3621,34 @@
             the current group (e.g., current group "A/B", next group "C/D" or "A/C").
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.GroupElement.#ctor(EasyToolKit.Inspector.Editor.IGroupDefinition,EasyToolKit.Inspector.Editor.IElementSharedContext,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.GroupElement.#ctor(EasyToolKit.Inspector.Editor.IGroupDefinition,EasyToolKit.Inspector.Editor.IElementSharedContext)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.GroupElement"/> class.
             </summary>
             <param name="definition">The group definition that describes this element.</param>
             <param name="sharedContext">The shared context providing access to tree-level services.</param>
-            <param name="logicalParent">The logical parent element in the code structure.</param>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.GroupElement.Definition">
             <summary>
             Gets the group definition that describes this group.
             </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.LogicalElementBase.LogicalParent">
+            <summary>
+            Gets the logical parent element that owns this element in the code structure.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.LogicalElementBase.LogicalChildren">
+            <summary>
+            Gets the child elements defined by the code structure.
+            These are immutable and determined solely by the definition.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.LogicalElementBase.CreateLogicalChildren">
+            <summary>
+            Creates the logical children list based on the structure resolver.
+            </summary>
+            <returns>A read-only list of child elements defined by the structure.</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.MethodElement">
             <summary>
@@ -3459,7 +3656,7 @@
             Represents methods that can be invoked with parameters and displayed in the inspector.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MethodElement.#ctor(EasyToolKit.Inspector.Editor.IMethodDefinition,EasyToolKit.Inspector.Editor.IElementSharedContext,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MethodElement.#ctor(EasyToolKit.Inspector.Editor.IMethodDefinition,EasyToolKit.Inspector.Editor.IElementSharedContext,EasyToolKit.Inspector.Editor.ILogicalElement)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.MethodElement"/> class.
             </summary>
@@ -4073,7 +4270,7 @@
             <para>When the runtime type is a derived type, this is a type wrapper around <see cref="P:EasyToolKit.Inspector.Editor.Implementations.ValueElement.BaseValueEntry"/>.</para>
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ValueElement.#ctor(EasyToolKit.Inspector.Editor.IValueDefinition,EasyToolKit.Inspector.Editor.IElementSharedContext,EasyToolKit.Inspector.Editor.IElement)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ValueElement.#ctor(EasyToolKit.Inspector.Editor.IValueDefinition,EasyToolKit.Inspector.Editor.IElementSharedContext,EasyToolKit.Inspector.Editor.ILogicalElement)">
             <summary>
             Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ValueElement"/> class.
             </summary>
@@ -5065,19 +5262,9 @@
             <param name="owner">Owner object</param>
             <param name="value">Value to set</param>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.AttributeResolverBase">
-            <summary>
-            Abstract base class for attribute resolver in the <see cref="!:InspectorProperty"/> system
-            </summary>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.Initialize">
             <summary>
             Override this method to perform initialization logic
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Inspector.Editor.DefaultAttributeResolver">
-            <summary>
-            Default implementation of attribute resolution for <see cref="!:InspectorProperty"/>
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.DefaultDrawerChainResolver">

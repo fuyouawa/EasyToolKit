@@ -42,7 +42,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new InvalidOperationException("Name cannot be null or whitespace");
             }
 
-            return new GroupDefinition(ElementFlags.Group, Name, BeginGroupAttributeType, EndGroupAttributeType);
+            return new GroupDefinition(ElementRoles.Group, Name, BeginGroupAttributeType, EndGroupAttributeType);
         }
     }
 }

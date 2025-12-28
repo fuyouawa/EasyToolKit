@@ -11,12 +11,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Initializes a new instance of the <see cref="GroupDefinition"/> class.
         /// </summary>
-        /// <param name="flags">The flags of the element.</param>
+        /// <param name="roles">The flags of the element.</param>
         /// <param name="name">The name of the element.</param>
         /// <param name="beginGroupAttributeType">The type of the attribute that begins this group.</param>
         /// <param name="endGroupAttributeType">The type of the attribute that ends this group.</param>
-        public GroupDefinition(ElementFlags flags, string name, Type beginGroupAttributeType, Type endGroupAttributeType)
-            : base(flags, name)
+        public GroupDefinition(ElementRoles roles, string name, Type beginGroupAttributeType, Type endGroupAttributeType)
+            : base(roles, name)
         {
             BeginGroupAttributeType = beginGroupAttributeType;
             EndGroupAttributeType = endGroupAttributeType;

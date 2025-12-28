@@ -9,7 +9,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public CollectionElement(
             [NotNull] IValueDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IElement logicalParent)
+            [CanBeNull] ILogicalElement logicalParent)
             : base(definition, sharedContext, logicalParent)
         {
         }
@@ -17,7 +17,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public ICollectionDefinition Definition => (ICollectionDefinition)base.Definition;
 
         public IReadOnlyElementList<ICollectionItemElement> LogicalChildren =>
-            ((IReadOnlyElementListBoxedWrapper<IElement, ICollectionItemElement>)base.LogicalChildren)!.DerivedList;
+            ((IReadOnlyElementListBoxedWrapper<ILogicalElement, ICollectionItemElement>)base.LogicalChildren)!.DerivedList;
 
         public ICollectionEntry BaseValueEntry => (ICollectionEntry)base.BaseValueEntry;
         public ICollectionEntry ValueEntry => (ICollectionEntry)base.ValueEntry;
@@ -27,11 +27,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return true;
         }
 
-        protected override IReadOnlyElementList<IElement> CreateLogicalChildren()
+        protected override IReadOnlyElementList<ILogicalElement> CreateLogicalChildren()
         {
             var baseLogicalChildren = base.CreateLogicalChildren();
-            var wrapper = new ReadOnlyElementListWrapper<ICollectionItemElement, IElement>(baseLogicalChildren);
-            return new ReadOnlyElementListBoxedWrapper<IElement, ICollectionItemElement>(wrapper);
+            var wrapper = new ReadOnlyElementListWrapper<ICollectionItemElement, ILogicalElement>(baseLogicalChildren);
+            return new ReadOnlyElementListBoxedWrapper<ILogicalElement, ICollectionItemElement>(wrapper);
         }
 
         protected override IValueEntry CreateBaseValueEntry()

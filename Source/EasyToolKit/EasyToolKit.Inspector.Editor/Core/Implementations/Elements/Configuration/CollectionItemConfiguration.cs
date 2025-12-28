@@ -30,7 +30,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new InvalidOperationException("Name cannot be null or whitespace");
             }
 
-            return new CollectionItemDefinition(ElementFlags.CollectionItem | ElementFlags.Value, Name, ValueType, ItemIndex);
+            return new CollectionItemDefinition(ElementRoles.CollectionItem | ElementRoles.Value, Name, ValueType, ItemIndex);
         }
     }
 }

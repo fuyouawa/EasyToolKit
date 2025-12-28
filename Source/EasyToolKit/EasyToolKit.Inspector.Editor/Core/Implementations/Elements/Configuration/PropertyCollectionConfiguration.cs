@@ -36,7 +36,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = PropertyInfo.Name;
             }
 
-            return new PropertyCollectionDefinition(ElementFlags.Property | ElementFlags.Collection | ElementFlags.Value, Name, PropertyInfo,
+            return new PropertyCollectionDefinition(ElementRoles.Property | ElementRoles.Collection | ElementRoles.Value, Name, PropertyInfo,
                 ItemType, IsOrdered);
         }
 

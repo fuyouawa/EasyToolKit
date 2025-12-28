@@ -14,15 +14,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// </summary>
     public abstract class ElementBase : IElement, IDisposable
     {
-        [CanBeNull] private IReadOnlyElementList<IElement> _logicalChildren;
+        [NotNull] private readonly IElementList<IElement> _associatedElements;
         [CanBeNull] private IElementList<IElement> _children;
         private int? _lastUpdateId;
-        private string _path;
         private GUIContent _label;
         private bool _disposed;
-        private bool _isDrawing;
+        private ElementPhases _phases;
 
-        private IStructureResolver _structureResolver;
         [CanBeNull] private IAttributeResolver _attributeResolver;
         [CanBeNull] private IDrawerChainResolver _drawerChainResolver;
         [CanBeNull] private IPostProcessorChainResolver _postProcessorChainResolver;
@@ -36,11 +34,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// Gets the element shared context that provides access to tree-level services and resolver factories.
         /// </summary>
         public IElementSharedContext SharedContext { get; }
-
-        /// <summary>
-        /// Gets the logical parent element that owns this element in the code structure.
-        /// </summary>
-        public IElement LogicalParent { get; }
 
         /// <summary>
         /// Gets the current parent element in the element tree hierarchy.
@@ -57,18 +50,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         /// <param name="definition">The definition that describes this element.</param>
         /// <param name="sharedContext">The shared context providing access to tree-level services.</param>
-        /// <param name="logicalParent">The logical parent element in the code structure.</param>
         protected ElementBase(
             [NotNull] IElementDefinition definition,
-            [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IElement logicalParent)
+            [NotNull] IElementSharedContext sharedContext)
         {
             Definition = definition ?? throw new ArgumentNullException(nameof(definition));
             SharedContext = sharedContext ?? throw new ArgumentNullException(nameof(sharedContext));
-            LogicalParent = logicalParent;
-            Parent = logicalParent;
 
             State = new ElementState(this);
+            _associatedElements = new RequestedElementList<IElement>(this);
 
             SharedContext.RegisterEventHandler<ElementMovedEventArgs>(OnElementMoved);
         }
@@ -76,23 +66,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Gets the hierarchical path of this element.
         /// </summary>
-        public virtual string Path
-        {
-            get
-            {
-                if (_path == null && LogicalParent?.LogicalChildren != null)
-                {
-                    var children = LogicalParent.LogicalChildren;
-                    var index = children.IndexOf(this);
-                    if (index >= 0)
-                    {
-                        _path = children.GetPath(index);
-                    }
-                }
-
-                return _path ?? string.Empty;
-            }
-        }
+        public abstract string Path { get; }
 
         /// <summary>
         /// Gets or sets the label displayed in the inspector.
@@ -113,19 +87,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Gets the child elements defined by the code structure.
-        /// These are immutable and determined solely by the definition.
-        /// </summary>
-        public IReadOnlyElementList<IElement> LogicalChildren
-        {
-            get
-            {
-                ValidateDisposed();
-                return _logicalChildren;
-            }
-        }
-
-        /// <summary>
         /// Gets child elements that were added or removed at runtime.
         /// This collection is mutable and reflects runtime modifications.
         /// </summary>
@@ -138,7 +99,12 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
         }
 
-        public bool IsDrawing => _isDrawing;
+        public IElementList<IElement> AssociatedElements => _associatedElements;
+
+        /// <summary>
+        /// Gets the current phase of this element.
+        /// </summary>
+        public ElementPhases Phases => _phases;
 
         /// <summary>
         /// Gets all custom attribute infos applied to this element.
@@ -181,9 +147,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return _postProcessorChainResolver.GetPostProcessorChain();
         }
 
-        public void Request(Action action)
+        public virtual bool Request(Action action, bool forceDelay = false)
         {
-            if (_isDrawing)
+            if (_phases.IsDrawing())
             {
                 SharedContext.Tree.QueueCallback(action);
             }
@@ -191,6 +157,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 action();
             }
+
+            return true;
         }
 
         /// <summary>
@@ -207,30 +175,31 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             if (chain.MoveNext() && chain.Current != null)
             {
-                _isDrawing = true;
+                _phases = _phases.Add(ElementPhases.Drawing);
                 chain.Current.Draw(label);
-                _isDrawing = false;
+                _phases = _phases.Remove(ElementPhases.Drawing);
             }
         }
 
         /// <summary>
         /// Refreshes all element state, forcing recreation of resolvers and children.
         /// </summary>
-        public void RequestRefresh()
+        public bool RequestRefresh()
         {
             ValidateDisposed();
-            Request(Refresh);
-        }
 
-        protected virtual bool CanHaveChildren()
-        {
-            return _structureResolver != null;
+            _phases = _phases.Add(ElementPhases.PendingRefresh);
+            if (Request(Refresh))
+            {
+                return true;
+            }
+            _phases = _phases.Remove(ElementPhases.PendingRefresh);
+            return false;
         }
 
         protected virtual void OnUpdate(bool forceUpdate)
         {
             _children?.Update();
-            _logicalChildren?.Update();
         }
 
         /// <summary>
@@ -238,12 +207,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         protected virtual void Dispose()
         {
-            if (_logicalChildren != null)
+            foreach (var associatedElement in _associatedElements)
             {
-                foreach (var child in _logicalChildren)
-                {
-                    (child as IDisposable)?.Dispose();
-                }
+                (associatedElement as IDisposable)?.Dispose();
             }
 
             if (Parent != null)
@@ -259,36 +225,17 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             SharedContext.UnregisterEventHandler<ElementMovedEventArgs>(OnElementMoved);
 
-            (_logicalChildren as IDisposable)?.Dispose();
             (_children as IDisposable)?.Dispose();
-        }
-
-        /// <summary>
-        /// Creates the logical children list based on the structure resolver.
-        /// </summary>
-        /// <returns>A read-only list of child elements defined by the structure.</returns>
-        [NotNull]
-        protected virtual IReadOnlyElementList<IElement> CreateLogicalChildren()
-        {
-            var childrenDefinitions = _structureResolver?.GetChildrenDefinitions();
-
-            var children = new ElementList<IElement>(this,
-                childrenDefinitions?.Select(definition => SharedContext.Tree.ElementFactory.CreateElement(definition, this)));
-
-            return children;
+            (_associatedElements as IDisposable)?.Dispose();
         }
 
         [NotNull]
-        protected virtual IElementList<IElement> CreateChildren(IReadOnlyList<IElement> oldChildren)
+        protected virtual IElementList<IElement> CreateChildren()
         {
-            var children = new RequestedElementList<IElement>(this, oldChildren.Concat(_logicalChildren!));
+            var children = new RequestedElementList<IElement>(this);
             children.BeforeElementMoved += OnChildrenElementMoved;
             children.AfterElementMoved += OnChildrenElementMoved;
             return children;
-        }
-
-        protected virtual void OnCreatedChildren()
-        {
         }
 
         /// <summary>
@@ -343,49 +290,30 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
 
+        protected virtual bool CanHaveChildren()
+        {
+            return false;
+        }
+
         protected virtual void Refresh()
         {
+            _phases = _phases.Remove(ElementPhases.PendingRefresh);
+            _phases = _phases.Add(ElementPhases.Refreshing);
+
+            foreach (var associatedElement in _associatedElements)
             {
-                // Initialize structure resolver (before children)
-                var factory = SharedContext.GetResolverFactory<IStructureResolver>();
-                _structureResolver = factory.CreateResolver(this);
-                if (_structureResolver != null)
-                {
-                    _structureResolver.Element = this;
-                }
+                (associatedElement as IDisposable)?.Dispose();
             }
 
-            // Recreate children if needed
+            (_children as IDisposable)?.Dispose();
             if (CanHaveChildren())
             {
-                Assert.IsFalse(_isDrawing, "Element is drawing when refreshing children.");
-
-                if (_logicalChildren != null)
-                {
-                    foreach (var logicalChild in _logicalChildren)
-                    {
-                        (logicalChild as IDisposable)?.Dispose();
-                    }
-
-#if UNITY_ASSERTIONS
-                    foreach (var logicalChild in _logicalChildren)
-                    {
-                        Assert.IsFalse(_children.Contains(logicalChild),
-                            () => $"Disposed logical child '{logicalChild}' is still in children list.");
-                    }
-#endif
-                }
-
-                (_logicalChildren as IDisposable)?.Dispose();
-                // Recreate logical children
-                _logicalChildren = CreateLogicalChildren();
-
-                var oldChildren = new List<IElement>(_children ?? Enumerable.Empty<IElement>());
-                (_children as IDisposable)?.Dispose();
                 // Recreate children list
-                _children = CreateChildren(oldChildren);
-
-                OnCreatedChildren();
+                _children = CreateChildren();
+            }
+            else
+            {
+                _children = null;
             }
 
             {
@@ -418,16 +346,19 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 }
             }
 
-            PostProcess();
+            _phases = _phases.Remove(ElementPhases.Refreshing);
+            _phases = _phases.Add(ElementPhases.JustRefreshed);
         }
 
-        private void PostProcess()
+        public void PostProcess()
         {
             var chain = GetPostProcessorChain();
             chain.Reset();
             while (chain.MoveNext() && chain.Current != null)
             {
+                _phases = _phases.Add(ElementPhases.PostProcessing);
                 chain.Current.Process();
+                _phases = _phases.Remove(ElementPhases.PostProcessing);
             }
         }
 
@@ -436,6 +367,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (_lastUpdateId == SharedContext.UpdateId && !forceUpdate)
             {
                 return;
+            }
+
+            if (_phases.IsJustRefreshed())
+            {
+                _phases = _phases.Remove(ElementPhases.JustRefreshed);
             }
 
             if (_lastUpdateId == null)

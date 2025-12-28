@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -14,6 +15,6 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         new IGroupDefinition Definition { get; }
 
-        void InitializeChildren(IEnumerable<IElement> children);
+        [CanBeNull] ILogicalElement AssociatedElement { get; set; }
     }
 }

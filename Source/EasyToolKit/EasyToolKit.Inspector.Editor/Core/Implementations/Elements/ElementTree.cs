@@ -216,7 +216,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             ApplyChanges();
             ++UpdateId;
-            Root?.Update();
+            Root.Update();
+            if (Root.Phases.IsJustRefreshed())
+            {
+                Root.PostProcess();
+            }
         }
 
         private bool ApplyChanges()

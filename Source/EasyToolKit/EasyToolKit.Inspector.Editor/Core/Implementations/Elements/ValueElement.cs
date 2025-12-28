@@ -9,7 +9,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// Provides a value element implementation that represents data-containing elements
     /// such as fields, properties, or dynamically created custom values.
     /// </summary>
-    public class ValueElement : ElementBase, IValueElement
+    public class ValueElement : LogicalElementBase, IValueElement
     {
         private IValueEntry _baseValueEntry;
         private IValueEntry _valueEntry;
@@ -67,7 +67,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public ValueElement(
             [NotNull] IValueDefinition definition,
             [NotNull] IElementSharedContext sharedContext,
-            [CanBeNull] IElement logicalParent)
+            [CanBeNull] ILogicalElement logicalParent)
             : base(definition, sharedContext, logicalParent)
         {
         }
@@ -86,7 +86,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (_baseValueEntry.State == ValueEntryState.TypeConsistent || _baseValueEntry.State == ValueEntryState.Consistent)
             {
                 var runtimeType = _baseValueEntry.RuntimeValueType;
-                Assert.IsTrue(runtimeType != null, "Runtime type is null");
+                Assert.IsTrue(runtimeType != null,
+                    () => $"Runtime type of value entry is null, element is '{this}'");
                 if (runtimeType != _baseValueEntry.ValueType)
                 {
                     if (_valueEntry == null ||
@@ -98,11 +99,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 }
             }
 
-            // if (_valueEntry == null)
-            // {
-            //     _valueEntry = _baseValueEntry;
-            //     RequestRefresh();
-            // }
+            if (_valueEntry == null)
+            {
+                _valueEntry = _baseValueEntry;
+                RequestRefresh();
+            }
+
+            base.OnUpdate(forceUpdate);
         }
 
         /// <summary>

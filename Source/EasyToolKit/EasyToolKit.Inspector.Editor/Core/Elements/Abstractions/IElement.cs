@@ -27,19 +27,6 @@ namespace EasyToolKit.Inspector.Editor
         IElementSharedContext SharedContext { get; }
 
         /// <summary>
-        /// Gets the logical parent element that owns this element in the code structure.
-        /// This represents the static parent relationship defined by the element's definition and does not change
-        /// during runtime modifications or tree restructuring operations.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This property can be <c>null</c> for root elements, group elements,
-        /// or custom elements created dynamically by users.
-        /// </para>
-        /// </remarks>
-        [CanBeNull] IElement LogicalParent { get; }
-
-        /// <summary>
         /// Gets the current parent element in the element tree hierarchy.
         /// This represents the dynamic parent relationship and automatically updates as elements
         /// are moved, restructured, or modified at runtime.
@@ -70,10 +57,39 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         GUIContent Label { get; set; }
 
-        bool IsDrawing { get; }
+        /// <summary>
+        /// Gets the current phase of this element.
+        /// </summary>
+        ElementPhases Phases { get; }
 
-        [CanBeNull] IReadOnlyElementList<IElement> LogicalChildren { get; }
+        /// <summary>
+        /// Gets the runtime child collection for this element.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This property can be <c>null</c> for elements that cannot have children.
+        /// </para>
+        /// </remarks>
         [CanBeNull] IElementList<IElement> Children { get; }
+
+        /// <summary>
+        /// Gets the collection of associated elements that should be disposed when this element is disposed or refreshed.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Associated elements are dynamically created elements that are not part of the logical children hierarchy
+        /// but have a lifecycle dependency on this element. Examples include custom user-created values or
+        /// group elements created during post-processing.
+        /// </para>
+        /// <para>
+        /// When this element is disposed or refreshed, all associated elements are automatically disposed
+        /// to prevent element leaks.
+        /// </para>
+        /// <para>
+        /// This collection is mutable and can be modified to add or remove associated elements.
+        /// </para>
+        /// </remarks>
+        [NotNull] IElementList<IElement> AssociatedElements { get; }
 
         /// <summary>
         /// Gets all custom attribute infos applied to this value element.
@@ -81,9 +97,31 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>An array of attributes.</returns>
         IReadOnlyList<ElementAttributeInfo> GetAttributeInfos();
 
-        void Request(Action action);
-        void RequestRefresh();
+        /// <summary>
+        /// Requests an action that modifies the tree structure to be executed safely.
+        /// If the element is currently drawing, the action is queued and executed after drawing completes.
+        /// Otherwise, the action is executed immediately unless <paramref name="forceDelay"/> is <c>true</c>.
+        /// </summary>
+        /// <param name="action">The action to execute that may modify tree structure.</param>
+        /// <param name="forceDelay">
+        /// If <c>true</c>, forces the action to be queued and executed after drawing completes, even if not currently drawing.
+        /// If <c>false</c>, executes immediately when not drawing.
+        /// </param>
+        /// <remarks>
+        /// Use this method for operations that add, remove, or move elements to prevent modifying
+        /// the tree during the drawing phase, which would cause rendering inconsistencies.
+        /// </remarks>
+        bool Request(Action action, bool forceDelay = false);
+
+        /// <summary>
+        /// Requests a refresh of the element structure, forcing recreation of resolvers and children.
+        /// The refresh occurs through <see cref="Request(Action, bool)"/> to ensure safe execution during drawing.
+        /// </summary>
+        bool RequestRefresh();
+
         void Update(bool forceUpdate = false);
+
+        void PostProcess();
 
         /// <summary>
         /// Draws this element in the inspector with the specified label.

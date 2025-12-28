@@ -11,11 +11,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyDefinition"/> class.
         /// </summary>
-        /// <param name="flags">The flags of the element.</param>
+        /// <param name="roles">The flags of the element.</param>
         /// <param name="name">The name of the element.</param>
         /// <param name="propertyInfo">The property information.</param>
-        public PropertyDefinition(ElementFlags flags, string name, PropertyInfo propertyInfo)
-            : base(flags, name, propertyInfo.PropertyType)
+        public PropertyDefinition(ElementRoles roles, string name, PropertyInfo propertyInfo)
+            : base(roles, name, propertyInfo.PropertyType)
         {
             PropertyInfo = propertyInfo;
         }

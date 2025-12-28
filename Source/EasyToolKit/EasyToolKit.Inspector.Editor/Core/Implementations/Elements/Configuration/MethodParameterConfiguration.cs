@@ -36,7 +36,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = ParameterInfo.Name;
             }
 
-            return new MethodParameterDefinition(ElementFlags.MethodParameter | ElementFlags.Value, Name, ParameterInfo, ParameterIndex);
+            return new MethodParameterDefinition(ElementRoles.MethodParameter | ElementRoles.Value, Name, ParameterInfo, ParameterIndex);
         }
     }
 }
