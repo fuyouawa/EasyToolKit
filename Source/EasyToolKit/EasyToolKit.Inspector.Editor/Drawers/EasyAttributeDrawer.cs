@@ -6,9 +6,8 @@ namespace EasyToolKit.Inspector.Editor
         where TAttribute : Attribute
     {
         private TAttribute _attribute;
-        private ElementAttributeSource? _attributeSource;
 
-        public new ILogicalElement Element => base.Element as ILogicalElement;
+        public new ILogicalElement Element => (ILogicalElement)base.Element;
 
         public TAttribute Attribute
         {
@@ -20,18 +19,6 @@ namespace EasyToolKit.Inspector.Editor
                 }
 
                 return _attribute;
-            }
-        }
-
-        public ElementAttributeSource AttributeSource
-        {
-            get
-            {
-                if (_attributeSource == null)
-                {
-                    _attributeSource = Element.GetAttributeInfo(Attribute).Source;
-                }
-                return _attributeSource.Value;
             }
         }
 

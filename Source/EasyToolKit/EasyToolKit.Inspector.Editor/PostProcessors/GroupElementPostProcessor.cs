@@ -51,6 +51,11 @@ namespace EasyToolKit.Inspector.Editor
                 .CreateDefinition();
             var groupElement = Element.SharedContext.Tree.ElementFactory.CreateGroupElement(groupDefinition);
 
+            if (elementChild is ILogicalElement logicalElement)
+            {
+                groupElement.AssociatedElement = logicalElement;
+            }
+
             Element.Children.Insert(elementIndex, groupElement);
 
             var childrenToMove = new List<IElement>();

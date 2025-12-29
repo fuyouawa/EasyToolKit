@@ -73,25 +73,6 @@ namespace EasyToolKit.Inspector.Editor
         [CanBeNull] IElementList<IElement> Children { get; }
 
         /// <summary>
-        /// Gets the collection of associated elements that should be disposed when this element is disposed or refreshed.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Associated elements are dynamically created elements that are not part of the logical children hierarchy
-        /// but have a lifecycle dependency on this element. Examples include custom user-created values or
-        /// group elements created during post-processing.
-        /// </para>
-        /// <para>
-        /// When this element is disposed or refreshed, all associated elements are automatically disposed
-        /// to prevent element leaks.
-        /// </para>
-        /// <para>
-        /// This collection is mutable and can be modified to add or remove associated elements.
-        /// </para>
-        /// </remarks>
-        [NotNull] IElementList<IElement> AssociatedElements { get; }
-
-        /// <summary>
         /// Gets all custom attribute infos applied to this value element.
         /// </summary>
         /// <returns>An array of attributes.</returns>

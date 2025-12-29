@@ -14,7 +14,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     /// </summary>
     public abstract class ElementBase : IElement, IDisposable
     {
-        [NotNull] private readonly IElementList<IElement> _associatedElements;
         [CanBeNull] private IElementList<IElement> _children;
         private int? _lastUpdateId;
         private GUIContent _label;
@@ -58,7 +57,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             SharedContext = sharedContext ?? throw new ArgumentNullException(nameof(sharedContext));
 
             State = new ElementState(this);
-            _associatedElements = new RequestedElementList<IElement>(this);
 
             SharedContext.RegisterEventHandler<ElementMovedEventArgs>(OnElementMoved);
         }
@@ -98,8 +96,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return _children;
             }
         }
-
-        public IElementList<IElement> AssociatedElements => _associatedElements;
 
         /// <summary>
         /// Gets the current phase of this element.
@@ -207,11 +203,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         protected virtual void Dispose()
         {
-            foreach (var associatedElement in _associatedElements)
-            {
-                (associatedElement as IDisposable)?.Dispose();
-            }
-
             if (Parent != null)
             {
                 Parent.Children.TryRemove(this);
@@ -226,7 +217,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             SharedContext.UnregisterEventHandler<ElementMovedEventArgs>(OnElementMoved);
 
             (_children as IDisposable)?.Dispose();
-            (_associatedElements as IDisposable)?.Dispose();
         }
 
         [NotNull]
@@ -299,11 +289,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             _phases = _phases.Remove(ElementPhases.PendingRefresh);
             _phases = _phases.Add(ElementPhases.Refreshing);
-
-            foreach (var associatedElement in _associatedElements)
-            {
-                (associatedElement as IDisposable)?.Dispose();
-            }
 
             (_children as IDisposable)?.Dispose();
             if (CanHaveChildren())

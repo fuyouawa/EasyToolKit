@@ -26,6 +26,8 @@ public class TestInspector : MonoBehaviour
 
     public List<int> jjjjjss;
 
+    [FoldoutGroup("asdas")]
+    public int kkss;
 
     // Start is called before the first frame update
     void Start()

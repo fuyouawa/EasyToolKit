@@ -46,5 +46,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 }
             }
         }
+
+        protected override bool CanHaveChildren()
+        {
+            return true;
+        }
     }
 }

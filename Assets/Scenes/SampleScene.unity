@@ -162,6 +162,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   jjjjjss: 59000000000000000000000000000000
+  kkss: 41
 --- !u!4 &288710752
 Transform:
   m_ObjectHideFlags: 0

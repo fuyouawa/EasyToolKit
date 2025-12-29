@@ -2,10 +2,24 @@ using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public abstract class EasyGroupAttributeDrawer<TAttribute> : EasyAttributeDrawer<TAttribute>
+    public abstract class EasyGroupAttributeDrawer<TAttribute> : EasyDrawer
         where TAttribute : BeginGroupAttribute
     {
-        public new IGroupElement Element => base.Element as IGroupElement;
+        private TAttribute _attribute;
+        public new IGroupElement Element => (IGroupElement)base.Element;
+
+        public TAttribute Attribute
+        {
+            get
+            {
+                if (_attribute == null)
+                {
+                    _attribute = Element.GetAttribute<TAttribute>();
+                }
+
+                return _attribute;
+            }
+        }
 
         protected override void Draw(GUIContent label)
         {
