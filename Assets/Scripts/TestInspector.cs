@@ -26,8 +26,16 @@ public class TestInspector : MonoBehaviour
 
     public List<int> jjjjjss;
 
-    [FoldoutGroup("asdas")]
+    [FoldoutGroup("asdas", GroupCatalogue = "ddd")]
     public int kkss;
+    public int kksss;
+
+    [FoldoutGroup("asdasaadsasds", GroupCatalogue = "ddd/ssss")]
+    public TestInner asddax;
+
+    [FoldoutGroup("asdadds")]
+    public int kkssdd;
+    public int kksssdd;
 
     // Start is called before the first frame update
     void Start()

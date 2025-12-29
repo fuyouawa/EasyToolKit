@@ -163,6 +163,9 @@ MonoBehaviour:
       m_Calls: []
   jjjjjss: 59000000000000000000000000000000
   kkss: 41
+  kksss: 0
+  kkssdd: 0
+  kksssdd: 27
 --- !u!4 &288710752
 Transform:
   m_ObjectHideFlags: 0

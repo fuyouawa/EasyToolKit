@@ -8,11 +8,6 @@ namespace EasyToolKit.Inspector.Editor
     [PostProcessorPriority(PostProcessorPriorityLevel.Super - 1)]
     public class GroupElementPostProcessor : PostProcessor
     {
-        protected override bool CanProcess(IElement element)
-        {
-            return !element.Definition.Roles.IsGroup();
-        }
-
         protected override void Process()
         {
             if (Element.Children == null)
@@ -22,6 +17,20 @@ namespace EasyToolKit.Inspector.Editor
             }
 
             int elementIndex = 0;
+            if (Element.Definition.Roles.IsGroup())
+            {
+                elementIndex = 1;
+            }
+            do
+            {
+                ProcessImpl(ref elementIndex);
+            } while (elementIndex < Element.Children.Count);
+
+            CallNextProcessor();
+        }
+
+        private void ProcessImpl(ref int elementIndex)
+        {
             for (; elementIndex < Element.Children.Count; elementIndex++)
             {
                 var child = Element.Children[elementIndex];
@@ -31,9 +40,8 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            if (elementIndex == Element.Children.Count)
+            if (elementIndex >= Element.Children.Count)
             {
-                CallNextProcessor();
                 return;
             }
 
@@ -55,8 +63,6 @@ namespace EasyToolKit.Inspector.Editor
             {
                 groupElement.AssociatedElement = logicalElement;
             }
-
-            Element.Children.Insert(elementIndex, groupElement);
 
             var childrenToMove = new List<IElement>();
 
@@ -88,6 +94,7 @@ namespace EasyToolKit.Inspector.Editor
                             var childGroupName = childBeginGroupAttribute.GroupCatalogue;
                             bool isSubGroup = groupCatalogue.IsNotNullOrEmpty() &&
                                               childGroupName.IsNotNullOrEmpty() &&
+                                              childGroupName.Length > groupCatalogue.Length &&
                                               childGroupName.StartsWith(groupCatalogue) &&
                                               childGroupName[groupCatalogue.Length] == '/';
 
@@ -113,9 +120,14 @@ namespace EasyToolKit.Inspector.Editor
                                 break;
                             }
                         }
+
+                        childrenToMove.Add(child);
                     }
                 }
             }
+
+            Element.Children.Insert(elementIndex, groupElement);
+            elementIndex++;
 
             Element.Request(() =>
             {
@@ -125,7 +137,6 @@ namespace EasyToolKit.Inspector.Editor
                     groupElement.Children.Add(child);
                 }
             });
-            CallNextProcessor();
         }
     }
 }

@@ -249,7 +249,17 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             if (args.Timing == ElementMovedTiming.After)
             {
-                if (args.Element == this)
+                // NOTE: Checking args.NewParent != null is necessary for the following reason:
+                // NewParent being null typically occurs when an element is removed from its original Children collection.
+                // Moving an element from one Children to another is a two-step process:
+                //   1) Remove from the original Children (triggers TryRemove)
+                //   2) Add to the new Children
+                // The execution order of these two steps is uncertain. It's possible that the element is added to
+                // the new Children first, and then removed from the original Children.
+                // If removal from the original Children occurs after being added to the new Children, it will
+                // trigger ElementMovedEventArgs again with NewParent as null. Without checking NewParent != null,
+                // this would incorrectly cause the element's Parent to be set to null.
+                if (args.Element == this && args.NewParent != null)
                 {
                     Request(() => Parent = args.NewParent);
                     return;
