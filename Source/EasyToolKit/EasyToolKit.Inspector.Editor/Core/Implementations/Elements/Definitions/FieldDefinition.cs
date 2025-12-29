@@ -9,29 +9,16 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     public sealed class FieldDefinition : ValueDefinition, IFieldDefinition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FieldDefinition"/> class.
+        /// Gets or sets the <see cref="System.Reflection.FieldInfo"/> that represents this field.
         /// </summary>
-        /// <param name="roles">The flags of the element.</param>
-        /// <param name="name">The name of the element.</param>
-        /// <param name="fieldInfo">The field information.</param>
-        /// <param name="asUnityProperty">Whether this field should be treated as a Unity property.</param>
-        public FieldDefinition(ElementRoles roles, string name, FieldInfo fieldInfo, bool asUnityProperty)
-            : base(roles, name, fieldInfo.FieldType)
-        {
-            FieldInfo = fieldInfo;
-            AsUnityProperty = asUnityProperty;
-        }
+        public FieldInfo FieldInfo { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="System.Reflection.FieldInfo"/> that represents this field.
+        /// Gets or sets whether this field should be treated as a Unity property.
         /// </summary>
-        public FieldInfo FieldInfo { get; }
+        public bool AsUnityProperty { get; set; }
 
-        /// <summary>
-        /// Gets whether this field should be treated as a Unity property.
-        /// </summary>
-        public bool AsUnityProperty { get; }
-
+        /// <inheritdoc/>
         public MemberInfo MemberInfo => FieldInfo;
     }
 }

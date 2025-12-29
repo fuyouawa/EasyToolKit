@@ -8,17 +8,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     public abstract class MemberDefinition : IMemberDefinition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemberDefinition"/> class.
+        /// Gets or sets the reflection information about the member.
         /// </summary>
-        /// <param name="memberInfo">The reflection information about the member.</param>
-        protected MemberDefinition(MemberInfo memberInfo)
-        {
-            MemberInfo = memberInfo;
-        }
-
-        /// <summary>
-        /// Gets the reflection information about the member.
-        /// </summary>
-        public MemberInfo MemberInfo { get; }
+        public MemberInfo MemberInfo { get; set; }
     }
 }

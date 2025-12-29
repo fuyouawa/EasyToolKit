@@ -21,20 +21,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public bool AsUnityProperty { get; set; }
 
-        /// <summary>
-        /// Creates a new <see cref="IFieldCollectionDefinition"/> instance based on the current configuration.
-        /// </summary>
-        /// <returns>A new field collection definition instance.</returns>
-        public new IFieldCollectionDefinition CreateDefinition()
+        protected void ProcessDefinition(FieldCollectionDefinition definition)
         {
             if (FieldInfo == null)
             {
                 throw new InvalidOperationException("FieldInfo cannot be null");
-            }
-
-            if (ItemType == null)
-            {
-                throw new InvalidOperationException("ItemType cannot be null");
             }
 
             if (Name.IsNullOrWhiteSpace())
@@ -42,8 +33,23 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = FieldInfo.Name;
             }
 
-            return new FieldCollectionDefinition(ElementRoles.Field | ElementRoles.Collection | ElementRoles.Value, Name, FieldInfo, AsUnityProperty,
-                ItemType, IsOrdered);
+            ValueType = FieldInfo.FieldType;
+
+            definition.Roles = definition.Roles.Add(ElementRoles.Field);
+            definition.FieldInfo = FieldInfo;
+            definition.AsUnityProperty = AsUnityProperty;
+            base.ProcessDefinition(definition);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IFieldCollectionDefinition"/> instance based on the current configuration.
+        /// </summary>
+        /// <returns>A new field collection definition instance.</returns>
+        public new IFieldCollectionDefinition CreateDefinition()
+        {
+            var definition = new FieldCollectionDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
 
         IFieldDefinition IFieldConfiguration.CreateDefinition()

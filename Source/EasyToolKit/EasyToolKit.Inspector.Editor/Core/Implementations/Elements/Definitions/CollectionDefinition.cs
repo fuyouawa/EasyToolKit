@@ -9,31 +9,16 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     public class CollectionDefinition : ValueDefinition, ICollectionDefinition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CollectionDefinition"/> class.
-        /// </summary>
-        /// <param name="roles">The flags of the element.</param>
-        /// <param name="name">The name of the element.</param>
-        /// <param name="valueType">The type of the collection.</param>
-        /// <param name="itemType">The type of elements contained in this collection.</param>
-        /// <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
-        public CollectionDefinition(ElementRoles roles, string name, Type valueType, Type itemType, bool isOrdered)
-            : base(roles, name, valueType)
-        {
-            ItemType = itemType;
-            IsOrdered = isOrdered;
-        }
-
-        /// <summary>
-        /// Gets the type of elements contained in this collection.
+        /// Gets or sets the type of elements contained in this collection.
         /// For dictionaries, this represents the type of values.
         /// </summary>
-        public Type ItemType { get; }
+        public Type ItemType { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether this collection is ordered (can be accessed by index).
+        /// Gets or sets a value indicating whether this collection is ordered (can be accessed by index).
         /// Ordered collections include arrays, lists, and other indexable sequences.
         /// Unordered collections include sets, dictionaries, and other non-indexable collections.
         /// </summary>
-        public bool IsOrdered { get; }
+        public bool IsOrdered { get; set; }
     }
 }

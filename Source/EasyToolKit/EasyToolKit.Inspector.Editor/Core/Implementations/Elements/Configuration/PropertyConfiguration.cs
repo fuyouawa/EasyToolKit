@@ -16,11 +16,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public PropertyInfo PropertyInfo { get; set; }
 
-        /// <summary>
-        /// Creates a new <see cref="IPropertyDefinition"/> instance based on the current configuration.
-        /// </summary>
-        /// <returns>A new property definition instance.</returns>
-        public new IPropertyDefinition CreateDefinition()
+        protected void ProcessDefinition(PropertyDefinition definition)
         {
             if (PropertyInfo == null)
             {
@@ -32,7 +28,22 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = PropertyInfo.Name;
             }
 
-            return new PropertyDefinition(ElementRoles.Property | ElementRoles.Value, Name, PropertyInfo);
+            ValueType = PropertyInfo.PropertyType;
+
+            definition.Roles = definition.Roles.Add(ElementRoles.Property);
+            definition.PropertyInfo = PropertyInfo;
+            base.ProcessDefinition(definition);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IPropertyDefinition"/> instance based on the current configuration.
+        /// </summary>
+        /// <returns>A new property definition instance.</returns>
+        public new IPropertyDefinition CreateDefinition()
+        {
+            var definition = new PropertyDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
     }
 }

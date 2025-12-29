@@ -17,10 +17,6 @@ namespace EasyToolKit.Inspector.Editor
             }
 
             int elementIndex = 0;
-            if (Element.Definition.Roles.IsGroup())
-            {
-                elementIndex = 1;
-            }
             do
             {
                 ProcessImpl(ref elementIndex);
@@ -31,55 +27,33 @@ namespace EasyToolKit.Inspector.Editor
 
         private void ProcessImpl(ref int elementIndex)
         {
-            for (; elementIndex < Element.Children.Count; elementIndex++)
-            {
-                var child = Element.Children[elementIndex];
-                if (child.GetAttribute<BeginGroupAttribute>(includeDerived: true) != null)
-                {
-                    break;
-                }
-            }
-
-            if (elementIndex >= Element.Children.Count)
+            if (!TryFindNextContainedGroupElement(ref elementIndex, out var beginGroupAttributeInfo))
             {
                 return;
             }
 
             var elementChild = Element.Children[elementIndex];
-            var beginGroupAttributeInfo = elementChild.GetAttributeInfos()
-                .First(info => info.Attribute is BeginGroupAttribute);
 
             var beginGroupAttribute = (BeginGroupAttribute)beginGroupAttributeInfo.Attribute;
             var beginGroupAttributeType = beginGroupAttribute.GetType();
             var endGroupAttributeType = InspectorAttributeUtility.GetCorrespondGroupAttributeType(beginGroupAttributeType);
 
-            var groupDefinition = InspectorElements.Configurator.Group()
+            var newGroupDefinition = InspectorElements.Configurator.Group()
                 .WithGroupAttributes(beginGroupAttributeType, endGroupAttributeType)
+                .WithAdditionalAttributes(beginGroupAttributeInfo.Attribute)
                 .WithName(beginGroupAttribute.GroupName)
                 .CreateDefinition();
-            var groupElement = Element.SharedContext.Tree.ElementFactory.CreateGroupElement(groupDefinition);
+            var newGroupElement = Element.SharedContext.Tree.ElementFactory.CreateGroupElement(newGroupDefinition);
 
             if (elementChild is ILogicalElement logicalElement)
             {
-                groupElement.AssociatedElement = logicalElement;
+                newGroupElement.AssociatedElement = logicalElement;
             }
 
-            var childrenToMove = new List<IElement>();
+            var childrenToMove = new List<IElement> { elementChild };
 
-            if (beginGroupAttributeInfo.Source == ElementAttributeSource.Type)
+            if (beginGroupAttributeInfo.Source != ElementAttributeSource.Type)
             {
-                var valueElement = (IValueElement)elementChild;
-                if (valueElement.Children == null)
-                {
-                    Debug.LogWarning($"Can not use BeginGroupAttribute on a value element '{elementChild}' that can not have children.");
-                    return;
-                }
-
-                childrenToMove.AddRange(valueElement.Children);
-            }
-            else
-            {
-                childrenToMove.Add(elementChild);
                 if (!beginGroupAttribute.EndAfterThisProperty)
                 {
                     var groupCatalogue = beginGroupAttribute.GroupCatalogue;
@@ -126,17 +100,46 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            Element.Children.Insert(elementIndex, groupElement);
+            Element.Children.Insert(elementIndex, newGroupElement);
             elementIndex++;
 
             Element.Request(() =>
             {
-                groupElement.Update();
+                newGroupElement.Update();
                 foreach (var child in childrenToMove)
                 {
-                    groupElement.Children.Add(child);
+                    newGroupElement.Children.Add(child);
                 }
             });
+        }
+
+        private bool TryFindNextContainedGroupElement(ref int elementIndex, out ElementAttributeInfo beginGroupAttributeInfo)
+        {
+            beginGroupAttributeInfo = null;
+            for (; elementIndex < Element.Children.Count; elementIndex++)
+            {
+                var child = Element.Children[elementIndex];
+                foreach (var attributeInfo in child.GetAttributeInfos())
+                {
+                    var attributeType = attributeInfo.Attribute.GetType();
+                    if (!attributeType.IsInheritsFrom<BeginGroupAttribute>())
+                    {
+                        continue;
+                    }
+                    if (Element is IGroupElement groupElement)
+                    {
+                        if (groupElement.Definition.BeginGroupAttributeType == attributeType)
+                        {
+                            continue;
+                        }
+                    }
+
+                    beginGroupAttributeInfo = attributeInfo;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

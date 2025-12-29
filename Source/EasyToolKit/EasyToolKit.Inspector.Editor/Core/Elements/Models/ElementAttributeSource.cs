@@ -18,6 +18,8 @@
         /// <summary>
         /// Attribute is defined on a list/collection type/field but is passed to each element
         /// </summary>
-        ListPassToElement
+        ListPassToElement,
+
+        Custom
     }
 }

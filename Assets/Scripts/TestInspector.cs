@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
+[FoldoutGroup("asssdnbbb")]
 public class TestInner
 {
     public int jjss;
@@ -19,6 +20,9 @@ public class TestInspector : MonoBehaviour
     public int jj;
     public float bb;
     public Vector2 assd;
+
+    [FoldoutGroup("asda34534s")]
+    public TestInner inner2;
 
     public TestInner inner;
 

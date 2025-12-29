@@ -1,6 +1,3 @@
-using System;
-using EasyToolKit.Core;
-
 namespace EasyToolKit.Inspector.Editor.Implementations
 {
     /// <summary>
@@ -14,23 +11,22 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public int ItemIndex { get; set; }
 
+        protected void ProcessDefinition(CollectionItemDefinition definition)
+        {
+            definition.Roles = definition.Roles.Add(ElementRoles.CollectionItem);
+            definition.ItemIndex = ItemIndex;
+            base.ProcessDefinition(definition);
+        }
+
         /// <summary>
         /// Creates a new <see cref="ICollectionItemDefinition"/> instance based on the current configuration.
         /// </summary>
         /// <returns>A new collection item definition instance.</returns>
         public ICollectionItemDefinition CreateDefinition()
         {
-            if (ValueType == null)
-            {
-                throw new InvalidOperationException("ValueType cannot be null");
-            }
-
-            if (Name.IsNullOrWhiteSpace())
-            {
-                throw new InvalidOperationException("Name cannot be null or whitespace");
-            }
-
-            return new CollectionItemDefinition(ElementRoles.CollectionItem | ElementRoles.Value, Name, ValueType, ItemIndex);
+            var definition = new CollectionItemDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
     }
 }

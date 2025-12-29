@@ -1,4 +1,7 @@
-﻿namespace EasyToolKit.Inspector.Editor.Implementations
+using System;
+using System.Collections.Generic;
+
+namespace EasyToolKit.Inspector.Editor.Implementations
 {
     /// <summary>
     /// Represents the definition of an element in the inspector hierarchy.
@@ -7,24 +10,18 @@
     public abstract class ElementDefinition : IElementDefinition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementDefinition"/> class.
+        /// Gets or sets the flags of the element.
         /// </summary>
-        /// <param name="roles">The flags of the element.</param>
-        /// <param name="name">The name of the element.</param>
-        protected ElementDefinition(ElementRoles roles, string name)
-        {
-            Roles = roles;
-            Name = name;
-        }
+        public ElementRoles Roles { get; set; }
 
         /// <summary>
-        /// Gets the flags of the element.
+        /// Gets or sets the name of the element.
         /// </summary>
-        public ElementRoles Roles { get; }
+        public string Name { get; set; }
 
         /// <summary>
-        /// Gets the name of the element.
+        /// Gets or sets the additional attributes for customizing the element behavior.
         /// </summary>
-        public string Name { get; }
+        public IReadOnlyList<Attribute> AdditionalAttributes { get; set; }
     }
 }

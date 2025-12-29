@@ -1,5 +1,4 @@
 ﻿using System;
-using EasyToolKit.ThirdParty.OdinSerializer.Utilities;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
 {
@@ -15,23 +14,27 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public Type ValueType { get; set; }
 
-        /// <summary>
-        /// Creates a new <see cref="IValueDefinition"/> instance based on the current configuration.
-        /// </summary>
-        /// <returns>A new value definition instance.</returns>
-        public IValueDefinition CreateDefinition()
+        protected void ProcessDefinition(ValueDefinition definition)
         {
             if (ValueType == null)
             {
                 throw new InvalidOperationException("ValueType cannot be null");
             }
 
-            if (Name.IsNullOrWhitespace())
-            {
-                throw new InvalidOperationException("Name cannot be null or whitespace");
-            }
+            definition.Roles = definition.Roles.Add(ElementRoles.Value);
+            definition.ValueType = ValueType;
+            base.ProcessDefinition(definition);
+        }
 
-            return new ValueDefinition(ElementRoles.Value, Name, ValueType);
+        /// <summary>
+        /// Creates a new <see cref="IValueDefinition"/> instance based on the current configuration.
+        /// </summary>
+        /// <returns>A new value definition instance.</returns>
+        public IValueDefinition CreateDefinition()
+        {
+            var definition = new ValueDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
     }
 }

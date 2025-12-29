@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace EasyToolKit.Inspector.Editor
 {
-    public class GenericAttributeResolver : AttributeResolverBase
+    public class DefaultAttributeResolver : AttributeResolverBase
     {
         private ElementAttributeInfo[] _attributeInfos;
 
@@ -27,7 +27,8 @@ namespace EasyToolKit.Inspector.Editor
                     attributeInfos.Add(new ElementAttributeInfo(attribute, ElementAttributeSource.ListPassToElement));
                 }
             }
-            else if (Element.Definition is IMemberDefinition memberDefinition)
+
+            if (Element.Definition is IMemberDefinition memberDefinition)
             {
                 var memberAttributes = memberDefinition.MemberInfo.GetCustomAttributes();
                 foreach (var attribute in memberAttributes)
@@ -35,13 +36,20 @@ namespace EasyToolKit.Inspector.Editor
                     attributeInfos.Add(new ElementAttributeInfo(attribute, ElementAttributeSource.Member));
                 }
             }
-            else if (Element is IValueElement valueElement)
+
+            if (Element is IValueElement valueElement)
             {
                 var typeAttributes = valueElement.ValueEntry.ValueType.GetCustomAttributes(true).Cast<Attribute>();
                 foreach (var attribute in typeAttributes)
                 {
                     attributeInfos.Add(new ElementAttributeInfo(attribute, ElementAttributeSource.Type));
                 }
+            }
+
+            if (Element.Definition.AdditionalAttributes != null)
+            {
+                attributeInfos.AddRange(Element.Definition.AdditionalAttributes
+                    .Select(attribute => new ElementAttributeInfo(attribute, ElementAttributeSource.Custom)));
             }
 
             _attributeInfos = attributeInfos.ToArray();

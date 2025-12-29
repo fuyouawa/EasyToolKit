@@ -44,7 +44,7 @@ namespace EasyToolKit.Inspector.Editor
         Type IValueOperation.GetValueRuntimeType(ref object owner)
         {
             var o = owner;
-            Assert.IsTrue(owner.GetType() == OwnerType,
+            Assert.IsTrue(owner.GetType().IsInheritsFrom(OwnerType),
                 () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
             return GetCollectionRuntimeType(ref owner);
         }
@@ -52,7 +52,7 @@ namespace EasyToolKit.Inspector.Editor
         int ICollectionOperation.GetWeakItemCount(ref object collection)
         {
             var c = collection;
-            Assert.IsTrue(collection.GetType() == CollectionType,
+            Assert.IsTrue(collection.GetType().IsInheritsFrom(CollectionType),
                 () => $"Collection type mismatch. Expected: {CollectionType}, Actual: {c.GetType()}");
             return GetWeakItemCount(ref collection);
         }
@@ -60,7 +60,7 @@ namespace EasyToolKit.Inspector.Editor
         object IValueOperation.GetWeakValue(ref object owner)
         {
             var o = owner;
-            Assert.IsTrue(owner.GetType() == OwnerType,
+            Assert.IsTrue(owner.GetType().IsInheritsFrom(OwnerType),
                 () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
             return GetWeakValue(ref owner);
         }
@@ -68,10 +68,10 @@ namespace EasyToolKit.Inspector.Editor
         void IValueOperation.SetWeakValue(ref object owner, object value)
         {
             var o = owner;
-            Assert.IsTrue(owner.GetType() == OwnerType,
+            Assert.IsTrue(owner.GetType().IsInheritsFrom(OwnerType),
                 () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
 
-            Assert.IsTrue(value == null || value.GetType() == CollectionType,
+            Assert.IsTrue(value == null || value.GetType().IsInheritsFrom(CollectionType),
                 () => $"Collection type mismatch. Expected: {CollectionType}, Actual: {value?.GetType()}");
             SetWeakValue(ref owner, value);
         }
@@ -79,7 +79,7 @@ namespace EasyToolKit.Inspector.Editor
         Type ICollectionOperation.GetItemRuntimeType(ref object collection)
         {
             var c = collection;
-            Assert.IsTrue(collection.GetType() == CollectionType,
+            Assert.IsTrue(collection.GetType().IsInheritsFrom(CollectionType),
                 () => $"Collection type mismatch. Expected: {CollectionType}, Actual: {c.GetType()}");
             return GetItemRuntimeType(ref collection);
         }
@@ -87,10 +87,10 @@ namespace EasyToolKit.Inspector.Editor
         void ICollectionOperation.AddWeakItem(ref object collection, object value)
         {
             var c = collection;
-            Assert.IsTrue(collection.GetType() == CollectionType,
+            Assert.IsTrue(collection.GetType().IsInheritsFrom(CollectionType),
                 () => $"Collection type mismatch. Expected: {CollectionType}, Actual: {c.GetType()}");
 
-            Assert.IsTrue(value == null || value.GetType() == ItemType,
+            Assert.IsTrue(value == null || value.GetType().IsInheritsFrom(ItemType),
                 () => $"Item type mismatch. Expected: {ItemType}, Actual: {value?.GetType()}");
             AddWeakItem(ref collection, value);
         }
@@ -98,10 +98,10 @@ namespace EasyToolKit.Inspector.Editor
         void ICollectionOperation.RemoveWeakItem(ref object collection, object value)
         {
             var c = collection;
-            Assert.IsTrue(collection.GetType() == CollectionType,
+            Assert.IsTrue(collection.GetType().IsInheritsFrom(CollectionType),
                 () => $"Collection type mismatch. Expected: {CollectionType}, Actual: {c.GetType()}");
 
-            Assert.IsTrue(value == null || value.GetType() == ItemType,
+            Assert.IsTrue(value == null || value.GetType().IsInheritsFrom(ItemType),
                 () => $"Item type mismatch. Expected: {ItemType}, Actual: {value?.GetType()}");
             RemoveWeakItem(ref collection, value);
         }
@@ -176,7 +176,7 @@ namespace EasyToolKit.Inspector.Editor
         TCollection IValueOperation<TCollection>.GetValue(ref object owner)
         {
             var o = owner;
-            Assert.IsTrue(owner.GetType() == OwnerType,
+            Assert.IsTrue(owner.GetType().IsInheritsFrom(OwnerType),
                 () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
             return GetValue(ref owner);
         }
@@ -184,7 +184,7 @@ namespace EasyToolKit.Inspector.Editor
         void IValueOperation<TCollection>.SetValue(ref object owner, TCollection value)
         {
             var o = owner;
-            Assert.IsTrue(owner.GetType() == OwnerType,
+            Assert.IsTrue(owner.GetType().IsInheritsFrom(OwnerType),
                 () => $"Owner type mismatch. Expected: {OwnerType}, Actual: {o.GetType()}");
             SetValue(ref owner, value);
         }

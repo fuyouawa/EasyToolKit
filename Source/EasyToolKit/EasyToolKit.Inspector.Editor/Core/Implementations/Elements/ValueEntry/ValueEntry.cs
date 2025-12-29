@@ -312,7 +312,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 var owner = GetOwner(i);
                 if (owner == null)
                 {
-                    _values[i] = default;
+                    // _values[i] = default;
                     continue;
                 }
 
@@ -390,6 +390,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         /// <param name="targetIndex">The target index.</param>
         /// <returns>The owner object.</returns>
+        [CanBeNull]
         private object GetOwner(int targetIndex)
         {
             // For root elements, the owner is the target index
@@ -398,8 +399,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return targetIndex;
             }
 
-            // For child elements, get the owner from the parent's value entry
-            return _ownerElement.LogicalParent.CastValue().ValueEntry.GetWeakValue(targetIndex);
+            if (_ownerElement.LogicalParent is IValueElement valueParentElement)
+            {
+                // For child elements, get the owner from the parent's value entry
+                return valueParentElement.ValueEntry.GetWeakValue(targetIndex);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -415,7 +421,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return; // Root elements don't need to update the target
             }
 
-            _ownerElement.LogicalParent.CastValue().ValueEntry.SetWeakValue(targetIndex, owner);
+            if (_ownerElement.LogicalParent is IValueElement valueParentElement)
+            {
+                valueParentElement.ValueEntry.SetWeakValue(targetIndex, owner);
+            }
         }
     }
 }

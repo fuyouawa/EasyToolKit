@@ -15,20 +15,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public PropertyInfo PropertyInfo { get; set; }
 
-        /// <summary>
-        /// Creates a new <see cref="IPropertyCollectionDefinition"/> instance based on the current configuration.
-        /// </summary>
-        /// <returns>A new property collection definition instance.</returns>
-        public new IPropertyCollectionDefinition CreateDefinition()
+        protected void ProcessDefinition(PropertyCollectionDefinition definition)
         {
             if (PropertyInfo == null)
             {
                 throw new InvalidOperationException("PropertyInfo cannot be null");
-            }
-
-            if (ItemType == null)
-            {
-                throw new InvalidOperationException("ItemType cannot be null");
             }
 
             if (Name.IsNullOrWhiteSpace())
@@ -36,8 +27,22 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = PropertyInfo.Name;
             }
 
-            return new PropertyCollectionDefinition(ElementRoles.Property | ElementRoles.Collection | ElementRoles.Value, Name, PropertyInfo,
-                ItemType, IsOrdered);
+            ValueType = PropertyInfo.PropertyType;
+
+            definition.Roles = definition.Roles.Add(ElementRoles.Property);
+            definition.PropertyInfo = PropertyInfo;
+            base.ProcessDefinition(definition);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IPropertyCollectionDefinition"/> instance based on the current configuration.
+        /// </summary>
+        /// <returns>A new property collection definition instance.</returns>
+        public new IPropertyCollectionDefinition CreateDefinition()
+        {
+            var definition = new PropertyCollectionDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
 
         IPropertyDefinition IPropertyConfiguration.CreateDefinition()

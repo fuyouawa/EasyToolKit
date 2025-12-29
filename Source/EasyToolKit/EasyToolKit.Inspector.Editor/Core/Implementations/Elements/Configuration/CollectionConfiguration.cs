@@ -1,5 +1,4 @@
 using System;
-using EasyToolKit.Core;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
 {
@@ -22,28 +21,28 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public bool IsOrdered { get; set; }
 
+        protected void ProcessDefinition(CollectionDefinition definition)
+        {
+            if (ItemType == null)
+            {
+                throw new InvalidOperationException("ItemType cannot be null");
+            }
+
+            definition.Roles = definition.Roles.Add(ElementRoles.Collection);
+            definition.ItemType = ItemType;
+            definition.IsOrdered = IsOrdered;
+            base.ProcessDefinition(definition);
+        }
+
         /// <summary>
         /// Creates a new <see cref="ICollectionDefinition"/> instance based on the current configuration.
         /// </summary>
         /// <returns>A new collection definition instance.</returns>
         public new ICollectionDefinition CreateDefinition()
         {
-            if (ValueType == null)
-            {
-                throw new InvalidOperationException("ValueType cannot be null");
-            }
-
-            if (ItemType == null)
-            {
-                throw new InvalidOperationException("ItemType cannot be null");
-            }
-
-            if (Name.IsNullOrWhiteSpace())
-            {
-                throw new InvalidOperationException("Name cannot be null or whitespace");
-            }
-
-            return new CollectionDefinition(ElementRoles.Collection, Name, ValueType, ItemType, IsOrdered);
+            var definition = new CollectionDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
     }
 }

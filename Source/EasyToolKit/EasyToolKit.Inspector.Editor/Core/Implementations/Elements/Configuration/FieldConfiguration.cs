@@ -23,11 +23,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public bool AsUnityProperty { get; set; }
 
-        /// <summary>
-        /// Creates a new <see cref="IFieldDefinition"/> instance based on the current configuration.
-        /// </summary>
-        /// <returns>A new field definition instance.</returns>
-        public new IFieldDefinition CreateDefinition()
+        protected void ProcessDefinition(FieldDefinition definition)
         {
             if (FieldInfo == null)
             {
@@ -39,7 +35,23 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = FieldInfo.Name;
             }
 
-            return new FieldDefinition(ElementRoles.Field | ElementRoles.Value, Name, FieldInfo, AsUnityProperty);
+            ValueType = FieldInfo.FieldType;
+
+            definition.Roles = definition.Roles.Add(ElementRoles.Field);
+            definition.FieldInfo = FieldInfo;
+            definition.AsUnityProperty = AsUnityProperty;
+            base.ProcessDefinition(definition);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IFieldDefinition"/> instance based on the current configuration.
+        /// </summary>
+        /// <returns>A new field definition instance.</returns>
+        public new IFieldDefinition CreateDefinition()
+        {
+            var definition = new FieldDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
     }
 }

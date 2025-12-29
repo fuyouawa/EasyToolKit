@@ -1022,6 +1022,11 @@
             This name is shown in the inspector interface and used for identification.
             </summary>
         </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IElementConfiguration.AdditionalAttributes">
+            <summary>
+            Gets or sets the additional attributes for customizing the element behavior.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.IFieldCollectionConfiguration">
             <summary>
             Configuration interface for creating field collection element definitions.
@@ -1266,6 +1271,15 @@
             <param name="name">The name to set.</param>
             <returns>The configuration instance for method chaining.</returns>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementConfigurationExtensions.WithAdditionalAttributes``1(``0,System.Attribute[])">
+            <summary>
+            Sets the additional attributes of the element configuration.
+            </summary>
+            <typeparam name="TConfiguration">The configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="additionalAttributes">The additional attributes to set.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.FieldConfigurationExtensions">
             <summary>
             Extension methods for <see cref="T:EasyToolKit.Inspector.Editor.IFieldConfiguration"/> interfaces.
@@ -1449,6 +1463,11 @@
         <member name="P:EasyToolKit.Inspector.Editor.IElementDefinition.Name">
             <summary>
             Gets the name of the element.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IElementDefinition.AdditionalAttributes">
+            <summary>
+            Gets the additional attributes for customizing the element behavior.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.IFieldCollectionDefinition">
@@ -2666,7 +2685,7 @@
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementConfiguration">
             <summary>
-            Base configuration interface for all element configurations in the inspector system.
+            Base configuration class for all element configurations in the inspector system.
             Provides common properties required for creating element definitions.
             </summary>
         </member>
@@ -2674,6 +2693,11 @@
             <summary>
             Gets or sets the display name of the element.
             This name is shown in the inspector interface and used for identification.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementConfiguration.AdditionalAttributes">
+            <summary>
+            Gets or sets the additional attributes for customizing the element behavior.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionConfiguration">
@@ -2859,25 +2883,15 @@
             Inherits from <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition"/> and extends it with collection-specific metadata.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type,System.Type,System.Boolean)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="valueType">The type of the collection.</param>
-            <param name="itemType">The type of elements contained in this collection.</param>
-            <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.ItemType">
             <summary>
-            Gets the type of elements contained in this collection.
+            Gets or sets the type of elements contained in this collection.
             For dictionaries, this represents the type of values.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.CollectionDefinition.IsOrdered">
             <summary>
-            Gets a value indicating whether this collection is ordered (can be accessed by index).
+            Gets or sets a value indicating whether this collection is ordered (can be accessed by index).
             Ordered collections include arrays, lists, and other indexable sequences.
             Unordered collections include sets, dictionaries, and other non-indexable collections.
             </summary>
@@ -2888,18 +2902,9 @@
             Similar to dynamically created custom values, representing individual element items in collections.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.CollectionItemDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type,System.Int32)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.CollectionItemDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="valueType">The type of the value.</param>
-            <param name="itemIndex">The index of this item within its parent collection.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.CollectionItemDefinition.ItemIndex">
             <summary>
-            Gets the index of this item within its parent collection.
+            Gets or sets the index of this item within its parent collection.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition">
@@ -2908,21 +2913,19 @@
             It serves as the base interface for all element definitions.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition.Roles">
             <summary>
-            Gets the flags of the element.
+            Gets or sets the flags of the element.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition.Name">
             <summary>
-            Gets the name of the element.
+            Gets or sets the name of the element.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementDefinition.AdditionalAttributes">
+            <summary>
+            Gets or sets the additional attributes for customizing the element behavior.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition">
@@ -2931,26 +2934,18 @@
             Represents collection fields on an object, providing both collection-specific metadata and reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.FieldInfo,System.Boolean,System.Type,System.Boolean)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="fieldInfo">The field information.</param>
-            <param name="itemType">The type of elements contained in this collection.</param>
-            <param name="asUnityProperty">Whether this field should be treated as a Unity property.</param>
-            <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.FieldInfo">
             <summary>
-            Gets the <see cref="T:System.Reflection.FieldInfo"/> that represents this field.
+            Gets or sets the <see cref="T:System.Reflection.FieldInfo"/> that represents this field.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.AsUnityProperty">
             <summary>
-            Gets whether this field should be treated as a Unity property.
+            Gets or sets whether this field should be treated as a Unity property.
             </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.FieldCollectionDefinition.MemberInfo">
+            <inheritdoc/>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition">
             <summary>
@@ -2958,24 +2953,18 @@
             Provides consistent access to field reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.FieldInfo,System.Boolean)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="fieldInfo">The field information.</param>
-            <param name="asUnityProperty">Whether this field should be treated as a Unity property.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition.FieldInfo">
             <summary>
-            Gets the <see cref="T:System.Reflection.FieldInfo"/> that represents this field.
+            Gets or sets the <see cref="T:System.Reflection.FieldInfo"/> that represents this field.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition.AsUnityProperty">
             <summary>
-            Gets whether this field should be treated as a Unity property.
+            Gets or sets whether this field should be treated as a Unity property.
             </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.FieldDefinition.MemberInfo">
+            <inheritdoc/>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.GroupDefinition">
             <summary>
@@ -2983,23 +2972,14 @@
             Defines the start and end attributes that create logical groupings of elements.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.GroupDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type,System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.GroupDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="beginGroupAttributeType">The type of the attribute that begins this group.</param>
-            <param name="endGroupAttributeType">The type of the attribute that ends this group.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.GroupDefinition.BeginGroupAttributeType">
             <summary>
-            Gets the type of the attribute that begins this group (e.g., <see cref="T:EasyToolKit.Inspector.FoldoutGroupAttribute"/>).
+            Gets or sets the type of the attribute that begins this group (e.g., <see cref="T:EasyToolKit.Inspector.FoldoutGroupAttribute"/>).
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.GroupDefinition.EndGroupAttributeType">
             <summary>
-            Gets the type of the attribute that ends this group (e.g., <see cref="T:EasyToolKit.Inspector.EndFoldoutGroupAttribute"/>).
+            Gets or sets the type of the attribute that ends this group (e.g., <see cref="T:EasyToolKit.Inspector.EndFoldoutGroupAttribute"/>).
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.MemberDefinition">
@@ -3007,15 +2987,9 @@
             Base implementation of <see cref="T:EasyToolKit.Inspector.Editor.IMemberDefinition"/> for members with reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MemberDefinition.#ctor(System.Reflection.MemberInfo)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.MemberDefinition"/> class.
-            </summary>
-            <param name="memberInfo">The reflection information about the member.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.MemberDefinition.MemberInfo">
             <summary>
-            Gets the reflection information about the member.
+            Gets or sets the reflection information about the member.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition">
@@ -3024,18 +2998,13 @@
             Provides metadata for methods that can be invoked or displayed in the inspector interface.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.MethodInfo)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="methodInfo">The method information.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition.MethodInfo">
             <summary>
-            Gets the <see cref="P:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition.MethodInfo"/> that describes the method.
+            Gets or sets the <see cref="P:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition.MethodInfo"/> that describes the method.
             </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.MethodDefinition.MemberInfo">
+            <inheritdoc/>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition">
             <summary>
@@ -3043,23 +3012,14 @@
             Similar to dynamically created custom values, representing individual parameter items for method invocation.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.ParameterInfo,System.Int32)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="parameterInfo">The parameter information.</param>
-            <param name="parameterIndex">The index of this parameter in the method's parameter list.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition.ParameterIndex">
             <summary>
-            Gets the index of this parameter in the method's parameter list.
+            Gets or sets the index of this parameter in the method's parameter list.
             </summary>
         </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition.ParameterInfo">
             <summary>
-            Gets the <see cref="P:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition.ParameterInfo"/> that describes the method parameter.
+            Gets or sets the <see cref="P:EasyToolKit.Inspector.Editor.Implementations.MethodParameterDefinition.ParameterInfo"/> that describes the method parameter.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition">
@@ -3068,20 +3028,13 @@
             Represents collection properties on an object, providing both collection-specific metadata and reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.PropertyInfo,System.Type,System.Boolean)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="propertyInfo">The property information.</param>
-            <param name="itemType">The type of elements contained in this collection.</param>
-            <param name="isOrdered">Whether this collection is ordered (can be accessed by index).</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition.PropertyInfo">
             <summary>
-            Gets the <see cref="T:System.Reflection.PropertyInfo"/> that represents this property.
+            Gets or sets the <see cref="T:System.Reflection.PropertyInfo"/> that represents this property.
             </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.PropertyCollectionDefinition.MemberInfo">
+            <inheritdoc/>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.PropertyDefinition">
             <summary>
@@ -3089,18 +3042,13 @@
             Provides consistent access to property reflection information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.PropertyDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Reflection.PropertyInfo)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.PropertyDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="propertyInfo">The property information.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.PropertyDefinition.PropertyInfo">
             <summary>
-            Gets the <see cref="T:System.Reflection.PropertyInfo"/> that represents this property.
+            Gets or sets the <see cref="T:System.Reflection.PropertyInfo"/> that represents this property.
             </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.PropertyDefinition.MemberInfo">
+            <inheritdoc/>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.RootDefinition">
             <summary>
@@ -3108,30 +3056,14 @@
             An abstract concept similar to dynamically created values, used to represent Unity instances.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.RootDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.RootDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="valueType">The type of the value.</param>
-        </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition">
             <summary>
             Base implementation of <see cref="T:EasyToolKit.Inspector.Editor.IValueDefinition"/> for all data-containing elements.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition.#ctor(EasyToolKit.Inspector.Editor.ElementRoles,System.String,System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition"/> class.
-            </summary>
-            <param name="roles">The flags of the element.</param>
-            <param name="name">The name of the element.</param>
-            <param name="valueType">The type of the value.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.Implementations.ValueDefinition.ValueType">
             <summary>
-            Gets the type of the element.
+            Gets or sets the type of the element.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementBase">

@@ -1,5 +1,4 @@
 using System;
-using EasyToolKit.Core;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
 {
@@ -21,11 +20,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public Type EndGroupAttributeType { get; set; }
 
-        /// <summary>
-        /// Creates a new <see cref="IGroupDefinition"/> instance based on the current configuration.
-        /// </summary>
-        /// <returns>A new group definition instance.</returns>
-        public IGroupDefinition CreateDefinition()
+        protected void ProcessDefinition(GroupDefinition definition)
         {
             if (BeginGroupAttributeType == null)
             {
@@ -37,12 +32,21 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 throw new InvalidOperationException("EndGroupAttributeType cannot be null");
             }
 
-            if (Name.IsNullOrWhiteSpace())
-            {
-                throw new InvalidOperationException("Name cannot be null or whitespace");
-            }
+            definition.Roles = definition.Roles.Add(ElementRoles.Group);
+            definition.BeginGroupAttributeType = BeginGroupAttributeType;
+            definition.EndGroupAttributeType = EndGroupAttributeType;
+            base.ProcessDefinition(definition);
+        }
 
-            return new GroupDefinition(ElementRoles.Group, Name, BeginGroupAttributeType, EndGroupAttributeType);
+        /// <summary>
+        /// Creates a new <see cref="IGroupDefinition"/> instance based on the current configuration.
+        /// </summary>
+        /// <returns>A new group definition instance.</returns>
+        public IGroupDefinition CreateDefinition()
+        {
+            var definition = new GroupDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
     }
 }

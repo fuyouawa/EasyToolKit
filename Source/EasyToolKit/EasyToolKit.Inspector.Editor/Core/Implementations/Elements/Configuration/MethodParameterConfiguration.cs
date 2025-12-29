@@ -20,11 +20,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public int ParameterIndex { get; set; }
 
-        /// <summary>
-        /// Creates a new <see cref="IMethodParameterDefinition"/> instance based on the current configuration.
-        /// </summary>
-        /// <returns>A new method parameter definition instance.</returns>
-        public new IMethodParameterDefinition CreateDefinition()
+        protected void ProcessDefinition(MethodParameterDefinition definition)
         {
             if (ParameterInfo == null)
             {
@@ -36,7 +32,21 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = ParameterInfo.Name;
             }
 
-            return new MethodParameterDefinition(ElementRoles.MethodParameter | ElementRoles.Value, Name, ParameterInfo, ParameterIndex);
+            definition.Roles = definition.Roles.Add(ElementRoles.MethodParameter);
+            definition.ParameterInfo = ParameterInfo;
+            definition.ParameterIndex = ParameterIndex;
+            base.ProcessDefinition(definition);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IMethodParameterDefinition"/> instance based on the current configuration.
+        /// </summary>
+        /// <returns>A new method parameter definition instance.</returns>
+        public new IMethodParameterDefinition CreateDefinition()
+        {
+            var definition = new MethodParameterDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
     }
 }

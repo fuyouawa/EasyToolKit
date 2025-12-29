@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -17,5 +19,10 @@ namespace EasyToolKit.Inspector.Editor
         /// Gets the name of the element.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Gets the additional attributes for customizing the element behavior.
+        /// </summary>
+        [CanBeNull] IReadOnlyList<Attribute> AdditionalAttributes { get; }
     }
 }

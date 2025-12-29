@@ -9,22 +9,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     public sealed class PropertyDefinition : ValueDefinition, IPropertyDefinition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyDefinition"/> class.
+        /// Gets or sets the <see cref="System.Reflection.PropertyInfo"/> that represents this property.
         /// </summary>
-        /// <param name="roles">The flags of the element.</param>
-        /// <param name="name">The name of the element.</param>
-        /// <param name="propertyInfo">The property information.</param>
-        public PropertyDefinition(ElementRoles roles, string name, PropertyInfo propertyInfo)
-            : base(roles, name, propertyInfo.PropertyType)
-        {
-            PropertyInfo = propertyInfo;
-        }
+        public PropertyInfo PropertyInfo { get; set; }
 
-        /// <summary>
-        /// Gets the <see cref="System.Reflection.PropertyInfo"/> that represents this property.
-        /// </summary>
-        public PropertyInfo PropertyInfo { get; }
-
+        /// <inheritdoc/>
         public MemberInfo MemberInfo => PropertyInfo;
     }
 }

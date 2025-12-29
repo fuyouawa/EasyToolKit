@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
 {
@@ -8,20 +9,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     public class ValueDefinition : ElementDefinition, IValueDefinition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValueDefinition"/> class.
+        /// Gets or sets the type of the element.
         /// </summary>
-        /// <param name="roles">The flags of the element.</param>
-        /// <param name="name">The name of the element.</param>
-        /// <param name="valueType">The type of the value.</param>
-        public ValueDefinition(ElementRoles roles, string name, Type valueType)
-            : base(roles, name)
-        {
-            ValueType = valueType;
-        }
-
-        /// <summary>
-        /// Gets the type of the element.
-        /// </summary>
-        public Type ValueType { get; }
+        public Type ValueType { get; set; }
     }
 }

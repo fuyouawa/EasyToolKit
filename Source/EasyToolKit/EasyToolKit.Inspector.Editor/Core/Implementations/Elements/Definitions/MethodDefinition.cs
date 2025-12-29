@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
@@ -9,22 +11,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     public sealed class MethodDefinition : ElementDefinition, IMethodDefinition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MethodDefinition"/> class.
+        /// Gets or sets the <see cref="MethodInfo"/> that describes the method.
         /// </summary>
-        /// <param name="roles">The flags of the element.</param>
-        /// <param name="name">The name of the element.</param>
-        /// <param name="methodInfo">The method information.</param>
-        public MethodDefinition(ElementRoles roles, string name, MethodInfo methodInfo)
-            : base(roles, name)
-        {
-            MethodInfo = methodInfo;
-        }
+        public MethodInfo MethodInfo { get; set; }
 
-        /// <summary>
-        /// Gets the <see cref="MethodInfo"/> that describes the method.
-        /// </summary>
-        public MethodInfo MethodInfo { get; }
-
+        /// <inheritdoc/>
         public MemberInfo MemberInfo => MethodInfo;
     }
 }

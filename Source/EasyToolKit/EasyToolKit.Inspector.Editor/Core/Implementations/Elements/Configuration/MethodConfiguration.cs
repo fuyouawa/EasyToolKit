@@ -16,11 +16,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// </summary>
         public MethodInfo MethodInfo { get; set; }
 
-        /// <summary>
-        /// Creates a new <see cref="IMethodDefinition"/> instance based on the current configuration.
-        /// </summary>
-        /// <returns>A new method definition instance.</returns>
-        public IMethodDefinition CreateDefinition()
+        protected void ProcessDefinition(MethodDefinition definition)
         {
             if (MethodInfo == null)
             {
@@ -32,7 +28,20 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Name = MethodInfo.Name;
             }
 
-            return new MethodDefinition(ElementRoles.Method, Name, MethodInfo);
+            definition.Roles = definition.Roles.Add(ElementRoles.Method);
+            definition.MethodInfo = MethodInfo;
+            base.ProcessDefinition(definition);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IMethodDefinition"/> instance based on the current configuration.
+        /// </summary>
+        /// <returns>A new method definition instance.</returns>
+        public IMethodDefinition CreateDefinition()
+        {
+            var definition = new MethodDefinition();
+            ProcessDefinition(definition);
+            return definition;
         }
     }
 }

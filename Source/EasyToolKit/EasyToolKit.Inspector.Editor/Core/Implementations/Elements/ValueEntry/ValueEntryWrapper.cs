@@ -62,7 +62,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// <summary>
         /// Gets the declared type of the value.
         /// </summary>
-        public Type ValueType => _baseValueEntry.ValueType;
+        public Type ValueType => typeof(TValue);
 
         public Type RuntimeValueType => _baseValueEntry.RuntimeValueType;
 
