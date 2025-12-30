@@ -39,6 +39,10 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     return DrawerPriorityAttribute.AttributePriority;
                 }
+                if (type.IsImplementsOpenGenericType(typeof(EasyGroupAttributeDrawer<>)))
+                {
+                    return DrawerPriorityAttribute.AttributePriority;
+                }
                 if (type.IsImplementsOpenGenericType(typeof(EasyValueDrawer<>)))
                 {
                     return DrawerPriorityAttribute.ValuePriority;

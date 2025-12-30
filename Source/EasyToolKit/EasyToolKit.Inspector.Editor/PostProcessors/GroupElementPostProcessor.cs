@@ -27,7 +27,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private void ProcessImpl(ref int elementIndex)
         {
-            if (!TryFindNextContainedGroupElement(ref elementIndex, out var beginGroupAttributeInfo))
+            if (!TryFindNextElementWhichContainedGroup(ref elementIndex, out var beginGroupAttributeInfo))
             {
                 return;
             }
@@ -113,9 +113,10 @@ namespace EasyToolKit.Inspector.Editor
             });
         }
 
-        private bool TryFindNextContainedGroupElement(ref int elementIndex, out ElementAttributeInfo beginGroupAttributeInfo)
+        private bool TryFindNextElementWhichContainedGroup(ref int elementIndex, out ElementAttributeInfo beginGroupAttributeInfo)
         {
             beginGroupAttributeInfo = null;
+
             for (; elementIndex < Element.Children.Count; elementIndex++)
             {
                 var child = Element.Children[elementIndex];
@@ -126,12 +127,18 @@ namespace EasyToolKit.Inspector.Editor
                     {
                         continue;
                     }
-                    if (Element is IGroupElement groupElement)
+
+                    // NOTE: We must check all parent group elements (not just the immediate Element) to avoid infinite recursion.
+                    // This is necessary when a child element has multiple GroupAttributes (e.g., GroupAttributeA and GroupAttributeB).
+                    // The processing flow in such cases is:
+                    //   1. Process GroupAttributeA → Create GroupA → child becomes GroupA's child
+                    //   2. Process GroupAttributeB → Create GroupB → child becomes GroupB's child, GroupB becomes GroupA's child
+                    //   3. On next iteration, Element is GroupB and child is checked for GroupAttributes
+                    // Without checking parent groups, child's GroupAttributeA would be detected as "unprocessed"
+                    // (since GroupB only has GroupAttributeB), causing another GroupA to be created → infinite recursion.
+                    if (IsAttributeProcessedInParentGroups(attributeInfo))
                     {
-                        if (groupElement.Definition.BeginGroupAttributeType == attributeType)
-                        {
-                            continue;
-                        }
+                        continue;
                     }
 
                     beginGroupAttributeInfo = attributeInfo;
@@ -139,6 +146,31 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
+            return false;
+        }
+
+        // NOTE: Checks if the given GroupAttribute has already been processed by any parent GroupElement.
+        // This prevents infinite recursion when elements have multiple GroupAttributes by walking up the
+        // element tree to check if any ancestor GroupElement already has this attribute.
+        //
+        // Example scenario that would cause infinite recursion without this check:
+        //   - child has GroupAttributeA and GroupAttributeB
+        //   - GroupA created (contains GroupAttributeA)
+        //   - GroupB created (contains GroupAttributeB), child becomes GroupB's child, GroupB becomes GroupA's child
+        //   - On next iteration with Element=GroupB: child still has both GroupAttributeA and GroupAttributeB
+        //   - Without parent check: GroupAttributeA appears "unprocessed" → creates duplicate GroupA → recursion
+        //   - With parent check: Detects GroupA (parent) already has GroupAttributeA → correctly skips it
+        private bool IsAttributeProcessedInParentGroups(ElementAttributeInfo attributeInfo)
+        {
+            var current = Element;
+            while (current is IGroupElement groupElement)
+            {
+                if (groupElement.GetAttributeInfo(attributeInfo.Attribute) != null)
+                {
+                    return true;
+                }
+                current = groupElement.Parent;
+            }
             return false;
         }
     }

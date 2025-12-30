@@ -9,10 +9,10 @@ namespace EasyToolKit.Inspector.Editor
     {
         private ElementAttributeInfo[] _attributeInfos;
 
-        protected override bool CanResolve(IElement element)
-        {
-            return !element.Definition.Roles.IsGroup();
-        }
+        // protected override bool CanResolve(IElement element)
+        // {
+        //     return !element.Definition.Roles.IsGroup();
+        // }
 
         protected override void Initialize()
         {

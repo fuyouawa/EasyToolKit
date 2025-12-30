@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
-[FoldoutGroup("asssdnbbb")]
+[MetroBoxGroup("asssdnbbb")]
 public class TestInner
 {
     public int jjss;
@@ -34,7 +34,7 @@ public class TestInspector : MonoBehaviour
     public int kkss;
     public int kksss;
 
-    [FoldoutGroup("asdasaadsasds", GroupCatalogue = "ddd/ssss")]
+    [FoldoutBoxGroup("asdasaadsasds", GroupCatalogue = "ddd/ssss")]
     public TestInner asddax;
 
     [FoldoutGroup("asdadds")]

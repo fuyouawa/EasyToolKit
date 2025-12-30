@@ -154,16 +154,48 @@ MonoBehaviour:
   jj: 0
   bb: 1.49
   assd: {x: 2.42, y: 0}
+  inner2:
+    jjss: 0
+    ddbba: 0
+    assdaad: {x: 0, y: 0}
   inner:
     jjss: 49
     ddbba: 0
     assdaad: {x: 0, y: 0}
   kk:
     m_PersistentCalls:
-      m_Calls: []
-  jjjjjss: 59000000000000000000000000000000
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  jjjjjss: 59000000000000007000000000000000
   kkss: 41
   kksss: 0
+  asddax:
+    jjss: 0
+    ddbba: 0
+    assdaad: {x: 0, y: 0}
   kkssdd: 0
   kksssdd: 27
 --- !u!4 &288710752
