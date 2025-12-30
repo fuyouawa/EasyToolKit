@@ -135,7 +135,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         private void OnValueChanged(object sender, ValueChangedEventArgs eventArgs)
         {
-            if (eventArgs.OldValue.GetType() != eventArgs.NewValue.GetType())
+            if (eventArgs.OldValue?.GetType() != eventArgs.NewValue?.GetType())
             {
                 RequestRefresh();
             }

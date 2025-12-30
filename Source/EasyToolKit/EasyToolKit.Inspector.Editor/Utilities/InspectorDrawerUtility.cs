@@ -4,12 +4,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using UnityEditor;
 using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
     public static class InspectorDrawerUtility
     {
+        [InitializeOnLoad]
+        private class NullPriorityFallbackInitializer
+        {
+            static NullPriorityFallbackInitializer()
+            {
+                HandlerUtility.AddNullPriorityFallback(type =>
+                {
+                    if (type.IsImplementsOpenGenericType(typeof(EasyAttributeDrawer<>)))
+                    {
+                        return DrawerPriorityAttribute.AttributePriority;
+                    }
+                    if (type.IsImplementsOpenGenericType(typeof(EasyGroupAttributeDrawer<>)))
+                    {
+                        return DrawerPriorityAttribute.AttributePriority;
+                    }
+                    if (type.IsImplementsOpenGenericType(typeof(EasyValueDrawer<>)))
+                    {
+                        return DrawerPriorityAttribute.ValuePriority;
+                    }
+
+                    return null;
+                });
+            }
+        }
+
         private static readonly Dictionary<Type, Type> UnityPropertyDrawerTypesByDrawnType =
             new Dictionary<Type, Type>();
 
@@ -32,24 +58,6 @@ namespace EasyToolKit.Inspector.Editor
                     }
                 }
             }
-
-            HandlerUtility.AddNullPriorityFallback(type =>
-            {
-                if (type.IsImplementsOpenGenericType(typeof(EasyAttributeDrawer<>)))
-                {
-                    return DrawerPriorityAttribute.AttributePriority;
-                }
-                if (type.IsImplementsOpenGenericType(typeof(EasyGroupAttributeDrawer<>)))
-                {
-                    return DrawerPriorityAttribute.AttributePriority;
-                }
-                if (type.IsImplementsOpenGenericType(typeof(EasyValueDrawer<>)))
-                {
-                    return DrawerPriorityAttribute.ValuePriority;
-                }
-
-                return null;
-            });
         }
 
         public static bool IsDefinedUnityPropertyDrawer(Type targetType)

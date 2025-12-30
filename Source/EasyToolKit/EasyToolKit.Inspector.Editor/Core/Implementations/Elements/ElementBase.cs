@@ -343,18 +343,27 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             _phases = _phases.Remove(ElementPhases.Refreshing);
             _phases = _phases.Add(ElementPhases.JustRefreshed);
+            _phases = _phases.Add(ElementPhases.PendingPostProcess);
         }
 
-        public void PostProcess()
+        public virtual bool PostProcessIfNeeded()
         {
-            var chain = GetPostProcessorChain();
-            chain.Reset();
-            while (chain.MoveNext() && chain.Current != null)
+            if (_phases.IsPendingPostProcess())
             {
-                _phases = _phases.Add(ElementPhases.PostProcessing);
-                chain.Current.Process();
-                _phases = _phases.Remove(ElementPhases.PostProcessing);
+                var chain = GetPostProcessorChain();
+                chain.Reset();
+                while (chain.MoveNext() && chain.Current != null)
+                {
+                    _phases = _phases.Add(ElementPhases.PostProcessing);
+                    chain.Current.Process();
+                    _phases = _phases.Remove(ElementPhases.PostProcessing);
+                }
+
+                _phases = _phases.Remove(ElementPhases.PendingPostProcess);
+                return true;
             }
+
+            return false;
         }
 
         void IElement.Update(bool forceUpdate)

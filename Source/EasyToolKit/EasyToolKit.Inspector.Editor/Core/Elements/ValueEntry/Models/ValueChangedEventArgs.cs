@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -47,12 +48,12 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Gets the previous value.
         /// </summary>
-        public object OldValue { get; }
+        [CanBeNull] public object OldValue { get; }
 
         /// <summary>
         /// Gets the new value.
         /// </summary>
-        public object NewValue { get; }
+        [CanBeNull] public object NewValue { get; }
 
         /// <summary>
         /// Gets the timing of the event (pre or post).

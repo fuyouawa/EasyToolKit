@@ -27,7 +27,7 @@ namespace EasyToolKit.Inspector.Editor
 
         private void ProcessImpl(ref int elementIndex)
         {
-            if (!TryFindNextElementWhichContainedGroup(ref elementIndex, out var beginGroupAttributeInfo))
+            if (!TryFindNextElement(ref elementIndex, out var beginGroupAttributeInfo))
             {
                 return;
             }
@@ -113,7 +113,7 @@ namespace EasyToolKit.Inspector.Editor
             });
         }
 
-        private bool TryFindNextElementWhichContainedGroup(ref int elementIndex, out ElementAttributeInfo beginGroupAttributeInfo)
+        private bool TryFindNextElement(ref int elementIndex, out ElementAttributeInfo beginGroupAttributeInfo)
         {
             beginGroupAttributeInfo = null;
 

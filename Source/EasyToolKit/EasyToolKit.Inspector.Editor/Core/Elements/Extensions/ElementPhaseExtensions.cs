@@ -57,6 +57,11 @@ namespace EasyToolKit.Inspector.Editor
             return (phases & ElementPhases.Updating) == ElementPhases.Updating;
         }
 
+        public static bool IsPendingPostProcess(this ElementPhases phases)
+        {
+            return (phases & ElementPhases.PendingPostProcess) == ElementPhases.PendingPostProcess;
+        }
+
         public static bool IsPostProcessing(this ElementPhases phases)
         {
             return (phases & ElementPhases.PostProcessing) == ElementPhases.PostProcessing;

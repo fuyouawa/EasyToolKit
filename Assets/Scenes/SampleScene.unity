@@ -151,53 +151,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55181b21d01c7114a91830ab8f44f4ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jj: 0
-  bb: 1.49
-  assd: {x: 2.42, y: 0}
-  inner2:
-    jjss: 0
-    ddbba: 0
-    assdaad: {x: 0, y: 0}
-  inner:
-    jjss: 49
-    ddbba: 0
-    assdaad: {x: 0, y: 0}
-  kk:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  jjjjjss: 59000000000000007000000000000000
-  kkss: 41
-  kksss: 0
-  asddax:
-    jjss: 0
-    ddbba: 0
-    assdaad: {x: 0, y: 0}
-  kkssdd: 0
-  kksssdd: 27
 --- !u!4 &288710752
 Transform:
   m_ObjectHideFlags: 0
@@ -428,34 +381,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8ee0cbebaea44444a62421129fa7eeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Transform: {fileID: 0}
-  Int2: 0
-  TestUnityEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  testList:
-  - Int1: 0
-    Int2: 0
-    String3: 
-    Class1:
-      Inttt: 0
-      TestEnum: 0
-      Transform: {fileID: 0}
-  - Int1: 0
-    Int2: 0
-    String3: 
-    Class1:
-      Inttt: 0
-      TestEnum: 0
-      Transform: {fileID: 0}
-  TestClass:
-    Int1: 61
-    Int2: 0
-    String3: 
-    Class1:
-      Inttt: 345345
-      TestEnum: 0
-      Transform: {fileID: 0}
 --- !u!4 &1076451576
 Transform:
   m_ObjectHideFlags: 0
@@ -500,34 +425,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8ee0cbebaea44444a62421129fa7eeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Transform: {fileID: 0}
-  Int2: 0
-  TestUnityEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  testList:
-  - Int1: 11
-    Int2: 69
-    String3: 
-    Class1:
-      Inttt: 0
-      TestEnum: 0
-      Transform: {fileID: 0}
-  - Int1: 42
-    Int2: 0
-    String3: 
-    Class1:
-      Inttt: 0
-      TestEnum: 0
-      Transform: {fileID: 0}
-  TestClass:
-    Int1: 0
-    Int2: 0
-    String3: 
-    Class1:
-      Inttt: 345345
-      TestEnum: 0
-      Transform: {fileID: 0}
 --- !u!4 &1433810479
 Transform:
   m_ObjectHideFlags: 0

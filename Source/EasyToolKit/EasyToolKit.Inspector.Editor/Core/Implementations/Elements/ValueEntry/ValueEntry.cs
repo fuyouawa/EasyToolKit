@@ -75,9 +75,18 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             get
             {
-                if (typeof(TValue).IsValueType || State == ValueEntryState.Consistent || State == ValueEntryState.TypeConsistent)
+                if (State == ValueEntryState.Consistent || State == ValueEntryState.TypeConsistent)
                 {
-                    return _runtimeValueTypes[0];
+                    var type = _runtimeValueTypes[0];
+                    if (type == null)
+                    {
+                        if (typeof(TValue).IsValueType || typeof(TValue).IsBasicValueType())
+                        {
+                            return typeof(TValue);
+                        }
+                    }
+
+                    return type;
                 }
                 return null;
             }
@@ -322,11 +331,11 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 // Auto-instantiate null values for instantiable types
                 if (value == null && IsInstantiableType)
                 {
-                    if (typeof(TValue).TryCreateInstance(out _values[i]))
+                    if (typeof(TValue).TryCreateInstance(out value))
                     {
+                        runtimeValueType = typeof(TValue);
                         MarkDirty();
                         clearDirty = false;
-                        continue;
                     }
                 }
 

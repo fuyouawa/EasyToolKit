@@ -39,6 +39,8 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         Updating = 1 << 4,
 
-        PostProcessing = 1<< 5,
+        PendingPostProcess = 1 << 5,
+
+        PostProcessing = 1<< 6,
     }
 }

@@ -71,10 +71,27 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return _structureResolver != null;
         }
 
+        public override bool PostProcessIfNeeded()
+        {
+            var needed = base.PostProcessIfNeeded();
+            if (_logicalChildren != null)
+            {
+                foreach (var child in _logicalChildren)
+                {
+                    if (child.PostProcessIfNeeded())
+                    {
+                        needed = true;
+                    }
+                }
+            }
+
+            return needed;
+        }
+
         protected override void OnUpdate(bool forceUpdate)
         {
             _logicalChildren?.Update();
-            if (_logicalChildren != null && !Phases.IsPendingRefresh())
+            if (_logicalChildren != null)
             {
                 foreach (var child in _logicalChildren)
                 {

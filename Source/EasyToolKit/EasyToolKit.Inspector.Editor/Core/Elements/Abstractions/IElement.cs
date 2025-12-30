@@ -102,7 +102,7 @@ namespace EasyToolKit.Inspector.Editor
 
         void Update(bool forceUpdate = false);
 
-        void PostProcess();
+        bool PostProcessIfNeeded();
 
         /// <summary>
         /// Draws this element in the inspector with the specified label.
