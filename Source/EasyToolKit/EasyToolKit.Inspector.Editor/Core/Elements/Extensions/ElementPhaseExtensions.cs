@@ -68,6 +68,36 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
+        /// Determines if the element is waiting to be destroyed.
+        /// </summary>
+        /// <param name="phases">The element phase to check.</param>
+        /// <returns>True if the element has the PendingDestroy phase set.</returns>
+        public static bool IsPendingDestroy(this ElementPhases phases)
+        {
+            return (phases & ElementPhases.PendingDestroy) == ElementPhases.PendingDestroy;
+        }
+
+        /// <summary>
+        /// Determines if the element is currently being destroyed.
+        /// </summary>
+        /// <param name="phases">The element phase to check.</param>
+        /// <returns>True if the element has the Destroying phase set.</returns>
+        public static bool IsDestroying(this ElementPhases phases)
+        {
+            return (phases & ElementPhases.Destroying) == ElementPhases.Destroying;
+        }
+
+        /// <summary>
+        /// Determines if the element has been destroyed.
+        /// </summary>
+        /// <param name="phases">The element phase to check.</param>
+        /// <returns>True if the element has the Destroyed phase set.</returns>
+        public static bool IsDestroyed(this ElementPhases phases)
+        {
+            return (phases & ElementPhases.Destroyed) == ElementPhases.Destroyed;
+        }
+
+        /// <summary>
         /// Determines if the element has no phases set.
         /// </summary>
         /// <param name="phases">The element phase to check.</param>

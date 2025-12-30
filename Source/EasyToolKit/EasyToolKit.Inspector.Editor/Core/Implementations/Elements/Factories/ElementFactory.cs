@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor.Implementations
@@ -10,6 +11,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
     {
         private const string ErrorDefinitionNull = "Element definition cannot be null.";
         private readonly IElementSharedContext _sharedContext;
+        private readonly HashSet<IElement> _createdElements;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementFactory"/> class.
@@ -19,20 +21,32 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         public ElementFactory([NotNull] IElementSharedContext sharedContext)
         {
             _sharedContext = sharedContext ?? throw new ArgumentNullException(nameof(sharedContext));
+            _createdElements = new HashSet<IElement>();
+        }
+
+        /// <summary>
+        /// Registers the specified element to the factory's tracking container.
+        /// </summary>
+        /// <typeparam name="T">The type of element that implements <see cref="IElement"/>.</typeparam>
+        /// <param name="element">The element to register.</param>
+        /// <returns>The same element instance after registration.</returns>
+        private T RegisterElement<T>([NotNull] T element) where T : IElement
+        {
+            _createdElements.Add(element);
+            return element;
         }
 
         /// <summary>
         /// Creates a value element from the given value definition.
         /// </summary>
         /// <param name="definition">The value definition describing the value element to create.</param>
-        /// <param name="parent">The optional logical parent element in the code structure.</param>
         /// <returns>A new value element instance.</returns>
         public IValueElement CreateValueElement(IValueDefinition definition)
         {
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new ValueElement(definition, _sharedContext, null);
+            return RegisterElement(new ValueElement(definition, _sharedContext, null));
         }
 
         /// <summary>
@@ -46,7 +60,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new FieldElement(definition, _sharedContext, parent);
+            return RegisterElement(new FieldElement(definition, _sharedContext, parent));
         }
 
         /// <summary>
@@ -60,7 +74,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new PropertyElement(definition, _sharedContext, parent);
+            return RegisterElement(new PropertyElement(definition, _sharedContext, parent));
         }
 
         /// <summary>
@@ -73,7 +87,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new GroupElement(definition, _sharedContext);
+            return RegisterElement(new GroupElement(definition, _sharedContext));
         }
 
         /// <summary>
@@ -86,7 +100,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new MethodElement(definition, _sharedContext, parent);
+            return RegisterElement(new MethodElement(definition, _sharedContext, parent));
         }
 
         /// <summary>
@@ -100,7 +114,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new MethodParameterElement(definition, _sharedContext, parent);
+            return RegisterElement(new MethodParameterElement(definition, _sharedContext, parent));
         }
 
         /// <summary>
@@ -114,7 +128,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new CollectionElement(definition, _sharedContext, parent);
+            return RegisterElement(new CollectionElement(definition, _sharedContext, parent));
         }
 
         /// <summary>
@@ -128,7 +142,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new PropertyCollectionElement(definition, _sharedContext, parent);
+            return RegisterElement(new PropertyCollectionElement(definition, _sharedContext, parent));
         }
 
         /// <summary>
@@ -142,7 +156,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new FieldCollectionElement(definition, _sharedContext, parent);
+            return RegisterElement(new FieldCollectionElement(definition, _sharedContext, parent));
         }
 
         /// <summary>
@@ -156,7 +170,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new CollectionItemElement(definition, _sharedContext, parent);
+            return RegisterElement(new CollectionItemElement(definition, _sharedContext, parent));
         }
 
         public IRootElement CreateRootElement(IRootDefinition definition)
@@ -164,7 +178,53 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition), ErrorDefinitionNull);
 
-            return new RootElement(definition, _sharedContext);
+            return RegisterElement(new RootElement(definition, _sharedContext));
+        }
+
+        /// <summary>
+        /// Destroys the specified element, disposing it and removing it from the factory's tracking container.
+        /// If the element is not in an idle state, the destruction is queued and executed later.
+        /// </summary>
+        /// <param name="element">The element to destroy.</param>
+        /// <returns><c>true</c> if the element was successfully destroyed or queued for destruction; <c>false</c> if the element was not found in the tracking container.</returns>
+        public bool DestroyElement(IElement element)
+        {
+            if (element == null)
+                throw new ArgumentNullException(nameof(element));
+
+            if (!_createdElements.Contains(element))
+                return false;
+
+            if (element.Phases.IsDestroyed() || element.Phases.IsPendingDestroy() || element.Phases.IsDestroying())
+            {
+                return false;
+            }
+
+            if (element.Phases.IsNone())
+            {
+                PerformDestroy(element);
+            }
+            else
+            {
+                _sharedContext.Tree.QueueCallback(() => PerformDestroy(element));
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Performs the actual destruction of the specified element.
+        /// </summary>
+        /// <param name="element">The element to destroy.</param>
+        private void PerformDestroy(IElement element)
+        {
+            // Trigger destroy event before disposal
+            _sharedContext.TriggerEvent(this, new ElementDestroyedEventArgs(element));
+
+            // Dispose the element
+            (element as IDisposable)?.Dispose();
+            // Remove from tracking
+            _createdElements.Remove(element);
         }
     }
 }

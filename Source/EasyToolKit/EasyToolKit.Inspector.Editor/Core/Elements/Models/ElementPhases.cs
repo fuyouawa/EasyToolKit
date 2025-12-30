@@ -41,6 +41,18 @@ namespace EasyToolKit.Inspector.Editor
 
         PendingPostProcess = 1 << 5,
 
-        PostProcessing = 1<< 6,
+        PostProcessing = 1 << 6,
+
+        /// <summary>
+        /// The element is waiting to be destroyed.
+        /// </summary>
+        PendingDestroy = 1 << 7,
+
+        Destroying = 1 << 8,
+
+        /// <summary>
+        /// The element has been destroyed.
+        /// </summary>
+        Destroyed = 1 << 9,
     }
 }

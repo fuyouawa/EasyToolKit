@@ -17,7 +17,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         [CanBeNull] private IElementList<IElement> _children;
         private int? _lastUpdateId;
         private GUIContent _label;
-        private bool _disposed;
         private ElementPhases _phases;
 
         [CanBeNull] private IAttributeResolver _attributeResolver;
@@ -193,6 +192,21 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             return false;
         }
 
+        /// <summary>
+        /// Destroys this element, disposing it and removing it from the factory's tracking container.
+        /// If the element is not in an idle state, the destruction is queued and executed later.
+        /// </summary>
+        public void Destroy()
+        {
+            if (_phases.IsDestroyed() || _phases.IsPendingDestroy() || _phases.IsDestroying())
+            {
+                return;
+            }
+
+            _phases = _phases.Add(ElementPhases.PendingDestroy);
+            SharedContext.Tree.ElementFactory.DestroyElement(this);
+        }
+
         protected virtual void OnUpdate(bool forceUpdate)
         {
             _children?.Update();
@@ -276,7 +290,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         protected void ValidateDisposed()
         {
-            if (_disposed)
+            if (_phases.IsDestroyed())
             {
                 throw new ObjectDisposedException(GetType().Name);
             }
@@ -389,12 +403,15 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         void IDisposable.Dispose()
         {
-            if (_disposed)
+            if (_phases.IsDestroyed() || _phases.IsPendingDestroy() || _phases.IsDestroying())
+            {
                 return;
+            }
 
+            _phases = _phases.Remove(ElementPhases.PendingDestroy);
+            _phases = _phases.Add(ElementPhases.Destroying);
             Dispose();
-
-            _disposed = true;
+            _phases = _phases.Add(ElementPhases.Destroyed);
         }
     }
 }

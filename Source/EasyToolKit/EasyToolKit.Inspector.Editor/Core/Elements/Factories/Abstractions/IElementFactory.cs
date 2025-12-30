@@ -96,5 +96,13 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="definition">The root definition describing the root element to create.</param>
         /// <returns>A new root element instance.</returns>
         [NotNull] IRootElement CreateRootElement([NotNull] IRootDefinition definition);
+
+        /// <summary>
+        /// Destroys the specified element, disposing it and removing it from the factory's tracking container.
+        /// If the element is not in an idle state, the destruction is queued and executed later.
+        /// </summary>
+        /// <param name="element">The element to destroy.</param>
+        /// <returns><c>true</c> if the element was successfully destroyed or queued for destruction; <c>false</c> if the element was not found in the tracking container.</returns>
+        bool DestroyElement([NotNull] IElement element);
     }
 }

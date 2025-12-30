@@ -33,9 +33,6 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         /// <remarks>
         /// <para>
-        /// When an element is initialized, its same as <see cref="LogicalParent"/>.
-        /// </para>
-        /// <para>
         /// If the current element is in a hover state (removed from its original parent but not yet added to a new parent),
         /// this property returns <c>null</c>.
         /// </para>
@@ -99,6 +96,12 @@ namespace EasyToolKit.Inspector.Editor
         /// The refresh occurs through <see cref="Request(Action, bool)"/> to ensure safe execution during drawing.
         /// </summary>
         bool RequestRefresh();
+
+        /// <summary>
+        /// Destroys this element, disposing it and removing it from the factory's tracking container.
+        /// If the element is not in an idle state, the destruction is queued and executed later.
+        /// </summary>
+        void Destroy();
 
         void Update(bool forceUpdate = false);
 

@@ -106,9 +106,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             if (_logicalChildren != null)
             {
-                foreach (var child in _logicalChildren)
+                foreach (var logicalChild in _logicalChildren)
                 {
-                    (child as IDisposable)?.Dispose();
+                    logicalChild.Destroy();
                 }
             }
 
@@ -160,7 +160,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 Assert.IsFalse(Phases.IsDrawing(), "Element is drawing when refreshing children.");
                 foreach (var logicalChild in _logicalChildren)
                 {
-                    (logicalChild as IDisposable)?.Dispose();
+                    logicalChild.Destroy();
                 }
 
 #if UNITY_ASSERTIONS
