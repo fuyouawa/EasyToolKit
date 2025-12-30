@@ -33,10 +33,5 @@ namespace EasyToolKit.Inspector.Editor
         /// <param name="index">The zero-based index of the element.</param>
         /// <returns>The full path of the element.</returns>
         string GetPath(int index);
-
-        /// <summary>
-        /// Updates the collection.
-        /// </summary>
-        void Update();
     }
 }

@@ -209,7 +209,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         protected virtual void OnUpdate(bool forceUpdate)
         {
-            _children?.Update();
         }
 
         /// <summary>

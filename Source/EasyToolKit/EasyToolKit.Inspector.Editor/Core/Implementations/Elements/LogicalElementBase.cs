@@ -90,7 +90,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         protected override void OnUpdate(bool forceUpdate)
         {
-            _logicalChildren?.Update();
             if (_logicalChildren != null)
             {
                 foreach (var child in _logicalChildren)

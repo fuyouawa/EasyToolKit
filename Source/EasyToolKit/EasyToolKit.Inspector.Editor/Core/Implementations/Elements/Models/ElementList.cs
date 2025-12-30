@@ -258,23 +258,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Updates the element list by removing any elements whose Parent no longer matches OwnerElement.
-        /// This handles cases where elements have been moved or removed through external means.
-        /// </summary>
-        public void Update()
-        {
-            ValidateDisposed();
-            for (var i = Count - 1; i >= 0; i--)
-            {
-                var element = _elements[i];
-                if (element.Parent != _ownerElement)
-                {
-                    RemoveAt(i);
-                }
-            }
-        }
-
-        /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>An enumerator for the collection.</returns>

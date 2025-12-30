@@ -92,14 +92,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Updates the collection.
-        /// </summary>
-        public void Update()
-        {
-            _derivedList.Update();
-        }
-
-        /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>An enumerator for the collection.</returns>
