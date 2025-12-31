@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector
 {
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class LabelTextAttribute : Attribute
+    public class LabelTextAttribute : InspectorAttribute
     {
         public string Label { get; set; }
 

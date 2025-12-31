@@ -25,7 +25,7 @@ namespace EasyToolKit.Inspector
 
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class MessageBoxAttribute : Attribute
+    public class MessageBoxAttribute : InspectorAttribute
     {
         public string VisibleIf { get; set; }
         public string Message { get; set; }

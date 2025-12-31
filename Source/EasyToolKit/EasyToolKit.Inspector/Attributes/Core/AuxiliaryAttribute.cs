@@ -2,7 +2,7 @@
 
 namespace EasyToolKit.Inspector
 {
-    public abstract class AuxiliaryAttribute : Attribute
+    public abstract class AuxiliaryAttribute : InspectorAttribute
     {
     }
 }

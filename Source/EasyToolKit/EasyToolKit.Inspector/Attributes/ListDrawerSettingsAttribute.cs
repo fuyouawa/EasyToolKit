@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector
 {
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class ListDrawerSettingsAttribute : Attribute
+    public class ListDrawerSettingsAttribute : InspectorAttribute
     {
         private bool? _expanded;
         private bool? _draggable;

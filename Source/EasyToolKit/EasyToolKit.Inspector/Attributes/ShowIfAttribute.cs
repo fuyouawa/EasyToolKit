@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector
 {
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class ShowIfAttribute : Attribute
+    public class ShowIfAttribute : InspectorAttribute
     {
         public string Condition { get; set; }
         public object Value { get; set; }

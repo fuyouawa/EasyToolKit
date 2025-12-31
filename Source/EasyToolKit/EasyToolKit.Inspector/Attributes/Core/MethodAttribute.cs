@@ -3,7 +3,7 @@
 namespace EasyToolKit.Inspector
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public abstract class MethodAttribute : Attribute
+    public abstract class MethodAttribute : InspectorAttribute
     {
     }
 }

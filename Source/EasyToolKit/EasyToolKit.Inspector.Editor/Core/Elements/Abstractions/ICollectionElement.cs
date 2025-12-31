@@ -13,6 +13,8 @@ namespace EasyToolKit.Inspector.Editor
 
         new IReadOnlyElementList<ICollectionItemElement> LogicalChildren { get; }
 
+        new IElementList<IElement> Children { get; }
+
         /// <summary>
         /// Gets the base value entry that is built directly from <see cref="IValueDefinition.ValueType"/>.
         /// This represents the declared type of the value.

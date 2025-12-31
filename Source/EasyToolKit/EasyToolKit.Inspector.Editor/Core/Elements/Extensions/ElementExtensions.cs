@@ -38,7 +38,8 @@ namespace EasyToolKit.Inspector.Editor
         {
             foreach (var attributeInfo in element.GetAttributeInfos())
             {
-                if (ReferenceEquals(attributeInfo.Attribute, matchedAttribute))
+                if (ReferenceEquals(attributeInfo.Attribute, matchedAttribute) ||
+                    attributeInfo.Attribute.Equals(matchedAttribute))
                 {
                     return attributeInfo;
                 }

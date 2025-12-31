@@ -5,7 +5,7 @@ namespace EasyToolKit.Inspector
 {
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
-    public class EasyInspectorAttribute : Attribute
+    public class EasyInspectorAttribute : InspectorAttribute
     {
     }
 }

@@ -3,7 +3,7 @@ using System;
 namespace EasyToolKit.Inspector
 {
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class HideIfAttribute : Attribute
+    public class HideIfAttribute : InspectorAttribute
     {
         public string Condition { get; set; }
         public object Value { get; set; }

@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector
 {
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class ValueDropdownAttribute : Attribute
+    public class ValueDropdownAttribute : InspectorAttribute
     {
         public string OptionsGetter { get; set; }
 

@@ -12,7 +12,7 @@ namespace EasyToolKit.Inspector
     }
 
     [AttributeUsage(AttributeTargets.Class)]
-    public class AttributePropertyPriorityAttribute : Attribute
+    public class AttributePropertyPriorityAttribute : InspectorAttribute
     {
         public int Priority { get; private set; }
 

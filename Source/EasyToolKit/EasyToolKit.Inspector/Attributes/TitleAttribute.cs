@@ -6,7 +6,7 @@ namespace EasyToolKit.Inspector
 {
     [Conditional("UNITY_EDITOR")]
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
-    public class TitleAttribute : Attribute
+    public class TitleAttribute : InspectorAttribute
     {
         public string Title { get; set; }
         public bool BoldTitle { get; set; } = true;

@@ -236,8 +236,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         protected virtual IElementList<IElement> CreateChildren()
         {
             var children = new RequestedElementList<IElement>(this);
-            children.BeforeElementMoved += OnChildrenElementMoved;
-            children.AfterElementMoved += OnChildrenElementMoved;
             return children;
         }
 
@@ -318,6 +316,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 // Recreate children list
                 _children = CreateChildren();
+                _children.BeforeElementMoved += OnChildrenElementMoved;
+                _children.AfterElementMoved += OnChildrenElementMoved;
             }
             else
             {

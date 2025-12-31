@@ -3,7 +3,7 @@ using System;
 namespace EasyToolKit.Inspector
 {
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class RegisterGroupAttributeScopeAttribute : Attribute
+    public class RegisterGroupAttributeScopeAttribute : InspectorAttribute
     {
         public Type BeginGroupAttributeType { get; set; }
         public Type EndGroupAttributeType { get; set; }

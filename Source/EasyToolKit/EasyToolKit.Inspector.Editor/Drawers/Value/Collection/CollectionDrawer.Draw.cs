@@ -299,7 +299,7 @@ namespace EasyToolKit.Inspector.Editor
                     if (dragHandle.IsDragging == false)
                     {
                         actualIndex++;
-                        DrawItem(Element.LogicalChildren[logicIndex], dragHandle, logicIndex);
+                        DrawItem(Element.LogicalChildren[logicIndex], dragHandle, logicIndex, Element.Children[logicIndex]);
                     }
                     else
                     {
@@ -307,7 +307,7 @@ namespace EasyToolKit.Inspector.Editor
                         CollectionDrawerStaticContext.DelayedGUIDrawer.Begin(dragHandle.Rect.width,
                             dragHandle.Rect.height, dragHandle.CurrentMethod != DragAndDropMethods.Move);
                         DragAndDropManager.AllowDrop = false;
-                        DrawItem(Element.LogicalChildren[logicIndex], dragHandle, logicIndex);
+                        DrawItem(Element.LogicalChildren[logicIndex], dragHandle, logicIndex, Element.Children[logicIndex]);
                         DragAndDropManager.AllowDrop = true;
                         CollectionDrawerStaticContext.DelayedGUIDrawer.End();
                         if (dragHandle.CurrentMethod != DragAndDropMethods.Move)
@@ -355,7 +355,7 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        private void DrawItem(ICollectionItemElement itemElement, DragHandle dragHandle, int index)
+        private void DrawItem(ICollectionItemElement itemElement, DragHandle dragHandle, int index, IElement drawnElement)
         {
             var itemContext = itemElement.GetPersistentContext("ItemContext", new CollectionItemContext()).Value;
             if (_listDrawerSettings is MetroListDrawerSettingsAttribute)
@@ -378,7 +378,7 @@ namespace EasyToolKit.Inspector.Editor
 
                 EasyGUIHelper.PushHierarchyMode(false);
 
-                DrawItemElement(itemElement, index);
+                DrawItemElement(itemElement, index, drawnElement);
 
                 EasyGUIHelper.PopHierarchyMode();
 
@@ -482,7 +482,7 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
-        protected virtual void DrawItemElement(ICollectionItemElement itemElement, int index)
+        protected virtual void DrawItemElement(ICollectionItemElement itemElement, int index, IElement drawnElement)
         {
             GUIContent label = null;
 
@@ -498,24 +498,24 @@ namespace EasyToolKit.Inspector.Editor
 
             if (label != null)
             {
-                if (itemElement.Children != null)
+                if (drawnElement.Children != null)
                 {
-                    itemElement.State.Expanded = EasyEditorGUI.Foldout(itemElement.State.Expanded, label);
-                    if (itemElement.State.Expanded)
+                    drawnElement.State.Expanded = EasyEditorGUI.Foldout(drawnElement.State.Expanded, label);
+                    if (drawnElement.State.Expanded)
                     {
                         EditorGUI.indentLevel++;
-                        itemElement.Draw();
+                        drawnElement.Draw();
                         EditorGUI.indentLevel--;
                     }
                 }
                 else
                 {
-                    itemElement.Draw(label);
+                    drawnElement.Draw(label);
                 }
             }
             else
             {
-                itemElement.Draw(null);
+                drawnElement.Draw(null);
             }
         }
     }

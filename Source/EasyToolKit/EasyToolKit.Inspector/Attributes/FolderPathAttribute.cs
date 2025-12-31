@@ -3,7 +3,7 @@
 namespace EasyToolKit.Inspector
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public class FolderPathAttribute : Attribute
+    public class FolderPathAttribute : InspectorAttribute
     {
         public string ParentFolder { get; set; }
         public bool RequireExistingPath { get; set; }

@@ -111,25 +111,25 @@ namespace EasyToolKit.Inspector.Editor
         {
             var resultsList = new List<TypeMatchResult[]>
             {
-                TypeMatcher.GetCachedMatches(Type.EmptyTypes),
+                TypeMatcher.GetMatches(Type.EmptyTypes),
             };
 
             // If the element is a value element, use its value type for matching
           if (element is IValueElement valueElement)
           {
-              resultsList.Add(TypeMatcher.GetCachedMatches(valueElement.ValueEntry.ValueType));
+              resultsList.Add(TypeMatcher.GetMatches(valueElement.ValueEntry.ValueType));
           }
 
             if (additionalMatchTypesList != null)
             {
                 foreach (var matchTypes in additionalMatchTypesList)
                 {
-                    resultsList.Add(TypeMatcher.GetCachedMatches(matchTypes));
+                    resultsList.Add(TypeMatcher.GetMatches(matchTypes));
                 }
             }
 
             var typeSet = new HashSet<Type>();
-            var results = TypeMatcher.GetCachedMergedResults(resultsList);
+            var results = TypeMatcher.GetMergedResults(resultsList);
             foreach (var result in results)
             {
                 var type = result.MatchedType;

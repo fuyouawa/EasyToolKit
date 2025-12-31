@@ -161,12 +161,12 @@ namespace EasyToolKit.Core
         }
 
         /// <summary>
-        /// Gets cached type matches for the specified target types.
+        /// Gets type matches for the specified target types.
         /// Results are cached based on the target types to improve performance.
         /// </summary>
         /// <param name="targets">The target types to match against.</param>
         /// <returns>An array of type match results, ordered by priority (highest first).</returns>
-        public TypeMatchResult[] GetCachedMatches(params Type[] targets)
+        public TypeMatchResult[] GetMatches(params Type[] targets)
         {
             var hash = new HashCode();
             foreach (var target in targets)
@@ -207,12 +207,12 @@ namespace EasyToolKit.Core
         }
 
         /// <summary>
-        /// Gets cached merged results from multiple type match result arrays.
+        /// Gets merged results from multiple type match result arrays.
         /// Results are merged and cached based on the input arrays to improve performance.
         /// </summary>
         /// <param name="resultsList">The list of type match result arrays to merge.</param>
         /// <returns>A merged array of type match results, ordered by priority (highest first).</returns>
-        public static TypeMatchResult[] GetCachedMergedResults(IReadOnlyList<TypeMatchResult[]> resultsList)
+        public static TypeMatchResult[] GetMergedResults(IReadOnlyList<TypeMatchResult[]> resultsList)
         {
             if (resultsList.Count == 0)
             {
