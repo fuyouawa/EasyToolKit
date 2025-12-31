@@ -12,6 +12,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private const string ErrorDefinitionNull = "Element definition cannot be null.";
         private readonly IElementSharedContext _sharedContext;
         private readonly HashSet<IElement> _createdElements;
+        private readonly HashSet<IElement> _pendingDestroyElements;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementFactory"/> class.
@@ -22,6 +23,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         {
             _sharedContext = sharedContext ?? throw new ArgumentNullException(nameof(sharedContext));
             _createdElements = new HashSet<IElement>();
+            _pendingDestroyElements = new HashSet<IElement>();
         }
 
         /// <summary>
@@ -186,7 +188,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// If the element is not in an idle state, the destruction is queued and executed later.
         /// </summary>
         /// <param name="element">The element to destroy.</param>
-        /// <returns><c>true</c> if the element was successfully destroyed or queued for destruction; <c>false</c> if the element was not found in the tracking container.</returns>
+        /// <returns><c>true</c> if the element was successfully destroyed or queued for destruction; <c>false</c> if the element was not found in the tracking container or is already pending destruction.</returns>
         public bool DestroyElement(IElement element)
         {
             if (element == null)
@@ -195,17 +197,17 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             if (!_createdElements.Contains(element))
                 return false;
 
-            if (element.Phases.IsDestroyed() || element.Phases.IsPendingDestroy() || element.Phases.IsDestroying())
-            {
+            // Check if already pending destruction to prevent duplicate queued destroys
+            if (_pendingDestroyElements.Contains(element))
                 return false;
-            }
 
-            if (element.Phases.IsNone())
+            if (element.Phases.IsNone() || element.Phases.IsPendingDestroy())
             {
                 PerformDestroy(element);
             }
             else
             {
+                _pendingDestroyElements.Add(element);
                 _sharedContext.Tree.QueueCallback(() => PerformDestroy(element));
             }
 
@@ -225,6 +227,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             (element as IDisposable)?.Dispose();
             // Remove from tracking
             _createdElements.Remove(element);
+            // Remove from pending destruction set
+            _pendingDestroyElements.Remove(element);
         }
     }
 }

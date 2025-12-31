@@ -402,7 +402,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         void IDisposable.Dispose()
         {
-            if (_phases.IsDestroyed() || _phases.IsPendingDestroy() || _phases.IsDestroying())
+            if (_phases.IsDestroyed() || _phases.IsDestroying())
             {
                 return;
             }
