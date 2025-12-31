@@ -14,6 +14,7 @@ namespace EasyToolKit.TileWorldPro
         RightLabel = "@RightLabel",
         RightLabelColorGetter = nameof(RightLabelColor))]
 #endif
+    [HideLabel]
     public abstract class TerrainDefinitionNode
     {
         [OdinSerialize, HideInInspector] private Guid _guid;

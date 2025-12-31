@@ -319,23 +319,28 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             for (int i = 0; i < tree.Targets.Count; i++)
             {
                 var owner = GetOwner(i);
+
+                TValue value;
+                Type runtimeValueType;
                 if (owner == null)
                 {
-                    // _values[i] = default;
-                    continue;
+                    value = _values[i];
+                    runtimeValueType = value?.GetType() ?? typeof(TValue);
                 }
-
-                var value = Operation.GetValue(ref owner);
-                var runtimeValueType = Operation.GetValueRuntimeType(ref owner);
-
-                // Auto-instantiate null values for instantiable types
-                if (value == null && IsInstantiableType)
+                else
                 {
-                    if (typeof(TValue).TryCreateInstance(out value))
+                    value = Operation.GetValue(ref owner);
+                    runtimeValueType = Operation.GetValueRuntimeType(ref owner);
+
+                    // Auto-instantiate null values for instantiable types
+                    if (value == null && IsInstantiableType)
                     {
-                        runtimeValueType = typeof(TValue);
-                        MarkDirty();
-                        clearDirty = false;
+                        if (typeof(TValue).TryCreateInstance(out value))
+                        {
+                            runtimeValueType = typeof(TValue);
+                            MarkDirty();
+                            clearDirty = false;
+                        }
                     }
                 }
 

@@ -31,6 +31,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 Name = ParameterInfo.Name;
             }
+            ValueType = ParameterInfo.ParameterType;
 
             definition.Roles = definition.Roles.Add(ElementRoles.MethodParameter);
             definition.ParameterInfo = ParameterInfo;

@@ -1741,6 +1741,1098 @@
             <param name="objectType">对象池中存储的对象类型</param>
             <returns></returns>
         </member>
+        <member name="T:EasyToolKit.Core.BinaryInputArchive">
+            <summary>
+            Binary input archive implementation. Deserializes data from a binary format
+            using length-prefixed field names and varint encoding.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.#ctor(System.IO.Stream)">
+            <summary>Creates a new binary input archive.</summary>
+            <param name="stream">The stream to read from.</param>
+        </member>
+        <member name="P:EasyToolKit.Core.BinaryInputArchive.ArchiveType">
+            <summary>Gets the archive format type (Binary).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.SetNextName(System.String)">
+            <summary>Sets the name of the next field by reading and verifying the length-prefixed string.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.StartNode">
+            <summary>Begins a nested object node (no-op for binary format).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.FinishNode">
+            <summary>Ends a nested object node (no-op for binary format).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(System.Int32@)">
+            <summary>Processes an integer value (4 bytes, little-endian).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(EasyToolKit.Core.Varint32@)">
+            <summary>Processes a variable-length integer value using 7-bit decoding.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(EasyToolKit.Core.SizeTag@)">
+            <summary>Processes a size tag value using varint decoding.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(System.Boolean@)">
+            <summary>Processes a boolean value from a single byte.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(System.Single@)">
+            <summary>Processes a float value (4 bytes, IEEE 754).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(System.Double@)">
+            <summary>Processes a double value (8 bytes, IEEE 754).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(System.String@)">
+            <summary>Processes a string value from length-prefixed UTF-8 bytes.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(System.Byte[]@)">
+            <summary>Processes a byte array value from length-prefixed bytes.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Process(UnityEngine.Object@)">
+            <summary>Processes a Unity object reference by resolving its index.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.Dispose">
+            <summary>Releases resources used by the archive.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryInputArchive.ReadVarint32">
+            <summary>Reads a 32-bit unsigned integer using variable-length decoding.</summary>
+            <returns>The decoded value.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.BinaryOutputArchive">
+            <summary>
+            Binary output archive implementation. Serializes data to a binary format
+            using length-prefixed field names and varint encoding.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.#ctor(System.IO.Stream)">
+            <summary>Creates a new binary output archive.</summary>
+            <param name="stream">The stream to write to.</param>
+        </member>
+        <member name="P:EasyToolKit.Core.BinaryOutputArchive.ArchiveType">
+            <summary>Gets the archive format type (Binary).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.SetNextName(System.String)">
+            <summary>Sets the name of the next field by writing a length-prefixed string.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.StartNode">
+            <summary>Begins a nested object node by increasing depth counter.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.FinishNode">
+            <summary>Ends a nested object node by decreasing depth counter.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(System.Int32@)">
+            <summary>Processes an integer value (4 bytes, little-endian).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(EasyToolKit.Core.Varint32@)">
+            <summary>Processes a variable-length integer value using 7-bit encoding.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(EasyToolKit.Core.SizeTag@)">
+            <summary>Processes a size tag value using varint encoding.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(System.Boolean@)">
+            <summary>Processes a boolean value as a single byte (0 or 1).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(System.Single@)">
+            <summary>Processes a float value (4 bytes, IEEE 754).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(System.Double@)">
+            <summary>Processes a double value (8 bytes, IEEE 754).</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(System.String@)">
+            <summary>Processes a string value as length-prefixed UTF-8 bytes.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(System.Byte[]@)">
+            <summary>Processes a byte array value as length-prefixed bytes.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Process(UnityEngine.Object@)">
+            <summary>Processes a Unity object reference by writing its index as varint.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.Dispose">
+            <summary>Releases resources used by the archive.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.BinaryOutputArchive.WriteVarint32(System.UInt32)">
+            <summary>Writes a 32-bit unsigned integer using variable-length encoding.</summary>
+            <param name="value">The value to write.</param>
+        </member>
+        <member name="T:EasyToolKit.Core.ArchiveIoType">
+            <summary>
+            Defines the direction of archive operations.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ArchiveIoType.Input">
+            <summary>Reading from archive.</summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ArchiveIoType.Output">
+            <summary>Writing to archive.</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ArchiveTypes">
+            <summary>
+            Defines the archive format type.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ArchiveTypes.Binary">
+            <summary>Binary format.</summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ArchiveTypes.Json">
+            <summary>JSON format (not yet implemented).</summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ArchiveTypes.Xml">
+            <summary>XML format (not yet implemented).</summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ArchiveTypes.Yaml">
+            <summary>YAML format (not yet implemented).</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Varint32">
+            <summary>
+            Variable-length integer encoding for efficient storage of small integers.
+            Uses 7-bit encoding where each byte contains 7 bits of data and a continuation bit.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Varint32.Value">
+            <summary>The decoded integer value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Varint32.#ctor(System.UInt32)">
+            <summary>Creates a new Varint32 with the specified value.</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.SizeTag">
+            <summary>
+            Size prefix tag for collections and arrays.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.SizeTag.Size">
+            <summary>The size of the collection.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.SizeTag.#ctor(System.UInt32)">
+            <summary>Creates a new SizeTag with the specified size.</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IArchive">
+            <summary>
+            Interface for serialization archives. Provides methods for reading and writing
+            structured data in various formats (binary, JSON, etc.).
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IArchive.ArchiveIoType">
+            <summary>Gets the I/O type (input or output) of this archive.</summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IArchive.ArchiveType">
+            <summary>Gets the format type of this archive.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.SetNextName(System.String)">
+            <summary>Sets the name of the next field to be processed.</summary>
+            <param name="name">The field name.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.StartNode">
+            <summary>Begins a nested object node. Increases depth tracking.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.FinishNode">
+            <summary>Ends a nested object node. Decreases depth tracking.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(System.Int32@)">
+            <summary>Processes an integer value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(EasyToolKit.Core.Varint32@)">
+            <summary>Processes a variable-length integer value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(EasyToolKit.Core.SizeTag@)">
+            <summary>Processes a size tag value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(System.Boolean@)">
+            <summary>Processes a boolean value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(System.Single@)">
+            <summary>Processes a float value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(System.Double@)">
+            <summary>Processes a double value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(System.String@)">
+            <summary>Processes a string value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(System.Byte[]@)">
+            <summary>Processes a byte array value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IArchive.Process(UnityEngine.Object@)">
+            <summary>Processes a Unity object reference using index-based tracking.</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.InputArchive">
+            <summary>
+            Abstract base class for input archives. Manages Unity object references
+            and provides common functionality for concrete archive implementations.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.InputArchive.ArchiveIoType">
+            <summary>Gets the I/O type (Input) for this archive.</summary>
+        </member>
+        <member name="P:EasyToolKit.Core.InputArchive.ArchiveType">
+            <summary>Gets the archive format type.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.SetupReferencedUnityObjects(System.Collections.Generic.List{UnityEngine.Object})">
+            <summary>Sets up the list of Unity objects for reference resolution during deserialization.</summary>
+            <param name="referencedUnityObjects">The list of Unity objects referenced in the serialized data.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.ResolveUnityObjectReference(System.UInt32)">
+            <summary>Resolves a Unity object reference by index.</summary>
+            <param name="index">1-based index of the object (0 for null).</param>
+            <returns>The resolved Unity object, or null if index is 0.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.SetNextName(System.String)">
+            <summary>Sets the name of the next field to be processed.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.StartNode">
+            <summary>Begins a nested object node.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.FinishNode">
+            <summary>Ends a nested object node.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(System.Int32@)">
+            <summary>Processes an integer value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(EasyToolKit.Core.Varint32@)">
+            <summary>Processes a variable-length integer value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(EasyToolKit.Core.SizeTag@)">
+            <summary>Processes a size tag value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(System.Boolean@)">
+            <summary>Processes a boolean value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(System.Single@)">
+            <summary>Processes a float value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(System.Double@)">
+            <summary>Processes a double value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(System.String@)">
+            <summary>Processes a string value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(System.Byte[]@)">
+            <summary>Processes a byte array value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Process(UnityEngine.Object@)">
+            <summary>Processes a Unity object reference using index-based resolution.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.InputArchive.Dispose">
+            <summary>Releases resources used by the archive.</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.JsonInputArchive">
+            <summary>
+            JSON input archive stub. JSON deserialization is not yet implemented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.JsonInputArchive.#ctor(System.IO.Stream)">
+            <summary>Creates a new JSON input archive (not implemented).</summary>
+            <param name="stream">The stream to read from.</param>
+            <exception cref="T:System.NotImplementedException">Always thrown.</exception>
+        </member>
+        <member name="P:EasyToolKit.Core.JsonInputArchive.ArchiveType">
+            <summary>Gets the archive format type (Json).</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.JsonOutputArchive">
+            <summary>
+            JSON output archive stub. JSON serialization is not yet implemented.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.JsonOutputArchive.#ctor(System.IO.Stream)">
+            <summary>Creates a new JSON output archive (not implemented).</summary>
+            <param name="stream">The stream to write to.</param>
+            <exception cref="T:System.NotImplementedException">Always thrown.</exception>
+        </member>
+        <member name="P:EasyToolKit.Core.JsonOutputArchive.ArchiveType">
+            <summary>Gets the archive format type (Json).</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.OutputArchive">
+            <summary>
+            Abstract base class for output archives. Tracks Unity object references
+            and provides common functionality for concrete archive implementations.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.OutputArchive.ArchiveIoType">
+            <summary>Gets the I/O type (Output) for this archive.</summary>
+        </member>
+        <member name="P:EasyToolKit.Core.OutputArchive.ArchiveType">
+            <summary>Gets the archive format type.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.GetReferencedUnityObjects">
+            <summary>Gets the list of Unity objects referenced during serialization.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.AddUnityObjectReference(UnityEngine.Object)">
+            <summary>Adds a Unity object to the references list and returns its index.</summary>
+            <param name="unityObject">The Unity object to reference.</param>
+            <returns>1-based index of the object (0 for null).</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.SetNextName(System.String)">
+            <summary>Sets the name of the next field to be processed.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.StartNode">
+            <summary>Begins a nested object node.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.FinishNode">
+            <summary>Ends a nested object node.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(System.Int32@)">
+            <summary>Processes an integer value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(EasyToolKit.Core.Varint32@)">
+            <summary>Processes a variable-length integer value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(EasyToolKit.Core.SizeTag@)">
+            <summary>Processes a size tag value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(System.Boolean@)">
+            <summary>Processes a boolean value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(System.Single@)">
+            <summary>Processes a float value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(System.Double@)">
+            <summary>Processes a double value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(System.String@)">
+            <summary>Processes a string value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(System.Byte[]@)">
+            <summary>Processes a byte array value.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Process(UnityEngine.Object@)">
+            <summary>Processes a Unity object reference using index-based tracking.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.OutputArchive.Dispose">
+            <summary>Releases resources used by the archive.</summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IConfiguration">
+            <summary>
+            Base interface for all serialization configuration objects.
+            Provides common identification and metadata for configuration instances.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IConfiguration.ConfigurationId">
+            <summary>
+            Gets the unique identifier for this configuration instance.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IConfiguration.ConfigurationType">
+            <summary>
+            Gets the configuration type name for categorization and registration.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IConfiguration.IsValidated">
+            <summary>
+            Gets a value indicating whether this configuration has been validated.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IConfigurationBuilder`1">
+            <summary>
+            Interface for building configuration objects using the builder pattern.
+            Provides fluent API for constructing and validating configurations.
+            </summary>
+            <typeparam name="TConfiguration">The type of configuration this builder creates.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Core.IConfigurationBuilder`1.Build">
+            <summary>
+            Builds the configuration instance.
+            </summary>
+            <returns>The constructed configuration instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IConfigurationBuilder`1.BuildAndValidate">
+            <summary>
+            Builds and validates the configuration instance.
+            </summary>
+            <returns>The constructed and validated configuration instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IConfigurationBuilder`1.Reset">
+            <summary>
+            Resets the builder to its initial state.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IConfigurationValidator`1">
+            <summary>
+            Interface for validating configuration objects.
+            Implementations provide specific validation logic for configuration types.
+            </summary>
+            <typeparam name="TConfiguration">The type of configuration to validate.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Core.IConfigurationValidator`1.Validate(`0)">
+            <summary>
+            Validates the specified configuration.
+            </summary>
+            <param name="configuration">The configuration to validate.</param>
+            <returns>Validation result containing success status and error/warning messages.</returns>
+        </member>
+        <member name="P:EasyToolKit.Core.IConfigurationValidator`1.Priority">
+            <summary>
+            Gets the validation priority. Higher priority validators execute first.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IValidatableConfiguration">
+            <summary>
+            Interface for configurations that support validation.
+            Provides mechanisms to validate configuration state and retrieve validation results.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IValidatableConfiguration.Validate">
+            <summary>
+            Validates the current configuration state.
+            </summary>
+            <returns>Validation result containing success status and error messages.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IValidatableConfiguration.ValidateOrThrow">
+            <summary>
+            Validates the configuration and throws an exception if validation fails.
+            </summary>
+            <exception cref="T:EasyToolKit.Core.ConfigurationException">Thrown when validation fails.</exception>
+        </member>
+        <member name="T:EasyToolKit.Core.ConfigurationBase">
+            <summary>
+            Abstract base class for all configuration objects.
+            Provides common implementation for identification and metadata.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ConfigurationBase"/> class.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationBase.ConfigurationId">
+            <inheritdoc/>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationBase.ConfigurationType">
+            <inheritdoc/>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationBase.IsValidated">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationBase.SetValidated">
+            <summary>
+            Marks the configuration as validated.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationBase.ResetValidation">
+            <summary>
+            Resets the validation status, requiring re-validation.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ConfigurationBuilderBase`2">
+            <summary>
+            Abstract base class for configuration builders.
+            Provides common builder functionality and validation integration.
+            </summary>
+            <typeparam name="TConfigurationInterface">The interface type of the configuration.</typeparam>
+            <typeparam name="TConfigurationImpl">The concrete implementation type of the configuration.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationBuilderBase`2.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ConfigurationBuilderBase`2"/> class.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationBuilderBase`2.WithValidator(EasyToolKit.Core.IConfigurationValidator{`0})">
+            <summary>
+            Adds a custom validator to the builder that will be used during BuildAndValidate.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationBuilderBase`2.Build">
+            <summary>
+            Builds the configuration instance without validation.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationBuilderBase`2.BuildAndValidate">
+            <summary>
+            Builds and validates the configuration instance.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationBuilderBase`2.Reset">
+            <summary>
+            Resets the builder to its initial state.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ValidatableConfigurationBase">
+            <summary>
+            Abstract base class for configurations that support validation.
+            Provides default validation implementation and validator management.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ValidatableConfigurationBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ValidatableConfigurationBase"/> class.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ValidatableConfigurationBase.AddValidator(EasyToolKit.Core.IConfigurationValidator{EasyToolKit.Core.IConfiguration})">
+            <summary>
+            Adds a validator to this configuration instance.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ValidatableConfigurationBase.Validate">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.ValidatableConfigurationBase.ValidateOrThrow">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.ValidatableConfigurationBase.ValidateCore">
+            <summary>
+            Override to provide custom validation logic specific to the configuration type.
+            Called after all registered validators have been executed.
+            </summary>
+            <returns>Validation result with any errors or warnings from custom validation logic.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.ConfigurationException">
+            <summary>
+            Exception thrown when configuration validation fails or configuration is invalid.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationException.ConfigurationType">
+            <summary>
+            Gets the configuration type that failed validation.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationException.ValidationErrors">
+            <summary>
+            Gets the collection of validation errors that caused the exception.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ConfigurationException"/> class with a specified error message.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ConfigurationException"/> class with a specified error message and inner exception.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationException.#ctor(System.String,System.Collections.Generic.IReadOnlyList{EasyToolKit.Core.ConfigurationValidationError})">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ConfigurationException"/> class with configuration type and validation errors.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ConfigurationValidationError">
+            <summary>
+            Represents a validation error in a configuration.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationError.PropertyName">
+            <summary>
+            Gets the name of the property or field that caused the error.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationError.ErrorMessage">
+            <summary>
+            Gets the error message describing the validation failure.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationError.ErrorCode">
+            <summary>
+            Gets the error code for categorizing the error type.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationValidationError.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ConfigurationValidationError"/> class.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ConfigurationValidationResult">
+            <summary>
+            Represents the result of a configuration validation operation.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationResult.IsValid">
+            <summary>
+            Gets a value indicating whether the validation passed.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationResult.Errors">
+            <summary>
+            Gets the collection of validation errors.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationResult.Warnings">
+            <summary>
+            Gets the collection of validation warnings.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationValidationResult.Valid">
+            <summary>
+            Creates a successful validation result.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationValidationResult.Invalid(EasyToolKit.Core.ConfigurationValidationError[])">
+            <summary>
+            Creates a failed validation result with the specified errors.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationValidationResult.Invalid(EasyToolKit.Core.ConfigurationValidationError[],EasyToolKit.Core.ConfigurationValidationWarning[])">
+            <summary>
+            Creates a failed validation result with the specified errors and warnings.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.ConfigurationValidationWarning">
+            <summary>
+            Represents a validation warning in a configuration.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationWarning.PropertyName">
+            <summary>
+            Gets the name of the property or field that caused the warning.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationWarning.WarningMessage">
+            <summary>
+            Gets the warning message describing the validation warning.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.ConfigurationValidationWarning.WarningCode">
+            <summary>
+            Gets the warning code for categorizing the warning type.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ConfigurationValidationWarning.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ConfigurationValidationWarning"/> class.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.MemberFilterFlags">
+            <summary>
+            Flags for determining which members to include during serialization.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.MemberFilterFlags.SerializeField">
+            <summary>
+            Members with [SerializeField] attribute, ignoring access modifiers.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.MemberFilter">
+            <summary>
+            Delegate for filtering members during serialization.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.DefaultMemberFilterPresets">
+            <summary>
+            Provides default member filter preset configurations.
+            Static factory for creating standard presets used throughout the framework.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultMemberFilterPresets.CreateDefault">
+            <summary>
+            Creates the default member filter preset.
+            Includes public fields and fields with [SerializeField] attribute.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultMemberFilterPresets.CreateAllGettable">
+            <summary>
+            Creates a preset that includes all gettable members (public and non-public).
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultMemberFilterPresets.CreateAllPublicGettable">
+            <summary>
+            Creates a preset that includes all public gettable members.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultMemberFilterPresets.CreateAll">
+            <summary>
+            Creates all default presets.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IMemberFilterPresetRegistry">
+            <summary>
+            Registry for managing member filter configuration presets.
+            Allows registration and retrieval of named preset configurations.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IMemberFilterPresetRegistry.RegisterPreset(System.String,EasyToolKit.Core.IMemberFilterConfiguration)">
+            <summary>
+            Registers a preset configuration with the specified name.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IMemberFilterPresetRegistry.TryGetPreset(System.String,EasyToolKit.Core.IMemberFilterConfiguration@)">
+            <summary>
+            Tries to get a preset configuration by name.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IMemberFilterPresetRegistry.GetPreset(System.String)">
+            <summary>
+            Gets a preset configuration by name, throwing if not found.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IMemberFilterPresetRegistry.GetPresetNames">
+            <summary>
+            Gets all registered preset names.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IMemberFilterPresetRegistry.HasPreset(System.String)">
+            <summary>
+            Checks if a preset with the specified name exists.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IMemberFilterPresetRegistry.UnregisterPreset(System.String)">
+            <summary>
+            Unregisters a preset by name.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.MemberFilterPreset">
+            <summary>
+            Represents a named preset configuration for member filtering.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.MemberFilterPreset.Name">
+            <summary>
+            Gets the name of the preset.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.MemberFilterPreset.Configuration">
+            <summary>
+            Gets the member filter configuration for this preset.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.MemberFilterPreset.Description">
+            <summary>
+            Gets the description of the preset.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterPreset.#ctor(System.String,EasyToolKit.Core.IMemberFilterConfiguration,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.MemberFilterPreset"/> class.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.MemberFilterPresetRegistry">
+            <summary>
+            Default implementation of preset registry for member filter configurations.
+            Thread-safe singleton instance for global preset management.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.MemberFilterPresetRegistry.Instance">
+            <summary>
+            Gets the singleton instance of the preset registry.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterPresetRegistry.RegisterPreset(System.String,EasyToolKit.Core.IMemberFilterConfiguration)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterPresetRegistry.TryGetPreset(System.String,EasyToolKit.Core.IMemberFilterConfiguration@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterPresetRegistry.GetPreset(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterPresetRegistry.GetPresetNames">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterPresetRegistry.HasPreset(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterPresetRegistry.UnregisterPreset(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EasyToolKit.Core.IMemberFilterConfiguration">
+            <summary>
+            Configuration interface for member filtering during serialization.
+            Defines which members (fields, properties) should be serialized.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IMemberFilterConfiguration.FilterFlags">
+            <summary>
+            Gets the flags determining which members to include based on access modifiers and types.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IMemberFilterConfiguration.ExcludedTypes">
+            <summary>
+            Gets the collection of types to exclude from serialization.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IMemberFilterConfiguration.CreateFilter">
+            <summary>
+            Creates the member filter delegate from this configuration.
+            </summary>
+            <returns>A member filter delegate based on this configuration.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.MemberFilterConfiguration">
+            <summary>
+            Configuration for member filtering during serialization.
+            Determines which class members should be included in serialization based on
+            access modifiers, member types, and custom exclusion rules.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.MemberFilterConfiguration"/> class with default values.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.MemberFilterConfiguration.FilterFlags">
+            <inheritdoc/>
+        </member>
+        <member name="P:EasyToolKit.Core.MemberFilterConfiguration.ExcludedTypes">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfiguration.ValidateCore">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfiguration.SetFilterFlags(EasyToolKit.Core.MemberFilterFlags)">
+            <summary>
+            Sets the filter flags directly.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfiguration.AddExcludedType(System.Type)">
+            <summary>
+            Adds a type to the exclusion list.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfiguration.AddExcludedTypes(System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Adds multiple types to the exclusion list.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfiguration.RemoveExcludedType(System.Type)">
+            <summary>
+            Removes a type from the exclusion list.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfiguration.ClearExcludedTypes">
+            <summary>
+            Clears all types from the exclusion list.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfiguration.CreateFilter">
+            <inheritdoc/>
+        </member>
+        <member name="T:EasyToolKit.Core.MemberFilterConfigurationBuilder">
+            <summary>
+            Builder for creating <see cref="T:EasyToolKit.Core.IMemberFilterConfiguration"/> instances.
+            Provides fluent API for configuring member filtering rules.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.MemberFilterConfigurationBuilder"/> class.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.IncludePublic">
+            <summary>
+            Configures the filter to include public members.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.IncludeNonPublic">
+            <summary>
+            Configures the filter to include non-public members.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.IncludeFields">
+            <summary>
+            Configures the filter to include fields.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.IncludeReadOnlyProperties">
+            <summary>
+            Configures the filter to include read-only properties.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.IncludeWriteOnlyProperties">
+            <summary>
+            Configures the filter to include write-only properties.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.IncludeReadWriteProperties">
+            <summary>
+            Configures the filter to include read-write properties.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.IncludeAllProperties">
+            <summary>
+            Configures the filter to include all properties.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.IncludeSerializedFields">
+            <summary>
+            Configures the filter to include members with [SerializeField] attribute.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.ExcludeType(System.Type)">
+            <summary>
+            Adds a type to the exclusion list.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.ExcludeTypes(System.Type[])">
+            <summary>
+            Adds multiple types to the exclusion list.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.WithFlags(EasyToolKit.Core.MemberFilterFlags)">
+            <summary>
+            Sets the filter flags directly.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.Build">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Core.MemberFilterConfigurationBuilder.Reset">
+            <inheritdoc/>
+        </member>
+        <member name="T:EasyToolKit.Core.SerializerConfigurationAttribute">
+            <summary>
+            Attribute for configuring serializer registration and priority.
+            Applied to serializer classes to control their registration behavior.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.SerializerConfigurationAttribute.Default">
+            <summary>
+            Gets the default configuration instance.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.SerializerConfigurationAttribute.Priority">
+            <summary>
+            Gets the priority level for this serializer.
+            Higher priority serializers are evaluated first during type matching.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.SerializerConfigurationAttribute.AllowInherit">
+            <summary>
+            Gets a value indicating whether this serializer can handle inherited types.
+            When true, the serializer matching algorithm considers base type relationships.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.SerializerConfigurationAttribute.#ctor">
+            <summary>
+            Initializes a new instance with Custom priority level.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.SerializerConfigurationAttribute.#ctor(EasyToolKit.Core.SerializerPriorityLevel)">
+            <summary>
+            Initializes a new instance with the specified priority level.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.SerializerConfigurationAttribute.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance with the specified priority value.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.SerializerConfigurationAttribute.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance with the specified priority and inheritance behavior.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.SerializerPriorityLevel">
+            <summary>
+            Defines priority levels for serializer registration.
+            Higher values indicate higher priority (earlier evaluation during serializer selection).
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.SerializerPriorityLevel.Generic">
+            <summary>
+            Generic serializer with lowest priority (fallback option).
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.SerializerPriorityLevel.SystemBasic">
+            <summary>
+            System basic types serializer (arrays, enums, Type, etc.).
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.SerializerPriorityLevel.UnityObject">
+            <summary>
+            Unity object serializer.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.SerializerPriorityLevel.UnityBasic">
+            <summary>
+            Unity basic type serializer (Vector, Color, etc.).
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.SerializerPriorityLevel.Primitive">
+            <summary>
+            Primitive type serializer (int, float, bool, string, etc.).
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.SerializerPriorityLevel.Custom">
+            <summary>
+            Custom serializer with default priority.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.EasySerializeSettings">
+            <summary>
+            Settings container for EasySerializer system.
+            Provides configuration for member filtering and serialization behavior.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.EasySerializeSettings.MemberFilterConfiguration">
+            <summary>
+            Gets the member filter configuration.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.EasySerializeSettings.MemberFilter">
+            <summary>
+            Gets the member filter delegate for compatibility with existing code.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.EasySerializeSettings.SerializedMemberInfoAccessor">
+            <summary>
+            Gets the serialized member info accessor (internal use).
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerializeSettings.#ctor">
+            <summary>
+            Initializes a new instance with default configuration.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerializeSettings.#ctor(EasyToolKit.Core.IMemberFilterConfiguration)">
+            <summary>
+            Initializes a new instance with the specified member filter configuration.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerializeSettings.#ctor(System.String)">
+            <summary>
+            Initializes a new instance with a preset configuration by name.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerializeSettings.FromBuilder(EasyToolKit.Core.MemberFilterConfigurationBuilder)">
+            <summary>
+            Creates settings from a configuration builder.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.EasySerialize">
+            <summary>
+            Main entry point for serialization and deserialization operations.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.EasySerialize.DefaultSettings">
+            <summary>Gets or sets the default serialization settings.</summary>
+        </member>
+        <member name="P:EasyToolKit.Core.EasySerialize.CurrentSettings">
+            <summary>Gets the current serialization settings.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerialize.To``1(``0,EasyToolKit.Core.EasySerializationData@,EasyToolKit.Core.EasySerializeSettings)">
+            <summary>Serializes a value to the specified serialization data.</summary>
+            <typeparam name="T">The type of value to serialize.</typeparam>
+            <param name="value">The value to serialize.</param>
+            <param name="serializationData">The serialization data to populate.</param>
+            <param name="settings">Optional serialization settings.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerialize.From``1(EasyToolKit.Core.EasySerializationData@,EasyToolKit.Core.EasySerializeSettings)">
+            <summary>Deserializes a value from the specified serialization data.</summary>
+            <typeparam name="T">The type of value to deserialize.</typeparam>
+            <param name="serializationData">The serialization data to read from.</param>
+            <param name="settings">Optional serialization settings.</param>
+            <returns>The deserialized value.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerialize.To(System.Object,System.Type,EasyToolKit.Core.EasySerializationData@,EasyToolKit.Core.EasySerializeSettings)">
+            <summary>Serializes a value to the specified serialization data.</summary>
+            <param name="value">The value to serialize.</param>
+            <param name="valueType">The type of value to serialize.</param>
+            <param name="serializationData">The serialization data to populate.</param>
+            <param name="settings">Optional serialization settings.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerialize.From(System.Type,EasyToolKit.Core.EasySerializationData@,EasyToolKit.Core.EasySerializeSettings)">
+            <summary>Deserializes a value from the specified serialization data.</summary>
+            <param name="type">The type of value to deserialize.</param>
+            <param name="serializationData">The serialization data to read from.</param>
+            <param name="settings">Optional serialization settings.</param>
+            <returns>The deserialized value.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerialize.GetSerializerWithThrow(System.Type)">
+            <summary>Gets a serializer for the specified type or throws an exception.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerialize.ChangeSettings(EasyToolKit.Core.EasySerializeSettings)">
+            <summary>Changes the current settings if different from the specified settings.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerialize.GetOutputArchive(EasyToolKit.Core.EasyDataFormat,System.IO.Stream)">
+            <summary>Creates an output archive for the specified format and stream.</summary>
+        </member>
+        <member name="M:EasyToolKit.Core.EasySerialize.GetInputArchive(EasyToolKit.Core.EasyDataFormat,System.IO.Stream)">
+            <summary>Creates an input archive for the specified format and stream.</summary>
+        </member>
         <member name="T:EasyToolKit.Core.StateChangedHandler`1">
             <summary>
             当状态更改完成的回调
@@ -1916,17 +3008,17 @@
             </summary>
             <param name="rule">The match rule to remove.</param>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.GetCachedMatches(System.Type[])">
+        <member name="M:EasyToolKit.Core.TypeMatcher.GetMatches(System.Type[])">
             <summary>
-            Gets cached type matches for the specified target types.
+            Gets type matches for the specified target types.
             Results are cached based on the target types to improve performance.
             </summary>
             <param name="targets">The target types to match against.</param>
             <returns>An array of type match results, ordered by priority (highest first).</returns>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.GetCachedMergedResults(System.Collections.Generic.IReadOnlyList{EasyToolKit.Core.TypeMatchResult[]})">
+        <member name="M:EasyToolKit.Core.TypeMatcher.GetMergedResults(System.Collections.Generic.IReadOnlyList{EasyToolKit.Core.TypeMatchResult[]})">
             <summary>
-            Gets cached merged results from multiple type match result arrays.
+            Gets merged results from multiple type match result arrays.
             Results are merged and cached based on the input arrays to improve performance.
             </summary>
             <param name="resultsList">The list of type match result arrays to merge.</param>

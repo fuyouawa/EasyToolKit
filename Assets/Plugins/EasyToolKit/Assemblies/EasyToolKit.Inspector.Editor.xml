@@ -638,9 +638,6 @@
             </summary>
             <remarks>
             <para>
-            When an element is initialized, its same as <see cref="!:LogicalParent"/>.
-            </para>
-            <para>
             If the current element is in a hover state (removed from its original parent but not yet added to a new parent),
             this property returns <c>null</c>.
             </para>
@@ -702,6 +699,12 @@
             <summary>
             Requests a refresh of the element structure, forcing recreation of resolvers and children.
             The refresh occurs through <see cref="M:EasyToolKit.Inspector.Editor.IElement.Request(System.Action,System.Boolean)"/> to ensure safe execution during drawing.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElement.Destroy">
+            <summary>
+            Destroys this element, disposing it and removing it from the factory's tracking container.
+            If the element is not in an idle state, the destruction is queued and executed later.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.IElement.Draw(UnityEngine.GUIContent)">
@@ -1612,6 +1615,27 @@
             <param name="phases">The element phase to check.</param>
             <returns>True if the element has the Updating phase set.</returns>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsPendingDestroy(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element is waiting to be destroyed.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if the element has the PendingDestroy phase set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsDestroying(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element is currently being destroyed.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if the element has the Destroying phase set.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsDestroyed(EasyToolKit.Inspector.Editor.ElementPhases)">
+            <summary>
+            Determines if the element has been destroyed.
+            </summary>
+            <param name="phases">The element phase to check.</param>
+            <returns>True if the element has the Destroyed phase set.</returns>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.ElementPhaseExtensions.IsNone(EasyToolKit.Inspector.Editor.ElementPhases)">
             <summary>
             Determines if the element has no phases set.
@@ -1958,6 +1982,14 @@
             <param name="definition">The root definition describing the root element to create.</param>
             <returns>A new root element instance.</returns>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElementFactory.DestroyElement(EasyToolKit.Inspector.Editor.IElement)">
+            <summary>
+            Destroys the specified element, disposing it and removing it from the factory's tracking container.
+            If the element is not in an idle state, the destruction is queued and executed later.
+            </summary>
+            <param name="element">The element to destroy.</param>
+            <returns><c>true</c> if the element was successfully destroyed or queued for destruction; <c>false</c> if the element was not found in the tracking container.</returns>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.IElementTreeFactory">
             <summary>
             Defines a factory interface for creating <see cref="T:EasyToolKit.Inspector.Editor.IElementTree"/> instances in the EasyToolKit inspector system.
@@ -2021,6 +2053,22 @@
         <member name="F:EasyToolKit.Inspector.Editor.ElementAttributeSource.ListPassToElement">
             <summary>
             Attribute is defined on a list/collection type/field but is passed to each element
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs">
+            <summary>
+            Provides data for the element destroyed event.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs.#ctor(EasyToolKit.Inspector.Editor.IElement)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs"/> class.
+            </summary>
+            <param name="element">The element that was destroyed.</param>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs.Element">
+            <summary>
+            Gets the element that was destroyed.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ElementListChangeType">
@@ -2128,6 +2176,16 @@
         <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.Updating">
             <summary>
             The element is currently being updated.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.PendingDestroy">
+            <summary>
+            The element is waiting to be destroyed.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementPhases.Destroyed">
+            <summary>
+            The element has been destroyed.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ElementRoles">
@@ -2394,11 +2452,6 @@
             </summary>
             <param name="index">The zero-based index of the element.</param>
             <returns>The full path of the element.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.IReadOnlyElementList`1.Update">
-            <summary>
-            Updates the collection.
-            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ICollectionChangeHandler">
             <summary>
@@ -3143,6 +3196,12 @@
             Refreshes all element state, forcing recreation of resolvers and children.
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Destroy">
+            <summary>
+            Destroys this element, disposing it and removing it from the factory's tracking container.
+            If the element is not in an idle state, the destruction is queued and executed later.
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Dispose">
             <summary>
             Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -3373,12 +3432,19 @@
             <param name="sharedContext">The shared context providing access to tree-level services.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="sharedContext"/> is null.</exception>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.RegisterElement``1(``0)">
+            <summary>
+            Registers the specified element to the factory's tracking container.
+            </summary>
+            <typeparam name="T">The type of element that implements <see cref="T:EasyToolKit.Inspector.Editor.IElement"/>.</typeparam>
+            <param name="element">The element to register.</param>
+            <returns>The same element instance after registration.</returns>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateValueElement(EasyToolKit.Inspector.Editor.IValueDefinition)">
             <summary>
             Creates a value element from the given value definition.
             </summary>
             <param name="definition">The value definition describing the value element to create.</param>
-            <param name="parent">The optional logical parent element in the code structure.</param>
             <returns>A new value element instance.</returns>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.CreateFieldElement(EasyToolKit.Inspector.Editor.IFieldDefinition,EasyToolKit.Inspector.Editor.IValueElement)">
@@ -3450,6 +3516,20 @@
             <param name="definition">The collection item definition describing the collection item to create.</param>
             <param name="parent">The optional logical parent collection element that contains this item.</param>
             <returns>A new collection item element instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.DestroyElement(EasyToolKit.Inspector.Editor.IElement)">
+            <summary>
+            Destroys the specified element, disposing it and removing it from the factory's tracking container.
+            If the element is not in an idle state, the destruction is queued and executed later.
+            </summary>
+            <param name="element">The element to destroy.</param>
+            <returns><c>true</c> if the element was successfully destroyed or queued for destruction; <c>false</c> if the element was not found in the tracking container or is already pending destruction.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementFactory.PerformDestroy(EasyToolKit.Inspector.Editor.IElement)">
+            <summary>
+            Performs the actual destruction of the specified element.
+            </summary>
+            <param name="element">The element to destroy.</param>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementTreeFactory">
             <summary>
@@ -3731,12 +3811,6 @@
             <param name="index">The zero-based index of the element.</param>
             <returns>The full path of the element.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementList`1.Update">
-            <summary>
-            Updates the element list by removing any elements whose Parent no longer matches OwnerElement.
-            This handles cases where elements have been moved or removed through external means.
-            </summary>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementList`1.GetEnumerator">
             <summary>
             Returns an enumerator that iterates through the collection.
@@ -3995,11 +4069,6 @@
             <param name="index">The zero-based index of the element.</param>
             <returns>The full path of the element.</returns>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ReadOnlyElementListBoxedWrapper`2.Update">
-            <summary>
-            Updates the collection.
-            </summary>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ReadOnlyElementListBoxedWrapper`2.GetEnumerator">
             <summary>
             Returns an enumerator that iterates through the collection.
@@ -4077,11 +4146,6 @@
             </summary>
             <param name="index">The zero-based index of the element.</param>
             <returns>The full path of the element.</returns>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ReadOnlyElementListWrapper`2.Update">
-            <summary>
-            Updates the collection.
-            </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ReadOnlyElementListWrapper`2.GetEnumerator">
             <summary>
