@@ -77,7 +77,10 @@ public class TestInner4
 [ShowOdinSerializedPropertiesInInspector]
 public class TestInspector : MonoBehaviour
 {
-    public TestInner1 inner1;
+    [ShowInInspector]
+    public TerrainDefinitionGroup Group;
+
+    // public TestInner1 inner1;
 //     [LabelText("地形定义表")]
 // #if UNITY_EDITOR
 //     [ValueDropdown(nameof(TerrainDefinitionItemDropdownList))]

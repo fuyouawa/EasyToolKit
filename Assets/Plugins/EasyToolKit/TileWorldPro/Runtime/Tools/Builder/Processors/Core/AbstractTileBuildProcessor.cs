@@ -14,6 +14,7 @@ namespace EasyToolKit.TileWorldPro
         RightLabelColorGetter = nameof(RightLabelColor))]
 #endif
     [MessageBox("@Help")]
+    [HideLabel]
     public abstract class AbstractTileBuildProcessor : ITileBuildProcessor
     {
         [LabelText("名称")]

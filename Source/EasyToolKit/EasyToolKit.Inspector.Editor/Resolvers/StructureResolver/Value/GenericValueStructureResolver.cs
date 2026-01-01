@@ -17,24 +17,34 @@ namespace EasyToolKit.Inspector.Editor
     {
         private readonly List<IElementDefinition> _definitions = new List<IElementDefinition>();
 
+        protected override bool CanResolveElement(IValueElement element)
+        {
+            return !element.ValueEntry.ValueType.IsInheritsFrom(typeof(Delegate));
+        }
+
         /// <summary>
         /// Initializes the resolver by discovering properties, fields, and methods using reflection
         /// </summary>
         protected override void Initialize()
         {
             var targetType = Element.ValueEntry.ValueType;
-            // Get all members, filter them, and order by priority
-            var memberInfos = targetType.GetAllMembers(BindingFlagsHelper.AllInstance).Where(Filter).OrderBy(Order);
+
+            var filteredMembers = targetType.GetAllMembers(BindingFlagsHelper.AllInstance).Where(Filter).ToList();
+
+            filteredMembers.Sort((a, b) => Order(a).CompareTo(Order(b)));
 
             var showOdinSerializersInInspector = targetType.IsDefined<ShowOdinSerializedPropertiesInInspector>(true);
-            foreach (var memberInfo in memberInfos)
+
+            // Use for loop instead of foreach to avoid enumerator allocation
+            for (int i = 0; i < filteredMembers.Count; i++)
             {
+                var memberInfo = filteredMembers[i];
                 var showInInspector = memberInfo.IsDefined<ShowInInspectorAttribute>();
 
                 if (memberInfo is FieldInfo fieldInfo)
                 {
                     // Handle auxiliary attributes
-                    if (fieldInfo.GetCustomAttributes().Any(attr => attr is AuxiliaryAttribute))
+                    if (fieldInfo.IsDefined<AuxiliaryAttribute>(true))
                     {
                         _definitions.Add(CreateDefinition(memberInfo));
                         continue;
@@ -75,7 +85,7 @@ namespace EasyToolKit.Inspector.Editor
                 else if (memberInfo is MethodInfo methodInfo)
                 {
                     // Only include methods with MethodAttribute
-                    if (!methodInfo.GetCustomAttributes().Any(attr => attr is MethodAttribute))
+                    if (!methodInfo.IsDefined<MethodAttribute>(true))
                         continue;
 
                     _definitions.Add(CreateDefinition(memberInfo));
@@ -127,8 +137,6 @@ namespace EasyToolKit.Inspector.Editor
         {
             collectionDefinition = null;
             var type = memberInfo.GetMemberType();
-            if (!type.IsGenericType)
-                return false;
 
             if (!type.IsImplementsOpenGenericType(typeof(IReadOnlyCollection<>)) &&
                 !type.IsImplementsOpenGenericType(typeof(ICollection<>)))
