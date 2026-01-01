@@ -73,19 +73,31 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
         public override bool PostProcessIfNeeded()
         {
-            var needed = base.PostProcessIfNeeded();
-            if (_logicalChildren != null)
+            // Begin batch mode to queue all events during post-processing
+            // This significantly improves performance for deeply nested element hierarchies
+            SharedContext.BeginBatchMode();
+            try
             {
-                foreach (var child in _logicalChildren)
+                var needed = base.PostProcessIfNeeded();
+                if (_logicalChildren != null)
                 {
-                    if (child.PostProcessIfNeeded())
+                    foreach (var child in _logicalChildren)
                     {
-                        needed = true;
+                        if (child.PostProcessIfNeeded())
+                        {
+                            needed = true;
+                        }
                     }
                 }
-            }
 
-            return needed;
+                return needed;
+            }
+            finally
+            {
+                // End batch mode and flush all queued events at once
+                // This triggers all ElementMovedEventArgs events in a single batch
+                SharedContext.EndBatchMode();
+            }
         }
 
         protected override void OnUpdate(bool forceUpdate)
@@ -112,6 +124,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             (_logicalChildren as IDisposable)?.Dispose();
+
+            // Release structure resolver back to pool
+            if (_structureResolver != null)
+            {
+                ResolverUtility.ReleaseResolver(_structureResolver);
+                _structureResolver = null;
+            }
 
             base.Dispose();
         }
@@ -145,6 +164,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         protected override void Refresh()
         {
             {
+                // Release old structure resolver before creating new one
+                if (_structureResolver != null)
+                {
+                    ResolverUtility.ReleaseResolver(_structureResolver);
+                    _structureResolver = null;
+                }
+
                 // Initialize structure resolver (before children)
                 var factory = SharedContext.GetResolverFactory<IStructureResolver>();
                 _structureResolver = factory.CreateResolver(this);

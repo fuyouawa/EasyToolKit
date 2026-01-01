@@ -168,6 +168,15 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
+        /// Clears the cached element definitions when the resolver is returned to the pool.
+        /// </summary>
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _definitions.Clear();
+        }
+
+        /// <summary>
         /// Orders members by priority for display in the inspector
         /// </summary>
         /// <param name="memberInfo">The member to order</param>

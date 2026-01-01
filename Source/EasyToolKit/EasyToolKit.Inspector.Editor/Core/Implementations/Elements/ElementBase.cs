@@ -56,8 +56,6 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             SharedContext = sharedContext ?? throw new ArgumentNullException(nameof(sharedContext));
 
             State = new ElementState(this);
-
-            SharedContext.RegisterEventHandler<ElementMovedEventArgs>(OnElementMoved);
         }
 
         /// <summary>
@@ -227,9 +225,26 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 _children.AfterElementMoved -= OnChildrenElementMoved;
             }
 
-            SharedContext.UnregisterEventHandler<ElementMovedEventArgs>(OnElementMoved);
-
             (_children as IDisposable)?.Dispose();
+
+            // Release resolvers back to pool
+            if (_attributeResolver != null)
+            {
+                ResolverUtility.ReleaseResolver(_attributeResolver);
+                _attributeResolver = null;
+            }
+
+            if (_drawerChainResolver != null)
+            {
+                ResolverUtility.ReleaseResolver(_drawerChainResolver);
+                _drawerChainResolver = null;
+            }
+
+            if (_postProcessorChainResolver != null)
+            {
+                ResolverUtility.ReleaseResolver(_postProcessorChainResolver);
+                _postProcessorChainResolver = null;
+            }
         }
 
         [NotNull]
@@ -251,12 +266,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
-        /// Handles the <see cref="ElementMovedEventArgs"/> event from the shared context.
-        /// Updates parent-child relationships when elements are moved in the tree.
+        /// Handles element moved events by updating parent-child relationships.
+        /// This method is called directly by <see cref="ElementList{TElement}"/> when elements are inserted or removed,
+        /// rather than through global event broadcasting to avoid O(n²) performance degradation.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
+        /// <param name="sender">The source of the event (typically the element list).</param>
         /// <param name="args">The event arguments containing element move details.</param>
-        private void OnElementMoved(object sender, ElementMovedEventArgs args)
+        internal void OnElementMoved(object sender, ElementMovedEventArgs args)
         {
             if (args.Timing == ElementMovedTiming.After)
             {
@@ -325,6 +341,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             {
+                // Release old attribute resolver before creating new one
+                if (_attributeResolver != null)
+                {
+                    ResolverUtility.ReleaseResolver(_attributeResolver);
+                    _attributeResolver = null;
+                }
+
                 // Initialize attribute resolver (after children)
                 var factory = SharedContext.GetResolverFactory<IAttributeResolver>();
                 _attributeResolver = factory.CreateResolver(this);
@@ -335,6 +358,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             {
+                // Release old drawer chain resolver before creating new one
+                if (_drawerChainResolver != null)
+                {
+                    ResolverUtility.ReleaseResolver(_drawerChainResolver);
+                    _drawerChainResolver = null;
+                }
+
                 // Initialize drawer chain resolver (after children)
                 var factory = SharedContext.GetResolverFactory<IDrawerChainResolver>();
                 _drawerChainResolver = factory.CreateResolver(this);
@@ -345,6 +375,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             }
 
             {
+                // Release old post processor chain resolver before creating new one
+                if (_postProcessorChainResolver != null)
+                {
+                    ResolverUtility.ReleaseResolver(_postProcessorChainResolver);
+                    _postProcessorChainResolver = null;
+                }
+
                 // Initialize post processor chain resolver (after children)
                 var factory = SharedContext.GetResolverFactory<IPostProcessorChainResolver>();
                 _postProcessorChainResolver = factory.CreateResolver(this);

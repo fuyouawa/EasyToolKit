@@ -101,35 +101,36 @@ namespace EasyToolKit.Inspector.Editor
             s_typeMatcher.AddMatchRule(GetMatchedType);
         }
 
-        /// <summary>
-        /// Gets element types for the specified inspector element.
-        /// Matches elements against the element's definition and properties.
-        /// </summary>
-        /// <param name="element">The inspector element to match.</param>
-        /// <returns>An enumerable of types, ordered by priority.</returns>
-        public static IEnumerable<Type> GetElementTypes(IElement element, Func<Type, bool> typeFilter = null, IList<Type[]> additionalMatchTypesList = null)
+        public static Type GetFirstElementType(IElement element, Func<Type, bool> typeFilter = null, IList<Type[]> additionalMatchTypesList = null)
         {
-            var resultsList = new List<TypeMatchResult[]>
+            var results = GetHandlerTypeResults(element, additionalMatchTypesList);
+            foreach (var result in results)
             {
-                TypeMatcher.GetMatches(Type.EmptyTypes),
-            };
-
-            // If the element is a value element, use its value type for matching
-          if (element is IValueElement valueElement)
-          {
-              resultsList.Add(TypeMatcher.GetMatches(valueElement.ValueEntry.ValueType));
-          }
-
-            if (additionalMatchTypesList != null)
-            {
-                foreach (var matchTypes in additionalMatchTypesList)
+                var type = result.MatchedType;
+                if (typeFilter != null)
                 {
-                    resultsList.Add(TypeMatcher.GetMatches(matchTypes));
+                    if (!typeFilter(type))
+                    {
+                        continue;
+                    }
                 }
+
+                if (!CanHandleElement(type, element))
+                {
+                    continue;
+                }
+
+                return type;
             }
 
+            return null;
+        }
+
+        public static IEnumerable<Type> GetHandlerTypes(IElement element, Func<Type, bool> typeFilter = null, IList<Type[]> additionalMatchTypesList = null)
+        {
+            var results = GetHandlerTypeResults(element, additionalMatchTypesList);
+
             var typeSet = new HashSet<Type>();
-            var results = TypeMatcher.GetMergedResults(resultsList);
             foreach (var result in results)
             {
                 var type = result.MatchedType;
@@ -153,6 +154,31 @@ namespace EasyToolKit.Inspector.Editor
 
                 yield return type;
             }
+        }
+
+        private static TypeMatchResult[] GetHandlerTypeResults(IElement element, IList<Type[]> additionalMatchTypesList = null)
+        {
+            var resultsList = new List<TypeMatchResult[]>
+            {
+                TypeMatcher.GetMatches(Type.EmptyTypes),
+            };
+
+            // If the element is a value element, use its value type for matching
+            if (element is IValueElement valueElement)
+            {
+                resultsList.Add(TypeMatcher.GetMatches(valueElement.ValueEntry.ValueType));
+            }
+
+            if (additionalMatchTypesList != null)
+            {
+                foreach (var matchTypes in additionalMatchTypesList)
+                {
+                    resultsList.Add(TypeMatcher.GetMatches(matchTypes));
+                }
+            }
+
+            var typeSet = new HashSet<Type>();
+            return TypeMatcher.GetMergedResults(resultsList);
         }
 
         /// <summary>

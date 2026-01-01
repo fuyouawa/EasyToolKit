@@ -38,5 +38,14 @@ namespace EasyToolKit.Inspector.Editor
             EnsureInitialize();
             return GetDrawerChain();
         }
+
+        /// <summary>
+        /// Resets the initialization flag when the resolver is returned to the pool.
+        /// </summary>
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _isInitialized = false;
+        }
     }
 }

@@ -27,6 +27,15 @@ namespace EasyToolKit.Inspector.Editor
             return _operation;
         }
 
+        /// <summary>
+        /// Clears the cached operation when the resolver is returned to the pool.
+        /// </summary>
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _operation = null;
+        }
+
         private static IValueOperation CreateOperationWrapper<TValue>(IValueElement element)
         {
             return new GenericValueOperation<TValue>(

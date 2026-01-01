@@ -174,6 +174,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             var postArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, element, index, element.Parent, _ownerElement, ElementMovedTiming.After);
             OnAfterElementChanged(postArgs);
+
+            // Directly call OnElementMoved for the inserted element and its old parent
+            // This avoids O(n²) complexity where all elements process all move events
+            DirectNotifyElementMoved(element, postArgs);
         }
 
         /// <summary>
@@ -197,6 +201,10 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             var postArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, element, index, _ownerElement, null, ElementMovedTiming.After);
             OnAfterElementChanged(postArgs);
+
+            // Directly call OnElementMoved for the removed element
+            // This avoids O(n²) complexity where all elements process all move events
+            DirectNotifyElementMoved(element, postArgs);
         }
 
         public virtual void Clear()
@@ -293,6 +301,28 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         protected virtual void OnAfterElementChanged(ElementMovedEventArgs args)
         {
             AfterElementMoved?.Invoke(_ownerElement, args);
+        }
+
+        /// <summary>
+        /// Directly notifies the moved element and its old parent about the move operation.
+        /// This targeted notification avoids the O(n²) complexity of broadcasting to all elements.
+        /// </summary>
+        /// <param name="element">The element that was moved.</param>
+        /// <param name="args">The event arguments containing move details.</param>
+        private void DirectNotifyElementMoved(TElement element, ElementMovedEventArgs args)
+        {
+            // Notify the moved element itself (it will update its Parent property)
+            if (element is ElementBase elementBase)
+            {
+                elementBase.OnElementMoved(this, args);
+            }
+
+            // Notify the old parent if different from current owner (it will remove from its Children)
+            var oldParent = args.OldParent;
+            if (oldParent != null && oldParent != _ownerElement && oldParent is ElementBase oldParentBase)
+            {
+                oldParentBase.OnElementMoved(this, args);
+            }
         }
 
         private void ValidateIndex(int index)

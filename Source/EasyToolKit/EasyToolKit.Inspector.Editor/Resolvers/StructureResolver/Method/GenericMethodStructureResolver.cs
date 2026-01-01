@@ -42,5 +42,15 @@ namespace EasyToolKit.Inspector.Editor
         {
             return _definitions.Cast<IElementDefinition>().ToArray();
         }
+
+        /// <summary>
+        /// Clears the cached parameter definitions and parameter infos when the resolver is returned to the pool.
+        /// </summary>
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _definitions.Clear();
+            _parameterInfos = null;
+        }
     }
 }

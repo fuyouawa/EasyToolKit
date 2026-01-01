@@ -26,7 +26,26 @@ namespace EasyToolKit.Inspector.Editor
 
         void UnregisterEventHandler<TEventArgs>(EventHandler<TEventArgs> handler) where TEventArgs : EventArgs;
 
-        void TriggerEvent(object sender, EventArgs eventArgs);
+        void TriggerEvent<TEventArgs>(object sender, TEventArgs eventArgs) where TEventArgs : EventArgs;
+
+        /// <summary>
+        /// Begins batch mode. Events will be queued until <see cref="EndBatchMode"/> is called.
+        /// Supports nested batching with reference counting. This is useful for operations that trigger
+        /// many events in succession, such as post-processing nested element hierarchies.
+        /// </summary>
+        void BeginBatchMode();
+
+        /// <summary>
+        /// Ends batch mode and flushes all queued events. If this is the outermost batch level,
+        /// all queued events will be triggered in order using optimized invocation.
+        /// </summary>
+        void EndBatchMode();
+
+        /// <summary>
+        /// Gets a value indicating whether events are currently being batched.
+        /// When true, events are queued and triggered in batch via <see cref="EndBatchMode"/>.
+        /// </summary>
+        bool IsInBatchMode { get; }
 
         /// <summary>
         /// Gets the resolver factory of the specified type from the internal dependency injection container.

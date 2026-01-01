@@ -34,16 +34,56 @@ public class TestDerive2 : TestBase
     public float DeriveFloat2;
 }
 
+[Serializable]
+public class TestInner1
+{
+    public TestInner2 inner2;
+    public TestInner2 inner21;
+    public TestInner2 inner22;
+    public TestInner2 inner23;
+}
+
+[Serializable]
+public class TestInner2
+{
+    public TestInner3 inner3;
+    public TestInner3 inner31;
+    public TestInner3 inner32;
+    public TestInner3 inner33;
+}
+
+[Serializable]
+public class TestInner3
+{
+    public TestInner4 inner4;
+    public TestInner4 inner41;
+    public TestInner4 inner42;
+    public TestInner4 inner43;
+}
+
+[Serializable]
+public class TestInner4
+{
+    public int int3;
+    public float float3;
+    public Vector2 vector2;
+    public string string1;
+    public string string2;
+    public string string3;
+    public string string4;
+}
+
 [EasyInspector]
 [ShowOdinSerializedPropertiesInInspector]
 public class TestInspector : MonoBehaviour
 {
-    [LabelText("地形定义表")]
-#if UNITY_EDITOR
-    [ValueDropdown(nameof(TerrainDefinitionItemDropdownList))]
-#endif
-    [MetroListDrawerSettings(ShowIndexLabel = false)]
-    public List<TerrainDefinitionNode> Nodes;
+    public TestInner1 inner1;
+//     [LabelText("地形定义表")]
+// #if UNITY_EDITOR
+//     [ValueDropdown(nameof(TerrainDefinitionItemDropdownList))]
+// #endif
+//     [MetroListDrawerSettings(ShowIndexLabel = false)]
+//     public List<TerrainDefinitionNode> Nodes;
 
     // public int jj;
     // public float bb;

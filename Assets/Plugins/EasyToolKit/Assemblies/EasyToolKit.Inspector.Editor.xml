@@ -24,14 +24,6 @@
             </summary>
             <param name="fallback">The fallback function to add.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.HandlerUtility.GetElementTypes(EasyToolKit.Inspector.Editor.IElement,System.Func{System.Type,System.Boolean},System.Collections.Generic.IList{System.Type[]})">
-            <summary>
-            Gets element types for the specified inspector element.
-            Matches elements against the element's definition and properties.
-            </summary>
-            <param name="element">The inspector element to match.</param>
-            <returns>An enumerable of types, ordered by priority.</returns>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.HandlerUtility.GetMatchedType(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
             <summary>
             Resolves generic type arguments for inspector elements that target partially open generic types.
@@ -2370,6 +2362,25 @@
             Gets a reference to the element tree that this context belongs to.
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElementSharedContext.BeginBatchMode">
+            <summary>
+            Begins batch mode. Events will be queued until <see cref="M:EasyToolKit.Inspector.Editor.IElementSharedContext.EndBatchMode"/> is called.
+            Supports nested batching with reference counting. This is useful for operations that trigger
+            many events in succession, such as post-processing nested element hierarchies.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElementSharedContext.EndBatchMode">
+            <summary>
+            Ends batch mode and flushes all queued events. If this is the outermost batch level,
+            all queued events will be triggered in order using optimized invocation.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.IElementSharedContext.IsInBatchMode">
+            <summary>
+            Gets a value indicating whether events are currently being batched.
+            When true, events are queued and triggered in batch via <see cref="M:EasyToolKit.Inspector.Editor.IElementSharedContext.EndBatchMode"/>.
+            </summary>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.IElementSharedContext.GetResolverFactory``1">
             <summary>
             Gets the resolver factory of the specified type from the internal dependency injection container.
@@ -3217,10 +3228,11 @@
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.OnElementMoved(System.Object,EasyToolKit.Inspector.Editor.ElementMovedEventArgs)">
             <summary>
-            Handles the <see cref="T:EasyToolKit.Inspector.Editor.ElementMovedEventArgs"/> event from the shared context.
-            Updates parent-child relationships when elements are moved in the tree.
+            Handles element moved events by updating parent-child relationships.
+            This method is called directly by <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ElementList`1"/> when elements are inserted or removed,
+            rather than through global event broadcasting to avoid O(n²) performance degradation.
             </summary>
-            <param name="sender">The source of the event.</param>
+            <param name="sender">The source of the event (typically the element list).</param>
             <param name="args">The event arguments containing element move details.</param>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementTree">
@@ -3835,6 +3847,14 @@
             </summary>
             <param name="args">The event arguments containing change details.</param>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementList`1.DirectNotifyElementMoved(`0,EasyToolKit.Inspector.Editor.ElementMovedEventArgs)">
+            <summary>
+            Directly notifies the moved element and its old parent about the move operation.
+            This targeted notification avoids the O(n²) complexity of broadcasting to all elements.
+            </summary>
+            <param name="element">The element that was moved.</param>
+            <param name="args">The event arguments containing move details.</param>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementListBoxedWrapper`2">
             <summary>
             Type-safe wrapper for an element list that boxes derived elements to base type.
@@ -3923,6 +3943,11 @@
             </summary>
             <param name="index">The zero-based index of the element to remove.</param>
         </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Implementations.QueuedEvent">
+            <summary>
+            Represents a queued event for batch processing.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext">
             <summary>
             Provides shared context for elements within an element tree. Each tree has a single instance
@@ -3947,6 +3972,43 @@
             Creates a default service container with all standard resolver factories registered.
             </summary>
             <returns>A new service container with default resolver factories registered.</returns>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext.IsInBatchMode">
+            <summary>
+            Gets a value indicating whether events are currently being batched.
+            When true, events are queued and will be triggered in batch when <see cref="M:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext.EndBatchMode"/> is called.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext.BeginBatchMode">
+            <summary>
+            Begins batch mode. Events will be queued until <see cref="M:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext.EndBatchMode"/> is called.
+            Supports nested batching with reference counting.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext.EndBatchMode">
+            <summary>
+            Ends batch mode and flushes all queued events. If this is the outermost batch level,
+            all queued events will be triggered in order.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext.InvokeEventHandler``1(System.Delegate,System.Object,``0)">
+            <summary>
+            Invokes an event handler with optimized casting instead of DynamicInvoke.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext.CompileInvoker(System.Type)">
+            <summary>
+            Compiles an optimized invoker delegate for the specified event args type using expression trees.
+            The compiled delegate avoids the overhead of DynamicInvoke and type-specific if-else chains.
+            </summary>
+            <param name="eventArgsType">The type of event arguments to compile an invoker for.</param>
+            <returns>A compiled delegate that invokes the handler with proper type casting.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementSharedContext.FlushEventQueue">
+            <summary>
+            Flushes all queued events and triggers them in order.
+            Uses compiled invokers for optimal performance without type-specific if-else chains.
+            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementState">
             <summary>
@@ -5011,6 +5073,26 @@
             Focuses purely on value structure without collection operations or change management.
             </summary>
         </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ResolverUtility.InterfacesCache">
+            <summary>
+            Cache for Type.GetInterfaces() to avoid repeated allocations.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ResolverUtility.RentResolver(System.Type)">
+            <summary>
+            Rents a resolver of the specified type from the object pool using compiled Expression for fast invocation.
+            </summary>
+            <param name="type">The type of resolver to rent.</param>
+            <returns>A rented resolver instance.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when type is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ResolverUtility.ReleaseResolver(EasyToolKit.Inspector.Editor.IResolver)">
+            <summary>
+            Releases a resolver back to the object pool using compiled Expression for fast invocation.
+            </summary>
+            <param name="resolver">The resolver to release.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when resolver is null.</exception>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.ListOperation`2">
             <summary>
             Operation for IList{T} collections in the inspector system.
@@ -5244,6 +5326,16 @@
             Override this method to perform initialization logic
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.OnRelease">
+            <summary>
+            Resets the initialization flag when the resolver is returned to the pool.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.DefaultAttributeResolver.OnRelease">
+            <summary>
+            Clears the cached attribute infos when the resolver is returned to the pool.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.DefaultDrawerChainResolver">
             <summary>
             Default implementation of drawer chain resolver for <see cref="!:InspectorProperty"/>
@@ -5254,6 +5346,11 @@
             Gets the drawer chain for the property by discovering and initializing appropriate drawers
             </summary>
             <returns>The drawer chain</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.DefaultDrawerChainResolver.OnRelease">
+            <summary>
+            Clears the cached drawer chain when the resolver is returned to the pool.
+            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.DrawerChainResolverBase">
             <summary>
@@ -5271,6 +5368,31 @@
             </summary>
             <returns>The drawer chain</returns>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.DrawerChainResolverBase.OnRelease">
+            <summary>
+            Resets the initialization flag when the resolver is returned to the pool.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionItemOperationResolver.OnRelease">
+            <summary>
+            Clears the cached operation when the resolver is returned to the pool.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericValueOperationResolver.OnRelease">
+            <summary>
+            Clears the cached operation when the resolver is returned to the pool.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.RootOperationResolver.OnRelease">
+            <summary>
+            Clears the cached operation when the resolver is returned to the pool.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ValueOperationResolverBase.OnRelease">
+            <summary>
+            Resets the initialization flag when the resolver is returned to the pool.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.DefaultPostProcessorChainResolver">
             <summary>
             Default implementation of post processor chain resolver for <see cref="T:EasyToolKit.Inspector.Editor.IElement"/>
@@ -5281,6 +5403,11 @@
             Gets the post processor chain for the element by discovering and initializing appropriate post processors
             </summary>
             <returns>The post processor chain</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.DefaultPostProcessorChainResolver.OnRelease">
+            <summary>
+            Clears the cached post processor chain when the resolver is returned to the pool.
+            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.PostProcessorChainResolverBase">
             <summary>
@@ -5298,9 +5425,24 @@
             </summary>
             <returns>The post processor chain</returns>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.PostProcessorChainResolverBase.OnRelease">
+            <summary>
+            Resets the initialization flag when the resolver is returned to the pool.
+            </summary>
+        </member>
         <member name="P:EasyToolKit.Inspector.Editor.CollectionStructureResolverBase`1.ItemType">
             <summary>
             Gets the type of elements in the collection
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionStructureResolverBase`1.OnRelease">
+            <summary>
+            Clears the cached collection item definitions when the resolver is returned to the pool.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericMethodStructureResolver.OnRelease">
+            <summary>
+            Clears the cached parameter definitions and parameter infos when the resolver is returned to the pool.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ValueStructureResolverBase">
@@ -5315,6 +5457,11 @@
             The value entry is lazily loaded and will attempt to update the property if not found initially.
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ValueStructureResolverBase`1.OnRelease">
+            <summary>
+            Releases the cached value entry when the resolver is returned to the pool.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.GenericValueStructureResolver">
             <summary>
             Generic value structure resolver implementation using reflection to discover elements.
@@ -5324,6 +5471,11 @@
         <member name="M:EasyToolKit.Inspector.Editor.GenericValueStructureResolver.Initialize">
             <summary>
             Initializes the resolver by discovering properties, fields, and methods using reflection
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.GenericValueStructureResolver.OnRelease">
+            <summary>
+            Clears the cached element definitions when the resolver is returned to the pool.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.GenericValueStructureResolver.Order(System.Reflection.MemberInfo)">

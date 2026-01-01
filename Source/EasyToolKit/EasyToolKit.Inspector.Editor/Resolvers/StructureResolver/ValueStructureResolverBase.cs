@@ -47,6 +47,15 @@ namespace EasyToolKit.Inspector.Editor
             }
         }
 
+        /// <summary>
+        /// Releases the cached value entry when the resolver is returned to the pool.
+        /// </summary>
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _valueEntry = null;
+        }
+
         protected override bool CanResolve(IElement element)
         {
             if (element is IValueElement valueElement)

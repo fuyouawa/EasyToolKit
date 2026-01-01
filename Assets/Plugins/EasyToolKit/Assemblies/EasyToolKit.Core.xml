@@ -1336,410 +1336,1095 @@
             <param name="value">List to check.</param>
             <param name="messageGetter">Function to generate error message only when assertion fails.</param>
         </member>
-        <member name="P:EasyToolKit.Core.PooledGameObject.Target">
-            <summary>
-            目标实例
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.PooledGameObject.OwningPool">
-            <summary>
-            所属池
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.PooledGameObject.ActiveLifetime">
-            <summary>
-            激活中对象的回收时间，小于0则无限制
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.PooledGameObject.IdleLifetime">
-            <summary>
-            空闲中对象的销毁时间，小于0则无限制
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.PooledGameObject.ElapsedTime">
-            <summary>
-            <para>获取当前计时器累计时间（单位：秒）。</para>
-            <para>- 激活状态时：表示已激活时长</para>
-            <para>- 空闲状态时：表示已空闲时长</para>
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Core.GameObjectPool">
-            <summary>
-            游戏对象池实现，用于管理游戏对象的对象池
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.GameObjectPool.TickInterval">
-            <summary>
-            更新间隔
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.GameObjectPool.Original">
-            <summary>
-            对象池中对象的原始预制体
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.GameObjectPool.Transform">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.GameObjectPool.OnTick(System.Single)">
-            <summary>
-            定时更新所有活跃对象的状态
-            </summary>
-            <param name="interval">更新间隔（秒）</param>
-        </member>
-        <member name="T:EasyToolKit.Core.GameObjectPoolManager">
-            <summary>
-            游戏对象池管理器，负责创建和管理多个游戏对象池
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.GameObjectPoolManager.CreatePool(System.String,UnityEngine.GameObject)">
-            <summary>
-            创建游戏对象池
-            </summary>
-            <param name="poolName">对象池名称</param>
-            <param name="original">原始预制体</param>
-            <exception cref="T:System.InvalidOperationException">当已存在同名同类型的池时抛出</exception>
-        </member>
-        <member name="M:EasyToolKit.Core.GameObjectPoolManager.GetPool(System.String)">
-            <summary>
-            获取指定名称和类型的游戏对象池
-            </summary>
-            <param name="poolName">对象池名称</param>
-            <returns>找到的对象池</returns>
-            <exception cref="T:System.InvalidOperationException">当找不到指定的对象池时抛出</exception>
-        </member>
-        <member name="M:EasyToolKit.Core.GameObjectPoolManager.CreateUnityObjectPool(System.String,UnityEngine.GameObject)">
-            <summary>
-            创建新的游戏对象池实例
-            </summary>
-            <param name="poolName">对象池名称</param>
-            <param name="original">原始预制体</param>
-            <returns></returns>
-        </member>
         <member name="T:EasyToolKit.Core.IGameObjectPool">
             <summary>
-            游戏对象池接口，将GameObject实例池化，并通过缓存Component引用，提供快速访问组件的接口
+            Defines a specialized object pool for Unity GameObject instances.
             </summary>
         </member>
         <member name="P:EasyToolKit.Core.IGameObjectPool.Original">
             <summary>
-            对象池中对象的原始预制体（用于实例化复制）
+            Gets the original prefab used for instantiation.
             </summary>
         </member>
         <member name="P:EasyToolKit.Core.IGameObjectPool.Transform">
             <summary>
-            对象池的Transform组件，用于管理池中对象的层级关系
+            Gets the Transform component for managing pooled object hierarchy.
             </summary>
         </member>
         <member name="M:EasyToolKit.Core.IGameObjectPool.GetLifetimeAccessor(UnityEngine.GameObject)">
             <summary>
-            获取指定对象的生命周期访问器（包含激活时长、空闲时长与计时器控制）
+            Gets the lifetime accessor for a specific pooled GameObject.
             </summary>
-            <param name="instance">池中 Unity 实例对象</param>
-            <returns>生命周期访问器接口</returns>
+            <param name="instance">The pooled GameObject instance.</param>
+            <returns>The lifetime accessor for the instance.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="instance"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">
+            Thrown when <paramref name="instance"/> is not managed by this pool.
+            </exception>
         </member>
-        <member name="M:EasyToolKit.Core.IGameObjectPool.Update(System.Single)">
+        <member name="M:EasyToolKit.Core.IGameObjectPool.TryGetLifetimeAccessor(UnityEngine.GameObject,EasyToolKit.Core.IPooledGameObjectLifetimeAccessor@)">
             <summary>
-            更新对象池状态，处理对象生命周期和回收
+            Tries to get the lifetime accessor for a specific pooled GameObject.
             </summary>
-            <param name="deltaTime">距离上次更新的时间间隔（秒）</param>
+            <param name="instance">The pooled GameObject instance.</param>
+            <param name="lifetimeAccessor">
+            When this method returns, contains the lifetime accessor if found;
+            otherwise, <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if the lifetime accessor was found;
+            <c>false</c> if the instance is not managed by this pool.
+            </returns>
         </member>
-        <member name="M:EasyToolKit.Core.IGameObjectPoolManager.CreatePool(System.String,UnityEngine.GameObject)">
+        <member name="M:EasyToolKit.Core.IGameObjectPool.Tick(System.Single)">
             <summary>
-            创建对象池
+            Updates the pool state, processing object lifetimes and recycling.
             </summary>
-            <param name="poolName">对象池名称</param>
-            <param name="original">用于实例化的原始游戏对象</param>
-            <exception cref="T:System.InvalidOperationException">当已存在同名同类型的池时抛出</exception>
+            <param name="deltaTime">Time elapsed since the last update (in seconds).</param>
+        </member>
+        <member name="T:EasyToolKit.Core.IGameObjectPoolManager">
+            <summary>
+            Defines a manager for creating and managing GameObject pools.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPoolManager.Transform">
+            <summary>
+            Gets the root Transform for pooled GameObject hierarchy.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IGameObjectPoolManager.GetPoolNames">
+            <summary>
+            Gets the names of all managed pools.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IGameObjectPoolManager.HasPool(System.String)">
+            <summary>
+            Determines whether a pool with the specified name exists.
+            </summary>
+            <param name="poolName">The name of the pool.</param>
+            <returns>
+            <c>true</c> if a pool with the specified name exists; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IGameObjectPoolManager.TryGetPool(System.String,EasyToolKit.Core.IGameObjectPool@)">
+            <summary>
+            Tries to get the pool with the specified name.
+            </summary>
+            <param name="poolName">The name of the pool.</param>
+            <param name="pool">
+            When this method returns, contains the pool if found;
+            otherwise, <c>null</c>.
+            </param>
+            <returns>
+            <c>true</c> if the pool was found; otherwise, <c>false</c>.
+            </returns>
         </member>
         <member name="M:EasyToolKit.Core.IGameObjectPoolManager.GetPool(System.String)">
             <summary>
-            获取指定名称和类型的对象池
+            Gets the pool with the specified name.
             </summary>
-            <param name="poolName">对象池名称</param>
-            <returns>找到的对象池</returns>
-            <exception cref="T:System.InvalidOperationException">当找不到指定的对象池时抛出</exception>
+            <param name="poolName">The name of the pool.</param>
+            <returns>The pool with the specified name.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when a pool with the specified name does not exist.
+            </exception>
         </member>
-        <member name="T:EasyToolKit.Core.IObjectPool">
+        <member name="M:EasyToolKit.Core.IGameObjectPoolManager.CreatePool(System.String,UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPoolDefinition)">
             <summary>
-            对象池接口，定义了对象池的基本操作和属性
+            Creates a new GameObject pool with the specified name and original prefab.
             </summary>
+            <param name="poolName">The name of the pool.</param>
+            <param name="original">The original prefab for instantiation.</param>
+            <param name="definition">The definition for the pool. If null, default configuration is used.</param>
+            <returns>The created pool.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when <paramref name="poolName"/> or <paramref name="original"/> is null.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when a pool with the specified name already exists.
+            </exception>
         </member>
-        <member name="P:EasyToolKit.Core.IObjectPool.Name">
+        <member name="T:EasyToolKit.Core.IGameObjectPoolTicker">
             <summary>
-            对象池的名称
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.IObjectPool.ObjectType">
-            <summary>
-            对象池中存储的对象类型
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.IObjectPool.Capacity">
-            <summary>
-            对象池的容量上限
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.IObjectPool.Release(System.Object)">
-            <summary>
-            将对象实例释放回对象池
-            </summary>
-            <param name="instance">要释放的对象实例</param>
-            <returns>
-            如果对象成功释放回对象池，则返回true；
-            如果对象已经处于空闲状态或不属于此对象池，则返回false
-            </returns>
-            <exception cref="T:System.ArgumentNullException">当实例为null时抛出</exception>
-            <exception cref="T:System.InvalidOperationException">当因其他原因无法释放对象时抛出</exception>
-        </member>
-        <member name="M:EasyToolKit.Core.IObjectPool.Remove(System.Object)">
-            <summary>
-            从对象池中移除对象实例
-            </summary>
-            <param name="instance">要移除的对象实例</param>
-            <returns>
-            如果对象成功从对象池中移除，则返回true；
-            如果对象已经不在对象池中，则返回false
-            </returns>
-            <exception cref="T:System.ArgumentNullException">当实例为null时抛出</exception>
-            <exception cref="T:System.InvalidOperationException">当因其他原因无法移除对象时抛出</exception>
-        </member>
-        <member name="T:EasyToolKit.Core.IObjectPoolExtension">
-            <summary>
-            对象池扩展方法类，提供了一系列便捷的对象池操作方法
+            Defines a mechanism for updating GameObject pools at regular intervals.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Core.IObjectPoolExtension.OnRent``1(``0,System.Action{System.Object})">
+        <member name="M:EasyToolKit.Core.IGameObjectPoolTicker.Tick(System.Single)">
             <summary>
-            添加对象生成时的回调函数
+            Updates all managed pools, processing object lifetimes and recycling.
             </summary>
-            <typeparam name="TObjectPool">对象池类型</typeparam>
-            <param name="objectPool">目标对象池</param>
-            <param name="callback">对象生成时的回调函数</param>
-            <returns>对象池实例，支持链式调用</returns>
+            <param name="deltaTime">Time elapsed since the last update (in seconds).</param>
         </member>
-        <member name="M:EasyToolKit.Core.IObjectPoolExtension.OnRelease``1(``0,System.Action{System.Object})">
+        <member name="T:EasyToolKit.Core.IObjectPool`1">
             <summary>
-            添加对象回收时的回调函数
+            Defines a pool for managing C# object instances with type safety.
             </summary>
-            <typeparam name="TObjectPool">对象池类型</typeparam>
-            <param name="objectPool">目标对象池</param>
-            <param name="callback">对象回收时的回调函数</param>
-            <returns>对象池实例，支持链式调用</returns>
+            <typeparam name="T">The type of objects managed by this pool.</typeparam>
         </member>
-        <member name="M:EasyToolKit.Core.IObjectPoolExtension.SetCapacity``1(``0,System.Int32)">
+        <member name="P:EasyToolKit.Core.IObjectPool`1.ObjectType">
             <summary>
-            设置对象池的容量
+            Gets the type of objects managed by this pool.
             </summary>
-            <typeparam name="TObjectPool">对象池类型</typeparam>
-            <param name="objectPool">目标对象池</param>
-            <param name="newCapacity">新的容量值</param>
-            <returns>对象池实例，支持链式调用</returns>
         </member>
-        <member name="M:EasyToolKit.Core.IObjectPoolExtension.Rent``1(EasyToolKit.Core.IObjectPool)">
+        <member name="M:EasyToolKit.Core.IObjectPool`1.AddRentCallback(System.Action{`0})">
             <summary>
-            从对象池中获取指定类型的对象
+            Adds a callback to be invoked when an object is rented from the pool.
             </summary>
-            <typeparam name="T">期望的对象类型</typeparam>
-            <param name="objectPool">目标对象池</param>
-            <returns>获取到的对象</returns>
-            <exception cref="T:System.ArgumentException">当期望的类型与对象池中的对象类型不兼容时抛出</exception>
+            <param name="callback">The callback to invoke.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPool`1.AddReleaseCallback(System.Action{`0})">
+            <summary>
+            Adds a callback to be invoked when an object is released back to the pool.
+            </summary>
+            <param name="callback">The callback to invoke.</param>
         </member>
         <member name="T:EasyToolKit.Core.IObjectPoolManager">
             <summary>
-            对象池管理器接口，负责管理多个对象池的创建和访问
+            Manages a collection of C# object pools.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Core.IObjectPoolManager.CreatePool(System.String,System.Type)">
+        <member name="M:EasyToolKit.Core.IObjectPoolManager.CreatePool``1(System.String,EasyToolKit.Core.IObjectPoolDefinition{``0})">
             <summary>
-            创建对象池
+            Creates a new object pool with the specified name and definition.
             </summary>
-            <param name="poolName">对象池名称</param>
-            <param name="objectType">对象池中存储的对象类型</param>
-            <exception cref="T:System.InvalidOperationException">当已存在同名同类型的池时抛出</exception>
+            <typeparam name="T">The type of objects to pool.</typeparam>
+            <param name="poolName">The unique name for the pool.</param>
+            <param name="definition">The definition for the pool. If null, default configuration is used.</param>
+            <returns>The created pool.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when a pool with the specified name already exists.
+            </exception>
         </member>
-        <member name="M:EasyToolKit.Core.IObjectPoolManager.GetPool(System.String,System.Type)">
+        <member name="M:EasyToolKit.Core.IObjectPoolManager.TryGetPool``1(System.String,EasyToolKit.Core.IObjectPool{``0}@)">
             <summary>
-            获取指定名称和类型的对象池
+            Attempts to get the pool with the specified name.
             </summary>
-            <param name="poolName">对象池名称</param>
-            <param name="objectType">对象池中存储的对象类型</param>
-            <returns>找到的对象池</returns>
-            <exception cref="T:System.InvalidOperationException">当找不到指定的对象池时抛出</exception>
+            <typeparam name="T">The type of objects in the pool.</typeparam>
+            <param name="poolName">The name of the pool to retrieve.</param>
+            <param name="pool">
+            When this method returns, contains the pool if found;
+            otherwise, <c>null</c>.
+            </param>
+            <returns><c>true</c> if the pool was found; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.IPool`1">
+            <summary>
+            Defines a generic object pool with type-safe operations.
+            </summary>
+            <typeparam name="T">The type of objects managed by this pool.</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Core.IPool`1.Name">
+            <summary>
+            Gets the name of this pool.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPool`1.ActiveCount">
+            <summary>
+            Gets the number of objects currently in use (rented).
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPool`1.IdleCount">
+            <summary>
+            Gets the number of idle objects available for rent.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPool`1.Capacity">
+            <summary>
+            Gets or sets the maximum capacity of this pool.
+            </summary>
+            <remarks>
+            Values less than zero indicate unlimited capacity.
+            When setting a new capacity, if the new value is less than the current active count,
+            an <see cref="T:System.InvalidOperationException"/> will be thrown.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when setting a capacity less than the current active count.
+            </exception>
+        </member>
+        <member name="M:EasyToolKit.Core.IPool`1.Rent">
+            <summary>
+            Rents an object from the pool.
+            </summary>
+            <returns>An object instance from the pool.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the pool has reached its capacity limit and no idle objects are available.
+            </exception>
+        </member>
+        <member name="M:EasyToolKit.Core.IPool`1.Release(`0)">
+            <summary>
+            Releases an object back to the pool.
+            </summary>
+            <param name="instance">The object instance to release.</param>
+            <returns>
+            <c>true</c> if the object was successfully released;
+            <c>false</c> if the object was already idle or does not belong to this pool.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="instance"/> is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.IPool`1.Remove(`0)">
+            <summary>
+            Permanently removes an object from the pool.
+            </summary>
+            <param name="instance">The object instance to remove.</param>
+            <returns>
+            <c>true</c> if the object was successfully removed;
+            <c>false</c> if the object was not found in this pool.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="instance"/> is null.</exception>
         </member>
         <member name="T:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor">
             <summary>
-            <para>提供对池化游戏对象的生命周期属性（激活/空闲时长、当前计时器）的访问接口。</para>
-            <para>主要用于内部机制获取或设置如下属性：</para>
-            <para>- 激活状态下的最大存活时间（超时将回收）</para>
-            <para>- 空闲状态下的最大存活时间（超时将销毁）</para>
-            <para>- 当前计时器（根据状态不同表示距离回收或销毁的时间）</para>
+            Provides access to lifetime properties of a pooled GameObject.
             </summary>
+            <remarks>
+            This interface allows reading and modifying:
+            <list type="bullet">
+              <item>Maximum lifetime in active state (objects exceeding this will be recycled).</item>
+              <item>Maximum lifetime in idle state (objects exceeding this will be destroyed).</item>
+              <item>Current elapsed time (represents time until recycling or destruction based on state).</item>
+            </list>
+            </remarks>
         </member>
         <member name="P:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor.ActiveLifetime">
             <summary>
-            激活中对象的回收时间，小于0则无限制
+            Gets or sets the maximum lifetime for the active state.
+            Objects exceeding this time will be recycled back to the pool.
+            Values less than zero indicate unlimited lifetime.
             </summary>
         </member>
         <member name="P:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor.IdleLifetime">
             <summary>
-            空闲中对象的销毁时间，小于0则无限制
+            Gets or sets the maximum lifetime for the idle state.
+            Objects exceeding this time will be destroyed.
+            Values less than zero indicate unlimited lifetime.
             </summary>
         </member>
         <member name="P:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor.ElapsedTime">
             <summary>
-            <para>获取当前计时器累计时间（单位：秒）。</para>
-            <para>- 激活状态时：表示已激活时长</para>
-            <para>- 空闲状态时：表示已空闲时长</para>
+            Gets or sets the elapsed time since the last state change.
+            <list type="bullet">
+              <item>When in active state: represents time until recycling.</item>
+              <item>When in idle state: represents time until destruction.</item>
+            </list>
             </summary>
-        </member>
-        <member name="T:EasyToolKit.Core.IPooledUnityObjectLifetimeAccessorExtension">
-            <summary>
-            为 <see cref="T:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor"/> 提供链式调用的扩展方法。
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.IPooledUnityObjectLifetimeAccessorExtension.SetActiveLifetime(EasyToolKit.Core.IPooledGameObjectLifetimeAccessor,System.Single)">
-            <summary>
-            设置激活状态下的最大存活时间。
-            </summary>
-            <param name="accessor">生命周期访问器。</param>
-            <param name="lifetime">存活时间（秒），小于0表示无限制。</param>
-            <returns>配置后的访问器实例，支持链式调用。</returns>
-        </member>
-        <member name="M:EasyToolKit.Core.IPooledUnityObjectLifetimeAccessorExtension.SetIdleLifetime(EasyToolKit.Core.IPooledGameObjectLifetimeAccessor,System.Single)">
-            <summary>
-            设置空闲状态下的最大存活时间。
-            </summary>
-            <param name="accessor">生命周期访问器。</param>
-            <param name="lifetime">存活时间（秒），小于0表示无限制。</param>
-            <returns>配置后的访问器实例，支持链式调用。</returns>
-        </member>
-        <member name="M:EasyToolKit.Core.IPooledUnityObjectLifetimeAccessorExtension.SetElapsedTime(EasyToolKit.Core.IPooledGameObjectLifetimeAccessor,System.Single)">
-            <summary>
-            设置当前计时器累计时间。
-            </summary>
-            <param name="accessor">生命周期访问器。</param>
-            <param name="elapsedTime">累计时间（秒）。</param>
-            <returns>配置后的访问器实例，支持链式调用。</returns>
         </member>
         <member name="T:EasyToolKit.Core.IPoolItem">
-             <summary>
-             对象元素接口。
-            
-             <para>若该接口由普通类实现，则在对象被取出/回收时会直接调用该实例的方法。</para>
-             <para>若由 Unity 组件实现，则在对象池操作时，会调用该 GameObject 上所有实现该接口的组件。</para>
-             <para>该接口为可选实现，仅在需要监听池事件时实现。</para>
-             </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.IPoolItem.Rent(EasyToolKit.Core.IObjectPool)">
             <summary>
-            对象从对象池中被取出时调用。
+            Interface for pooled objects that need to be notified of rent and release events.
             </summary>
-            <param name="owningPool">所属的对象池</param>
+            <remarks>
+            <para>If implemented by a regular class, the instance's methods will be called directly
+            when the object is rented or released.</para>
+            <para>If implemented by a Unity component, all components implementing this interface
+            on the GameObject will be notified.</para>
+            <para>This interface is optional; implement it only when you need to listen to pool events.</para>
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.IPoolItem.Release(EasyToolKit.Core.IObjectPool)">
+        <member name="M:EasyToolKit.Core.IPoolItem.Rent``1(EasyToolKit.Core.IPool{``0})">
             <summary>
-            对象被回收到对象池中时调用。
+            Called when the object is rented from the pool.
             </summary>
-            <param name="owningPool">所属的对象池</param>
+            <typeparam name="T">The type of objects in the pool.</typeparam>
+            <param name="owningPool">The pool that owns this object.</param>
         </member>
-        <member name="T:EasyToolKit.Core.ObjectPool">
+        <member name="M:EasyToolKit.Core.IPoolItem.Release``1(EasyToolKit.Core.IPool{``0})">
             <summary>
-            通用对象池实现，用于管理实现了IPooledObject接口的对象
+            Called when the object is released back to the pool.
             </summary>
+            <typeparam name="T">The type of objects in the pool.</typeparam>
+            <param name="owningPool">The pool that owns this object.</param>
         </member>
-        <member name="T:EasyToolKit.Core.ObjectPoolBase">
+        <member name="T:EasyToolKit.Core.IPoolManager`1">
             <summary>
-            对象池的基类，实现了IObjectPool接口的基本功能
+            Manages a collection of named pools.
+            </summary>
+            <typeparam name="T">The type of pool instances managed.</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Core.IPoolManager`1.PoolCount">
+            <summary>
+            Gets the number of pools managed by this manager.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Core.ObjectPoolBase.EasyToolKit#Core#IObjectPool#Name">
+        <member name="M:EasyToolKit.Core.IPoolManager`1.HasPool(System.String)">
+            <summary>
+            Determines whether a pool with the specified name exists.
+            </summary>
+            <param name="poolName">The name of the pool to check.</param>
+            <returns><c>true</c> if a pool with the specified name exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IPoolManager`1.TryGetPool(System.String,`0@)">
+            <summary>
+            Attempts to get the pool with the specified name.
+            </summary>
+            <param name="poolName">The name of the pool to retrieve.</param>
+            <param name="pool">
+            When this method returns, contains the pool if found;
+            otherwise, <c>null</c>.
+            </param>
+            <returns><c>true</c> if the pool was found; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IPoolManager`1.GetPoolNames">
+            <summary>
+            Gets all pool names managed by this instance.
+            </summary>
+            <returns>A collection of pool names.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.IPoolManagerFactory">
+            <summary>
+            Defines a factory for creating pool manager instances.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IPoolManagerFactory.CreateObjectPoolManager">
+            <summary>
+            Creates a new C# object pool manager.
+            </summary>
+            <returns>A new object pool manager instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IPoolManagerFactory.CreateGameObjectPoolManager(UnityEngine.Transform)">
+            <summary>
+            Creates a new GameObject pool manager.
+            </summary>
+            <param name="rootTransform">The Transform under which pool root nodes are organized.</param>
+            <returns>A new GameObject pool manager instance.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.IGameObjectPoolConfiguration">
+            <summary>
+            Configuration interface for creating GameObject pool definitions.
+            Provides mutable builder properties for GameObject pool configuration.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPoolConfiguration.DefaultActiveLifetime">
+            <summary>
+            Gets or sets the default maximum lifetime for active objects.
+            Objects exceeding this time will be recycled back to the pool.
+            Values less than zero indicate unlimited lifetime.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPoolConfiguration.DefaultIdleLifetime">
+            <summary>
+            Gets or sets the default maximum lifetime for idle objects.
+            Objects exceeding this time will be destroyed.
+            Values less than zero indicate unlimited lifetime.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPoolConfiguration.TickInterval">
+            <summary>
+            Gets or sets the interval between tick updates (in seconds).
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IGameObjectPoolConfiguration.CreateDefinition">
+            <summary>
+            Creates a new <see cref="T:EasyToolKit.Core.IGameObjectPoolDefinition"/> instance based on the current configuration.
+            </summary>
+            <returns>A new GameObject pool definition instance.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.IObjectPoolConfiguration`1">
+            <summary>
+            Configuration interface for creating C# object pool definitions.
+            Provides mutable builder properties for object pool configuration.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Core.IObjectPoolConfiguration`1.Factory">
+            <summary>
+            Gets or sets the factory function for creating new instances.
+            If <c>null</c>, uses the default constructor.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IObjectPoolConfiguration`1.CreateDefinition">
+            <summary>
+            Creates a new <see cref="T:EasyToolKit.Core.IObjectPoolDefinition`1"/> instance based on the current configuration.
+            </summary>
+            <returns>A new object pool definition instance.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.IPoolConfiguration">
+            <summary>
+            Base configuration interface for creating pool definitions.
+            Provides mutable builder properties for pool configuration.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPoolConfiguration.InitialCapacity">
+            <summary>
+            Gets or sets the initial capacity of the pool.
+            The pool will preallocate this number of instances upon creation.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPoolConfiguration.MaxCapacity">
+            <summary>
+            Gets or sets the maximum capacity of the pool.
+            Values less than zero indicate unlimited capacity.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPoolConfiguration.CallPoolItemCallbacks">
+            <summary>
+            Gets or sets whether to call <see cref="T:EasyToolKit.Core.IPoolItem"/> callbacks on pooled objects.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IGameObjectPoolDefinition">
+            <summary>
+            Defines the configuration for GameObject pools.
+            Contains immutable data for pool initialization.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPoolDefinition.DefaultActiveLifetime">
+            <summary>
+            Gets the default maximum lifetime for active objects.
+            Objects exceeding this time will be recycled back to the pool.
+            Values less than zero indicate unlimited lifetime.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPoolDefinition.DefaultIdleLifetime">
+            <summary>
+            Gets the default maximum lifetime for idle objects.
+            Objects exceeding this time will be destroyed.
+            Values less than zero indicate unlimited lifetime.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IGameObjectPoolDefinition.TickInterval">
+            <summary>
+            Gets the interval between tick updates (in seconds).
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IObjectPoolDefinition`1">
+            <summary>
+            Defines the configuration for C# object pools.
+            Contains immutable data for pool initialization.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Core.IObjectPoolDefinition`1.Factory">
+            <summary>
+            Gets the factory function for creating new instances.
+            If <c>null</c>, uses the default constructor.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.IPoolDefinition">
+            <summary>
+            Defines the base interface for pool definitions.
+            Contains immutable configuration data for pool initialization.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPoolDefinition.InitialCapacity">
+            <summary>
+            Gets the initial capacity of the pool.
+            The pool will preallocate this number of instances upon creation.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPoolDefinition.MaxCapacity">
+            <summary>
+            Gets the maximum capacity of the pool.
+            Values less than zero indicate unlimited capacity.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.IPoolDefinition.CallPoolItemCallbacks">
+            <summary>
+            Gets whether to call <see cref="T:EasyToolKit.Core.IPoolItem"/> callbacks on pooled objects.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.GameObjectPoolConfigurationExtensions">
+            <summary>
+            Extension methods for <see cref="T:EasyToolKit.Core.IGameObjectPoolConfiguration"/> interfaces.
+            Provides fluent API methods for configuring GameObject pool properties.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectPoolConfigurationExtensions.WithActiveLifetime``1(``0,System.Single)">
+            <summary>
+            Sets the default maximum lifetime for active objects.
+            </summary>
+            <typeparam name="TConfiguration">The GameObject pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="lifetime">The lifetime in seconds. Use -1 for unlimited.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectPoolConfigurationExtensions.WithIdleLifetime``1(``0,System.Single)">
+            <summary>
+            Sets the default maximum lifetime for idle objects.
+            </summary>
+            <typeparam name="TConfiguration">The GameObject pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="lifetime">The lifetime in seconds. Use -1 for unlimited.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectPoolConfigurationExtensions.WithTickInterval``1(``0,System.Single)">
+            <summary>
+            Sets the interval between tick updates.
+            </summary>
+            <typeparam name="TConfiguration">The GameObject pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="interval">The tick interval in seconds.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.GameObjectPoolConfigurationExtensions.WithUnlimitedLifetime``1(``0)">
+            <summary>
+            Configures the pool for unlimited lifetime (no automatic recycling).
+            </summary>
+            <typeparam name="TConfiguration">The GameObject pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.ObjectPoolConfigurationExtensions">
+            <summary>
+            Extension methods for <see cref="T:EasyToolKit.Core.IObjectPoolConfiguration`1"/> interfaces.
+            Provides fluent API methods for configuring object pool properties.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolConfigurationExtensions.WithFactory``2(``1,System.Func{``0})">
+            <summary>
+            Sets the factory function for creating new instances.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+            <typeparam name="TConfiguration">The object pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="factory">The factory function to use.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.ObjectPoolConfigurationExtensions.WithDefaultConstructor``2(``1)">
+            <summary>
+            Configures the pool to use default constructor for creating instances.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+            <typeparam name="TConfiguration">The object pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.PoolConfigurationExtensions">
+            <summary>
+            Extension methods for <see cref="T:EasyToolKit.Core.IPoolConfiguration"/> interfaces.
+            Provides fluent API methods for configuring pool properties.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.PoolConfigurationExtensions.WithInitialCapacity``1(``0,System.Int32)">
+            <summary>
+            Sets the initial capacity of the pool.
+            </summary>
+            <typeparam name="TConfiguration">The pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="initialCapacity">The initial capacity to set.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.PoolConfigurationExtensions.WithMaxCapacity``1(``0,System.Int32)">
+            <summary>
+            Sets the maximum capacity of the pool.
+            </summary>
+            <typeparam name="TConfiguration">The pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="maxCapacity">The maximum capacity to set. Use -1 for unlimited.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.PoolConfigurationExtensions.WithCallbacks``1(``0,System.Boolean)">
+            <summary>
+            Configures whether to call <see cref="T:EasyToolKit.Core.IPoolItem"/> callbacks.
+            </summary>
+            <typeparam name="TConfiguration">The pool configuration type.</typeparam>
+            <param name="configuration">The configuration instance.</param>
+            <param name="callCallbacks">Whether to call pool item callbacks.</param>
+            <returns>The configuration instance for method chaining.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.PoolExtensions">
+            <summary>
+            Extension methods for pool interfaces.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.PoolExtensions.OnRent``1(EasyToolKit.Core.IObjectPool{``0},System.Action{``0})">
+            <summary>
+            Adds a callback to be invoked when an object is rented from the pool.
+            </summary>
+            <typeparam name="T">The type of objects in the pool.</typeparam>
+            <param name="pool">The object pool.</param>
+            <param name="callback">The callback to invoke.</param>
+            <returns>The same pool instance for fluent chaining.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="pool"/> or <paramref name="callback"/> is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.PoolExtensions.OnRelease``1(EasyToolKit.Core.IObjectPool{``0},System.Action{``0})">
+            <summary>
+            Adds a callback to be invoked when an object is released back to the pool.
+            </summary>
+            <typeparam name="T">The type of objects in the pool.</typeparam>
+            <param name="pool">The object pool.</param>
+            <param name="callback">The callback to invoke.</param>
+            <returns>The same pool instance for fluent chaining.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="pool"/> or <paramref name="callback"/> is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.PoolExtensions.SetCapacity``1(EasyToolKit.Core.IPool{``0},System.Int32)">
+            <summary>
+            Sets the capacity of a pool.
+            </summary>
+            <typeparam name="T">The type of objects in the pool.</typeparam>
+            <param name="pool">The pool.</param>
+            <param name="capacity">The new capacity value.</param>
+            <returns>The same pool instance for fluent chaining.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="pool"/> is null.</exception>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration">
+            <summary>
+            Configuration implementation for creating GameObject pool definitions.
+            Provides mutable builder properties and validation for GameObject pools.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.InitialCapacity">
             <inheritdoc />
         </member>
-        <member name="P:EasyToolKit.Core.ObjectPoolBase.EasyToolKit#Core#IObjectPool#ObjectType">
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.MaxCapacity">
             <inheritdoc />
         </member>
-        <member name="P:EasyToolKit.Core.ObjectPoolBase.Name">
-            <summary>
-            对象池的名称
-            </summary>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.CallPoolItemCallbacks">
+            <inheritdoc />
         </member>
-        <member name="P:EasyToolKit.Core.ObjectPoolBase.ObjectType">
-            <summary>
-            对象池中存储的对象类型
-            </summary>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.DefaultActiveLifetime">
+            <inheritdoc />
         </member>
-        <member name="P:EasyToolKit.Core.ObjectPoolBase.Capacity">
-            <summary>
-            <para>对象池的容量上限。设置小于0表示无限制</para>
-            <para>当设置新的容量时，如果新容量小于当前活跃对象数量，将抛出异常。</para>
-            </summary>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.DefaultIdleLifetime">
+            <inheritdoc />
         </member>
-        <member name="M:EasyToolKit.Core.ObjectPoolBase.RentFromIdle">
-            <summary>
-            从空闲对象池中获取一个对象实例
-            </summary>
-            <returns>获取到的对象实例</returns>
-            <exception cref="T:System.InvalidOperationException">当无法获取对象实例时抛出</exception>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.TickInterval">
+            <inheritdoc />
         </member>
-        <member name="M:EasyToolKit.Core.ObjectPoolBase.ReleaseToIdle(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.ProcessDefinition(EasyToolKit.Core.Implementations.GameObjectPoolDefinition)">
             <summary>
-            将对象实例释放回空闲对象池
+            Processes the configuration and validates all properties before creating the definition.
             </summary>
-            <param name="instance">要释放的对象实例</param>
-            <returns>如果对象成功释放，则返回true；如果对象已经在空闲池中或不属于此对象池，则返回false</returns>
-            <exception cref="T:System.InvalidOperationException">当因其他原因无法释放对象时抛出</exception>
-        </member>
-        <member name="M:EasyToolKit.Core.ObjectPoolBase.RemoveFromActive(System.Object)">
-            <summary>
-            从活跃对象列表中移除对象实例
-            </summary>
-            <param name="instance">要移除的对象实例</param>
-            <returns>如果对象成功移除，则返回true；如果对象不在活跃列表中，则返回false</returns>
-            <exception cref="T:System.InvalidOperationException">当因其他原因无法移除对象时抛出</exception>
-        </member>
-        <member name="M:EasyToolKit.Core.ObjectPoolBase.ShrinkIdleObjectsToFitCapacity(System.Int32)">
-            <summary>
-            根据容量限制收缩
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Core.ObjectPoolManager">
-            <summary>
-            对象池管理器，负责创建和管理多个对象池
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.ObjectPoolManager.PoolType">
-            <summary>
-            对象池类型，用于创建对象池实例
-            </summary>
+            <param name="definition">The definition to process.</param>
             <exception cref="T:System.InvalidOperationException">
-            当value为null、是抽象类或接口、没有继承自IObjectPool时抛出
+            Thrown when validation fails.
             </exception>
         </member>
-        <member name="M:EasyToolKit.Core.ObjectPoolManager.CreatePool(System.String,System.Type)">
-            <summary>
-            创建对象池
-            </summary>
-            <param name="poolName">对象池名称</param>
-            <param name="objectType">对象池中存储的对象类型</param>
-            <exception cref="T:System.InvalidOperationException">当已存在同名同类型的池时抛出</exception>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.CreateDefinition">
+            <inheritdoc />
         </member>
-        <member name="M:EasyToolKit.Core.ObjectPoolManager.GetPool(System.String,System.Type)">
+        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1">
             <summary>
-            获取指定名称和类型的对象池
+            Configuration implementation for creating object pool definitions.
+            Provides mutable builder properties and validation for object pools.
             </summary>
-            <param name="poolName">对象池名称</param>
-            <param name="objectType">对象池中存储的对象类型</param>
-            <returns>找到的对象池</returns>
-            <exception cref="T:System.InvalidOperationException">当找不到指定的对象池时抛出</exception>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
         </member>
-        <member name="M:EasyToolKit.Core.ObjectPoolManager.CreateObjectPool(System.String,System.Type)">
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.InitialCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.MaxCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.CallPoolItemCallbacks">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.Factory">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.ProcessDefinition(EasyToolKit.Core.Implementations.ObjectPoolDefinition{`0})">
             <summary>
-            创建新的对象池实例
+            Processes the configuration and validates all properties before creating the definition.
             </summary>
-            <param name="poolName">对象池名称</param>
-            <param name="objectType">对象池中存储的对象类型</param>
-            <returns></returns>
+            <param name="definition">The definition to process.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when validation fails (e.g., InitialCapacity is negative or exceeds MaxCapacity).
+            </exception>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.CreateDefinition">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PoolBase`1">
+            <summary>
+            Abstract base class for object pool implementations.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PoolBase`1"/> class.
+            </summary>
+            <param name="name">The name of the pool.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="name"/> is null.</exception>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.ActiveCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.IdleCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.TotalCount">
+            <summary>
+            Gets the total number of objects managed by this pool.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.Capacity">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Rent">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Release(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.RentFromIdle">
+            <summary>
+            Rents an instance from the idle collection or creates a new one.
+            </summary>
+            <returns>The rented instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.ReleaseToIdle(`0)">
+            <summary>
+            Releases an instance back to the idle collection.
+            </summary>
+            <param name="instance">The instance to release.</param>
+            <returns><c>true</c> if successfully released; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.RemoveFromActive(`0)">
+            <summary>
+            Removes an instance from the active collection.
+            </summary>
+            <param name="instance">The instance to remove.</param>
+            <returns><c>true</c> if successfully removed; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.ShrinkIdleObjectsToFitCapacity(System.Int32)">
+            <summary>
+            Shrinks the idle collection to fit within the capacity constraint.
+            </summary>
+            <param name="shrinkCount">The number of idle instances to remove.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.OnRent(`0)">
+            <summary>
+            Called when an object is rented from the pool.
+            Override to provide custom behavior.
+            </summary>
+            <param name="instance">The rented instance.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.OnRelease(`0)">
+            <summary>
+            Called when an object is released back to the pool.
+            Override to provide custom behavior.
+            </summary>
+            <param name="instance">The released instance.</param>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolDefinition">
+            <summary>
+            Implementation of <see cref="T:EasyToolKit.Core.IGameObjectPoolDefinition"/>.
+            Stores immutable configuration data for GameObject pools.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.InitialCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.MaxCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.CallPoolItemCallbacks">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.DefaultActiveLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.DefaultIdleLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.TickInterval">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1">
+            <summary>
+            Implementation of <see cref="T:EasyToolKit.Core.IObjectPoolDefinition`1"/>.
+            Stores immutable configuration data for object pools.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.InitialCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.MaxCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.CallPoolItemCallbacks">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.Factory">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.GameObjectPool">
+            <summary>
+            Implementation of a specialized object pool for Unity GameObject instances.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.#ctor(System.String,UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPoolDefinition,UnityEngine.Transform)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.GameObjectPool"/> class.
+            </summary>
+            <param name="name">The name of the pool.</param>
+            <param name="original">The original prefab for instantiation.</param>
+            <param name="definition">The definition for the pool.</param>
+            <param name="rootTransform">The root Transform for pooled objects.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when <paramref name="name"/>, <paramref name="original"/>, or <paramref name="definition"/> is null.
+            </exception>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.Original">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.Transform">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.ActiveCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.IdleCount">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.RentFromIdle">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.ReleaseToIdle(UnityEngine.GameObject)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.RemoveFromActive(UnityEngine.GameObject)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.ShrinkIdleObjectsToFitCapacity(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.GetLifetimeAccessor(UnityEngine.GameObject)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.TryGetLifetimeAccessor(UnityEngine.GameObject,EasyToolKit.Core.IPooledGameObjectLifetimeAccessor@)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.Tick(System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolManager">
+            <summary>
+            Implementation of a manager for creating and managing GameObject pools.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.#ctor(UnityEngine.Transform)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.GameObjectPoolManager"/> class.
+            </summary>
+            <param name="rootTransform">The root Transform for pooled GameObject hierarchy.</param>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolManager.Transform">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.GetPoolNames">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.HasPool(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.TryGetPool(System.String,EasyToolKit.Core.IGameObjectPool@)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.GetPool(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.CreatePool(System.String,UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPoolDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.Tick(System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectInfo">
+            <summary>
+            Provides metadata about a pooled GameObject instance.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PooledGameObjectInfo.#ctor(UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPool)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PooledGameObjectInfo"/> class.
+            </summary>
+            <param name="target">The target GameObject instance.</param>
+            <param name="owningPool">The pool that owns this instance.</param>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.Target">
+            <summary>
+            Gets the target GameObject instance.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.OwningPool">
+            <summary>
+            Gets the pool that owns this instance.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.ActiveLifetime">
+            <summary>
+            Gets or sets the maximum lifetime for the active state.
+            Objects exceeding this time will be recycled back to the pool.
+            Values less than zero indicate unlimited lifetime.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.IdleLifetime">
+            <summary>
+            Gets or sets the maximum lifetime for the idle state.
+            Objects exceeding this time will be destroyed.
+            Values less than zero indicate unlimited lifetime.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.ElapsedTime">
+            <summary>
+            Gets or sets the elapsed time since the last state change.
+            <list type="bullet">
+              <item>When <see cref="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State"/> is <see cref="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Active"/>: represents active duration.</item>
+              <item>When <see cref="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State"/> is <see cref="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Idle"/>: represents idle duration.</item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State">
+            <summary>
+            Gets or sets the current state of the pooled GameObject.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor">
+            <summary>
+            Implementation of <see cref="T:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor"/> that provides
+            access to pooled GameObject lifetime properties via getter and setter delegates.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.#ctor(System.Func{System.Single},System.Action{System.Single},System.Func{System.Single},System.Action{System.Single},System.Func{System.Single},System.Action{System.Single})">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor"/> class.
+            </summary>
+            <param name="activeLifetimeGetter">Function to get the active lifetime value.</param>
+            <param name="activeLifetimeSetter">Action to set the active lifetime value.</param>
+            <param name="idleLifetimeGetter">Function to get the idle lifetime value.</param>
+            <param name="idleLifetimeSetter">Action to set the idle lifetime value.</param>
+            <param name="elapsedTimeGetter">Function to get the elapsed time value.</param>
+            <param name="elapsedTimeSetter">Action to set the elapsed time value.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when any of the parameters is null.
+            </exception>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.ActiveLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.IdleLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.ElapsedTime">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectState">
+            <summary>
+            Defines the state of a pooled GameObject.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Active">
+            <summary>
+            The GameObject is currently in use (rented from the pool).
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Idle">
+            <summary>
+            The GameObject is idle (available for rent).
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.ObjectPool`1">
+            <summary>
+            Implementation of a generic object pool for C# objects.
+            </summary>
+            <typeparam name="T">The type of objects to pool.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.#ctor(System.String,EasyToolKit.Core.IObjectPoolDefinition{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ObjectPool`1"/> class.
+            </summary>
+            <param name="name">The name of the pool.</param>
+            <param name="definition">The definition for the pool.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when definition is null.</exception>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.ActiveCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.IdleCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.ObjectType">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.AddRentCallback(System.Action{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.AddReleaseCallback(System.Action{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.RentFromIdle">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.ReleaseToIdle(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.RemoveFromActive(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.ShrinkIdleObjectsToFitCapacity(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.OnRent(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.OnRelease(`0)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolManager">
+            <summary>
+            Default implementation of <see cref="T:EasyToolKit.Core.IObjectPoolManager"/>.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolManager.PoolCount">
+            <summary>
+            Gets the number of pools managed by this manager.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ObjectPoolManager"/> class
+            with the default factory.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.CreatePool``1(System.String,EasyToolKit.Core.IObjectPoolDefinition{``0})">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.TryGetPool``1(System.String,EasyToolKit.Core.IObjectPool{``0}@)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PoolConfigurator">
+            <summary>
+            Factory implementation for creating pool configuration instances.
+            Provides methods to create configurations for all supported pool types.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolConfigurator.ObjectPool``1">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolConfigurator.GameObjectPool">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolManagerFactory.CreateObjectPoolManager">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolManagerFactory.CreateGameObjectPoolManager(UnityEngine.Transform)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.IPoolConfigurator">
+            <summary>
+            Factory interface for creating pool configuration instances.
+            Provides methods to create configurations for all supported pool types.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.IPoolConfigurator.ObjectPool``1">
+            <summary>
+            Creates a new <see cref="T:EasyToolKit.Core.IObjectPoolConfiguration`1"/> instance for C# object pools.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+            <returns>A new object pool configuration instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IPoolConfigurator.GameObjectPool">
+            <summary>
+            Creates a new <see cref="T:EasyToolKit.Core.IGameObjectPoolConfiguration"/> instance for GameObject pools.
+            </summary>
+            <returns>A new GameObject pool configuration instance.</returns>
         </member>
         <member name="T:EasyToolKit.Core.BinaryInputArchive">
             <summary>

@@ -37,5 +37,14 @@ namespace EasyToolKit.Inspector.Editor
         {
             return _chain;
         }
+
+        /// <summary>
+        /// Clears the cached post processor chain when the resolver is returned to the pool.
+        /// </summary>
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _chain = null;
+        }
     }
 }

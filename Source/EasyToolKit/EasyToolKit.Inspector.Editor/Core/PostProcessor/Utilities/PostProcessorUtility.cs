@@ -16,7 +16,7 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>A collection of post processor types</returns>
         public static IEnumerable<Type> GetPostProcessorTypes(IElement element)
         {
-            return HandlerUtility.GetElementTypes(element, type => type.IsInheritsFrom<IPostProcessor>());
+            return HandlerUtility.GetHandlerTypes(element, type => type.IsInheritsFrom<IPostProcessor>());
         }
     }
 }

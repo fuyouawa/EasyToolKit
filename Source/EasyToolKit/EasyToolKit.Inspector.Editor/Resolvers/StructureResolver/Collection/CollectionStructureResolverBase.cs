@@ -38,6 +38,15 @@ namespace EasyToolKit.Inspector.Editor
             return _definitions;
         }
 
+        /// <summary>
+        /// Clears the cached collection item definitions when the resolver is returned to the pool.
+        /// </summary>
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _definitions = null;
+        }
+
         protected abstract int CalculateChildCount();
     }
 }

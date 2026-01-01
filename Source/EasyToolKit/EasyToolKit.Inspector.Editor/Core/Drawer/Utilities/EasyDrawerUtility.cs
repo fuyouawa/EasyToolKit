@@ -20,7 +20,7 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            return HandlerUtility.GetElementTypes(element, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
+            return HandlerUtility.GetHandlerTypes(element, type => type.IsInheritsFrom<IEasyDrawer>(), additionalMatchTypesList);
         }
 
         public static string GetKey(IEasyDrawer drawer)

@@ -1,6 +1,8 @@
-﻿namespace EasyToolKit.Inspector.Editor
+﻿using EasyToolKit.Core;
+
+namespace EasyToolKit.Inspector.Editor
 {
-    public interface IResolver : IHandler
+    public interface IResolver : IHandler, IPoolItem
     {
     }
 }

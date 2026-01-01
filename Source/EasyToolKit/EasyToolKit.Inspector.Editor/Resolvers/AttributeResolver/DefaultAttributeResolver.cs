@@ -59,5 +59,14 @@ namespace EasyToolKit.Inspector.Editor
         {
             return _attributeInfos;
         }
+
+        /// <summary>
+        /// Clears the cached attribute infos when the resolver is returned to the pool.
+        /// </summary>
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _attributeInfos = null;
+        }
     }
 }

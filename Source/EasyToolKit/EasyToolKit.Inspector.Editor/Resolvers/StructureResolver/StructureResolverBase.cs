@@ -8,6 +8,12 @@
         {
         }
 
+        protected override void OnRelease()
+        {
+            base.OnRelease();
+            _isInitialized = false;
+        }
+
         protected abstract IElementDefinition[] GetChildrenDefinitions();
 
         private void EnsureInitialize()

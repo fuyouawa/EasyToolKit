@@ -1,4 +1,6 @@
-﻿namespace EasyToolKit.Inspector.Editor
+﻿using EasyToolKit.Core;
+
+namespace EasyToolKit.Inspector.Editor
 {
     public class ResolverBase : IResolver
     {
@@ -14,9 +16,28 @@
 
         protected virtual bool CanResolve(IElement element) => true;
 
+        protected virtual void OnRent()
+        {
+        }
+
+        protected virtual void OnRelease()
+        {
+            _element = null;
+        }
+
         bool IHandler.CanHandle(IElement element)
         {
             return CanResolve(element);
+        }
+
+        void IPoolItem.Rent<T>(IPool<T> owningPool)
+        {
+            OnRent();
+        }
+
+        void IPoolItem.Release<T>(IPool<T> owningPool)
+        {
+            OnRelease();
         }
     }
 }
