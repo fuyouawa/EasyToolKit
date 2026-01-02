@@ -2244,19 +2244,15 @@
             <para>This interface is optional; implement it only when you need to listen to pool events.</para>
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.IPoolItem.Rent``1(EasyToolKit.Core.IPool{``0})">
+        <member name="M:EasyToolKit.Core.IPoolItem.Rent">
             <summary>
             Called when the object is rented from the pool.
             </summary>
-            <typeparam name="T">The type of objects in the pool.</typeparam>
-            <param name="owningPool">The pool that owns this object.</param>
         </member>
-        <member name="M:EasyToolKit.Core.IPoolItem.Release``1(EasyToolKit.Core.IPool{``0})">
+        <member name="M:EasyToolKit.Core.IPoolItem.Release">
             <summary>
             Called when the object is released back to the pool.
             </summary>
-            <typeparam name="T">The type of objects in the pool.</typeparam>
-            <param name="owningPool">The pool that owns this object.</param>
         </member>
         <member name="T:EasyToolKit.Core.IPoolManager`1">
             <summary>

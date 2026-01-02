@@ -610,6 +610,44 @@
             <param name="assemblyFlags">The <see cref="T:Sirenix.Utilities.AssemblyCategory" /> filters.</param>
             <returns>Types from the current AppDomain with the specified <see cref="T:Sirenix.Utilities.AssemblyCategory" /> filters.</returns>
         </member>
+        <member name="T:EasyToolKit.Core.Editor.EditorPoolUtility.PoolFastGetter`1">
+            <summary>
+            Fast getter for object pools with generic type constraint.
+            </summary>
+            <typeparam name="T">The type of object in the pool (must be class and have parameterless constructor).</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EditorPoolUtility.Rent``1">
+            <summary>
+            Rents an object of the specified type from the object pool.
+            </summary>
+            <typeparam name="T">The type of object to rent (must be class and have parameterless constructor).</typeparam>
+            <returns>A rented object instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EditorPoolUtility.Release``1(``0)">
+            <summary>
+            Releases an object back to the object pool.
+            </summary>
+            <typeparam name="T">The type of object to release.</typeparam>
+            <param name="instance">The object instance to release.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when instance is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EditorPoolUtility.RentAs``1(System.Type)">
+            <summary>
+            Rents an object as the specified interface type from the object pool using compiled Expression for fast invocation.
+            </summary>
+            <typeparam name="TInterface">The interface type to return.</typeparam>
+            <param name="type">The concrete type implementing the interface (must have parameterless constructor).</param>
+            <returns>A rented object instance cast to the interface type.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when type is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Core.Editor.EditorPoolUtility.ReleaseAs``1(``0)">
+            <summary>
+            Releases an object back to the object pool using compiled Expression for fast invocation.
+            </summary>
+            <typeparam name="TInterface">The interface type of the object.</typeparam>
+            <param name="instance">The object instance to release.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when instance is null.</exception>
+        </member>
         <member name="T:EasyToolKit.Core.Editor.UnityEditorEventUtility">
             <summary>
             This class contains utility methods for subscribing to various UnityEditor events reliably and safely across all Odin-supported versions of Unity.

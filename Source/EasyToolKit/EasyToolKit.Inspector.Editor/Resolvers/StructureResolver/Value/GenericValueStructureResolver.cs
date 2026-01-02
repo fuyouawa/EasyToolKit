@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using EasyToolKit.Core;
 using EasyToolKit.ThirdParty.OdinSerializer;
+using UnityEngine;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -41,6 +42,11 @@ namespace EasyToolKit.Inspector.Editor
             {
                 var memberInfo = filteredMembers[i];
                 var showInInspector = memberInfo.IsDefined<ShowInInspectorAttribute>();
+                var hideInInspector = memberInfo.IsDefined<HideInInspector>();
+                if (hideInInspector)
+                {
+                    continue;
+                }
 
                 if (memberInfo is FieldInfo fieldInfo)
                 {

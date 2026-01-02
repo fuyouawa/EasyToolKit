@@ -671,6 +671,14 @@
             </summary>
             <returns>An array of attributes.</returns>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElement.TryGetAttributeInfo(System.Attribute,EasyToolKit.Inspector.Editor.ElementAttributeInfo@)">
+            <summary>
+            Tries to get the attribute info for the specified attribute instance.
+            </summary>
+            <param name="attribute">The attribute to find.</param>
+            <param name="attributeInfo">When this method returns, contains the attribute info if found; otherwise, null.</param>
+            <returns>true if the attribute info was found; otherwise, false.</returns>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.IElement.Request(System.Action,System.Boolean)">
             <summary>
             Requests an action that modifies the tree structure to be executed safely.
@@ -686,6 +694,27 @@
             Use this method for operations that add, remove, or move elements to prevent modifying
             the tree during the drawing phase, which would cause rendering inconsistencies.
             </remarks>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElement.Send(System.String,System.Object)">
+            <summary>
+            Sends a message to this element, invoking all marked message handlers.
+            </summary>
+            <param name="messageName">The name of the message to send.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <returns>
+            True if at least one handler was found and invoked, false otherwise.
+            </returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IElement.Send``1(System.String,System.Object)">
+            <summary>
+            Sends a message and returns the last handler's result.
+            </summary>
+            <typeparam name="TResult">The expected return type.</typeparam>
+            <param name="messageName">The name of the message to send.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <returns>
+            The return value from the last handler, or default if no handlers were invoked.
+            </returns>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.IElement.RequestRefresh">
             <summary>
@@ -2052,15 +2081,21 @@
             Provides data for the element destroyed event.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs.#ctor(EasyToolKit.Inspector.Editor.IElement)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs"/> class.
-            </summary>
-            <param name="element">The element that was destroyed.</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs.Element">
             <summary>
             Gets the element that was destroyed.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs.Create(EasyToolKit.Inspector.Editor.IElement)">
+            <summary>
+            Creates a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs"/> class from the object pool.
+            </summary>
+            <param name="element">The element that was destroyed.</param>
+            <returns>A new or reused instance of <see cref="T:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs"/>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementDestroyedEventArgs.Dispose">
+            <summary>
+            Releases the instance back to the object pool.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ElementListChangeType">
@@ -2093,17 +2128,6 @@
             The event is raised after the element is moved.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.#ctor(EasyToolKit.Inspector.Editor.ElementListChangeType,EasyToolKit.Inspector.Editor.IElement,System.Int32,EasyToolKit.Inspector.Editor.IElement,EasyToolKit.Inspector.Editor.IElement,EasyToolKit.Inspector.Editor.ElementMovedTiming)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ElementMovedEventArgs"/> class.
-            </summary>
-            <param name="changeType">The type of change that occurred.</param>
-            <param name="element">The element that was moved.</param>
-            <param name="index">The zero-based index at which the change occurred.</param>
-            <param name="oldParent">The previous parent element of the element.</param>
-            <param name="newParent">The new parent element of the element (null if removed).</param>
-            <param name="timing">The timing of the event (pre or post).</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.ChangeType">
             <summary>
             Gets the type of change that occurred.
@@ -2132,6 +2156,23 @@
         <member name="P:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.Timing">
             <summary>
             Gets the timing of the event (pre or post).
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.Create(EasyToolKit.Inspector.Editor.ElementListChangeType,EasyToolKit.Inspector.Editor.IElement,System.Int32,EasyToolKit.Inspector.Editor.IElement,EasyToolKit.Inspector.Editor.IElement,EasyToolKit.Inspector.Editor.ElementMovedTiming)">
+            <summary>
+            Creates a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ElementMovedEventArgs"/> class from the object pool.
+            </summary>
+            <param name="changeType">The type of change that occurred.</param>
+            <param name="element">The element that was moved.</param>
+            <param name="index">The zero-based index at which the change occurred.</param>
+            <param name="oldParent">The previous parent element of the element.</param>
+            <param name="newParent">The new parent element of the element (null if removed).</param>
+            <param name="timing">The timing of the event (pre or post).</param>
+            <returns>A new or reused instance of <see cref="T:EasyToolKit.Inspector.Editor.ElementMovedEventArgs"/>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ElementMovedEventArgs.Dispose">
+            <summary>
+            Releases the instance back to the object pool.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ElementPhases">
@@ -2595,16 +2636,6 @@
             Provides data for collection change events.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.#ctor(System.Int32,EasyToolKit.Inspector.Editor.CollectionChangeType,System.Object,System.Nullable{System.Int32},EasyToolKit.Inspector.Editor.CollectionChangedTiming)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs"/> class.
-            </summary>
-            <param name="targetIndex">The zero-based index of the target object.</param>
-            <param name="changeType">The type of collection change.</param>
-            <param name="item">The item involved in the change operation.</param>
-            <param name="itemIndex">The zero-based index of the item in the collection (if applicable).</param>
-            <param name="timing">The timing of the event (pre or post).</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.TargetIndex">
             <summary>
             Gets the zero-based index of the target object.
@@ -2630,6 +2661,22 @@
             Gets the timing of the event (pre or post).
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.Create(System.Int32,EasyToolKit.Inspector.Editor.CollectionChangeType,System.Object,System.Nullable{System.Int32},EasyToolKit.Inspector.Editor.CollectionChangedTiming)">
+            <summary>
+            Creates a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs"/> class from the object pool.
+            </summary>
+            <param name="targetIndex">The zero-based index of the target object.</param>
+            <param name="changeType">The type of collection change.</param>
+            <param name="item">The item involved in the change operation.</param>
+            <param name="itemIndex">The zero-based index of the item in the collection (if applicable).</param>
+            <param name="timing">The timing of the event (pre or post).</param>
+            <returns>A new or reused instance of <see cref="T:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs"/>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.CollectionChangedEventArgs.Dispose">
+            <summary>
+            Releases the instance back to the object pool.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.ValueChangedTiming">
             <summary>
             Specifies the timing of the value changed event.
@@ -2651,15 +2698,6 @@
             <see cref="!:IValueEntry&lt;TValue&gt;.AfterValueChanged"/> events.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.ValueChangedEventArgs.#ctor(System.Int32,System.Object,System.Object,EasyToolKit.Inspector.Editor.ValueChangedTiming)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ValueChangedEventArgs"/> class.
-            </summary>
-            <param name="targetIndex">The zero-based index of the target object.</param>
-            <param name="oldValue">The previous value.</param>
-            <param name="newValue">The new value.</param>
-            <param name="timing">The timing of the event (pre or post).</param>
-        </member>
         <member name="P:EasyToolKit.Inspector.Editor.ValueChangedEventArgs.TargetIndex">
             <summary>
             Gets the zero-based index of the target object.
@@ -2678,6 +2716,37 @@
         <member name="P:EasyToolKit.Inspector.Editor.ValueChangedEventArgs.Timing">
             <summary>
             Gets the timing of the event (pre or post).
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ValueChangedEventArgs.Create(System.Int32,System.Object,System.Object,EasyToolKit.Inspector.Editor.ValueChangedTiming)">
+            <summary>
+            Creates a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ValueChangedEventArgs"/> class from the object pool.
+            </summary>
+            <param name="targetIndex">The zero-based index of the target object.</param>
+            <param name="oldValue">The previous value.</param>
+            <param name="newValue">The new value.</param>
+            <param name="timing">The timing of the event (pre or post).</param>
+            <returns>A new or reused instance of <see cref="T:EasyToolKit.Inspector.Editor.ValueChangedEventArgs"/>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ValueChangedEventArgs.Dispose">
+            <summary>
+            Releases the instance back to the object pool.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ValueDirtyEventArgs">
+            <summary>
+            Provides data for the value dirty event.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ValueDirtyEventArgs.Create">
+            <summary>
+            Creates a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.ValueDirtyEventArgs"/> class from the object pool.
+            </summary>
+            <returns>A new or reused instance of <see cref="T:EasyToolKit.Inspector.Editor.ValueDirtyEventArgs"/>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ValueDirtyEventArgs.Dispose">
+            <summary>
+            Releases the instance back to the object pool.
             </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ValueEntryState">
@@ -3190,11 +3259,30 @@
             </summary>
             <returns>An array of element attribute infos.</returns>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.TryGetAttributeInfo(System.Attribute,EasyToolKit.Inspector.Editor.ElementAttributeInfo@)">
+            <summary>
+            Tries to get the attribute info for the specified attribute instance.
+            </summary>
+            <param name="attribute">The attribute to find.</param>
+            <param name="attributeInfo">When this method returns, contains the attribute info if found; otherwise, null.</param>
+            <returns>true if the attribute info was found; otherwise, false.</returns>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.GetDrawerChain">
             <summary>
             Gets the drawer chain for rendering this element.
             </summary>
             <returns>The drawer chain containing all applicable drawers.</returns>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Implementations.ElementBase.MessageDispatcher">
+            <summary>
+            Gets the message dispatcher for this element (lazy initialization).
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Send(System.String,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Send``1(System.String,System.Object)">
+            <inheritdoc/>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.Draw(UnityEngine.GUIContent)">
             <summary>
@@ -3226,13 +3314,12 @@
             <param name="sender">The source of the event.</param>
             <param name="args">The event arguments containing element move details.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.OnElementMoved(System.Object,EasyToolKit.Inspector.Editor.ElementMovedEventArgs)">
+        <member name="M:EasyToolKit.Inspector.Editor.Implementations.ElementBase.OnElementMoved(EasyToolKit.Inspector.Editor.ElementMovedEventArgs)">
             <summary>
             Handles element moved events by updating parent-child relationships.
             This method is called directly by <see cref="T:EasyToolKit.Inspector.Editor.Implementations.ElementList`1"/> when elements are inserted or removed,
             rather than through global event broadcasting to avoid O(n²) performance degradation.
             </summary>
-            <param name="sender">The source of the event (typically the element list).</param>
             <param name="args">The event arguments containing element move details.</param>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.Implementations.ElementTree">
@@ -4837,6 +4924,16 @@
             <param name="element">The element to create the resolver for</param>
             <returns>The created post processor chain resolver</returns>
         </member>
+        <member name="T:EasyToolKit.Inspector.Editor.ElementMessageNames">
+            <summary>
+            Centralized message name constants for element-related messages.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.ElementMessageNames.ElementMoved">
+            <summary>
+            Message sent when an element is moved in the element tree.
+            </summary>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.IValueOperation">
             <summary>
             Unified value operation interface to replace IValueAccessor
@@ -5034,6 +5131,19 @@
             Interface for creating post processor chain resolver instances
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IAttributeResolver.GetAttributeInfos">
+            <summary>
+            Gets all attribute infos for this element.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IAttributeResolver.TryGetAttributeInfo(System.Attribute,EasyToolKit.Inspector.Editor.ElementAttributeInfo@)">
+            <summary>
+            Tries to get the attribute info for the specified attribute instance.
+            </summary>
+            <param name="attribute">The attribute to find.</param>
+            <param name="attributeInfo">When this method returns, contains the attribute info if found; otherwise, null.</param>
+            <returns>true if the attribute info was found; otherwise, false.</returns>
+        </member>
         <member name="T:EasyToolKit.Inspector.Editor.ICollectionStructureResolver">
             <summary>
             Interface for resolving collection properties in the inspector.
@@ -5092,6 +5202,14 @@
             </summary>
             <param name="resolver">The resolver to release.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when resolver is null.</exception>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.ResolverUtility.GetResolverType(EasyToolKit.Inspector.Editor.IElement,System.Type)">
+            <summary>
+            Gets the resolver type from an element based on the resolver base type.
+            </summary>
+            <param name="element">The element to search for resolver type.</param>
+            <param name="resolverBaseType">The base resolver type (interface or class).</param>
+            <returns>The first resolver type found, or null if none found.</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ListOperation`2">
             <summary>
@@ -5326,9 +5444,22 @@
             Override this method to perform initialization logic
             </summary>
         </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.BuildAttributeCache">
+            <summary>
+            Builds a cache dictionary for fast attribute lookup.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.TryGetAttributeInfo(System.Attribute,EasyToolKit.Inspector.Editor.ElementAttributeInfo@)">
+            <summary>
+            Tries to get the attribute info for the specified attribute instance.
+            </summary>
+            <param name="attribute">The attribute to find.</param>
+            <param name="attributeInfo">When this method returns, contains the attribute info if found; otherwise, null.</param>
+            <returns>true if the attribute info was found; otherwise, false.</returns>
+        </member>
         <member name="M:EasyToolKit.Inspector.Editor.AttributeResolverBase.OnRelease">
             <summary>
-            Resets the initialization flag when the resolver is returned to the pool.
+            Resets the initialization flag and clears the cache when the resolver is returned to the pool.
             </summary>
         </member>
         <member name="M:EasyToolKit.Inspector.Editor.DefaultAttributeResolver.OnRelease">
@@ -5491,6 +5622,225 @@
             </summary>
             <param name="memberInfo">The member to filter</param>
             <returns>True if the member should be included in the inspector</returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.IMessageDispatcher">
+            <summary>
+            Defines a message dispatcher that invokes handlers based on message names.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IMessageDispatcher.Dispatch(System.String,System.Object)">
+            <summary>
+            Dispatches a message to all registered handlers.
+            </summary>
+            <param name="messageName">The message name to dispatch.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <returns>
+            True if at least one handler was invoked, false otherwise.
+            </returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.IMessageDispatcher`1">
+            <summary>
+            Defines a typed message dispatcher that returns the last handler's result.
+            </summary>
+            <typeparam name="TResult">The return type of handlers.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.IMessageDispatcher`1.Dispatch(System.String,System.Object)">
+            <summary>
+            Dispatches a message and returns the last handler's result.
+            </summary>
+            <param name="messageName">The message name to dispatch.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <returns>
+            The return value from the last handler, or default if no handlers were invoked.
+            </returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.MessageDispatcherBase">
+            <summary>
+            Provides a base implementation for message dispatchers.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Inspector.Editor.MessageDispatcherBase.Target">
+            <summary>
+            The target object that receives messages.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MessageDispatcherBase.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.MessageDispatcherBase"/> class.
+            </summary>
+            <param name="target">The target object.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MessageDispatcherBase.Dispatch(System.String,System.Object)">
+            <summary>
+            Dispatches a message to all registered handlers.
+            </summary>
+            <param name="messageName">The message name to dispatch.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <returns>
+            True if at least one handler was invoked, false otherwise.
+            </returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.MessageDispatcherBase`1">
+            <summary>
+            Provides a base implementation for typed message dispatchers.
+            </summary>
+            <typeparam name="TResult">The return type of handlers.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MessageDispatcherBase`1.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.MessageDispatcherBase`1"/> class.
+            </summary>
+            <param name="target">The target object.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MessageDispatcherBase`1.Dispatch(System.String,System.Object)">
+            <summary>
+            Dispatches a message to all registered handlers.
+            </summary>
+            <param name="messageName">The message name to dispatch.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <returns>
+            True if at least one handler was invoked, false otherwise.
+            </returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MessageDispatcherBase`1.EasyToolKit#Inspector#Editor#IMessageDispatcher{TResult}#Dispatch(System.String,System.Object)">
+            <summary>
+            Dispatches a message and returns the last handler's result.
+            </summary>
+            <param name="messageName">The message name to dispatch.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <returns>
+            The return value from the last handler, or default if no handlers were invoked.
+            </returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MessageDispatcherBase`1.TryDispatch(System.String,System.Object,`0@)">
+            <summary>
+            Attempts to dispatch a message and returns the result.
+            </summary>
+            <param name="messageName">The message name to dispatch.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <param name="result">The result from the last handler.</param>
+            <returns>
+            True if at least one handler was invoked, false otherwise.
+            </returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher">
+            <summary>
+            Message dispatcher that uses reflection to find handler methods marked with
+            <see cref="T:EasyToolKit.Inspector.MessageHandlerAttribute"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher"/> class.
+            </summary>
+            <param name="target">The target object.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher.GetAllMethods(System.Type)">
+            <summary>
+            Gets all methods (including inherited) for the specified type.
+            </summary>
+            <param name="type">The type to scan.</param>
+            <returns>All methods in the type hierarchy.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher.Dispatch(System.String,System.Object)">
+            <summary>
+            Dispatches a message to all registered handlers.
+            </summary>
+            <param name="messageName">The message name to dispatch.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <returns>
+            True if at least one handler was invoked, false otherwise.
+            </returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher`1">
+            <summary>
+            Typed version that returns the last handler's result.
+            </summary>
+            <typeparam name="TResult">The return type of handlers.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher`1.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher`1"/> class.
+            </summary>
+            <param name="target">The target object.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.AttributeMessageDispatcher`1.TryDispatch(System.String,System.Object,`0@)">
+            <summary>
+            Attempts to dispatch a message and returns the result.
+            </summary>
+            <param name="messageName">The message name to dispatch.</param>
+            <param name="args">Optional arguments to pass to the handlers.</param>
+            <param name="result">The result from the last handler.</param>
+            <returns>
+            True if at least one handler was invoked, false otherwise.
+            </returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.HandlerInfo">
+            <summary>
+            Encapsulates method metadata and compiled delegate for fast invocation.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.HandlerInfo.Method">
+            <summary>
+            Gets the method information.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.HandlerInfo.Priority">
+            <summary>
+            Gets the priority of this handler.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.HandlerInfo.MethodMetadataToken">
+            <summary>
+            Gets the metadata token for stable sorting.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.HandlerInfo.Invoker">
+            <summary>
+            Gets the compiled invoker delegate.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.HandlerInfo.#ctor(System.Reflection.MethodInfo,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Inspector.Editor.HandlerInfo"/> class.
+            </summary>
+            <param name="method">The method to invoke.</param>
+            <param name="priority">The priority of this handler.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.HandlerInfo.Invoke(System.Object,System.Object)">
+            <summary>
+            Invokes the handler method with the specified target and arguments.
+            </summary>
+            <param name="target">The target object.</param>
+            <param name="args">The arguments to pass.</param>
+            <returns>The return value of the method invocation.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.HandlerInfo.CompileInvoker(System.Reflection.MethodInfo)">
+            <summary>
+            Compiles a fast invoker delegate using expression trees.
+            </summary>
+            <param name="method">The method to compile.</param>
+            <returns>A compiled delegate for fast invocation.</returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.MessageDispatcherFactory">
+            <summary>
+            Provides factory methods for creating message dispatchers.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MessageDispatcherFactory.Create(System.Object)">
+            <summary>
+            Creates a message dispatcher that uses reflection to find handlers.
+            </summary>
+            <param name="target">The target object that will receive messages.</param>
+            <returns>A message dispatcher instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.MessageDispatcherFactory.Create``1(System.Object)">
+            <summary>
+            Creates a typed message dispatcher that returns the last handler's result.
+            </summary>
+            <typeparam name="TResult">The return type to collect.</typeparam>
+            <param name="target">The target object.</param>
+            <returns>A typed message dispatcher instance.</returns>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.GlobalPersistentContext">
             <summary>
