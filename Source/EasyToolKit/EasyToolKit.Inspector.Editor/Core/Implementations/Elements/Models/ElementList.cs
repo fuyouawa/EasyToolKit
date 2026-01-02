@@ -312,16 +312,13 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private void DirectNotifyElementMoved(TElement element, ElementMovedEventArgs args)
         {
             // Notify the moved element itself (it will update its Parent property)
-            if (element is ElementBase elementBase)
-            {
-                elementBase.OnElementMoved(this, args);
-            }
+            element.Send(ElementMessageNames.ElementMoved, args);
 
             // Notify the old parent if different from current owner (it will remove from its Children)
             var oldParent = args.OldParent;
-            if (oldParent != null && oldParent != _ownerElement && oldParent is ElementBase oldParentBase)
+            if (oldParent != null && oldParent != _ownerElement)
             {
-                oldParentBase.OnElementMoved(this, args);
+                oldParent.Send(ElementMessageNames.ElementMoved, args);
             }
         }
 

@@ -22,6 +22,7 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         [CanBeNull] private IAttributeResolver _attributeResolver;
         [CanBeNull] private IDrawerChainResolver _drawerChainResolver;
         [CanBeNull] private IPostProcessorChainResolver _postProcessorChainResolver;
+        [CanBeNull] private IMessageDispatcher _messageDispatcher;
 
         /// <summary>
         /// Gets the definition that describes this element.
@@ -155,6 +156,42 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
+        /// Gets the message dispatcher for this element (lazy initialization).
+        /// </summary>
+        [NotNull] private IMessageDispatcher MessageDispatcher
+        {
+            get
+            {
+                if (_messageDispatcher == null)
+                {
+                    _messageDispatcher = MessageDispatcherFactory.Create(this);
+                }
+
+                return _messageDispatcher;
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool Send(string messageName, object args = null)
+        {
+            ValidateDisposed();
+            return MessageDispatcher.Dispatch(messageName, args);
+        }
+
+        /// <inheritdoc/>
+        public TResult Send<TResult>(string messageName, object args = null)
+        {
+            ValidateDisposed();
+
+            if (_messageDispatcher is IMessageDispatcher<TResult> typedDispatcher)
+            {
+                return typedDispatcher.Dispatch(messageName, args);
+            }
+
+            return default;
+        }
+
+        /// <summary>
         /// Draws this element in the inspector with the specified label.
         /// </summary>
         /// <param name="label">The label to display. If null, uses the element's default label.</param>
@@ -270,9 +307,9 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         /// This method is called directly by <see cref="ElementList{TElement}"/> when elements are inserted or removed,
         /// rather than through global event broadcasting to avoid O(n²) performance degradation.
         /// </summary>
-        /// <param name="sender">The source of the event (typically the element list).</param>
         /// <param name="args">The event arguments containing element move details.</param>
-        internal void OnElementMoved(object sender, ElementMovedEventArgs args)
+        [MessageHandler(ElementMessageNames.ElementMoved)]
+        private void OnElementMoved(ElementMovedEventArgs args)
         {
             if (args.Timing == ElementMovedTiming.After)
             {

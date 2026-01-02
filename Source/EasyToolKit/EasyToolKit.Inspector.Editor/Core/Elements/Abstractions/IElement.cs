@@ -92,6 +92,27 @@ namespace EasyToolKit.Inspector.Editor
         bool Request(Action action, bool forceDelay = false);
 
         /// <summary>
+        /// Sends a message to this element, invoking all marked message handlers.
+        /// </summary>
+        /// <param name="messageName">The name of the message to send.</param>
+        /// <param name="args">Optional arguments to pass to the handlers.</param>
+        /// <returns>
+        /// True if at least one handler was found and invoked, false otherwise.
+        /// </returns>
+        bool Send(string messageName, object args = null);
+
+        /// <summary>
+        /// Sends a message and returns the last handler's result.
+        /// </summary>
+        /// <typeparam name="TResult">The expected return type.</typeparam>
+        /// <param name="messageName">The name of the message to send.</param>
+        /// <param name="args">Optional arguments to pass to the handlers.</param>
+        /// <returns>
+        /// The return value from the last handler, or default if no handlers were invoked.
+        /// </returns>
+        TResult Send<TResult>(string messageName, object args = null);
+
+        /// <summary>
         /// Requests a refresh of the element structure, forcing recreation of resolvers and children.
         /// The refresh occurs through <see cref="Request(Action, bool)"/> to ensure safe execution during drawing.
         /// </summary>
