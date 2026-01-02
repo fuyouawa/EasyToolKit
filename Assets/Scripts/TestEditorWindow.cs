@@ -24,12 +24,12 @@ public class TestEditorWindow : EasyEditorWindow
     [Button]
     public void BB()
     {
-        EasyEditorWindow.InspectObject(new JJBB());
+        EasyEditorWindowUtility.InspectObject(new JJBB());
     }
 
     [Button]
     public void BBb()
     {
-        EasyEditorWindow.InspectObjectInDropDown(new JJBB());
+        EasyEditorWindowUtility.InspectObjectInDropDown(new JJBB());
     }
 }
