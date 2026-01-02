@@ -76,6 +76,14 @@ namespace EasyToolKit.Inspector.Editor
         IReadOnlyList<ElementAttributeInfo> GetAttributeInfos();
 
         /// <summary>
+        /// Tries to get the attribute info for the specified attribute instance.
+        /// </summary>
+        /// <param name="attribute">The attribute to find.</param>
+        /// <param name="attributeInfo">When this method returns, contains the attribute info if found; otherwise, null.</param>
+        /// <returns>true if the attribute info was found; otherwise, false.</returns>
+        bool TryGetAttributeInfo(Attribute attribute, out ElementAttributeInfo attributeInfo);
+
+        /// <summary>
         /// Requests an action that modifies the tree structure to be executed safely.
         /// If the element is currently drawing, the action is queued and executed after drawing completes.
         /// Otherwise, the action is executed immediately unless <paramref name="forceDelay"/> is <c>true</c>.

@@ -30,12 +30,12 @@ namespace EasyToolKit.Inspector.Editor
             return CanResolve(element);
         }
 
-        void IPoolItem.Rent<T>(IPool<T> owningPool)
+        void IPoolItem.Rent()
         {
             OnRent();
         }
 
-        void IPoolItem.Release<T>(IPool<T> owningPool)
+        void IPoolItem.Release()
         {
             OnRelease();
         }

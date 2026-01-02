@@ -116,6 +116,24 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         }
 
         /// <summary>
+        /// Tries to get the attribute info for the specified attribute instance.
+        /// </summary>
+        /// <param name="attribute">The attribute to find.</param>
+        /// <param name="attributeInfo">When this method returns, contains the attribute info if found; otherwise, null.</param>
+        /// <returns>true if the attribute info was found; otherwise, false.</returns>
+        public bool TryGetAttributeInfo(Attribute attribute, out ElementAttributeInfo attributeInfo)
+        {
+            ValidateDisposed();
+            if (_attributeResolver == null)
+            {
+                attributeInfo = null;
+                return false;
+            }
+
+            return _attributeResolver.TryGetAttributeInfo(attribute, out attributeInfo);
+        }
+
+        /// <summary>
         /// Gets the drawer chain for rendering this element.
         /// </summary>
         /// <returns>The drawer chain containing all applicable drawers.</returns>

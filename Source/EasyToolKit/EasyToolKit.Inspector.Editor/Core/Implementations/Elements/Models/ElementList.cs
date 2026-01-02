@@ -164,20 +164,29 @@ namespace EasyToolKit.Inspector.Editor.Implementations
 
             ValidateInsertIndex(index);
 
-            var eventArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, element, index, element.Parent, _ownerElement, ElementMovedTiming.Before);
-            OnBeforeElementChanged(eventArgs);
+            using (var eventArgs = ElementMovedEventArgs.Create(ElementListChangeType.Insert, element, index, element.Parent, _ownerElement, ElementMovedTiming.Before))
+            {
+                OnBeforeElementChanged(eventArgs);
+            }
 
             _elements.Insert(index, element);
 
             UpdateNameIndexAfterInsert(index, element);
             InvalidatePathCacheFrom(index);
 
-            var postArgs = new ElementMovedEventArgs(ElementListChangeType.Insert, element, index, element.Parent, _ownerElement, ElementMovedTiming.After);
-            OnAfterElementChanged(postArgs);
+            var postArgs = ElementMovedEventArgs.Create(ElementListChangeType.Insert, element, index, element.Parent, _ownerElement, ElementMovedTiming.After);
+            try
+            {
+                OnAfterElementChanged(postArgs);
 
-            // Directly call OnElementMoved for the inserted element and its old parent
-            // This avoids O(n²) complexity where all elements process all move events
-            DirectNotifyElementMoved(element, postArgs);
+                // Directly call OnElementMoved for the inserted element and its old parent
+                // This avoids O(n²) complexity where all elements process all move events
+                DirectNotifyElementMoved(element, postArgs);
+            }
+            finally
+            {
+                postArgs.Dispose();
+            }
         }
 
         /// <summary>
@@ -191,20 +200,29 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             ValidateIndex(index);
 
             var element = _elements[index];
-            var eventArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, element, index, _ownerElement, null, ElementMovedTiming.Before);
-            OnBeforeElementChanged(eventArgs);
+            using (var eventArgs = ElementMovedEventArgs.Create(ElementListChangeType.Remove, element, index, _ownerElement, null, ElementMovedTiming.Before))
+            {
+                OnBeforeElementChanged(eventArgs);
+            }
 
             RemoveNameIndex(element);
             _elements.RemoveAt(index);
 
             InvalidatePathCacheFrom(index);
 
-            var postArgs = new ElementMovedEventArgs(ElementListChangeType.Remove, element, index, _ownerElement, null, ElementMovedTiming.After);
-            OnAfterElementChanged(postArgs);
+            var postArgs = ElementMovedEventArgs.Create(ElementListChangeType.Remove, element, index, _ownerElement, null, ElementMovedTiming.After);
+            try
+            {
+                OnAfterElementChanged(postArgs);
 
-            // Directly call OnElementMoved for the removed element
-            // This avoids O(n²) complexity where all elements process all move events
-            DirectNotifyElementMoved(element, postArgs);
+                // Directly call OnElementMoved for the removed element
+                // This avoids O(n²) complexity where all elements process all move events
+                DirectNotifyElementMoved(element, postArgs);
+            }
+            finally
+            {
+                postArgs.Dispose();
+            }
         }
 
         public virtual void Clear()

@@ -213,14 +213,18 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
-            var eventArgs = new ValueChangedEventArgs(targetIndex, oldValue, value, ValueChangedTiming.Before);
-            BeforeValueChanged?.Invoke(_ownerElement, eventArgs);
+            using (var eventArgs = ValueChangedEventArgs.Create(targetIndex, oldValue, value, ValueChangedTiming.Before))
+            {
+                BeforeValueChanged?.Invoke(_ownerElement, eventArgs);
+            }
 
             _values[targetIndex] = value;
             MarkDirty();
 
-            eventArgs = new ValueChangedEventArgs(targetIndex, oldValue, value, ValueChangedTiming.After);
-            AfterValueChanged?.Invoke(_ownerElement, eventArgs);
+            using (var eventArgs = ValueChangedEventArgs.Create(targetIndex, oldValue, value, ValueChangedTiming.After))
+            {
+                AfterValueChanged?.Invoke(_ownerElement, eventArgs);
+            }
         }
 
         /// <summary>
@@ -232,7 +236,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             {
                 IsDirty = true;
                 _cachedState = null;
-                OwnerElement.SharedContext.TriggerEvent(_ownerElement, new ValueDirtyEventArgs());
+                using var eventArgs = ValueDirtyEventArgs.Create();
+                OwnerElement.SharedContext.TriggerEvent(_ownerElement, eventArgs);
             }
         }
 

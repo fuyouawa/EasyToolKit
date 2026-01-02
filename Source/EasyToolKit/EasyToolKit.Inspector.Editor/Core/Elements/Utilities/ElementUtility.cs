@@ -11,12 +11,12 @@ namespace EasyToolKit.Inspector.Editor
             if (element == null) throw new ArgumentNullException(nameof(element));
             if (attribute == null) throw new ArgumentNullException(nameof(attribute));
 
-            var source = element.GetAttributeInfo(attribute)?.Source;
-            if (source == null)
+            if (!element.TryGetAttributeInfo(attribute, out var attributeInfo))
             {
                 throw new ArgumentException($"Attribute '{attribute.GetType()}' not found in the element '{element}'");
             }
 
+            var source = attributeInfo.Source;
             switch (source)
             {
                 case ElementAttributeSource.Type:
@@ -35,12 +35,12 @@ namespace EasyToolKit.Inspector.Editor
             if (element == null) throw new ArgumentNullException(nameof(element));
             if (attribute == null) throw new ArgumentNullException(nameof(attribute));
 
-            var source = element.GetAttributeInfo(attribute)?.Source;
-            if (source == null)
+            if (!element.TryGetAttributeInfo(attribute, out var attributeInfo))
             {
                 throw new ArgumentException($"Attribute '{attribute.GetType()}' not found in the element '{element}'");
             }
 
+            var source = attributeInfo.Source;
             switch (source)
             {
                 case ElementAttributeSource.Type:
@@ -59,12 +59,12 @@ namespace EasyToolKit.Inspector.Editor
             if (element == null) throw new ArgumentNullException(nameof(element));
             if (attribute == null) throw new ArgumentNullException(nameof(attribute));
 
-            var source = element.GetAttributeInfo(attribute)?.Source;
-            if (source == null)
+            if (!element.TryGetAttributeInfo(attribute, out var attributeInfo))
             {
                 throw new ArgumentException($"Attribute '{attribute.GetType()}' not found in the element '{element}'");
             }
 
+            var source = attributeInfo.Source;
             switch (source)
             {
                 case ElementAttributeSource.Type:

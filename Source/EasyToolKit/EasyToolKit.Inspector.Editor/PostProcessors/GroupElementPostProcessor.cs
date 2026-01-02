@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EasyToolKit.Core;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace EasyToolKit.Inspector.Editor
     [PostProcessorPriority(PostProcessorPriorityLevel.Super - 1)]
     public class GroupElementPostProcessor : PostProcessor
     {
+        private Dictionary<Attribute, bool> _processedAttributeCache;
         protected override void Process()
         {
             if (Element.Children == null)
@@ -27,6 +29,9 @@ namespace EasyToolKit.Inspector.Editor
 
         private void ProcessImpl(ref int elementIndex)
         {
+            // Clear the cache at the start of each ProcessImpl call
+            _processedAttributeCache?.Clear();
+
             if (!TryFindNextElement(ref elementIndex, out var beginGroupAttributeInfo))
             {
                 return;
@@ -113,6 +118,7 @@ namespace EasyToolKit.Inspector.Editor
             });
         }
 
+        private int i = 0;
         private bool TryFindNextElement(ref int elementIndex, out ElementAttributeInfo beginGroupAttributeInfo)
         {
             beginGroupAttributeInfo = null;
@@ -122,6 +128,12 @@ namespace EasyToolKit.Inspector.Editor
                 var child = Element.Children[elementIndex];
                 foreach (var attributeInfo in child.GetAttributeInfos())
                 {
+                    i++;
+                    if (i > 100)
+                    {
+                        ;
+                    }
+
                     var attributeType = attributeInfo.Attribute.GetType();
                     if (!attributeType.IsInheritsFrom<BeginGroupAttribute>())
                     {
@@ -162,16 +174,33 @@ namespace EasyToolKit.Inspector.Editor
         //   - With parent check: Detects GroupA (parent) already has GroupAttributeA → correctly skips it
         private bool IsAttributeProcessedInParentGroups(ElementAttributeInfo attributeInfo)
         {
+            var attribute = attributeInfo.Attribute;
+
+            // Check cache first to avoid redundant parent traversals
+            if (_processedAttributeCache != null && _processedAttributeCache.TryGetValue(attribute, out var cachedResult))
+            {
+                return cachedResult;
+            }
+
+            // Initialize cache on first use
+            _processedAttributeCache ??= new Dictionary<Attribute, bool>();
+
+            // Walk up the parent chain to check if any parent group has this attribute
             var current = Element;
+            bool found = false;
             while (current is IGroupElement groupElement)
             {
-                if (groupElement.GetAttributeInfo(attributeInfo.Attribute) != null)
+                if (groupElement.TryGetAttributeInfo(attribute, out _))
                 {
-                    return true;
+                    found = true;
+                    break;
                 }
                 current = groupElement.Parent;
             }
-            return false;
+
+            // Cache the result for future lookups
+            _processedAttributeCache[attribute] = found;
+            return found;
         }
     }
 }

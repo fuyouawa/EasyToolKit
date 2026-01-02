@@ -104,7 +104,7 @@ namespace EasyToolKit.Core.Implementations
                 var poolItems = pooledInfo.Target.GetComponents<IPoolItem>();
                 foreach (var item in poolItems)
                 {
-                    item.Rent(this);
+                    item.Rent();
                 }
             }
 
@@ -132,7 +132,7 @@ namespace EasyToolKit.Core.Implementations
                 var poolItems = instance.GetComponents<IPoolItem>();
                 foreach (var item in poolItems)
                 {
-                    item.Release(this);
+                    item.Release();
                 }
             }
 

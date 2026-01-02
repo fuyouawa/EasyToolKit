@@ -15,15 +15,11 @@ namespace EasyToolKit.Core
         /// <summary>
         /// Called when the object is rented from the pool.
         /// </summary>
-        /// <typeparam name="T">The type of objects in the pool.</typeparam>
-        /// <param name="owningPool">The pool that owns this object.</param>
-        void Rent<T>(IPool<T> owningPool) where T : class;
+        void Rent();
 
         /// <summary>
         /// Called when the object is released back to the pool.
         /// </summary>
-        /// <typeparam name="T">The type of objects in the pool.</typeparam>
-        /// <param name="owningPool">The pool that owns this object.</param>
-        void Release<T>(IPool<T> owningPool) where T : class;
+        void Release();
     }
 }

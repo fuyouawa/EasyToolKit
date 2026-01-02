@@ -90,16 +90,20 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
-            var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Add, value, null, CollectionChangedTiming.Before);
-            OnBeforeCollectionChanged(eventArgs);
+            using (var eventArgs = CollectionChangedEventArgs.Create(targetIndex, CollectionChangeType.Add, value, null, CollectionChangedTiming.Before))
+            {
+                OnBeforeCollectionChanged(eventArgs);
+            }
 
             var collection = GetValue(targetIndex);
             Operation.AddItem(ref collection, value);
             SetValue(targetIndex, collection);
             MarkDirty();
 
-            eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Add, value, null, CollectionChangedTiming.After);
-            OnAfterCollectionChanged(eventArgs);
+            using (var eventArgs = CollectionChangedEventArgs.Create(targetIndex, CollectionChangeType.Add, value, null, CollectionChangedTiming.After))
+            {
+                OnAfterCollectionChanged(eventArgs);
+            }
         }
 
         /// <summary>
@@ -125,16 +129,20 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
-            var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Remove, value, null, CollectionChangedTiming.Before);
-            OnBeforeCollectionChanged(eventArgs);
+            using (var eventArgs = CollectionChangedEventArgs.Create(targetIndex, CollectionChangeType.Remove, value, null, CollectionChangedTiming.Before))
+            {
+                OnBeforeCollectionChanged(eventArgs);
+            }
 
             var collection = GetValue(targetIndex);
             Operation.RemoveItem(ref collection, value);
             SetValue(targetIndex, collection);
             MarkDirty();
 
-            eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Remove, value, null, CollectionChangedTiming.After);
-            OnAfterCollectionChanged(eventArgs);
+            using (var eventArgs = CollectionChangedEventArgs.Create(targetIndex, CollectionChangeType.Remove, value, null, CollectionChangedTiming.After))
+            {
+                OnAfterCollectionChanged(eventArgs);
+            }
         }
 
         /// <summary>

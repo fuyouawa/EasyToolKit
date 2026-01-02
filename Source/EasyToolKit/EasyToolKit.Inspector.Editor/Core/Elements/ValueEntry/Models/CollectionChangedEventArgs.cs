@@ -1,4 +1,7 @@
 using System;
+using EasyToolKit.Core;
+using EasyToolKit.Core.Editor;
+using JetBrains.Annotations;
 
 namespace EasyToolKit.Inspector.Editor
 {
@@ -52,48 +55,73 @@ namespace EasyToolKit.Inspector.Editor
     /// <summary>
     /// Provides data for collection change events.
     /// </summary>
-    public class CollectionChangedEventArgs : EventArgs
+    [MustDisposeResource]
+    public class CollectionChangedEventArgs : EventArgs, IPoolItem, IDisposable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CollectionChangedEventArgs"/> class.
+        /// Gets the zero-based index of the target object.
+        /// </summary>
+        public int TargetIndex { get; private set; }
+
+        /// <summary>
+        /// Gets the type of collection change.
+        /// </summary>
+        public CollectionChangeType ChangeType { get; private set; }
+
+        /// <summary>
+        /// Gets the item involved in the change operation.
+        /// </summary>
+        public object Item { get; private set; }
+
+        /// <summary>
+        /// Gets the zero-based index of the item in the collection, if applicable.
+        /// </summary>
+        public int? ItemIndex { get; private set; }
+
+        /// <summary>
+        /// Gets the timing of the event (pre or post).
+        /// </summary>
+        public CollectionChangedTiming Timing { get; private set; }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="CollectionChangedEventArgs"/> class from the object pool.
         /// </summary>
         /// <param name="targetIndex">The zero-based index of the target object.</param>
         /// <param name="changeType">The type of collection change.</param>
         /// <param name="item">The item involved in the change operation.</param>
         /// <param name="itemIndex">The zero-based index of the item in the collection (if applicable).</param>
         /// <param name="timing">The timing of the event (pre or post).</param>
-        public CollectionChangedEventArgs(int targetIndex, CollectionChangeType changeType, object item, int? itemIndex, CollectionChangedTiming timing)
+        /// <returns>A new or reused instance of <see cref="CollectionChangedEventArgs"/>.</returns>
+        public static CollectionChangedEventArgs Create(int targetIndex, CollectionChangeType changeType, object item, int? itemIndex, CollectionChangedTiming timing)
         {
-            TargetIndex = targetIndex;
-            ChangeType = changeType;
-            Item = item;
-            ItemIndex = itemIndex;
-            Timing = timing;
+            var args = EditorPoolUtility.Rent<CollectionChangedEventArgs>();
+            args.TargetIndex = targetIndex;
+            args.ChangeType = changeType;
+            args.Item = item;
+            args.ItemIndex = itemIndex;
+            args.Timing = timing;
+            return args;
         }
 
         /// <summary>
-        /// Gets the zero-based index of the target object.
+        /// Releases the instance back to the object pool.
         /// </summary>
-        public int TargetIndex { get; }
+        public void Dispose()
+        {
+            EditorPoolUtility.Release(this);
+        }
 
-        /// <summary>
-        /// Gets the type of collection change.
-        /// </summary>
-        public CollectionChangeType ChangeType { get; }
+        void IPoolItem.Rent()
+        {
+        }
 
-        /// <summary>
-        /// Gets the item involved in the change operation.
-        /// </summary>
-        public object Item { get; }
-
-        /// <summary>
-        /// Gets the zero-based index of the item in the collection, if applicable.
-        /// </summary>
-        public int? ItemIndex { get; }
-
-        /// <summary>
-        /// Gets the timing of the event (pre or post).
-        /// </summary>
-        public CollectionChangedTiming Timing { get; }
+        void IPoolItem.Release()
+        {
+            TargetIndex = 0;
+            ChangeType = default;
+            Item = null;
+            ItemIndex = null;
+            Timing = default;
+        }
     }
 }

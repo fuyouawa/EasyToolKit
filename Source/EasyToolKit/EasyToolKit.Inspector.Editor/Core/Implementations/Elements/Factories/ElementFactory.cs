@@ -221,7 +221,8 @@ namespace EasyToolKit.Inspector.Editor.Implementations
         private void PerformDestroy(IElement element)
         {
             // Trigger destroy event before disposal
-            _sharedContext.TriggerEvent(this, new ElementDestroyedEventArgs(element));
+            using var eventArgs = ElementDestroyedEventArgs.Create(element);
+            _sharedContext.TriggerEvent(this, eventArgs);
 
             // Dispose the element
             (element as IDisposable)?.Dispose();

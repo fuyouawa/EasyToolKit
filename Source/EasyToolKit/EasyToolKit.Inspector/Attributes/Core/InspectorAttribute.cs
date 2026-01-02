@@ -5,19 +5,19 @@ namespace EasyToolKit.Inspector
 {
     public abstract class InspectorAttribute : Attribute
     {
-        private string _base64;
+        private string _id;
 
-        private string Base64
+        private string Id
         {
             get
             {
-                if (_base64 == null)
+                if (_id == null)
                 {
                     var serializationData = new EasySerializationData();
                     EasySerialize.To(this, ref serializationData);
-                    _base64 = Convert.ToBase64String(serializationData.BinaryData);
+                    _id = GetType().FullName + "+" + Convert.ToBase64String(serializationData.BinaryData);
                 }
-                return _base64;
+                return _id;
             }
         }
 
@@ -33,12 +33,12 @@ namespace EasyToolKit.Inspector
                 return false;
             }
 
-            return Base64 == ((InspectorAttribute)obj).Base64;
+            return Id == ((InspectorAttribute)obj).Id;
         }
 
         public override int GetHashCode()
         {
-            return Base64.GetHashCode();
+            return Id.GetHashCode();
         }
     }
 }

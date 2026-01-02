@@ -34,21 +34,6 @@ namespace EasyToolKit.Inspector.Editor
             return PersistentContext.GetLocal(string.Join("+", key1, key), defaultValue);
         }
 
-        public static ElementAttributeInfo GetAttributeInfo(this IElement element, Attribute matchedAttribute)
-        {
-            foreach (var attributeInfo in element.GetAttributeInfos())
-            {
-                if (ReferenceEquals(attributeInfo.Attribute, matchedAttribute) ||
-                    attributeInfo.Attribute.Equals(matchedAttribute))
-                {
-                    return attributeInfo;
-                }
-            }
-
-            return null;
-        }
-
-
         public static ElementAttributeInfo GetAttributeInfo(this IElement element, Type attributeType)
         {
             foreach (var attributeInfo in element.GetAttributeInfos())

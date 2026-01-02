@@ -61,16 +61,20 @@ namespace EasyToolKit.Inspector.Editor.Implementations
             var collection = GetValue(targetIndex);
             var removedItem = Operation.GetItemAt(ref collection, itemIndex);
 
-            var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.RemoveAt, removedItem, itemIndex, CollectionChangedTiming.Before);
-            OnBeforeCollectionChanged(eventArgs);
+            using (var eventArgs = CollectionChangedEventArgs.Create(targetIndex, CollectionChangeType.RemoveAt, removedItem, itemIndex, CollectionChangedTiming.Before))
+            {
+                OnBeforeCollectionChanged(eventArgs);
+            }
 
             collection = GetValue(targetIndex);
             Operation.RemoveItemAt(ref collection, itemIndex);
             SetValue(targetIndex, collection);
             MarkDirty();
 
-            eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.RemoveAt, removedItem, itemIndex, CollectionChangedTiming.After);
-            OnAfterCollectionChanged(eventArgs);
+            using (var eventArgs = CollectionChangedEventArgs.Create(targetIndex, CollectionChangeType.RemoveAt, removedItem, itemIndex, CollectionChangedTiming.After))
+            {
+                OnAfterCollectionChanged(eventArgs);
+            }
         }
 
         public TItem GetItemAt(int targetIndex, int itemIndex)
@@ -93,16 +97,20 @@ namespace EasyToolKit.Inspector.Editor.Implementations
                 return;
             }
 
-            var eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Insert, value, itemIndex, CollectionChangedTiming.Before);
-            OnBeforeCollectionChanged(eventArgs);
+            using (var eventArgs = CollectionChangedEventArgs.Create(targetIndex, CollectionChangeType.Insert, value, itemIndex, CollectionChangedTiming.Before))
+            {
+                OnBeforeCollectionChanged(eventArgs);
+            }
 
             var collection = GetValue(targetIndex);
             Operation.InsertItemAt(ref collection, itemIndex, value);
             SetValue(targetIndex, collection);
             MarkDirty();
 
-            eventArgs = new CollectionChangedEventArgs(targetIndex, CollectionChangeType.Insert, value, itemIndex, CollectionChangedTiming.After);
-            OnAfterCollectionChanged(eventArgs);
+            using (var eventArgs = CollectionChangedEventArgs.Create(targetIndex, CollectionChangeType.Insert, value, itemIndex, CollectionChangedTiming.After))
+            {
+                OnAfterCollectionChanged(eventArgs);
+            }
         }
     }
 }

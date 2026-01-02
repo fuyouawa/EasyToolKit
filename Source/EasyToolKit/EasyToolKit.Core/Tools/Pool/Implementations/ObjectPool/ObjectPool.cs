@@ -120,7 +120,7 @@ namespace EasyToolKit.Core.Implementations
         {
             if (_callPoolItemCallbacks && instance is IPoolItem poolItem)
             {
-                poolItem.Rent(this);
+                poolItem.Rent();
             }
 
             _onRent?.Invoke(instance);
@@ -131,7 +131,7 @@ namespace EasyToolKit.Core.Implementations
         {
             if (_callPoolItemCallbacks && instance is IPoolItem poolItem)
             {
-                poolItem.Release(this);
+                poolItem.Release();
             }
 
             _onRelease?.Invoke(instance);
