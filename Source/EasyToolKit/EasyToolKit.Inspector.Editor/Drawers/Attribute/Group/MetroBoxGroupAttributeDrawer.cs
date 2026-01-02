@@ -33,8 +33,8 @@ namespace EasyToolKit.Inspector.Editor
 
         public static readonly Color HeaderBoxBackgroundColor = EasyGUIStyles.HeaderBoxBackgroundColor * 0.9f;
 
-        private ICodeValueResolver<string> _labelResolver;
-        private ICodeValueResolver<Texture> _iconTextureGetterResolver;
+        private IExpressionEvaluator<string> _labelEvaluator;
+        private IExpressionEvaluator<Texture> _iconTextureGetterEvaluator;
 
         protected override void Initialize()
         {
@@ -42,19 +42,24 @@ namespace EasyToolKit.Inspector.Editor
                 ? null
                 : ElementUtility.GetOwnerTypeWithAttribute(Element.AssociatedElement, Attribute);
 
-            _labelResolver = CodeValueResolver.Create<string>(Attribute.Label, targetType, true);
-            _iconTextureGetterResolver = CodeValueResolver.Create<Texture>(Attribute.IconTextureGetter, targetType);
+            _labelEvaluator = ExpressionEvaluatorFactory
+                .Evaluate<string>(Attribute.Label, targetType)
+                .WithExpressionFlag()
+                .Build();
+            _iconTextureGetterEvaluator = ExpressionEvaluatorFactory
+                .Evaluate<Texture>(Attribute.IconTextureGetter, targetType)
+                .Build();
         }
 
         protected override void Draw(GUIContent label)
         {
-            if (_labelResolver.HasError(out var error))
+            if (_labelEvaluator.TryGetError(out var error))
             {
                 EasyEditorGUI.MessageBox(error, MessageType.Error);
                 return;
             }
 
-            if (Attribute.IconTextureGetter.IsNotNullOrEmpty() && _iconTextureGetterResolver.HasError(out error))
+            if (Attribute.IconTextureGetter.IsNotNullOrEmpty() && _iconTextureGetterEvaluator.TryGetError(out error))
             {
                 EasyEditorGUI.MessageBox(error, MessageType.Error);
                 return;
@@ -72,11 +77,11 @@ namespace EasyToolKit.Inspector.Editor
 
             if (Attribute.IconTextureGetter.IsNotNullOrEmpty())
             {
-                iconTexture = _iconTextureGetterResolver.Resolve(resolveTarget);
+                iconTexture = _iconTextureGetterEvaluator.Evaluate(resolveTarget);
                 GUILayout.Label(iconTexture, GUILayout.Width(30), GUILayout.Height(30));
             }
 
-            var labelText = _labelResolver.Resolve(resolveTarget);
+            var labelText = _labelEvaluator.Evaluate(resolveTarget);
 
             BeginDraw(EditorHelper.TempContent(labelText), iconTexture);
         }

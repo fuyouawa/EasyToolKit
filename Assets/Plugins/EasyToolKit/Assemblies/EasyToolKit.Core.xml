@@ -1124,6 +1124,630 @@
             <para>确保会在Unity线程触发</para>
             </summary>
         </member>
+        <member name="T:EasyToolKit.Core.IExpressionEvaluator">
+            <summary>
+            Defines a value evaluator that computes values from expression paths.
+            </summary>
+            <remarks>
+            <para>
+            Expression evaluators parse string-based expression paths and compile them
+            into efficient getter functions for runtime value retrieval. This enables
+            dynamic member access similar to data binding in UI frameworks.
+            </para>
+            <para>
+            <b>Expression Path Syntax:</b>
+            <list type="table">
+            <listheader>
+            <term>Syntax</term>
+            <description>Example</description>
+            <description>Meaning</description>
+            </listheader>
+            <item>
+            <term>Direct member</term>
+            <description>"PlayerName"</description>
+            <description>Accesses a field or property named PlayerName</description>
+            </item>
+            <item>
+            <term>Nested access</term>
+            <description>"Player.Health.CurrentValue"</description>
+            <description>Accesses nested properties using dot notation</description>
+            </item>
+            <item>
+            <term>Method call</term>
+            <description>"Inventory.GetItem(0)"</description>
+            <description>Calls methods and continues the path</description>
+            </item>
+            <item>
+            <term>Static member</term>
+            <description>"-t:GameConfig -p:MaxLevel"</description>
+            <description>Accesses static member MaxLevel on type GameConfig</description>
+            </item>
+            </list>
+            </para>
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.IExpressionEvaluator.TryGetError(System.String@)">
+            <summary>
+            Gets whether this evaluator has a validation error.
+            </summary>
+            <param name="errorMessage">The error message, if any.</param>
+            <returns>
+            <c>true</c> if there is a validation error; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EasyToolKit.Core.IExpressionEvaluator.Evaluate(System.Object)">
+            <summary>
+            Evaluates the expression against the specified context object.
+            </summary>
+            <param name="context">The context object to evaluate against.</param>
+            <returns>The evaluated value as an untyped object.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the evaluator has a validation error.
+            </exception>
+        </member>
+        <member name="T:EasyToolKit.Core.IExpressionEvaluator`1">
+             <summary>
+             Defines a typed value evaluator that computes values from expression paths.
+             </summary>
+             <typeparam name="TResult">The type of value to evaluate.</typeparam>
+             <remarks>
+             This interface provides type-safe evaluation with automatic casting.
+             Use the non-generic <see cref="T:EasyToolKit.Core.IExpressionEvaluator"/> interface when the
+             result type is not known at compile time.
+             </remarks>
+             <example>
+             <code>
+             // Create a typed evaluator
+             var evaluator = ExpressionEvaluatorFactory
+                 .Evaluate&lt;string&gt;("Player.Name", typeof(Player))
+                 .Build();
+            
+             // Type-safe evaluation
+             string name = evaluator.Evaluate(player);
+             </code>
+             </example>
+        </member>
+        <member name="M:EasyToolKit.Core.IExpressionEvaluator`1.Evaluate(System.Object)">
+            <summary>
+            Evaluates the expression against the specified context object.
+            </summary>
+            <param name="context">The context object to evaluate against.</param>
+            <returns>The evaluated value as the specified type.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the evaluator has a validation error.
+            </exception>
+            <exception cref="T:System.InvalidCastException">
+            Thrown when the evaluated value cannot be cast to <typeparamref name="TResult"/>.
+            </exception>
+        </member>
+        <member name="T:EasyToolKit.Core.IExpressionEvaluatorBuilder`1">
+            <summary>
+            Defines a builder for configuring expression evaluators.
+            </summary>
+            <typeparam name="TResult">The type of value to evaluate.</typeparam>
+            <remarks>
+            This builder provides a fluent API for configuring expression evaluators
+            before building them. Use the <see cref="M:EasyToolKit.Core.IExpressionEvaluatorBuilder`1.Build"/> method to create the
+            final evaluator instance.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.IExpressionEvaluatorBuilder`1.WithExpressionFlag">
+             <summary>
+             Configures the evaluator to require an expression flag.
+             </summary>
+             <returns>The builder instance for method chaining.</returns>
+             <remarks>
+             <para>
+             When enabled, the expression must start with '@' to trigger evaluation.
+             Otherwise, it's treated as a primitive string value.
+             </para>
+             <para>
+             This is useful for conditional interpolation where the same attribute
+             can accept both static strings and dynamic expressions.
+             </para>
+             <example>
+             <code>
+             // With expression flag enabled
+             var evaluator = ExpressionEvaluatorFactory
+                 .Evaluate&lt;string&gt;(labelText, targetType)
+                 .WithExpressionFlag();
+            
+             // Usage in attribute:
+             // [Label("Static Label")]        // Returns "Static Label"
+             // [Label("@DynamicLabel")]       // Evaluates 'DynamicLabel' property
+             // [Label("@Player.Name.Length")] // Evaluates nested expression
+             </code>
+             </example>
+             </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.IExpressionEvaluatorBuilder`1.Build">
+            <summary>
+            Builds the configured expression evaluator.
+            </summary>
+            <returns>The configured expression evaluator instance.</returns>
+            <remarks>
+            After calling this method, the evaluator is ready for use.
+            The builder should not be used after calling <see cref="M:EasyToolKit.Core.IExpressionEvaluatorBuilder`1.Build"/>.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.ExpressionEvaluatorBuilder`1">
+            <summary>
+            Default implementation of <see cref="T:EasyToolKit.Core.IExpressionEvaluatorBuilder`1"/>.
+            </summary>
+            <typeparam name="TResult">The type of value to evaluate.</typeparam>
+            <remarks>
+            This builder provides a fluent API for configuring expression evaluators
+            with options such as expression flag requirement.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBuilder`1.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ExpressionEvaluatorBuilder`1"/> class.
+            </summary>
+            <param name="expressionPath">The expression path to evaluate.</param>
+            <param name="sourceType">The type containing the member to evaluate.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBuilder`1.WithExpressionFlag">
+            <summary>
+            Configures the evaluator to require an expression flag.
+            </summary>
+            <returns>The builder instance for method chaining.</returns>
+            <remarks>
+            <para>
+            When enabled, the expression must start with '@' to trigger evaluation.
+            Otherwise, it's treated as a primitive string value.
+            </para>
+            <para>
+            This is useful for conditional interpolation where the same attribute
+            can accept both static strings and dynamic expressions.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBuilder`1.Build">
+            <summary>
+            Builds the configured expression evaluator.
+            </summary>
+            <returns>The configured expression evaluator instance.</returns>
+            <exception cref="T:System.ArgumentException">
+            Thrown when using expression flag with non-string result types.
+            </exception>
+            <remarks>
+            This method determines whether to create a literal or dynamic evaluator
+            based on the builder configuration and expression path content.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.ExpressionEvaluatorFactory">
+             <summary>
+             Provides factory methods for creating expression evaluators.
+             </summary>
+             <remarks>
+             <para>
+             This static class serves as the main entry point for creating expression evaluators.
+             It provides simplified creation methods while hiding implementation details.
+             </para>
+             <para>
+             <b>Usage Examples:</b>
+             </para>
+             <example>
+             <code>
+             // Example 1: Literal expression (static string)
+             var evaluator1 = ExpressionEvaluatorFactory.Literal("Hello World");
+             string result1 = evaluator1.Evaluate(null); // Returns "Hello World"
+            
+             // Example 2: Simple property access
+             var evaluator2 = ExpressionEvaluatorFactory
+                 .Evaluate&lt;string&gt;("Name", typeof(Player))
+                 .Build();
+             string name = evaluator2.Evaluate(player); // Returns player.Name
+            
+             // Example 3: Nested expression with expression flag
+             var evaluator3 = ExpressionEvaluatorFactory
+                 .Evaluate&lt;string&gt;(labelText, targetType)
+                 .WithExpressionFlag()
+                 .Build();
+            
+             // Usage in attribute:
+             // [Label("Static Label")]    // Returns "Static Label"
+             // [Label("@DynamicLabel")]   // Evaluates 'DynamicLabel' property
+            
+             // Example 4: Method call
+             var evaluator4 = ExpressionEvaluatorFactory
+                 .Evaluate&lt;int&gt;("Inventory.GetCount('sword')", typeof(Player))
+                 .Build();
+             int swordCount = evaluator4.Evaluate(player);
+            
+             // Example 5: Static member access
+             var evaluator5 = ExpressionEvaluatorFactory
+                 .Evaluate&lt;int&gt;("-t:GameConfig -p:MaxLevel", null)
+                 .Build();
+             int maxLevel = evaluator5.Evaluate(null);
+             </code>
+             </example>
+             </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorFactory.Literal(System.String)">
+            <summary>
+            Creates an evaluator for a literal (non-interpolated) string value.
+            </summary>
+            <param name="value">The literal string value.</param>
+            <returns>An evaluator that returns the specified value.</returns>
+            <remarks>
+            <para>
+            The literal evaluator returns the value as-is without any expression parsing
+            or evaluation. This is useful for static text that should not be interpreted.
+            </para>
+            <para>
+            Null values are converted to string.Empty.
+            </para>
+            </remarks>
+            <example>
+            <code>
+            var evaluator = ExpressionEvaluatorFactory.Literal("Hello World");
+            string result = evaluator.Evaluate(null); // Returns "Hello World"
+            </code>
+            </example>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorFactory.Evaluate``1(System.String,System.Type)">
+            <summary>
+            Creates a builder for evaluating an expression path.
+            </summary>
+            <typeparam name="TResult">The expected result type.</typeparam>
+            <param name="expressionPath">The expression path to evaluate.</param>
+            <param name="sourceType">The type containing the member to evaluate.</param>
+            <returns>A configured evaluator builder.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when <paramref name="expressionPath"/> is null.
+            </exception>
+            <remarks>
+            <para>
+            This method returns a builder that can be configured with options such
+            as expression flag requirement before building the final evaluator.
+            </para>
+            <para>
+            The expression path syntax supports:
+            <list type="bullet">
+            <item><description>Direct member access: "PropertyName"</description></item>
+            <item><description>Nested paths: "Parent.Child.Value"</description></item>
+            <item><description>Method calls: "GetMethod()"</description></item>
+            <item><description>Static members: "-t:TypeName -p:StaticProperty"</description></item>
+            </list>
+            </para>
+            </remarks>
+            <example>
+            <code>
+            var evaluator = ExpressionEvaluatorFactory
+                .Evaluate&lt;string&gt;("Player.Name", typeof(Player))
+                .Build();
+            </code>
+            </example>
+        </member>
+        <member name="T:EasyToolKit.Core.DynamicExpressionEvaluator">
+            <summary>
+            Evaluates dynamic expression paths using runtime reflection.
+            </summary>
+            <remarks>
+            <para>
+            This evaluator parses expression paths and creates compiled getter functions
+            for efficient runtime value retrieval. It supports:
+            </para>
+            <list type="bullet">
+            <item><description>Direct member access (fields, properties, methods)</description></item>
+            <item><description>Nested paths using dot notation</description></item>
+            <item><description>Array and indexer access</description></item>
+            <item><description>Static member access using <c>-t:</c> and <c>-p:</c> syntax</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.#ctor(System.String,System.Type,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/> class.
+            </summary>
+            <param name="expressionPath">The expression path to evaluate.</param>
+            <param name="expectedType">The expected result type.</param>
+            <param name="sourceType">The type containing the member to evaluate (null for static members).</param>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.Evaluate(System.Object)">
+            <summary>
+            Evaluates the expression against the specified context object.
+            </summary>
+            <param name="context">The context object to evaluate against.</param>
+            <returns>The evaluated value as an untyped object.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the evaluator has a validation error.
+            </exception>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.PerformValidation">
+            <summary>
+            Performs validation and compiles the expression getter.
+            </summary>
+            <remarks>
+            This method parses the expression path, analyzes its structure,
+            and creates a compiled getter function for efficient evaluation.
+            The result is cached for subsequent calls.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.CreateCompiledGetter(System.Type,System.Type,System.String)">
+            <summary>
+            Creates a compiled getter function for the expression path.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.TryAnalyseCode(System.String,System.Type,System.Type@,System.String@,System.String@)">
+            <summary>
+            Analyzes the expression path to extract type and path information.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.TryGetArgument(System.String,System.String,System.String@)">
+            <summary>
+            Extracts an argument value from the expression path.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.DynamicExpressionEvaluator`1">
+            <summary>
+            Typed dynamic expression evaluator.
+            </summary>
+            <typeparam name="TResult">The type of value to evaluate.</typeparam>
+            <remarks>
+            This is a strongly-typed version of <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/>
+            that implements <see cref="T:EasyToolKit.Core.IExpressionEvaluator`1"/>.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator`1.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator`1"/> class.
+            </summary>
+            <param name="expressionPath">The expression path to evaluate.</param>
+            <param name="sourceType">The type containing the member to evaluate.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator`1.EvaluateCore(System.Object)">
+            <summary>
+            Evaluates the literal value (returns the stored value).
+            </summary>
+            <param name="context">The context object to evaluate against.</param>
+            <returns>The evaluated value as the specified type.</returns>
+            <remarks>
+            This method delegates to the inner <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/>
+            and casts the result to the specified type.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator`1.PerformValidation">
+            <summary>
+            Performs validation by delegating to the inner evaluator.
+            </summary>
+            <remarks>
+            This method forwards validation to the wrapped <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/>.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator`1.TryGetError(System.String@)">
+            <summary>
+            Gets whether this evaluator has a validation error.
+            </summary>
+            <param name="errorMessage">The error message, if any.</param>
+            <returns>
+            <c>true</c> if there is a validation error; otherwise, <c>false</c>.
+            </returns>
+            <remarks>
+            This method delegates to the inner <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/>.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.ExpressionEvaluatorBase">
+            <summary>
+            Provides a base implementation for expression evaluators.
+            </summary>
+            <remarks>
+            This abstract class implements common functionality for all expression evaluators,
+            including error validation and deferred evaluation pattern. Subclasses must
+            implement the actual evaluation logic.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Core.ExpressionEvaluatorBase.ExpressionPath">
+            <summary>
+            The expression path to evaluate.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.ExpressionEvaluatorBase.ExpectedType">
+            <summary>
+            The expected result type of the evaluation.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ExpressionEvaluatorBase"/> class.
+            </summary>
+            <param name="expressionPath">The expression path to evaluate.</param>
+            <param name="expectedType">The expected result type.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.TryGetError(System.String@)">
+            <summary>
+            Gets whether this evaluator has a validation error.
+            </summary>
+            <param name="errorMessage">The error message, if any.</param>
+            <returns>
+            <c>true</c> if there is a validation error; otherwise, <c>false</c>.
+            </returns>
+            <remarks>
+            This method uses deferred validation - the actual validation is performed
+            on the first call. Subsequent calls return the cached result.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.Evaluate(System.Object)">
+            <summary>
+            Evaluates the expression against the specified context object.
+            </summary>
+            <param name="context">The context object to evaluate against.</param>
+            <returns>The evaluated value as an untyped object.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the evaluator has a validation error.
+            </exception>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.PerformValidation">
+            <summary>
+            Performs validation logic for the expression.
+            </summary>
+            <remarks>
+            Subclasses can override this method to provide custom validation logic.
+            The default implementation performs no validation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.SetError(System.String)">
+            <summary>
+            Sets the validation error message.
+            </summary>
+            <param name="errorMessage">The error message to set.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.IsValidated">
+            <summary>
+            Checks whether the evaluator has been validated.
+            </summary>
+            <returns>
+            <c>true</c> if validation has been performed; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:EasyToolKit.Core.ExpressionEvaluatorBase`1">
+            <summary>
+            Provides a base implementation for typed expression evaluators.
+            </summary>
+            <typeparam name="TResult">The type of value to evaluate.</typeparam>
+            <remarks>
+            This abstract class extends <see cref="T:EasyToolKit.Core.ExpressionEvaluatorBase"/> with
+            type-safe evaluation. Subclasses must implement the typed evaluation logic.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ExpressionEvaluatorBase`1"/> class.
+            </summary>
+            <param name="expressionPath">The expression path to evaluate.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.Evaluate(System.Object)">
+            <summary>
+            Evaluates the expression as an untyped object.
+            </summary>
+            <param name="context">The context object to evaluate against.</param>
+            <returns>The evaluated value as an untyped object.</returns>
+            <remarks>
+            This implementation calls the typed <see cref="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> method
+            and returns the result as an object. Subclasses should override
+            <see cref="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> to provide type-specific evaluation logic.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EasyToolKit#Core#IExpressionEvaluator{TResult}#Evaluate(System.Object)">
+            <summary>
+            Evaluates the expression against the specified context object with type-safe return.
+            </summary>
+            <param name="context">The context object to evaluate against.</param>
+            <returns>The evaluated value as the specified type.</returns>
+            <remarks>
+            Explicit interface implementation for <see cref="T:EasyToolKit.Core.IExpressionEvaluator`1"/>.
+            This implementation calls <see cref="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> to perform the actual evaluation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)">
+            <summary>
+            Evaluates the expression against the specified context object.
+            </summary>
+            <param name="context">The context object to evaluate against.</param>
+            <returns>The evaluated value as the specified type.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when the evaluator has a validation error.
+            </exception>
+            <exception cref="T:System.InvalidCastException">
+            Thrown when the evaluated value cannot be cast to <typeparamref name="TResult"/>.
+            </exception>
+            <remarks>
+            Subclasses must implement this method to provide type-specific evaluation logic.
+            This method is called by the public <see cref="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.Evaluate(System.Object)"/> methods.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.LiteralExpressionEvaluator">
+            <summary>
+            Evaluates literal (non-interpolated) string values.
+            </summary>
+            <remarks>
+            This evaluator returns the string value as-is without any expression parsing
+            or evaluation. It's used for static text that should not be interpreted as
+            an expression path.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.LiteralExpressionEvaluator"/> class.
+            </summary>
+            <param name="value">The literal string value to return.</param>
+            <remarks>
+            The value is returned as-is without modification or evaluation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator.EvaluateCore(System.Object)">
+            <summary>
+            Evaluates the literal value (returns the stored string).
+            </summary>
+            <param name="context">The context object (ignored for literal evaluators).</param>
+            <returns>The literal string value.</returns>
+            <remarks>
+            This method ignores the context parameter and always returns the
+            literal value provided during construction.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator.PerformValidation">
+            <summary>
+            Performs validation (literal expressions are always valid).
+            </summary>
+            <remarks>
+            Literal expressions have no validation requirements - they are always valid.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator.TryGetError(System.String@)">
+            <summary>
+            Gets whether this evaluator has a validation error.
+            </summary>
+            <param name="errorMessage">Always set to <c>null</c>.</param>
+            <returns>Always <c>false</c> (literal expressions are always valid).</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.LiteralExpressionEvaluator`1">
+            <summary>
+            Typed literal expression evaluator for string values.
+            </summary>
+            <remarks>
+            This is a strongly-typed version of <see cref="T:EasyToolKit.Core.LiteralExpressionEvaluator"/>
+            that implements <see cref="T:EasyToolKit.Core.IExpressionEvaluator`1"/>.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.LiteralExpressionEvaluator`1"/> class.
+            </summary>
+            <param name="value">The literal value to return.</param>
+            <remarks>
+            The value is returned as-is without modification or evaluation.
+            For string types, null values are converted to string.Empty.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator`1.EvaluateCore(System.Object)">
+            <summary>
+            Evaluates the literal value (returns the stored value).
+            </summary>
+            <param name="context">The context object (ignored for literal evaluators).</param>
+            <returns>The literal value.</returns>
+            <remarks>
+            This method ignores the context parameter and always returns the
+            literal value provided during construction.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator`1.PerformValidation">
+            <summary>
+            Performs validation (literal expressions are always valid).
+            </summary>
+            <remarks>
+            Literal expressions have no validation requirements - they are always valid.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator`1.TryGetError(System.String@)">
+            <summary>
+            Gets whether this evaluator has a validation error.
+            </summary>
+            <param name="errorMessage">Always set to <c>null</c>.</param>
+            <returns>Always <c>false</c> (literal expressions are always valid).</returns>
+        </member>
         <member name="M:EasyToolKit.Core.Assert.IsEqual``1(``0,``0,System.String)">
             <summary>
             Asserts that two values are equal.

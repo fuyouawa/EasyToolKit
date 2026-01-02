@@ -8,33 +8,39 @@ namespace EasyToolKit.Inspector.Editor
     [DrawerPriority(DrawerPriorityLevel.Attribute + 10)]
     public class TitleAttributeDrawer : EasyAttributeDrawer<TitleAttribute>
     {
-        private ICodeValueResolver<string> _titleResolver;
-        private ICodeValueResolver<string> _subtitleResolver;
+        private IExpressionEvaluator<string> _titleEvaluator;
+        private IExpressionEvaluator<string> _subtitleEvaluator;
 
         protected override void Initialize()
         {
             var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
 
-            _titleResolver = CodeValueResolver.Create<string>(Attribute.Title, targetType, true);
-            _subtitleResolver = CodeValueResolver.Create<string>(Attribute.Subtitle, targetType, true);
+            _titleEvaluator = ExpressionEvaluatorFactory
+                .Evaluate<string>(Attribute.Title, targetType)
+                .WithExpressionFlag()
+                .Build();
+            _subtitleEvaluator = ExpressionEvaluatorFactory
+                .Evaluate<string>(Attribute.Subtitle, targetType)
+                .WithExpressionFlag()
+                .Build();
         }
 
         protected override void Draw(GUIContent label)
         {
-            if (_titleResolver.HasError(out var error))
+            if (_titleEvaluator.TryGetError(out var error))
             {
                 EasyEditorGUI.MessageBox(error, MessageType.Error);
                 return;
             }
-            if (_subtitleResolver.HasError(out error))
+            if (_subtitleEvaluator.TryGetError(out error))
             {
                 EasyEditorGUI.MessageBox(error, MessageType.Error);
                 return;
             }
 
             var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
-            var titleText = _titleResolver.Resolve(resolveTarget);
-            var subtitleText = _subtitleResolver.Resolve(resolveTarget);
+            var titleText = _titleEvaluator.Evaluate(resolveTarget);
+            var subtitleText = _subtitleEvaluator.Evaluate(resolveTarget);
             EasyEditorGUI.Title(titleText, subtitleText, Attribute.TextAlignment, Attribute.HorizontalLine, Attribute.BoldTitle);
 
             CallNextDrawer(label);

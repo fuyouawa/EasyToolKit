@@ -10,8 +10,8 @@ namespace EasyToolKit.Inspector.Editor
     [DrawerPriority(DrawerPriorityLevel.Attribute + 10)]
     public class MessageBoxAttributeDrawer : EasyAttributeDrawer<MessageBoxAttribute>
     {
-        [CanBeNull] private ICodeValueResolver<bool> _visibleIfResolver;
-        private ICodeValueResolver<string> _messageResolver;
+        [CanBeNull] private IExpressionEvaluator<bool> _visibleIfEvaluator;
+        private IExpressionEvaluator<string> _messageEvaluator;
 
         protected override void Initialize()
         {
@@ -19,21 +19,26 @@ namespace EasyToolKit.Inspector.Editor
 
             if (Attribute.VisibleIf != null)
             {
-                _visibleIfResolver = CodeValueResolver.Create<bool>(Attribute.VisibleIf, targetType, false);
+                _visibleIfEvaluator = ExpressionEvaluatorFactory
+                    .Evaluate<bool>(Attribute.VisibleIf, targetType)
+                    .Build();
             }
 
-            _messageResolver = CodeValueResolver.Create<string>(Attribute.Message, targetType, true);
+            _messageEvaluator = ExpressionEvaluatorFactory
+                .Evaluate<string>(Attribute.Message, targetType)
+                .WithExpressionFlag()
+                .Build();
         }
 
         protected override void Draw(GUIContent label)
         {
-            if (_visibleIfResolver != null && _visibleIfResolver.HasError(out var error))
+            if (_visibleIfEvaluator != null && _visibleIfEvaluator.TryGetError(out var error))
             {
                 EasyEditorGUI.MessageBox(error, MessageType.Error);
                 return;
             }
 
-            if (_messageResolver.HasError(out error))
+            if (_messageEvaluator.TryGetError(out error))
             {
                 EasyEditorGUI.MessageBox(error, MessageType.Error);
                 return;
@@ -41,9 +46,9 @@ namespace EasyToolKit.Inspector.Editor
 
             var resolveTarget = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
 
-            if (_visibleIfResolver != null)
+            if (_visibleIfEvaluator != null)
             {
-                var visible = _visibleIfResolver.Resolve(resolveTarget);
+                var visible = _visibleIfEvaluator.Evaluate(resolveTarget);
                 if (!visible)
                 {
                     CallNextDrawer(label);
@@ -51,7 +56,7 @@ namespace EasyToolKit.Inspector.Editor
                 }
             }
 
-            var message = _messageResolver.Resolve(resolveTarget);
+            var message = _messageEvaluator.Evaluate(resolveTarget);
             EasyEditorGUI.MessageBox(message, Attribute.MessageType switch
             {
                 MessageBoxType.None => MessageType.None,

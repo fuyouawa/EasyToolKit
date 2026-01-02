@@ -76,7 +76,7 @@ namespace EasyToolKit.Inspector.Editor
 
     public partial class CollectionDrawer<T>
     {
-        [CanBeNull] private ICodeValueResolver<Texture> _iconTextureGetterResolver;
+        [CanBeNull] private IExpressionEvaluator<Texture> _iconTextureGetterEvaluator;
         [CanBeNull] private Func<object, int, string> _customIndexLabelFunction;
 
         private bool _showIndexLabel;
@@ -96,9 +96,9 @@ namespace EasyToolKit.Inspector.Editor
                 {
                     if (metroListDrawerSettings.IconTextureGetter.IsNotNullOrEmpty())
                     {
-                        _iconTextureGetterResolver = CodeValueResolver.Create<Texture>(
-                            metroListDrawerSettings.IconTextureGetter,
-                            _listDrawerTargetType);
+                        _iconTextureGetterEvaluator = ExpressionEvaluatorFactory
+                            .Evaluate<Texture>(metroListDrawerSettings.IconTextureGetter, _listDrawerTargetType)
+                            .Build();
                     }
                 }
 
@@ -146,7 +146,7 @@ namespace EasyToolKit.Inspector.Editor
                 return;
             }
 
-            if (_iconTextureGetterResolver != null && _iconTextureGetterResolver.HasError(out var error))
+            if (_iconTextureGetterEvaluator != null && _iconTextureGetterEvaluator.TryGetError(out var error))
             {
                 EasyEditorGUI.MessageBox(error, MessageType.Error);
                 return;
@@ -217,9 +217,9 @@ namespace EasyToolKit.Inspector.Editor
             EasyEditorGUI.BeginHorizontalToolbar(30);
             EasyGUIHelper.PopColor();
 
-            if (_iconTextureGetterResolver != null)
+            if (_iconTextureGetterEvaluator != null)
             {
-                var iconTexture = _iconTextureGetterResolver.Resolve(ElementUtility.GetOwnerWithAttribute(Element, _listDrawerSettings));
+                var iconTexture = _iconTextureGetterEvaluator.Evaluate(ElementUtility.GetOwnerWithAttribute(Element, _listDrawerSettings));
                 GUILayout.Label(iconTexture, GUILayout.Width(30), GUILayout.Height(30));
             }
 

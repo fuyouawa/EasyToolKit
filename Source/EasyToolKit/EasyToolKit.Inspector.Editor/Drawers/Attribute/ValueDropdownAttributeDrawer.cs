@@ -10,24 +10,26 @@ namespace EasyToolKit.Inspector.Editor
     //TODO conflict handling
     public class ValueDropdownAttributeDrawer<T> : EasyAttributeDrawer<ValueDropdownAttribute, T>
     {
-        private ICodeValueResolver<object> _optionsGetterResolver;
+        private IExpressionEvaluator<object> _optionsGetterEvaluator;
 
         protected override void Initialize()
         {
             var targetType = ElementUtility.GetOwnerTypeWithAttribute(Element, Attribute);
-            _optionsGetterResolver = CodeValueResolver.Create<object>(Attribute.OptionsGetter, targetType);
+            _optionsGetterEvaluator = ExpressionEvaluatorFactory
+                .Evaluate<object>(Attribute.OptionsGetter, targetType)
+                .Build();
         }
 
         protected override void Draw(GUIContent label)
         {
-            if (_optionsGetterResolver.HasError(out var error))
+            if (_optionsGetterEvaluator.TryGetError(out var error))
             {
                 EasyEditorGUI.MessageBox(error, MessageType.Error);
                 return;
             }
 
             var target = ElementUtility.GetOwnerWithAttribute(Element, Attribute);
-            var options = _optionsGetterResolver.Resolve(target);
+            var options = _optionsGetterEvaluator.Evaluate(target);
             var dropdownItems = new ValueDropdownList();
             if (options is IEnumerable<IValueDropdownItem> valueDropdownItems)
             {
