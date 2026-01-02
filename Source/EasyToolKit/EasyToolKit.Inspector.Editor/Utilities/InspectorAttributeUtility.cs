@@ -24,25 +24,6 @@ namespace EasyToolKit.Inspector.Editor
                 .ToArray();
         }
 
-        public static bool TryGetMemberDefinedAttributePropertyPriority([NotNull] MemberInfo memberInfo, out AttributePropertyPriorityAttribute attributePropertyPriority)
-        {
-            if (memberInfo == null) throw new ArgumentNullException(nameof(memberInfo));
-
-            var priority = memberInfo.GetCustomAttributes()
-                .Select(attr => attr.GetType())
-                .Where(attrType => attrType.IsDefined<AttributePropertyPriorityAttribute>())
-                .Select(attrType => attrType.GetCustomAttribute<AttributePropertyPriorityAttribute>())
-                .OrderByDescending(attrPriority => attrPriority.Priority)
-                .FirstOrDefault();
-            if (priority == null)
-            {
-                attributePropertyPriority = null;
-                return false;
-            }
-            attributePropertyPriority = priority;
-            return true;
-        }
-
         public static Type GetCorrespondGroupAttributeType([NotNull] Type groupAttributeType)
         {
             if (groupAttributeType == null)

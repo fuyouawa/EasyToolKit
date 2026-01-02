@@ -29,9 +29,10 @@ namespace EasyToolKit.Inspector.Editor
         {
             var targetType = Element.ValueEntry.ValueType;
 
-            var filteredMembers = targetType.GetAllMembers(BindingFlagsHelper.AllInstance).Where(Filter).ToList();
-
-            filteredMembers.Sort((a, b) => Order(a).CompareTo(Order(b)));
+            var filteredMembers = targetType.GetAllMembers(BindingFlagsHelper.AllInstance)
+                .Where(Filter)
+                .OrderBy(Order)
+                .ToList();
 
             var showOdinSerializersInInspector = targetType.IsDefined<ShowOdinSerializedPropertiesInInspector>(true);
 
@@ -191,15 +192,20 @@ namespace EasyToolKit.Inspector.Editor
         /// <returns>The priority value (lower values appear first)</returns>
         private static int Order(MemberInfo memberInfo)
         {
-            if (InspectorAttributeUtility.TryGetMemberDefinedAttributePropertyPriority(memberInfo, out var priority))
+            if (memberInfo.IsDefined<OnInspectorInitAttribute>())
             {
-                return -priority.Priority;
+                return -2;
             }
 
-            if (memberInfo is FieldInfo) return -AttributePropertyPriorityLevel.Field;
-            if (memberInfo is PropertyInfo) return -AttributePropertyPriorityLevel.Property;
-            if (memberInfo is MethodInfo) return -AttributePropertyPriorityLevel.Method;
-            return -AttributePropertyPriorityLevel.Default;
+            if (memberInfo.IsDefined<OnInspectorGUIAttribute>())
+            {
+                return -1;
+            }
+
+            if (memberInfo is FieldInfo) return 0;
+            if (memberInfo is PropertyInfo) return 1;
+            if (memberInfo is MethodInfo) return 2;
+            return 3;
         }
 
         /// <summary>
