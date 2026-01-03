@@ -18,6 +18,8 @@ namespace EasyToolKit.Inspector.Editor
         private IEditorLifecycleManager _editorLifecycleManager;
         private IWindowRenderer _windowRenderer;
         private IFocusManager _focusManager;
+
+        [NonSerialized]
         private bool _isInitialized;
 
         private event Action _windowBeginGUI;
