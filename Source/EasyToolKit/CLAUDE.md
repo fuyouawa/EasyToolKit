@@ -36,6 +36,8 @@ EasyToolKit is a Unity tooling framework organized as a Visual Studio solution w
 - **Attributes** (`EasyToolKit.Inspector`) - Conditional property display, UI organization
 - **Drawers** (`EasyToolKit.Inspector.Editor`) - Custom property drawers for inspector attributes
 
+**Documentation**: For detailed information about Inspector.Editor architecture and structure, refer to [EasyToolKit.Inspector.Editor/docs/](EasyToolKit.Inspector.Editor/docs/)
+
 ## Development Guidelines
 
 ### Code Organization

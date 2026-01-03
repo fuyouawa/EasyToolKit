@@ -6,7 +6,8 @@
       "Bash(dotnet build:*)",
       "Bash(findstr:*)",
       "Bash(test:*)",
-      "Bash(Select-String -Pattern \"error CS|Build FAILED|Build succeeded\")"
+      "Bash(Select-String -Pattern \"error CS|Build FAILED|Build succeeded\")",
+      "Bash(if not exist \"e:\\\\Code\\\\Unity\\\\EasyToolKit\\\\Source\\\\EasyToolKit\\\\EasyToolKit.Inspector.Editor\\\\docs\" mkdir:*)"
     ],
     "deny": [],
     "ask": []
