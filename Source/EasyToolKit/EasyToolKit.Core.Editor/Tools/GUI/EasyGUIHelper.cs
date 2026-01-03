@@ -40,8 +40,9 @@ namespace EasyToolKit.Core.Editor
         private static readonly Action<float> ContextWidthSetter;
         private static readonly Func<Stack<float>> ContextWidthStackGetter;
         private static readonly Func<MessageType, Texture> HelpIconGetter;
-        private static int numberOfFramesToRepaint;
-        private static float betterContextWidth;
+        private static float s_betterContextWidth;
+
+        private static bool s_repaintRequested;
 
         static EasyGUIHelper()
         {
@@ -215,16 +216,16 @@ namespace EasyToolKit.Core.Editor
         {
             get
             {
-                if (betterContextWidth == 0)
+                if (s_betterContextWidth == 0)
                 {
                     return ContextWidth;
                 }
 
-                return betterContextWidth;
+                return s_betterContextWidth;
             }
             set
             {
-                betterContextWidth = value;
+                s_betterContextWidth = value;
             }
         }
 
@@ -326,11 +327,41 @@ namespace EasyToolKit.Core.Editor
 
         public static void RequestRepaint()
         {
-            numberOfFramesToRepaint = Math.Max(numberOfFramesToRepaint, 2);
+            s_repaintRequested = true;
         }
-        public static void RequestRepaint(int numberOfFramesToRepaint)
+
+        /// <summary>Clears the repaint request.</summary>
+        public static void ClearRepaintRequest()
         {
-            numberOfFramesToRepaint = Math.Max(numberOfFramesToRepaint, numberOfFramesToRepaint);
+            s_repaintRequested = false;
+        }
+
+        /// <summary>
+        /// Repaints the EditorWindow if a repaint has been requested.
+        /// </summary>
+        /// <param name="window">The window to repaint.</param>
+        public static void RepaintIfRequested(this EditorWindow window)
+        {
+            if (!s_repaintRequested && (Event.current == null || Event.current.type != UnityEngine.EventType.Used && !Event.current.isMouse))
+                return;
+            if (window)
+                window.Repaint();
+            ClearRepaintRequest();
+        }
+
+        /// <summary>
+        /// Repaints the editor if a repaint has been requested. If the currently rendering window is not an InspectorWindow, Repaint() will be called on the current window as well.
+        /// </summary>
+        /// <param name="editor">The editor to repaint.</param>
+        public static void RepaintIfRequested(this UnityEditor.Editor editor)
+        {
+            if (!s_repaintRequested && (Event.current == null || Event.current.type != UnityEngine.EventType.Used && !Event.current.isMouse))
+                return;
+            if (editor)
+                editor.Repaint();
+            if (CurrentWindow)
+                CurrentWindow.Repaint();
+            ClearRepaintRequest();
         }
 
         public static void PushIndentLevel(int indentLevel)

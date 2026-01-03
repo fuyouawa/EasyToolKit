@@ -338,231 +338,6 @@
             The highest standard priority level for drawers that should execute first.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Inspector.Editor.EasyEditor">
-            <summary>
-            Enhanced Unity editor that provides property tree-based inspector functionality
-            with support for audio filter GUI integration and custom inspector drawing.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyEditor.Tree">
-            <summary>
-            Gets the property tree for the current serialized object.
-            Creates the tree if it doesn't exist.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyEditor.IsInlineEditor">
-            <summary>
-            Gets or sets whether this editor is being used as an inline editor.
-            When true, the MonoScript field will not be drawn.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.OnInspectorGUI">
-            <summary>
-            Called by Unity to draw the inspector GUI.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.OnEnable">
-            <summary>
-            Called when the editor is enabled.
-            Ensures the static initialization is performed.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.OnDisable">
-            <summary>
-            Called when the editor is disabled.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.EnsureInitialized">
-            <summary>
-            Ensures the static initialization is performed once.
-            Uses reflection to access Unity's internal audio filter functionality.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.DrawInspector">
-            <summary>
-            Main method that draws the inspector GUI.
-            Handles property tree drawing and audio filter GUI integration.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.DrawTree">
-            <summary>
-            Draws the property tree.
-            Can be overridden by derived classes to customize tree drawing behavior.
-            </summary>
-        </member>
-        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.WindowClosed">
-            <summary>
-            Occurs when the window is closed.
-            </summary>
-        </member>
-        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.GuiBegun">
-            <summary>
-            Occurs at the beginning the OnGUI method.
-            </summary>
-        </member>
-        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.GuiEnded">
-            <summary>
-            Occurs at the end the OnGUI method.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DefaultLabelWidth">
-            <summary>
-            Gets the label width to be used. Values between 0 and 1 are treated as percentages, and values above as pixels.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.WindowPadding">
-            <summary>
-            Gets or sets the window padding. x = left, y = right, z = top, w = bottom.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.UseScrollView">
-            <summary>
-            Gets a value indicating whether the window should draw a scroll view.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawUnityEditorPreview">
-            <summary>
-            Gets a value indicating whether the window should draw a Unity editor preview, if possible.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DefaultEditorPreviewHeight">
-            <summary>
-            Gets the default preview height for Unity editors.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget">
-            <summary>
-            Gets the target which which the window is supposed to draw. By default it simply returns the editor window instance itself. By default, this method is called by <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets"/>().
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets">
-            <summary>
-            Gets the targets to be drawn by the editor window. By default this simply yield returns the <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget"/> method.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets">
-            <summary>
-            At the start of each OnGUI event when in the Layout event, the GetTargets() method is called and cached into a list which you can access from here.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Rect,System.Single)">
-            <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            This particular overload uses a few frames to calculate the height of the content before showing the window with a height that matches its content.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Rect,UnityEngine.Vector2)">
-            <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Vector2)">
-            <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,System.Single)">
-            <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,UnityEngine.Vector2,System.Single)">
-            <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object,System.Single,System.Single)">
-            <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObjectInDropDown(System.Object)">
-            <summary>
-            <para>
-            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
-            </para>
-            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObject(System.Object)">
-            <summary>
-            Pops up an editor window for the given object.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InspectObject(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Object)">
-            <summary>
-            Inspects the object using an existing EasyEditorWindow.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.CreateEasyEditorWindowInstanceForObject(System.Object)">
-            <summary>
-            Creates an editor window instance for the specified object, without opening the window.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnGUI">
-            <summary>
-            Draws the Easy Editor Window.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditors">
-            <summary>
-            Calls DrawEditor(index) for each of the currently drawing targets.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.Initialize">
-            <summary>
-            Initialize get called by OnEnable and by OnGUI after assembly reloads
-            which often happens when you recompile or enter and exit play mode.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEnable">
-            <summary>
-            Called when the window is enabled. Remember to call base.OnEnable();
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditor(System.Int32)">
-            <summary>
-            Draws the editor for the CurrentDrawingTargets[index].
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditorPreview(System.Int32,System.Single)">
-            <summary>
-            Uses the <see cref="M:UnityEditor.Editor.DrawPreview(UnityEngine.Rect)"/> method to draw a preview for the CurrentDrawingTargets[index].
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnDestroy">
-            <summary>
-            Called when the window is destroyed. Remember to call base.OnDestroy();
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEndDrawEditors">
-            <summary>
-            Called before starting to draw all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/>.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnBeginDrawEditors">
-            <summary>
-            Called after all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/> has been drawn.
-            </summary>
-        </member>
         <member name="T:EasyToolKit.Inspector.Editor.ICollectionElement">
             <summary>
             Collection element interface for representing collection data structures like arrays, lists, and dictionaries.
@@ -5210,6 +4985,509 @@
             <param name="element">The element to search for resolver type.</param>
             <param name="resolverBaseType">The base resolver type (interface or class).</param>
             <returns>The first resolver type found, or null if none found.</returns>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.EasyEditor">
+            <summary>
+            Enhanced Unity editor that provides property tree-based inspector functionality
+            with support for audio filter GUI integration and custom inspector drawing.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditor.Tree">
+            <summary>
+            Gets the property tree for the current serialized object.
+            Creates the tree if it doesn't exist.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditor.IsInlineEditor">
+            <summary>
+            Gets or sets whether this editor is being used as an inline editor.
+            When true, the MonoScript field will not be drawn.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.OnInspectorGUI">
+            <summary>
+            Called by Unity to draw the inspector GUI.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.OnEnable">
+            <summary>
+            Called when the editor is enabled.
+            Ensures the static initialization is performed.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.OnDisable">
+            <summary>
+            Called when the editor is disabled.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.EnsureInitialized">
+            <summary>
+            Ensures the static initialization is performed once.
+            Uses reflection to access Unity's internal audio filter functionality.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.DrawInspector">
+            <summary>
+            Main method that draws the inspector GUI.
+            Handles property tree drawing and audio filter GUI integration.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditor.DrawTree">
+            <summary>
+            Draws the property tree.
+            Can be overridden by derived classes to customize tree drawing behavior.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.Configuration">
+            <summary>
+            Gets the configuration for this window.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.ClosedWindow">
+            <summary>
+            Occurs when the window is closed.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.BeginGUI">
+            <summary>
+            Occurs at the beginning the OnGUI method.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.EasyEditorWindow.EndGUI">
+            <summary>
+            Occurs at the end the OnGUI method.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.TargetObject">
+            <summary>
+            Gets or sets the target object for the inspector.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.SerializedTarget">
+            <summary>
+            Gets or sets the serialized target for the inspector.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.WrappedAreaMaxHeight">
+            <summary>
+            Gets or sets the maximum height for the wrapped area.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.PreventContentFromExpanding">
+            <summary>
+            Gets or sets whether content expansion should be prevented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.ContentSize">
+            <summary>
+            Gets the current content size.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DefaultLabelWidth">
+            <summary>
+            Gets the label width to be used. Values between 0 and 1 are treated as percentages, and values above as pixels.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.WindowPadding">
+            <summary>
+            Gets or sets the window padding. x = left, y = right, z = top, w = bottom.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.UseScrollView">
+            <summary>
+            Gets a value indicating whether the window should draw a scroll view.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawUnityEditorPreview">
+            <summary>
+            Gets a value indicating whether the window should draw a Unity editor preview, if possible.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.DefaultEditorPreviewHeight">
+            <summary>
+            Gets the default preview height for Unity editors.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget">
+            <summary>
+            Gets the target which which the window is supposed to draw. By default it simply returns the editor window instance itself. By default, this method is called by <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets"/>().
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTargets">
+            <summary>
+            Gets the targets to be drawn by the editor window. By default this simply yield returns the <see cref="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.GetTarget"/> method.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets">
+            <summary>
+            At the start of each OnGUI event when in the Layout event, the GetTargets() method is called and cached into a list which you can access from here.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnGUI">
+            <summary>
+            Draws the Easy Editor Window.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditors">
+            <summary>
+            Calls DrawEditor(index) for each of the currently drawing targets.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.InitializeComponents">
+            <summary>
+            Initializes the components. Override this method to customize component creation.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.CreateEditorLifecycleManager">
+            <summary>
+            Creates the editor lifecycle manager. Override to provide a custom implementation.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.CreateWindowRenderer">
+            <summary>
+            Creates the window renderer. Override to provide a custom implementation.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.CreateFocusManager">
+            <summary>
+            Creates the focus manager. Override to provide a custom implementation.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.Initialize">
+            <summary>
+            Initialize get called by OnEnable and by OnGUI after assembly reloads
+            which often happens when you recompile or enter and exit play mode.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEnable">
+            <summary>
+            Called when the window is enabled. Remember to call base.OnEnable();
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditor(System.Int32)">
+            <summary>
+            Draws the editor for the CurrentDrawingTargets[index].
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.DrawEditorPreview(System.Int32,System.Single)">
+            <summary>
+            Uses the <see cref="M:UnityEditor.Editor.DrawPreview(UnityEngine.Rect)"/> method to draw a preview for the CurrentDrawingTargets[index].
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnDestroy">
+            <summary>
+            Called when the window is destroyed. Remember to call base.OnDestroy();
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnEndDrawEditors">
+            <summary>
+            Called before starting to draw all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/>.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindow.OnBeginDrawEditors">
+            <summary>
+            Called after all editors for the <see cref="P:EasyToolKit.Inspector.Editor.EasyEditorWindow.CurrentDrawingTargets"/> has been drawn.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility">
+            <summary>
+            Provides utility methods for creating and configuring EasyEditorWindow instances.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObjectInDropDown(System.Object,UnityEngine.Rect,System.Single)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            This particular overload uses a few frames to calculate the height of the content before showing the window with a height that matches its content.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <param name="btnRect">The button rectangle to position the dropdown from.</param>
+            <param name="windowWidth">The width of the window.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObjectInDropDown(System.Object,UnityEngine.Rect,UnityEngine.Vector2)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <param name="btnRect">The button rectangle to position the dropdown from.</param>
+            <param name="windowSize">The size of the window. If y is 0, height will be automatically calculated.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObjectInDropDown(System.Object,UnityEngine.Vector2)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <param name="position">The position to show the dropdown at.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObjectInDropDown(System.Object,System.Single)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <param name="windowWidth">The width of the window.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObjectInDropDown(System.Object,UnityEngine.Vector2,System.Single)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <param name="position">The position to show the dropdown at.</param>
+            <param name="windowWidth">The width of the window.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObjectInDropDown(System.Object,System.Single,System.Single)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <param name="width">The width of the window.</param>
+            <param name="height">The height of the window.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObjectInDropDown(System.Object)">
+            <summary>
+            <para>
+            Pops up an editor window for the given object in a drop-down window which closes when it loses its focus.
+            </para>
+            <para>Protip: You can subscribe to OnClose if you want to know when that occurs.</para>
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObject(System.Object)">
+            <summary>
+            Pops up an editor window for the given object.
+            </summary>
+            <param name="obj">The object to inspect.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.InspectObject(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Object)">
+            <summary>
+            Inspects the object using an existing EasyEditorWindow.
+            </summary>
+            <param name="window">The window to use for inspection.</param>
+            <param name="obj">The object to inspect.</param>
+            <returns>The configured EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.CreateEasyEditorWindowInstanceForObject(System.Object)">
+            <summary>
+            Creates an editor window instance for the specified object, without opening the window.
+            </summary>
+            <param name="obj">The object to create an editor window for.</param>
+            <returns>The created EasyEditorWindow instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.EasyEditorWindowUtility.SetupAutomaticHeightAdjustment(EasyToolKit.Inspector.Editor.EasyEditorWindow,System.Int32)">
+            <summary>
+            Sets up automatic height adjustment for the dropdown window to match its content height.
+            </summary>
+            <param name="window">The window to adjust.</param>
+            <param name="maxHeight">The maximum height for the window.</param>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Internal.IEditorLifecycleManager">
+            <summary>
+            Manages the lifecycle of Unity Editors and ElementTrees for an EasyEditorWindow.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.IEditorLifecycleManager.CurrentTargets">
+            <summary>
+            Gets the current target objects being edited.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.IEditorLifecycleManager.Editors">
+            <summary>
+            Gets the Unity Editors for the current targets.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.IEditorLifecycleManager.ElementTrees">
+            <summary>
+            Gets the ElementTrees for the current targets.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.IEditorLifecycleManager.UpdateEditors(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Updates the editors to match the provided targets.
+            </summary>
+            <param name="targets">The target objects to create editors for.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.IEditorLifecycleManager.DestroyAll">
+            <summary>
+            Destroys all editors and element trees.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.Internal.IEditorLifecycleManager.EditorsUpdated">
+            <summary>
+            Occurs when editors have been updated and a repaint is requested.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Internal.IFocusManager">
+            <summary>
+            Manages focus state for editor windows.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.IFocusManager.ProcessFocusEvents">
+            <summary>
+            Processes focus events to handle clearing focus when clicking on empty areas.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Internal.IWindowRenderer">
+            <summary>
+            Handles the rendering of an EasyEditorWindow's GUI.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.IWindowRenderer.ContentSize">
+            <summary>
+            Gets the current content size.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.IWindowRenderer.ScrollPosition">
+            <summary>
+            Gets the current scroll position.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.IWindowRenderer.BeginRendering(EasyToolKit.Inspector.Editor.Internal.WindowConfiguration)">
+            <summary>
+            Begins the rendering process for the window.
+            </summary>
+            <param name="config">The window configuration.</param>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.IWindowRenderer.EndRendering">
+            <summary>
+            Ends the rendering process for the window.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.IWindowRenderer.RenderEditors(System.Action)">
+            <summary>
+            Renders the editors using the provided draw action.
+            </summary>
+            <param name="drawEditorsAction">The action to draw editors.</param>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.Internal.IWindowRenderer.BeginGUI">
+            <summary>
+            Occurs at the beginning of OnGUI.
+            </summary>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.Internal.IWindowRenderer.EndGUI">
+            <summary>
+            Occurs at the end of OnGUI.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Internal.EditorLifecycleManager">
+            <summary>
+            Manages the lifecycle of Unity Editors and ElementTrees for an EasyEditorWindow.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.EditorLifecycleManager.CurrentTargets">
+            <inheritdoc/>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.EditorLifecycleManager.Editors">
+            <inheritdoc/>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.EditorLifecycleManager.ElementTrees">
+            <inheritdoc/>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.Internal.EditorLifecycleManager.EditorsUpdated">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.EditorLifecycleManager.UpdateEditors(System.Collections.Generic.IEnumerable{System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.EditorLifecycleManager.DestroyAll">
+            <inheritdoc/>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Internal.FocusManager">
+            <summary>
+            Manages focus state for editor windows.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.FocusManager.ProcessFocusEvents">
+            <inheritdoc/>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Internal.WindowRenderer">
+            <summary>
+            Handles the rendering of an EasyEditorWindow's GUI.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowRenderer.ContentSize">
+            <inheritdoc/>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowRenderer.ScrollPosition">
+            <inheritdoc/>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.Internal.WindowRenderer.BeginGUI">
+            <inheritdoc/>
+        </member>
+        <member name="E:EasyToolKit.Inspector.Editor.Internal.WindowRenderer.EndGUI">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.WindowRenderer.BeginRendering(EasyToolKit.Inspector.Editor.Internal.WindowConfiguration)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.WindowRenderer.RenderEditors(System.Action)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EasyToolKit.Inspector.Editor.Internal.WindowRenderer.EndRendering">
+            <inheritdoc/>
+        </member>
+        <member name="T:EasyToolKit.Inspector.Editor.Internal.WindowConfiguration">
+            <summary>
+            Configuration settings for EasyEditorWindow rendering and behavior.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowConfiguration.LabelWidth">
+            <summary>
+            Gets or sets the label width ratio for inspector fields.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowConfiguration.WindowPadding">
+            <summary>
+            Gets or sets the window padding for the editor window.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowConfiguration.UseScrollView">
+            <summary>
+            Gets or sets a value indicating whether scroll view is enabled.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowConfiguration.DrawUnityEditorPreview">
+            <summary>
+            Gets or sets a value indicating whether to draw Unity editor preview.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowConfiguration.WrappedAreaMaxHeight">
+            <summary>
+            Gets or sets the maximum height for wrapped areas.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowConfiguration.PreventContentFromExpanding">
+            <summary>
+            Gets or sets a value indicating whether content expansion is prevented.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Inspector.Editor.Internal.WindowConfiguration.EditorPreviewHeight">
+            <summary>
+            Gets or sets the editor preview height.
+            </summary>
         </member>
         <member name="T:EasyToolKit.Inspector.Editor.ListOperation`2">
             <summary>

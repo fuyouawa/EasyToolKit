@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using EasyToolKit.Core;
 using EasyToolKit.Core.Editor;
+using EasyToolKit.Inspector.Editor.Internal;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,20 +9,24 @@ namespace EasyToolKit.Inspector.Editor
 {
     public class EasyEditorWindow : EditorWindow
     {
-        private const int DEFAULT_WRAPPED_AREA_MAX_HEIGHT = 1000;
-        private const int DEFAULT_EDITOR_PREVIEW_HEIGHT = 170;
-        private const int DRAW_WARMUP_COUNT = 10;
-        private const float DEFAULT_LABEL_WIDTH_RATIO = 0.33f;
-
-        private static readonly Vector4 DefaultWindowPadding = new Vector4(4, 4, 4, 4);
-
         private static bool s_hasUpdatedEasyEditors;
-        private static readonly System.Reflection.PropertyInfo MaterialForceVisibleProperty;
 
-        static EasyEditorWindow()
-        {
-            MaterialForceVisibleProperty = typeof(MaterialEditor).GetProperty("forceVisible", BindingFlagsHelper.All);
-        }
+        [SerializeField, HideInInspector]
+        private WindowConfiguration _configuration;
+
+        private object _targetObject;
+        private IEditorLifecycleManager _editorLifecycleManager;
+        private IWindowRenderer _windowRenderer;
+        private IFocusManager _focusManager;
+        private bool _isInitialized;
+
+        private event Action _windowBeginGUI;
+        private event Action _windowEndGUI;
+
+        /// <summary>
+        /// Gets the configuration for this window.
+        /// </summary>
+        internal WindowConfiguration Configuration => _configuration;
 
         /// <summary>
         /// Occurs when the window is closed.
@@ -33,45 +36,20 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// Occurs at the beginning the OnGUI method.
         /// </summary>
-        public event Action BeginGUI;
+        public event Action BeginGUI
+        {
+            add => _windowBeginGUI += value;
+            remove => _windowBeginGUI -= value;
+        }
 
         /// <summary>
         /// Occurs at the end the OnGUI method.
         /// </summary>
-        public event Action EndGUI;
-
-        [SerializeField, HideInInspector]
-        private UnityEngine.Object _serializedTarget;
-
-        [SerializeField, HideInInspector]
-        private float _labelWidth = DEFAULT_LABEL_WIDTH_RATIO;
-
-        [SerializeField, HideInInspector]
-        private Vector4 _windowPadding = DefaultWindowPadding;
-
-        [SerializeField, HideInInspector]
-        private bool _useScrollView = true;
-
-        [SerializeField, HideInInspector]
-        private bool _drawUnityEditorPreview;
-
-        [SerializeField, HideInInspector]
-        private int _wrappedAreaMaxHeight = DEFAULT_WRAPPED_AREA_MAX_HEIGHT;
-
-        private object _targetObject;
-        private int _drawCountWarmup;
-        private bool _isInitialized;
-        private GUIStyle _marginStyle;
-        private object[] _currentTargets = new object[0];
-        private UnityEditor.Editor[] _editors = new UnityEditor.Editor[0];
-        private IElementTree[] _propertyTrees = new IElementTree[0];
-        private Vector2 _scrollPosition;
-        private int _mouseDownControlId;
-        private EditorWindow _mouseDownWindow;
-        private int _mouseDownKeyboardControl;
-        private Vector2 _contentSize;
-        private float _defaultEditorPreviewHeight = DEFAULT_EDITOR_PREVIEW_HEIGHT;
-        private bool _preventContentFromExpanding;
+        public event Action EndGUI
+        {
+            add => _windowEndGUI += value;
+            remove => _windowEndGUI -= value;
+        }
 
         /// <summary>
         /// Gets or sets the target object for the inspector.
@@ -91,13 +69,19 @@ namespace EasyToolKit.Inspector.Editor
             set => _serializedTarget = value;
         }
 
+        [SerializeField, HideInInspector]
+        private UnityEngine.Object _serializedTarget;
+
         /// <summary>
         /// Gets or sets the maximum height for the wrapped area.
         /// </summary>
         internal int WrappedAreaMaxHeight
         {
-            get => _wrappedAreaMaxHeight;
-            set => _wrappedAreaMaxHeight = value;
+            get => _configuration?.WrappedAreaMaxHeight ?? WindowConfiguration.DefaultWrappedAreaMaxHeight;
+            set
+            {
+                if (_configuration != null) _configuration.WrappedAreaMaxHeight = value;
+            }
         }
 
         /// <summary>
@@ -105,22 +89,28 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         internal bool PreventContentFromExpanding
         {
-            get => _preventContentFromExpanding;
-            set => _preventContentFromExpanding = value;
+            get => _configuration?.PreventContentFromExpanding ?? false;
+            set
+            {
+                if (_configuration != null) _configuration.PreventContentFromExpanding = value;
+            }
         }
 
         /// <summary>
         /// Gets the current content size.
         /// </summary>
-        internal Vector2 ContentSize => _contentSize;
+        internal Vector2 ContentSize => _windowRenderer?.ContentSize ?? Vector2.zero;
 
         /// <summary>
         /// Gets the label width to be used. Values between 0 and 1 are treated as percentages, and values above as pixels.
         /// </summary>
         public virtual float DefaultLabelWidth
         {
-            get { return _labelWidth; }
-            set { _labelWidth = value; }
+            get => _configuration?.LabelWidth ?? WindowConfiguration.DefaultLabelWidthRatio;
+            set
+            {
+                if (_configuration != null) _configuration.LabelWidth = value;
+            }
         }
 
         /// <summary>
@@ -128,8 +118,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public virtual Vector4 WindowPadding
         {
-            get { return _windowPadding; }
-            set { _windowPadding = value; }
+            get => _configuration?.WindowPadding ?? WindowConfiguration.DefaultWindowPadding;
+            set
+            {
+                if (_configuration != null) _configuration.WindowPadding = value;
+            }
         }
 
         /// <summary>
@@ -137,8 +130,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public virtual bool UseScrollView
         {
-            get { return _useScrollView; }
-            set { _useScrollView = value; }
+            get => _configuration?.UseScrollView ?? true;
+            set
+            {
+                if (_configuration != null) _configuration.UseScrollView = value;
+            }
         }
 
         /// <summary>
@@ -146,8 +142,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public virtual bool DrawUnityEditorPreview
         {
-            get { return _drawUnityEditorPreview; }
-            set { _drawUnityEditorPreview = value; }
+            get => _configuration?.DrawUnityEditorPreview ?? false;
+            set
+            {
+                if (_configuration != null) _configuration.DrawUnityEditorPreview = value;
+            }
         }
 
         /// <summary>
@@ -155,8 +154,11 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         public virtual float DefaultEditorPreviewHeight
         {
-            get { return _defaultEditorPreviewHeight; }
-            set { _defaultEditorPreviewHeight = value; }
+            get => _configuration?.EditorPreviewHeight ?? WindowConfiguration.DefaultEditorPreviewHeight;
+            set
+            {
+                if (_configuration != null) _configuration.EditorPreviewHeight = value;
+            }
         }
 
         /// <summary>
@@ -188,21 +190,13 @@ namespace EasyToolKit.Inspector.Editor
         /// <summary>
         /// At the start of each OnGUI event when in the Layout event, the GetTargets() method is called and cached into a list which you can access from here.
         /// </summary>
-        protected IReadOnlyList<object> CurrentDrawingTargets => _currentTargets;
+        protected internal IReadOnlyList<object> CurrentDrawingTargets => _editorLifecycleManager?.CurrentTargets;
 
         /// <summary>
         /// Draws the Easy Editor Window.
         /// </summary>
         protected virtual void OnGUI()
         {
-            bool measureArea = _preventContentFromExpanding;
-            if (measureArea)
-            {
-                GUILayout.BeginArea(new Rect(0, 0, position.width, _wrappedAreaMaxHeight));
-            }
-
-            BeginGUI?.Invoke();
-
             // Editor windows, can be created before Easy assigns EasyEditors to all relevent types via reflection.
             // This ensures that that happens before we render anything.
             if (!s_hasUpdatedEasyEditors)
@@ -213,114 +207,16 @@ namespace EasyToolKit.Inspector.Editor
 
             InitializeIfNeeded();
 
-            _marginStyle = _marginStyle ?? new GUIStyle() { padding = new RectOffset() };
+            _windowRenderer.BeginRendering(_configuration);
+            _focusManager.ProcessFocusEvents();
 
             if (Event.current.type == EventType.Layout)
             {
-                _marginStyle.padding.left = (int)WindowPadding.x;
-                _marginStyle.padding.right = (int)WindowPadding.y;
-                _marginStyle.padding.top = (int)WindowPadding.z;
-                _marginStyle.padding.bottom = (int)WindowPadding.w;
-
-                // Creates the editors.
-                UpdateEditors();
+                _editorLifecycleManager.UpdateEditors(GetTargets());
             }
 
-            // Removes focus from text-fields when clicking on an empty area.
-            var previousEventType = Event.current.type;
-            if (Event.current.type == EventType.MouseDown)
-            {
-                _mouseDownControlId = GUIUtility.hotControl;
-                _mouseDownKeyboardControl = GUIUtility.keyboardControl;
-                _mouseDownWindow = focusedWindow;
-            }
-
-            // Draws the editors.
-            bool useScrollView = UseScrollView;
-            if (useScrollView)
-            {
-                _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
-            }
-
-            // Draw the GUI
-            Vector2 size;
-            if (_preventContentFromExpanding)
-            {
-                size = EditorGUILayout.BeginVertical(GUILayout.ExpandHeight(false)).size;
-            }
-            else
-            {
-                size = EditorGUILayout.BeginVertical().size;
-            }
-
-            if (_contentSize == Vector2.zero || Event.current.type == EventType.Repaint)
-            {
-                _contentSize = size;
-            }
-
-            EasyGUIHelper.PushHierarchyMode(false);
-            float calculatedLabelWidth;
-            if (DefaultLabelWidth < 1)
-            {
-                calculatedLabelWidth = _contentSize.x * DefaultLabelWidth;
-            }
-            else
-            {
-                calculatedLabelWidth = DefaultLabelWidth;
-            }
-
-            EasyGUIHelper.PushLabelWidth(calculatedLabelWidth);
-            OnBeginDrawEditors();
-            GUILayout.BeginVertical(_marginStyle);
-
-            DrawEditors();
-
-            GUILayout.EndVertical();
-            OnEndDrawEditors();
-            EasyGUIHelper.PopLabelWidth();
-            EasyGUIHelper.PopHierarchyMode();
-
-            EditorGUILayout.EndVertical();
-
-            if (useScrollView)
-            {
-                EditorGUILayout.EndScrollView();
-            }
-
-            EndGUI?.Invoke();
-
-            // This removes focus from text-fields when clicking on an empty area.
-            if (Event.current.type != previousEventType) _mouseDownControlId = -2;
-            if (Event.current.type == EventType.MouseUp && GUIUtility.hotControl == _mouseDownControlId && focusedWindow == _mouseDownWindow && GUIUtility.keyboardControl == _mouseDownKeyboardControl)
-            {
-                EasyGUIHelper.RemoveFocusControl();
-                GUI.FocusControl(null);
-            }
-
-            if (_drawCountWarmup < DRAW_WARMUP_COUNT)
-            {
-                Repaint();
-
-                if (Event.current.type == EventType.Repaint)
-                {
-                    _drawCountWarmup++;
-                }
-            }
-
-            // TODO: Find out why the window doesn't repaint properly when this is 0. And then remove this if statement.
-            // Try navigating a menu tree with the keyboard filled menu items with nothing to inspect.
-            // It only updates when you start moving the mouse.
-            if (Event.current.isMouse || Event.current.type == EventType.Used || _currentTargets == null || _currentTargets.Length == 0 || EasyGUIHelper.CurrentWindowHasFocus)
-            {
-                Repaint();
-            }
-
-            //TODO Not yet realized: RepaintIfRequested();
-
-            if (measureArea)
-            {
-                GUILayout.EndArea();
-            }
+            _windowRenderer.RenderEditors(() => DrawEditors());
+            _windowRenderer.EndRendering();
         }
 
         /// <summary>
@@ -328,107 +224,12 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         protected virtual void DrawEditors()
         {
-            for (int i = 0; i < _currentTargets.Length; i++)
+            var targets = _editorLifecycleManager?.CurrentTargets;
+            if (targets == null) return;
+
+            for (int i = 0; i < targets.Count; i++)
             {
                 DrawEditor(i);
-            }
-        }
-
-        private void UpdateEditors()
-        {
-            _currentTargets = _currentTargets ?? new object[] { };
-            _editors = _editors ?? new UnityEditor.Editor[] { };
-            _propertyTrees = _propertyTrees ?? new IElementTree[] { };
-
-            IList<object> newTargets = GetTargets().ToArray() ?? new object[0];
-
-            if (_currentTargets.Length != newTargets.Count)
-            {
-                if (_editors.Length > newTargets.Count)
-                {
-                    var toDestroy = _editors.Length - newTargets.Count;
-                    for (int i = 0; i < toDestroy; i++)
-                    {
-                        var e = _editors[_editors.Length - i - 1];
-                        if (e) DestroyImmediate(e);
-                    }
-                }
-
-                if (_propertyTrees.Length > newTargets.Count)
-                {
-                    var toDestroy = _propertyTrees.Length - newTargets.Count;
-                    for (int i = 0; i < toDestroy; i++)
-                    {
-                        var e = _propertyTrees[_propertyTrees.Length - i - 1];
-                        if (e != null) (e as IDisposable)?.Dispose();
-                    }
-                }
-
-                Array.Resize(ref _currentTargets, newTargets.Count);
-                Array.Resize(ref _editors, newTargets.Count);
-                Array.Resize(ref _propertyTrees, newTargets.Count);
-                Repaint();
-            }
-
-            for (int i = 0; i < newTargets.Count; i++)
-            {
-                var newTarget = newTargets[i];
-                var curTarget = _currentTargets[i];
-                if (!object.ReferenceEquals(newTarget, curTarget))
-                {
-                    EasyGUIHelper.RequestRepaint();
-                    _currentTargets[i] = newTarget;
-
-                    if (newTarget == null)
-                    {
-                        if (_propertyTrees[i] != null) (_propertyTrees[i] as IDisposable)?.Dispose();
-                        _propertyTrees[i] = null;
-                        if (_editors[i]) DestroyImmediate(_editors[i]);
-                        _editors[i] = null;
-                    }
-                    else
-                    {
-                        var editorWindow = newTarget as EditorWindow;
-                        if (newTarget.GetType().IsInheritsFrom<UnityEngine.Object>() && !editorWindow)
-                        {
-                            var unityObject = newTarget as UnityEngine.Object;
-                            if (unityObject)
-                            {
-                                if (_propertyTrees[i] != null) (_propertyTrees[i] as IDisposable)?.Dispose();
-                                _propertyTrees[i] = null;
-                                if (_editors[i]) DestroyImmediate(_editors[i]);
-                                _editors[i] = UnityEditor.Editor.CreateEditor(unityObject);
-                                var materialEditor = _editors[i] as MaterialEditor;
-                                if (materialEditor != null && MaterialForceVisibleProperty != null)
-                                {
-                                    MaterialForceVisibleProperty.SetValue(materialEditor, true, null);
-                                }
-                            }
-                            else
-                            {
-                                if (_propertyTrees[i] != null) (_propertyTrees[i] as IDisposable)?.Dispose();
-                                _propertyTrees[i] = null;
-                                if (_editors[i]) DestroyImmediate(_editors[i]);
-                                _editors[i] = null;
-                            }
-                        }
-                        else
-                        {
-                            if (_propertyTrees[i] != null) (_propertyTrees[i] as IDisposable)?.Dispose();
-                            if (_editors[i]) DestroyImmediate(_editors[i]);
-                            _editors[i] = null;
-
-                            if (newTarget is System.Collections.IList)
-                            {
-                                _propertyTrees[i] = InspectorElements.TreeFactory.CreateTree(
-                                    (newTarget as System.Collections.IList).Cast<object>().ToArray(), null);
-                            } else
-                            {
-                                _propertyTrees[i] =  InspectorElements.TreeFactory.CreateTree(new []{ newTarget }, null);
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -437,6 +238,13 @@ namespace EasyToolKit.Inspector.Editor
             if (!_isInitialized)
             {
                 _isInitialized = true;
+
+                _configuration = _configuration ?? new WindowConfiguration();
+                _editorLifecycleManager = CreateEditorLifecycleManager();
+                _windowRenderer = CreateWindowRenderer();
+                _focusManager = CreateFocusManager();
+
+                InitializeComponents();
 
                 // Lets give it a better default name.
                 if (titleContent != null && titleContent.text == GetType().FullName)
@@ -453,12 +261,42 @@ namespace EasyToolKit.Inspector.Editor
         }
 
         /// <summary>
+        /// Initializes the components. Override this method to customize component creation.
+        /// </summary>
+        protected virtual void InitializeComponents()
+        {
+            // Wire up event handlers
+            if (_windowRenderer != null)
+            {
+                _windowRenderer.BeginGUI += () => _windowBeginGUI?.Invoke();
+                _windowRenderer.EndGUI += () => _windowEndGUI?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Creates the editor lifecycle manager. Override to provide a custom implementation.
+        /// </summary>
+        private IEditorLifecycleManager CreateEditorLifecycleManager()
+            => new EditorLifecycleManager();
+
+        /// <summary>
+        /// Creates the window renderer. Override to provide a custom implementation.
+        /// </summary>
+        private IWindowRenderer CreateWindowRenderer()
+            => new WindowRenderer(this);
+
+        /// <summary>
+        /// Creates the focus manager. Override to provide a custom implementation.
+        /// </summary>
+        private IFocusManager CreateFocusManager()
+            => new FocusManager();
+
+        /// <summary>
         /// Initialize get called by OnEnable and by OnGUI after assembly reloads
         /// which often happens when you recompile or enter and exit play mode.
         /// </summary>
         protected virtual void Initialize()
         {
-
         }
 
         private void SelectionChanged()
@@ -479,31 +317,32 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         protected virtual void DrawEditor(int index)
         {
-            var tmpPropertyTree = _propertyTrees[index];
-            var tmpEditor = _editors[index];
+            var trees = _editorLifecycleManager?.ElementTrees;
+            var editors = _editorLifecycleManager?.Editors;
 
-            if (tmpPropertyTree != null || (tmpEditor != null && tmpEditor.target != null))
+            if (trees == null || editors == null) return;
+            if (index < 0 || index >= trees.Count || index >= editors.Count) return;
+
+            var tree = trees[index];
+            var editor = editors[index];
+
+            if (tree != null)
             {
-                if (tmpPropertyTree != null)
+                tree.Draw();
+            }
+            else if (editor != null && editor.target != null)
+            {
+                if (editor is EasyEditor easyEditor)
                 {
-                    //TODO Not yet realized: withUndo argument for PropertyTree.Draw
-                    // bool withUndo = tmpPropertyTree.Targets.FirstOrDefault() as UnityEngine.Object;
-                    // tmpPropertyTree.Draw(withUndo);
-                    tmpPropertyTree.Draw();
+                    easyEditor.IsInlineEditor = true;
                 }
-                else
-                {
-                    if (tmpEditor is EasyEditor easyEditor)
-                    {
-                        easyEditor.IsInlineEditor = true;
-                    }
-                    tmpEditor.OnInspectorGUI();
-                }
+
+                editor.OnInspectorGUI();
             }
 
-            if (DrawUnityEditorPreview)
+            if (_configuration?.DrawUnityEditorPreview == true)
             {
-                DrawEditorPreview(index, _defaultEditorPreviewHeight);
+                DrawEditorPreview(index, _configuration.EditorPreviewHeight);
             }
         }
 
@@ -512,7 +351,10 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         protected virtual void DrawEditorPreview(int index, float height)
         {
-            UnityEditor.Editor editor = _editors[index];
+            var editors = _editorLifecycleManager?.Editors;
+            if (editors == null || index < 0 || index >= editors.Count) return;
+
+            UnityEditor.Editor editor = editors[index];
 
             if (editor != null && editor.HasPreviewGUI())
             {
@@ -526,46 +368,22 @@ namespace EasyToolKit.Inspector.Editor
         /// </summary>
         protected virtual void OnDestroy()
         {
-            if (_editors != null)
-            {
-                for (int i = 0; i < _editors.Length; i++)
-                {
-                    if (_editors[i])
-                    {
-                        DestroyImmediate(_editors[i]);
-                        _editors[i] = null;
-                    }
-                }
-            }
-
-            if (_propertyTrees != null)
-            {
-                for (int i = 0; i < _propertyTrees.Length; i++)
-                {
-                    if (_propertyTrees[i] != null)
-                    {
-                        (_propertyTrees[i] as IDisposable)?.Dispose();
-                        _propertyTrees[i] = null;
-                    }
-                }
-            }
-
+            _editorLifecycleManager?.DestroyAll();
             Selection.selectionChanged -= SelectionChanged;
-
             ClosedWindow?.Invoke();
         }
 
         /// <summary>
         /// Called before starting to draw all editors for the <see cref="CurrentDrawingTargets"/>.
         /// </summary>
-        protected virtual void OnEndDrawEditors()
+        protected internal virtual void OnEndDrawEditors()
         {
         }
 
         /// <summary>
         /// Called after all editors for the <see cref="CurrentDrawingTargets"/> has been drawn.
         /// </summary>
-        protected virtual void OnBeginDrawEditors()
+        protected internal virtual void OnBeginDrawEditors()
         {
         }
     }
