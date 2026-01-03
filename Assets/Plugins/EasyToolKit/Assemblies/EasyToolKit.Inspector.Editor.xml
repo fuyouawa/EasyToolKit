@@ -24,57 +24,6 @@
             </summary>
             <param name="fallback">The fallback function to add.</param>
         </member>
-        <member name="M:EasyToolKit.Inspector.Editor.HandlerUtility.GetMatchedType(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
-            <summary>
-            Resolves generic type arguments for inspector elements that target partially open generic types.
-            This method handles complex scenarios where an inspector element's generic parameters correspond to
-            specific type parameters within a partially concrete generic target type.
-            </summary>
-            <param name="matchIndex">The type match index containing the inspector element type and its target generic type.</param>
-            <param name="targets">The target types to match against; expected to contain exactly one type (the actual value type).</param>
-            <param name="stopMatch">Reference parameter that can be set to true to stop further matching (not used in this implementation).</param>
-            <returns>
-            If the inspector element's target type is a (partially open) generic type and the actual value type
-            can provide the missing generic arguments, returns the concretely instantiated inspector element type.
-            Otherwise, returns null to indicate no match.
-            </returns>
-            <remarks>
-            <para>
-            This method enables inspector elements to target complex generic types with mixed concrete and generic type parameters.
-            For example, consider an inspector element type that draws values of a generic collection with a fixed key type:
-            </para>
-            <code>
-            class SerializedDictionaryValueDrawer&lt;TValue&gt; : EasyValueDrawer&lt;SerializedDictionary&lt;string, TValue&gt;&gt;
-            </code>
-            <para>
-            Here, <c>SerializedDictionaryValueDrawer&lt;TValue&gt;</c> (matchIndex.Type) targets
-            <c>SerializedDictionary&lt;string, TValue&gt;</c> (matchIndex.Targets[0]),
-            which is a partially open generic type with a concrete key type (string) and a generic value type (TValue).
-            The target type is obtained via <see cref="M:EasyToolKit.Core.TypeExtensions.GetArgumentsOfInheritedOpenGenericType(System.Type,System.Type)"/> during initialization:
-            given <c>SerializedDictionaryValueDrawer&lt;TValue&gt;</c> and its base class <c>EasyValueDrawer&lt;SerializedDictionary&lt;string, TValue&gt;&gt;</c>,
-            the method extracts the generic argument <c>SerializedDictionary&lt;string, TValue&gt;</c>.
-            </para>
-            <para>
-            When the actual value type is <c>SerializedDictionary&lt;string, int&gt;</c> (targets[0]), this method:
-            </para>
-            <list type="number">
-            <item><description>Validates there's exactly one target type and that the element's target is a generic type.</description></item>
-            <item><description>If the target is a completely concrete type (no generic parameters), requires exact type equality.</description></item>
-            <item><description>Otherwise, calls <see cref="M:EasyToolKit.Core.TypeExtensions.ResolveMissingGenericTypeArguments(System.Type,System.Type,System.Boolean)"/> to extract the missing generic arguments:
-            <c>ResolveMissingGenericTypeArguments(SerializedDictionary&lt;string, TValue&gt;, SerializedDictionary&lt;string, int&gt;, false)</c>
-            returns <c>[int]</c>, which is the concrete type for the parameter TValue.</description></item>
-            <item><description>If no arguments are missing (types already match or are incompatible), returns null.</description></item>
-            <item><description>Checks that <c>SerializedDictionaryValueDrawer&lt;TValue&gt;</c>'s generic constraints are satisfied by <c>[int]</c> via <see cref="M:EasyToolKit.Core.TypeExtensions.AreGenericConstraintsSatisfiedBy(System.Type,System.Type[])"/>.</description></item>
-            <item><description>If all checks pass, constructs and returns <c>SerializedDictionaryValueDrawer&lt;int&gt;</c> using <see cref="M:System.Type.MakeGenericType(System.Type[])"/>.</description></item>
-            </list>
-            <para>
-            This mechanism allows inspector elements to be automatically instantiated with the correct type arguments
-            based on the actual runtime type of the property being inspected. It supports complex scenarios with multiple
-            generic parameters, such as <c>KeyValuePairDrawer&lt;TKey, TValue&gt; : EasyValueDrawer&lt;KeyValuePair&lt;int, TKey&gt;&gt;</c>
-            where only a subset of the target type's generic parameters correspond to the drawer's own generic parameters.
-            </para>
-            </remarks>
-        </member>
         <member name="M:EasyToolKit.Inspector.Editor.HandlerUtility.GetElementPriority(System.Type)">
             <summary>
             Gets the priority of an inspector element type.

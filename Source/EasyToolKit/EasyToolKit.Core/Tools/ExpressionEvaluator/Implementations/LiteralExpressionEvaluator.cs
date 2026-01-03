@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace EasyToolKit.Core
+namespace EasyToolKit.Core.Implementations
 {
     /// <summary>
     /// Evaluates literal (non-interpolated) string values.

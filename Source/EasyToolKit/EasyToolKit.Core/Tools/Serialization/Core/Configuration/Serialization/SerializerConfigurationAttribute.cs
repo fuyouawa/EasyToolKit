@@ -23,12 +23,6 @@ namespace EasyToolKit.Core
         public int Priority { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this serializer can handle inherited types.
-        /// When true, the serializer matching algorithm considers base type relationships.
-        /// </summary>
-        public bool AllowInherit { get; }
-
-        /// <summary>
         /// Initializes a new instance with Custom priority level.
         /// </summary>
         public SerializerConfigurationAttribute()
@@ -45,20 +39,11 @@ namespace EasyToolKit.Core
         }
 
         /// <summary>
-        /// Initializes a new instance with the specified priority value.
-        /// </summary>
-        public SerializerConfigurationAttribute(int priority)
-            : this(priority, allowInherit: false)
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance with the specified priority and inheritance behavior.
         /// </summary>
-        public SerializerConfigurationAttribute(int priority, bool allowInherit)
+        public SerializerConfigurationAttribute(int priority)
         {
             Priority = priority;
-            AllowInherit = allowInherit;
         }
     }
 }

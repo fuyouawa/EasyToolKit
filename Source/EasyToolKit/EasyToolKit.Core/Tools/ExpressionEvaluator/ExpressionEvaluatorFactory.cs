@@ -75,7 +75,7 @@ namespace EasyToolKit.Core
         [PublicAPI]
         public static IExpressionEvaluator<string> Literal([CanBeNull] string value)
         {
-            return new LiteralExpressionEvaluator<string>(value);
+            return new Implementations.LiteralExpressionEvaluator<string>(value);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace EasyToolKit.Core
         [PublicAPI]
         public static IExpressionEvaluatorBuilder<TResult> Evaluate<TResult>(string expressionPath, Type sourceType)
         {
-            return new ExpressionEvaluatorBuilder<TResult>(expressionPath, sourceType);
+            return new Implementations.ExpressionEvaluatorBuilder<TResult>(expressionPath, sourceType);
         }
     }
 }

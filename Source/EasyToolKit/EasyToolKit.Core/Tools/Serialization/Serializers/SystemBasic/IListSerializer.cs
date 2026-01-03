@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace EasyToolKit.Core
 {
-    [SerializerConfiguration(priority: (int)SerializerPriorityLevel.SystemBasic, allowInherit: true)]
+    [SerializerConfiguration(priority: (int)SerializerPriorityLevel.SystemBasic)]
     public class IListSerializer<T> : EasySerializer<IList<T>>
     {
         private static readonly EasySerializer<T> Serializer = GetSerializer<T>();

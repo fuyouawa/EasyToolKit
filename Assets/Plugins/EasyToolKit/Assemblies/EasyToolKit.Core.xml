@@ -787,15 +787,83 @@
             <param name="rect">The original <see cref="T:UnityEngine.Rect" />.</param>
             <returns><c>true</c> if the <see cref="T:UnityEngine.Rect" /> is equal to (0, 0, 0, 0) or (0, 0, 1, 1); otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:EasyToolKit.Core.TypeExtensions.ResolveMissingGenericTypeArguments(System.Type,System.Type,System.Boolean)">
+        <member name="M:EasyToolKit.Core.TypeExtensions.ExtractGenericArgumentsFrom(System.Type,System.Type,System.Boolean)">
             <summary>
-            <para>根据源类型（可能包含泛型参数）和目标类型，从目标类型中提取出原类型缺失的泛型参数类型。</para>
-            <para>如果源类型是个泛型参数，则直接返回目标类型。</para>
+            Extracts generic type arguments from a target type based on a source type pattern.
             </summary>
-            <param name="sourceType"></param>
-            <param name="targetType"></param>
-            <param name="allowInheritance">是否允许通过继承关系匹配泛型定义。</param>
-            <returns></returns>
+            <param name="sourceType">The source type pattern, potentially containing generic parameters (e.g., <c>Dictionary&lt;int, T&gt;</c> or <c>IList&lt;T&gt;</c>).</param>
+            <param name="targetType">The target type to extract generic arguments from (e.g., <c>Dictionary&lt;int, float&gt;</c> or <c>List&lt;int&gt;</c>).</param>
+            <param name="allowInheritance">
+            If true, allows matching through inheritance relationships (e.g., <c>IList&lt;T&gt;</c> can match <c>List&lt;int&gt;</c>).
+            If false, requires exact generic type definition match.
+            </param>
+            <returns>
+            An array of extracted generic type arguments corresponding to the generic parameters in <paramref name="sourceType"/>.
+            Returns an empty array if no generic arguments can be extracted or if the types are incompatible.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="sourceType"/> or <paramref name="targetType"/> is null.</exception>
+            <remarks>
+            <para>
+            This method enables generic type inference by extracting concrete type arguments from a target type
+            that matches the structure of a source type pattern. It is particularly useful for scenarios involving
+            partially open generic types or generic handlers that need to be instantiated with concrete type arguments.
+            </para>
+            <para>
+            <b>Examples:</b>
+            </para>
+            <para>
+            Direct generic type matching:
+            <code><![CDATA[
+            // sourceType: Dictionary<int, T>
+            // targetType: Dictionary<int, float>
+            // Result: [float]
+            ExtractGenericArgumentsFrom(typeof(Dictionary<int, T>), typeof(Dictionary<int, float>))
+            ]]></code>
+            </para>
+            <para>
+            Generic parameter matching:
+            <code><![CDATA[
+            // sourceType: T (where T is a generic parameter)
+            // targetType: float
+            // Result: [float]
+            ExtractGenericArgumentsFrom(typeof(T), typeof(float))
+            ]]></code>
+            </para>
+            <para>
+            Inheritance-based matching (<paramref name="allowInheritance"/> = true):
+            <code><![CDATA[
+            // sourceType: IList<T>
+            // targetType: List<int>
+            // Result: [int]
+            ExtractGenericArgumentsFrom(typeof(IList<T>), typeof(List<int>), allowInheritance: true)
+            ]]></code>
+            </para>
+            <para>
+            <b>Extraction Logic:</b>
+            </para>
+            <list type="number">
+            <item><description>Array types: Returns the element type if both source and target are arrays with the same structure.</description></item>
+            <item><description>Generic parameters: If source type is a generic parameter, returns the target type directly.</description></item>
+            <item><description>Generic types: Compares generic type definitions and extracts corresponding type arguments.</description></item>
+            <item><description>Inheritance: When enabled, uses <see cref="M:EasyToolKit.Core.TypeExtensions.GetArgumentsOfInheritedOpenGenericType(System.Type,System.Type)"/> to find matching base types or interfaces.</description></item>
+            </list>
+            <para>
+            <b>Typical Usage:</b>
+            </para>
+            <para>
+            This method is commonly used in type matching and handler instantiation scenarios.
+            For example, in a generic handler system:
+            <code><![CDATA[
+            // In a generic handler system
+            class DictionaryDrawer<TKey, TValue> { }
+            // To instantiate DictionaryDrawer<string, int> from Dictionary<string, int>
+            var args = typeof(Dictionary<string, int>)
+                .GetGenericTypeDefinition()
+                .ExtractGenericArgumentsFrom(typeof(Dictionary<string, int>));
+            // Returns [string, int]
+            ]]></code>
+            </para>
+            </remarks>
         </member>
         <member name="T:EasyToolKit.Core.DependencyResolutionException">
             <summary>
@@ -1270,52 +1338,6 @@
             The builder should not be used after calling <see cref="M:EasyToolKit.Core.IExpressionEvaluatorBuilder`1.Build"/>.
             </remarks>
         </member>
-        <member name="T:EasyToolKit.Core.ExpressionEvaluatorBuilder`1">
-            <summary>
-            Default implementation of <see cref="T:EasyToolKit.Core.IExpressionEvaluatorBuilder`1"/>.
-            </summary>
-            <typeparam name="TResult">The type of value to evaluate.</typeparam>
-            <remarks>
-            This builder provides a fluent API for configuring expression evaluators
-            with options such as expression flag requirement.
-            </remarks>
-        </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBuilder`1.#ctor(System.String,System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ExpressionEvaluatorBuilder`1"/> class.
-            </summary>
-            <param name="expressionPath">The expression path to evaluate.</param>
-            <param name="sourceType">The type containing the member to evaluate.</param>
-        </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBuilder`1.WithExpressionFlag">
-            <summary>
-            Configures the evaluator to require an expression flag.
-            </summary>
-            <returns>The builder instance for method chaining.</returns>
-            <remarks>
-            <para>
-            When enabled, the expression must start with '@' to trigger evaluation.
-            Otherwise, it's treated as a primitive string value.
-            </para>
-            <para>
-            This is useful for conditional interpolation where the same attribute
-            can accept both static strings and dynamic expressions.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBuilder`1.Build">
-            <summary>
-            Builds the configured expression evaluator.
-            </summary>
-            <returns>The configured expression evaluator instance.</returns>
-            <exception cref="T:System.ArgumentException">
-            Thrown when using expression flag with non-string result types.
-            </exception>
-            <remarks>
-            This method determines whether to create a literal or dynamic evaluator
-            based on the builder configuration and expression path content.
-            </remarks>
-        </member>
         <member name="T:EasyToolKit.Core.ExpressionEvaluatorFactory">
              <summary>
              Provides factory methods for creating expression evaluators.
@@ -1421,7 +1443,7 @@
             </code>
             </example>
         </member>
-        <member name="T:EasyToolKit.Core.DynamicExpressionEvaluator">
+        <member name="T:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator">
             <summary>
             Evaluates dynamic expression paths using runtime reflection.
             </summary>
@@ -1438,15 +1460,15 @@
             </list>
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.#ctor(System.String,System.Type,System.Type)">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator.#ctor(System.String,System.Type,System.Type)">
             <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/> class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator"/> class.
             </summary>
             <param name="expressionPath">The expression path to evaluate.</param>
             <param name="expectedType">The expected result type.</param>
             <param name="sourceType">The type containing the member to evaluate (null for static members).</param>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.Evaluate(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator.Evaluate(System.Object)">
             <summary>
             Evaluates the expression against the specified context object.
             </summary>
@@ -1456,7 +1478,7 @@
             Thrown when the evaluator has a validation error.
             </exception>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.PerformValidation">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator.PerformValidation">
             <summary>
             Performs validation and compiles the expression getter.
             </summary>
@@ -1466,58 +1488,58 @@
             The result is cached for subsequent calls.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.CreateCompiledGetter(System.Type,System.Type,System.String)">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator.CreateCompiledGetter(System.Type,System.Type,System.String)">
             <summary>
             Creates a compiled getter function for the expression path.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.TryAnalyseCode(System.String,System.Type,System.Type@,System.String@,System.String@)">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator.TryAnalyseCode(System.String,System.Type,System.Type@,System.String@,System.String@)">
             <summary>
             Analyzes the expression path to extract type and path information.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator.TryGetArgument(System.String,System.String,System.String@)">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator.TryGetArgument(System.String,System.String,System.String@)">
             <summary>
             Extracts an argument value from the expression path.
             </summary>
         </member>
-        <member name="T:EasyToolKit.Core.DynamicExpressionEvaluator`1">
+        <member name="T:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator`1">
             <summary>
             Typed dynamic expression evaluator.
             </summary>
             <typeparam name="TResult">The type of value to evaluate.</typeparam>
             <remarks>
-            This is a strongly-typed version of <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/>
+            This is a strongly-typed version of <see cref="T:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator"/>
             that implements <see cref="T:EasyToolKit.Core.IExpressionEvaluator`1"/>.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator`1.#ctor(System.String,System.Type)">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator`1.#ctor(System.String,System.Type)">
             <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator`1"/> class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator`1"/> class.
             </summary>
             <param name="expressionPath">The expression path to evaluate.</param>
             <param name="sourceType">The type containing the member to evaluate.</param>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator`1.EvaluateCore(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator`1.EvaluateCore(System.Object)">
             <summary>
             Evaluates the literal value (returns the stored value).
             </summary>
             <param name="context">The context object to evaluate against.</param>
             <returns>The evaluated value as the specified type.</returns>
             <remarks>
-            This method delegates to the inner <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/>
+            This method delegates to the inner <see cref="T:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator"/>
             and casts the result to the specified type.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator`1.PerformValidation">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator`1.PerformValidation">
             <summary>
             Performs validation by delegating to the inner evaluator.
             </summary>
             <remarks>
-            This method forwards validation to the wrapped <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/>.
+            This method forwards validation to the wrapped <see cref="T:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator"/>.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DynamicExpressionEvaluator`1.TryGetError(System.String@)">
+        <member name="M:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator`1.TryGetError(System.String@)">
             <summary>
             Gets whether this evaluator has a validation error.
             </summary>
@@ -1526,10 +1548,10 @@
             <c>true</c> if there is a validation error; otherwise, <c>false</c>.
             </returns>
             <remarks>
-            This method delegates to the inner <see cref="T:EasyToolKit.Core.DynamicExpressionEvaluator"/>.
+            This method delegates to the inner <see cref="T:EasyToolKit.Core.Implementations.DynamicExpressionEvaluator"/>.
             </remarks>
         </member>
-        <member name="T:EasyToolKit.Core.ExpressionEvaluatorBase">
+        <member name="T:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase">
             <summary>
             Provides a base implementation for expression evaluators.
             </summary>
@@ -1539,24 +1561,24 @@
             implement the actual evaluation logic.
             </remarks>
         </member>
-        <member name="F:EasyToolKit.Core.ExpressionEvaluatorBase.ExpressionPath">
+        <member name="F:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase.ExpressionPath">
             <summary>
             The expression path to evaluate.
             </summary>
         </member>
-        <member name="F:EasyToolKit.Core.ExpressionEvaluatorBase.ExpectedType">
+        <member name="F:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase.ExpectedType">
             <summary>
             The expected result type of the evaluation.
             </summary>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.#ctor(System.String,System.Type)">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase.#ctor(System.String,System.Type)">
             <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ExpressionEvaluatorBase"/> class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase"/> class.
             </summary>
             <param name="expressionPath">The expression path to evaluate.</param>
             <param name="expectedType">The expected result type.</param>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.TryGetError(System.String@)">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase.TryGetError(System.String@)">
             <summary>
             Gets whether this evaluator has a validation error.
             </summary>
@@ -1569,7 +1591,7 @@
             on the first call. Subsequent calls return the cached result.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.Evaluate(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase.Evaluate(System.Object)">
             <summary>
             Evaluates the expression against the specified context object.
             </summary>
@@ -1579,7 +1601,7 @@
             Thrown when the evaluator has a validation error.
             </exception>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.PerformValidation">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase.PerformValidation">
             <summary>
             Performs validation logic for the expression.
             </summary>
@@ -1588,13 +1610,13 @@
             The default implementation performs no validation.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.SetError(System.String)">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase.SetError(System.String)">
             <summary>
             Sets the validation error message.
             </summary>
             <param name="errorMessage">The error message to set.</param>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase.IsValidated">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase.IsValidated">
             <summary>
             Checks whether the evaluator has been validated.
             </summary>
@@ -1602,35 +1624,35 @@
             <c>true</c> if validation has been performed; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="T:EasyToolKit.Core.ExpressionEvaluatorBase`1">
+        <member name="T:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1">
             <summary>
             Provides a base implementation for typed expression evaluators.
             </summary>
             <typeparam name="TResult">The type of value to evaluate.</typeparam>
             <remarks>
-            This abstract class extends <see cref="T:EasyToolKit.Core.ExpressionEvaluatorBase"/> with
+            This abstract class extends <see cref="T:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase"/> with
             type-safe evaluation. Subclasses must implement the typed evaluation logic.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.#ctor(System.String)">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1.#ctor(System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.ExpressionEvaluatorBase`1"/> class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1"/> class.
             </summary>
             <param name="expressionPath">The expression path to evaluate.</param>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.Evaluate(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1.Evaluate(System.Object)">
             <summary>
             Evaluates the expression as an untyped object.
             </summary>
             <param name="context">The context object to evaluate against.</param>
             <returns>The evaluated value as an untyped object.</returns>
             <remarks>
-            This implementation calls the typed <see cref="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> method
+            This implementation calls the typed <see cref="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> method
             and returns the result as an object. Subclasses should override
-            <see cref="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> to provide type-specific evaluation logic.
+            <see cref="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> to provide type-specific evaluation logic.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EasyToolKit#Core#IExpressionEvaluator{TResult}#Evaluate(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1.EasyToolKit#Core#IExpressionEvaluator{TResult}#Evaluate(System.Object)">
             <summary>
             Evaluates the expression against the specified context object with type-safe return.
             </summary>
@@ -1638,10 +1660,10 @@
             <returns>The evaluated value as the specified type.</returns>
             <remarks>
             Explicit interface implementation for <see cref="T:EasyToolKit.Core.IExpressionEvaluator`1"/>.
-            This implementation calls <see cref="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> to perform the actual evaluation.
+            This implementation calls <see cref="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)"/> to perform the actual evaluation.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1.EvaluateCore(System.Object)">
             <summary>
             Evaluates the expression against the specified context object.
             </summary>
@@ -1655,10 +1677,56 @@
             </exception>
             <remarks>
             Subclasses must implement this method to provide type-specific evaluation logic.
-            This method is called by the public <see cref="M:EasyToolKit.Core.ExpressionEvaluatorBase`1.Evaluate(System.Object)"/> methods.
+            This method is called by the public <see cref="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBase`1.Evaluate(System.Object)"/> methods.
             </remarks>
         </member>
-        <member name="T:EasyToolKit.Core.LiteralExpressionEvaluator">
+        <member name="T:EasyToolKit.Core.Implementations.ExpressionEvaluatorBuilder`1">
+            <summary>
+            Default implementation of <see cref="T:EasyToolKit.Core.IExpressionEvaluatorBuilder`1"/>.
+            </summary>
+            <typeparam name="TResult">The type of value to evaluate.</typeparam>
+            <remarks>
+            This builder provides a fluent API for configuring expression evaluators
+            with options such as expression flag requirement.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBuilder`1.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ExpressionEvaluatorBuilder`1"/> class.
+            </summary>
+            <param name="expressionPath">The expression path to evaluate.</param>
+            <param name="sourceType">The type containing the member to evaluate.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBuilder`1.WithExpressionFlag">
+            <summary>
+            Configures the evaluator to require an expression flag.
+            </summary>
+            <returns>The builder instance for method chaining.</returns>
+            <remarks>
+            <para>
+            When enabled, the expression must start with '@' to trigger evaluation.
+            Otherwise, it's treated as a primitive string value.
+            </para>
+            <para>
+            This is useful for conditional interpolation where the same attribute
+            can accept both static strings and dynamic expressions.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ExpressionEvaluatorBuilder`1.Build">
+            <summary>
+            Builds the configured expression evaluator.
+            </summary>
+            <returns>The configured expression evaluator instance.</returns>
+            <exception cref="T:System.ArgumentException">
+            Thrown when using expression flag with non-string result types.
+            </exception>
+            <remarks>
+            This method determines whether to create a literal or dynamic evaluator
+            based on the builder configuration and expression path content.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator">
             <summary>
             Evaluates literal (non-interpolated) string values.
             </summary>
@@ -1668,16 +1736,16 @@
             an expression path.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator.#ctor(System.String)">
+        <member name="M:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator.#ctor(System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.LiteralExpressionEvaluator"/> class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator"/> class.
             </summary>
             <param name="value">The literal string value to return.</param>
             <remarks>
             The value is returned as-is without modification or evaluation.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator.EvaluateCore(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator.EvaluateCore(System.Object)">
             <summary>
             Evaluates the literal value (returns the stored string).
             </summary>
@@ -1688,7 +1756,7 @@
             literal value provided during construction.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator.PerformValidation">
+        <member name="M:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator.PerformValidation">
             <summary>
             Performs validation (literal expressions are always valid).
             </summary>
@@ -1696,25 +1764,25 @@
             Literal expressions have no validation requirements - they are always valid.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator.TryGetError(System.String@)">
+        <member name="M:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator.TryGetError(System.String@)">
             <summary>
             Gets whether this evaluator has a validation error.
             </summary>
             <param name="errorMessage">Always set to <c>null</c>.</param>
             <returns>Always <c>false</c> (literal expressions are always valid).</returns>
         </member>
-        <member name="T:EasyToolKit.Core.LiteralExpressionEvaluator`1">
+        <member name="T:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator`1">
             <summary>
             Typed literal expression evaluator for string values.
             </summary>
             <remarks>
-            This is a strongly-typed version of <see cref="T:EasyToolKit.Core.LiteralExpressionEvaluator"/>
+            This is a strongly-typed version of <see cref="T:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator"/>
             that implements <see cref="T:EasyToolKit.Core.IExpressionEvaluator`1"/>.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator`1.#ctor(`0)">
+        <member name="M:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator`1.#ctor(`0)">
             <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.LiteralExpressionEvaluator`1"/> class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator`1"/> class.
             </summary>
             <param name="value">The literal value to return.</param>
             <remarks>
@@ -1722,7 +1790,7 @@
             For string types, null values are converted to string.Empty.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator`1.EvaluateCore(System.Object)">
+        <member name="M:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator`1.EvaluateCore(System.Object)">
             <summary>
             Evaluates the literal value (returns the stored value).
             </summary>
@@ -1733,7 +1801,7 @@
             literal value provided during construction.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator`1.PerformValidation">
+        <member name="M:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator`1.PerformValidation">
             <summary>
             Performs validation (literal expressions are always valid).
             </summary>
@@ -1741,12 +1809,648 @@
             Literal expressions have no validation requirements - they are always valid.
             </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.LiteralExpressionEvaluator`1.TryGetError(System.String@)">
+        <member name="M:EasyToolKit.Core.Implementations.LiteralExpressionEvaluator`1.TryGetError(System.String@)">
             <summary>
             Gets whether this evaluator has a validation error.
             </summary>
             <param name="errorMessage">Always set to <c>null</c>.</param>
             <returns>Always <c>false</c> (literal expressions are always valid).</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration">
+            <summary>
+            Configuration implementation for creating GameObject pool definitions.
+            Provides mutable builder properties and validation for GameObject pools.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.InitialCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.MaxCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.CallPoolItemCallbacks">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.DefaultActiveLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.DefaultIdleLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.TickInterval">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.ProcessDefinition(EasyToolKit.Core.Implementations.GameObjectPoolDefinition)">
+            <summary>
+            Processes the configuration and validates all properties before creating the definition.
+            </summary>
+            <param name="definition">The definition to process.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when validation fails.
+            </exception>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.CreateDefinition">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1">
+            <summary>
+            Configuration implementation for creating object pool definitions.
+            Provides mutable builder properties and validation for object pools.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.InitialCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.MaxCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.CallPoolItemCallbacks">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.Factory">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.ProcessDefinition(EasyToolKit.Core.Implementations.ObjectPoolDefinition{`0})">
+            <summary>
+            Processes the configuration and validates all properties before creating the definition.
+            </summary>
+            <param name="definition">The definition to process.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when validation fails (e.g., InitialCapacity is negative or exceeds MaxCapacity).
+            </exception>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.CreateDefinition">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PoolBase`1">
+            <summary>
+            Abstract base class for object pool implementations.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PoolBase`1"/> class.
+            </summary>
+            <param name="name">The name of the pool.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="name"/> is null.</exception>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.ActiveCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.IdleCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.TotalCount">
+            <summary>
+            Gets the total number of objects managed by this pool.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.Capacity">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Rent">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Release(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Remove(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.RentFromIdle">
+            <summary>
+            Rents an instance from the idle collection or creates a new one.
+            </summary>
+            <returns>The rented instance.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.ReleaseToIdle(`0)">
+            <summary>
+            Releases an instance back to the idle collection.
+            </summary>
+            <param name="instance">The instance to release.</param>
+            <returns><c>true</c> if successfully released; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.RemoveFromActive(`0)">
+            <summary>
+            Removes an instance from the active collection.
+            </summary>
+            <param name="instance">The instance to remove.</param>
+            <returns><c>true</c> if successfully removed; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.ShrinkIdleObjectsToFitCapacity(System.Int32)">
+            <summary>
+            Shrinks the idle collection to fit within the capacity constraint.
+            </summary>
+            <param name="shrinkCount">The number of idle instances to remove.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.OnRent(`0)">
+            <summary>
+            Called when an object is rented from the pool.
+            Override to provide custom behavior.
+            </summary>
+            <param name="instance">The rented instance.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.OnRelease(`0)">
+            <summary>
+            Called when an object is released back to the pool.
+            Override to provide custom behavior.
+            </summary>
+            <param name="instance">The released instance.</param>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolDefinition">
+            <summary>
+            Implementation of <see cref="T:EasyToolKit.Core.IGameObjectPoolDefinition"/>.
+            Stores immutable configuration data for GameObject pools.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.InitialCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.MaxCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.CallPoolItemCallbacks">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.DefaultActiveLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.DefaultIdleLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.TickInterval">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1">
+            <summary>
+            Implementation of <see cref="T:EasyToolKit.Core.IObjectPoolDefinition`1"/>.
+            Stores immutable configuration data for object pools.
+            </summary>
+            <typeparam name="T">The type of objects managed by the pool.</typeparam>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.InitialCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.MaxCapacity">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.CallPoolItemCallbacks">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.Factory">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.GameObjectPool">
+            <summary>
+            Implementation of a specialized object pool for Unity GameObject instances.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.#ctor(System.String,UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPoolDefinition,UnityEngine.Transform)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.GameObjectPool"/> class.
+            </summary>
+            <param name="name">The name of the pool.</param>
+            <param name="original">The original prefab for instantiation.</param>
+            <param name="definition">The definition for the pool.</param>
+            <param name="rootTransform">The root Transform for pooled objects.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when <paramref name="name"/>, <paramref name="original"/>, or <paramref name="definition"/> is null.
+            </exception>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.Original">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.Transform">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.ActiveCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.IdleCount">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.RentFromIdle">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.ReleaseToIdle(UnityEngine.GameObject)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.RemoveFromActive(UnityEngine.GameObject)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.ShrinkIdleObjectsToFitCapacity(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.GetLifetimeAccessor(UnityEngine.GameObject)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.TryGetLifetimeAccessor(UnityEngine.GameObject,EasyToolKit.Core.IPooledGameObjectLifetimeAccessor@)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.Tick(System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolManager">
+            <summary>
+            Implementation of a manager for creating and managing GameObject pools.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.#ctor(UnityEngine.Transform)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.GameObjectPoolManager"/> class.
+            </summary>
+            <param name="rootTransform">The root Transform for pooled GameObject hierarchy.</param>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolManager.Transform">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.GetPoolNames">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.HasPool(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.TryGetPool(System.String,EasyToolKit.Core.IGameObjectPool@)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.GetPool(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.CreatePool(System.String,UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPoolDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.Tick(System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectInfo">
+            <summary>
+            Provides metadata about a pooled GameObject instance.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PooledGameObjectInfo.#ctor(UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPool)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PooledGameObjectInfo"/> class.
+            </summary>
+            <param name="target">The target GameObject instance.</param>
+            <param name="owningPool">The pool that owns this instance.</param>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.Target">
+            <summary>
+            Gets the target GameObject instance.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.OwningPool">
+            <summary>
+            Gets the pool that owns this instance.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.ActiveLifetime">
+            <summary>
+            Gets or sets the maximum lifetime for the active state.
+            Objects exceeding this time will be recycled back to the pool.
+            Values less than zero indicate unlimited lifetime.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.IdleLifetime">
+            <summary>
+            Gets or sets the maximum lifetime for the idle state.
+            Objects exceeding this time will be destroyed.
+            Values less than zero indicate unlimited lifetime.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.ElapsedTime">
+            <summary>
+            Gets or sets the elapsed time since the last state change.
+            <list type="bullet">
+              <item>When <see cref="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State"/> is <see cref="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Active"/>: represents active duration.</item>
+              <item>When <see cref="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State"/> is <see cref="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Idle"/>: represents idle duration.</item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State">
+            <summary>
+            Gets or sets the current state of the pooled GameObject.
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor">
+            <summary>
+            Implementation of <see cref="T:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor"/> that provides
+            access to pooled GameObject lifetime properties via getter and setter delegates.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.#ctor(System.Func{System.Single},System.Action{System.Single},System.Func{System.Single},System.Action{System.Single},System.Func{System.Single},System.Action{System.Single})">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor"/> class.
+            </summary>
+            <param name="activeLifetimeGetter">Function to get the active lifetime value.</param>
+            <param name="activeLifetimeSetter">Action to set the active lifetime value.</param>
+            <param name="idleLifetimeGetter">Function to get the idle lifetime value.</param>
+            <param name="idleLifetimeSetter">Action to set the idle lifetime value.</param>
+            <param name="elapsedTimeGetter">Function to get the elapsed time value.</param>
+            <param name="elapsedTimeSetter">Action to set the elapsed time value.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when any of the parameters is null.
+            </exception>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.ActiveLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.IdleLifetime">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.ElapsedTime">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectState">
+            <summary>
+            Defines the state of a pooled GameObject.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Active">
+            <summary>
+            The GameObject is currently in use (rented from the pool).
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Idle">
+            <summary>
+            The GameObject is idle (available for rent).
+            </summary>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.ObjectPool`1">
+            <summary>
+            Implementation of a generic object pool for C# objects.
+            </summary>
+            <typeparam name="T">The type of objects to pool.</typeparam>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.#ctor(System.String,EasyToolKit.Core.IObjectPoolDefinition{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ObjectPool`1"/> class.
+            </summary>
+            <param name="name">The name of the pool.</param>
+            <param name="definition">The definition for the pool.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when definition is null.</exception>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.ActiveCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.IdleCount">
+            <inheritdoc />
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.ObjectType">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.AddRentCallback(System.Action{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.AddReleaseCallback(System.Action{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.RentFromIdle">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.ReleaseToIdle(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.RemoveFromActive(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.ShrinkIdleObjectsToFitCapacity(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.OnRent(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.OnRelease(`0)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolManager">
+            <summary>
+            Default implementation of <see cref="T:EasyToolKit.Core.IObjectPoolManager"/>.
+            </summary>
+        </member>
+        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolManager.PoolCount">
+            <summary>
+            Gets the number of pools managed by this manager.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ObjectPoolManager"/> class
+            with the default factory.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.CreatePool``1(System.String,EasyToolKit.Core.IObjectPoolDefinition{``0})">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.TryGetPool``1(System.String,EasyToolKit.Core.IObjectPool{``0}@)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.PoolConfigurator">
+            <summary>
+            Factory implementation for creating pool configuration instances.
+            Provides methods to create configurations for all supported pool types.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolConfigurator.ObjectPool``1">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolConfigurator.GameObjectPool">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolManagerFactory.CreateObjectPoolManager">
+            <inheritdoc />
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.PoolManagerFactory.CreateGameObjectPoolManager(UnityEngine.Transform)">
+            <inheritdoc />
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.TypeMatcher">
+            <summary>
+            Provides a flexible type matching system that can match types against target types using configurable rules.
+            Supports exact matching, generic type matching, type inference, and custom matching rules.
+            </summary>
+            <remarks>
+            This is the default implementation of <see cref="T:EasyToolKit.Core.ITypeMatcher"/>. It provides a comprehensive
+            type matching system with caching for performance optimization. The type matcher is used
+            primarily for finding appropriate handlers or serializers for given value types.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcher.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.TypeMatcher"/> class.
+            </summary>
+            <param name="addDefaultMatchRules">Whether to add the default type matching rules.</param>
+            <remarks>
+            When <paramref name="addDefaultMatchRules"/> is true, the following rules are added:
+            <list type="bullet">
+            <item><description>ExactMatch - Direct type equality</description></item>
+            <item><description>GenericSingleTargetMatch - Generic type definition matching</description></item>
+            <item><description>GenericConstraintsMatchRule - Generic constraint satisfaction</description></item>
+            <item><description>GenericParameterInference - Generic parameter inference</description></item>
+            <item><description>NestedGenericTypeMatch - Nested generic type matching</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcher.AddTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+            <summary>
+            Adds type match indices to the current collection.
+            </summary>
+            <param name="matchIndices">The type match indices to add.</param>
+            <remarks>
+            This method appends the specified indices to the existing collection.
+            The cache is automatically cleared after this operation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcher.SetTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+            <summary>
+            Replaces the current type match indices with the specified collection.
+            </summary>
+            <param name="matchIndices">The new type match indices to use.</param>
+            <remarks>
+            This method replaces all existing indices with the specified collection.
+            The cache is automatically cleared after this operation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcher.AddMatchRule(EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Adds a custom match rule to the type matcher.
+            </summary>
+            <param name="rule">The match rule to add.</param>
+            <remarks>
+            Rules are evaluated in the order they were added. The cache is automatically
+            cleared after this operation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcher.RemoveMatchRule(EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Removes a match rule from the type matcher.
+            </summary>
+            <param name="rule">The match rule to remove.</param>
+            <remarks>
+            The cache is automatically cleared after this operation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcher.GetMatches(System.Type[])">
+            <summary>
+            Gets type matches for the specified target types.
+            Results are cached based on the target types to improve performance.
+            </summary>
+            <param name="targets">The target types to match against.</param>
+            <returns>An array of type match results, ordered by priority (highest first).</returns>
+            <remarks>
+            This method evaluates all registered match indices against the specified
+            target types using the registered match rules. Results are cached for
+            performance, so subsequent calls with the same target types will return
+            cached results.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.Implementations.TypeMatcherBase">
+            <summary>
+            Abstract base class for type matchers providing common functionality.
+            </summary>
+            <remarks>
+            This base class provides shared functionality for all type matcher implementations,
+            including match rule management, cache management, and default rule registration.
+            Derived classes must implement the abstract methods for managing match indices
+            and getting match results.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Core.Implementations.TypeMatcherBase.MatchRules">
+            <summary>
+            The collection of registered match rules.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Implementations.TypeMatcherBase.MatchIndices">
+            <summary>
+            The collection of registered match indices.
+            </summary>
+        </member>
+        <member name="F:EasyToolKit.Core.Implementations.TypeMatcherBase.MatchResultsCache">
+            <summary>
+            The cache for match results, keyed by target type hash code.
+            </summary>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcherBase.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.TypeMatcherBase"/> class.
+            </summary>
+            <param name="addDefaultRules">Whether to add the default type matching rules.</param>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcherBase.AddTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+            <summary>
+            Adds type match indices to the current collection.
+            </summary>
+            <param name="matchIndices">The type match indices to add.</param>
+            <remarks>
+            This method must be implemented by derived classes to add indices
+            to the collection and clear the cache.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcherBase.SetTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+            <summary>
+            Replaces the current type match indices with the specified collection.
+            </summary>
+            <param name="matchIndices">The new type match indices to use.</param>
+            <remarks>
+            This method must be implemented by derived classes to replace indices
+            in the collection and clear the cache.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcherBase.AddMatchRule(EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Adds a custom match rule to the type matcher.
+            </summary>
+            <param name="rule">The match rule to add.</param>
+            <remarks>
+            This method must be implemented by derived classes to add the rule
+            to the collection and clear the cache.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcherBase.RemoveMatchRule(EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Removes a match rule from the type matcher.
+            </summary>
+            <param name="rule">The match rule to remove.</param>
+            <remarks>
+            This method must be implemented by derived classes to remove the rule
+            from the collection and clear the cache.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcherBase.GetMatches(System.Type[])">
+            <summary>
+            Gets type matches for the specified target types.
+            Results are cached based on the target types to improve performance.
+            </summary>
+            <param name="targets">The target types to match against.</param>
+            <returns>An array of type match results, ordered by priority (highest first).</returns>
+            <remarks>
+            This method must be implemented by derived classes to perform the
+            actual matching logic.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcherBase.ClearCache">
+            <summary>
+            Clears all caches.
+            </summary>
+            <remarks>
+            This method clears both the instance match results cache and the
+            static merged results cache. It should be called whenever match
+            indices or rules are modified.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.Implementations.TypeMatcherBase.AddDefaultMatchRules">
+            <summary>
+            Adds the default type matching rules to the matcher.
+            </summary>
+            <remarks>
+            This method uses <see cref="T:EasyToolKit.Core.DefaultTypeMatchRuleProvider"/> to get all
+            default rules and adds them to the matcher. Rules are added in the
+            order returned by the provider, which is significant for rule evaluation.
+            </remarks>
         </member>
         <member name="M:EasyToolKit.Core.Assert.IsEqual``1(``0,``0,System.String)">
             <summary>
@@ -2574,458 +3278,6 @@
             <param name="capacity">The new capacity value.</param>
             <returns>The same pool instance for fluent chaining.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="pool"/> is null.</exception>
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration">
-            <summary>
-            Configuration implementation for creating GameObject pool definitions.
-            Provides mutable builder properties and validation for GameObject pools.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.InitialCapacity">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.MaxCapacity">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.CallPoolItemCallbacks">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.DefaultActiveLifetime">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.DefaultIdleLifetime">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.TickInterval">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.ProcessDefinition(EasyToolKit.Core.Implementations.GameObjectPoolDefinition)">
-            <summary>
-            Processes the configuration and validates all properties before creating the definition.
-            </summary>
-            <param name="definition">The definition to process.</param>
-            <exception cref="T:System.InvalidOperationException">
-            Thrown when validation fails.
-            </exception>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolConfiguration.CreateDefinition">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1">
-            <summary>
-            Configuration implementation for creating object pool definitions.
-            Provides mutable builder properties and validation for object pools.
-            </summary>
-            <typeparam name="T">The type of objects managed by the pool.</typeparam>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.InitialCapacity">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.MaxCapacity">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.CallPoolItemCallbacks">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.Factory">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.ProcessDefinition(EasyToolKit.Core.Implementations.ObjectPoolDefinition{`0})">
-            <summary>
-            Processes the configuration and validates all properties before creating the definition.
-            </summary>
-            <param name="definition">The definition to process.</param>
-            <exception cref="T:System.InvalidOperationException">
-            Thrown when validation fails (e.g., InitialCapacity is negative or exceeds MaxCapacity).
-            </exception>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolConfiguration`1.CreateDefinition">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.PoolBase`1">
-            <summary>
-            Abstract base class for object pool implementations.
-            </summary>
-            <typeparam name="T">The type of objects managed by the pool.</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PoolBase`1"/> class.
-            </summary>
-            <param name="name">The name of the pool.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="name"/> is null.</exception>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.Name">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.ActiveCount">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.IdleCount">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.TotalCount">
-            <summary>
-            Gets the total number of objects managed by this pool.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PoolBase`1.Capacity">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Rent">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Release(`0)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.Remove(`0)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.RentFromIdle">
-            <summary>
-            Rents an instance from the idle collection or creates a new one.
-            </summary>
-            <returns>The rented instance.</returns>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.ReleaseToIdle(`0)">
-            <summary>
-            Releases an instance back to the idle collection.
-            </summary>
-            <param name="instance">The instance to release.</param>
-            <returns><c>true</c> if successfully released; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.RemoveFromActive(`0)">
-            <summary>
-            Removes an instance from the active collection.
-            </summary>
-            <param name="instance">The instance to remove.</param>
-            <returns><c>true</c> if successfully removed; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.ShrinkIdleObjectsToFitCapacity(System.Int32)">
-            <summary>
-            Shrinks the idle collection to fit within the capacity constraint.
-            </summary>
-            <param name="shrinkCount">The number of idle instances to remove.</param>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.OnRent(`0)">
-            <summary>
-            Called when an object is rented from the pool.
-            Override to provide custom behavior.
-            </summary>
-            <param name="instance">The rented instance.</param>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolBase`1.OnRelease(`0)">
-            <summary>
-            Called when an object is released back to the pool.
-            Override to provide custom behavior.
-            </summary>
-            <param name="instance">The released instance.</param>
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolDefinition">
-            <summary>
-            Implementation of <see cref="T:EasyToolKit.Core.IGameObjectPoolDefinition"/>.
-            Stores immutable configuration data for GameObject pools.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.InitialCapacity">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.MaxCapacity">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.CallPoolItemCallbacks">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.DefaultActiveLifetime">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.DefaultIdleLifetime">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolDefinition.TickInterval">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1">
-            <summary>
-            Implementation of <see cref="T:EasyToolKit.Core.IObjectPoolDefinition`1"/>.
-            Stores immutable configuration data for object pools.
-            </summary>
-            <typeparam name="T">The type of objects managed by the pool.</typeparam>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.InitialCapacity">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.MaxCapacity">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.CallPoolItemCallbacks">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolDefinition`1.Factory">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.GameObjectPool">
-            <summary>
-            Implementation of a specialized object pool for Unity GameObject instances.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.#ctor(System.String,UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPoolDefinition,UnityEngine.Transform)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.GameObjectPool"/> class.
-            </summary>
-            <param name="name">The name of the pool.</param>
-            <param name="original">The original prefab for instantiation.</param>
-            <param name="definition">The definition for the pool.</param>
-            <param name="rootTransform">The root Transform for pooled objects.</param>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown when <paramref name="name"/>, <paramref name="original"/>, or <paramref name="definition"/> is null.
-            </exception>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.Original">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.Transform">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.ActiveCount">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPool.IdleCount">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.RentFromIdle">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.ReleaseToIdle(UnityEngine.GameObject)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.RemoveFromActive(UnityEngine.GameObject)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.ShrinkIdleObjectsToFitCapacity(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.GetLifetimeAccessor(UnityEngine.GameObject)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.TryGetLifetimeAccessor(UnityEngine.GameObject,EasyToolKit.Core.IPooledGameObjectLifetimeAccessor@)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPool.Tick(System.Single)">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.GameObjectPoolManager">
-            <summary>
-            Implementation of a manager for creating and managing GameObject pools.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.#ctor(UnityEngine.Transform)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.GameObjectPoolManager"/> class.
-            </summary>
-            <param name="rootTransform">The root Transform for pooled GameObject hierarchy.</param>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.GameObjectPoolManager.Transform">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.GetPoolNames">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.HasPool(System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.TryGetPool(System.String,EasyToolKit.Core.IGameObjectPool@)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.GetPool(System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.CreatePool(System.String,UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPoolDefinition)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.GameObjectPoolManager.Tick(System.Single)">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectInfo">
-            <summary>
-            Provides metadata about a pooled GameObject instance.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PooledGameObjectInfo.#ctor(UnityEngine.GameObject,EasyToolKit.Core.IGameObjectPool)">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PooledGameObjectInfo"/> class.
-            </summary>
-            <param name="target">The target GameObject instance.</param>
-            <param name="owningPool">The pool that owns this instance.</param>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.Target">
-            <summary>
-            Gets the target GameObject instance.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.OwningPool">
-            <summary>
-            Gets the pool that owns this instance.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.ActiveLifetime">
-            <summary>
-            Gets or sets the maximum lifetime for the active state.
-            Objects exceeding this time will be recycled back to the pool.
-            Values less than zero indicate unlimited lifetime.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.IdleLifetime">
-            <summary>
-            Gets or sets the maximum lifetime for the idle state.
-            Objects exceeding this time will be destroyed.
-            Values less than zero indicate unlimited lifetime.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.ElapsedTime">
-            <summary>
-            Gets or sets the elapsed time since the last state change.
-            <list type="bullet">
-              <item>When <see cref="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State"/> is <see cref="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Active"/>: represents active duration.</item>
-              <item>When <see cref="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State"/> is <see cref="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Idle"/>: represents idle duration.</item>
-            </list>
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectInfo.State">
-            <summary>
-            Gets or sets the current state of the pooled GameObject.
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor">
-            <summary>
-            Implementation of <see cref="T:EasyToolKit.Core.IPooledGameObjectLifetimeAccessor"/> that provides
-            access to pooled GameObject lifetime properties via getter and setter delegates.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.#ctor(System.Func{System.Single},System.Action{System.Single},System.Func{System.Single},System.Action{System.Single},System.Func{System.Single},System.Action{System.Single})">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor"/> class.
-            </summary>
-            <param name="activeLifetimeGetter">Function to get the active lifetime value.</param>
-            <param name="activeLifetimeSetter">Action to set the active lifetime value.</param>
-            <param name="idleLifetimeGetter">Function to get the idle lifetime value.</param>
-            <param name="idleLifetimeSetter">Action to set the idle lifetime value.</param>
-            <param name="elapsedTimeGetter">Function to get the elapsed time value.</param>
-            <param name="elapsedTimeSetter">Action to set the elapsed time value.</param>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown when any of the parameters is null.
-            </exception>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.ActiveLifetime">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.IdleLifetime">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.PooledGameObjectLifetimeAccessor.ElapsedTime">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.PooledGameObjectState">
-            <summary>
-            Defines the state of a pooled GameObject.
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Active">
-            <summary>
-            The GameObject is currently in use (rented from the pool).
-            </summary>
-        </member>
-        <member name="F:EasyToolKit.Core.Implementations.PooledGameObjectState.Idle">
-            <summary>
-            The GameObject is idle (available for rent).
-            </summary>
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.ObjectPool`1">
-            <summary>
-            Implementation of a generic object pool for C# objects.
-            </summary>
-            <typeparam name="T">The type of objects to pool.</typeparam>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.#ctor(System.String,EasyToolKit.Core.IObjectPoolDefinition{`0})">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ObjectPool`1"/> class.
-            </summary>
-            <param name="name">The name of the pool.</param>
-            <param name="definition">The definition for the pool.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when definition is null.</exception>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.ActiveCount">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.IdleCount">
-            <inheritdoc />
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPool`1.ObjectType">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.AddRentCallback(System.Action{`0})">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.AddReleaseCallback(System.Action{`0})">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.RentFromIdle">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.ReleaseToIdle(`0)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.RemoveFromActive(`0)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.ShrinkIdleObjectsToFitCapacity(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.OnRent(`0)">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPool`1.OnRelease(`0)">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.ObjectPoolManager">
-            <summary>
-            Default implementation of <see cref="T:EasyToolKit.Core.IObjectPoolManager"/>.
-            </summary>
-        </member>
-        <member name="P:EasyToolKit.Core.Implementations.ObjectPoolManager.PoolCount">
-            <summary>
-            Gets the number of pools managed by this manager.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:EasyToolKit.Core.Implementations.ObjectPoolManager"/> class
-            with the default factory.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.CreatePool``1(System.String,EasyToolKit.Core.IObjectPoolDefinition{``0})">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.ObjectPoolManager.TryGetPool``1(System.String,EasyToolKit.Core.IObjectPool{``0}@)">
-            <inheritdoc />
-        </member>
-        <member name="T:EasyToolKit.Core.Implementations.PoolConfigurator">
-            <summary>
-            Factory implementation for creating pool configuration instances.
-            Provides methods to create configurations for all supported pool types.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolConfigurator.ObjectPool``1">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolConfigurator.GameObjectPool">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolManagerFactory.CreateObjectPoolManager">
-            <inheritdoc />
-        </member>
-        <member name="M:EasyToolKit.Core.Implementations.PoolManagerFactory.CreateGameObjectPoolManager(UnityEngine.Transform)">
-            <inheritdoc />
         </member>
         <member name="T:EasyToolKit.Core.IPoolConfigurator">
             <summary>
@@ -3984,12 +4236,6 @@
             Higher priority serializers are evaluated first during type matching.
             </summary>
         </member>
-        <member name="P:EasyToolKit.Core.SerializerConfigurationAttribute.AllowInherit">
-            <summary>
-            Gets a value indicating whether this serializer can handle inherited types.
-            When true, the serializer matching algorithm considers base type relationships.
-            </summary>
-        </member>
         <member name="M:EasyToolKit.Core.SerializerConfigurationAttribute.#ctor">
             <summary>
             Initializes a new instance with Custom priority level.
@@ -4001,11 +4247,6 @@
             </summary>
         </member>
         <member name="M:EasyToolKit.Core.SerializerConfigurationAttribute.#ctor(System.Int32)">
-            <summary>
-            Initializes a new instance with the specified priority value.
-            </summary>
-        </member>
-        <member name="M:EasyToolKit.Core.SerializerConfigurationAttribute.#ctor(System.Int32,System.Boolean)">
             <summary>
             Initializes a new instance with the specified priority and inheritance behavior.
             </summary>
@@ -4150,14 +4391,113 @@
             当状态更改完的的回调
             </summary>
         </member>
-        <member name="T:EasyToolKit.Core.DefaultTypeMatchRules">
+        <member name="T:EasyToolKit.Core.ITypeMatcher">
             <summary>
-            Provides default type matching rules for the TypeMatcher system.
-            These rules handle common type matching scenarios including exact matches,
-            generic type matching, type inference, and nested type matching.
+            Defines a type matcher that finds matching types based on configurable rules.
             </summary>
+            <remarks>
+            Type matchers are used to find appropriate handler or serializer types for
+            given target types. They support exact matching, generic type matching, type
+            inference, and custom matching rules through a flexible rule-based system.
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.ExactMatch(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+        <member name="M:EasyToolKit.Core.ITypeMatcher.AddTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+            <summary>
+            Adds type match indices to the current collection.
+            </summary>
+            <param name="matchIndices">The type match indices to add.</param>
+            <remarks>
+            This method appends the specified indices to the existing collection.
+            The cache is automatically cleared after this operation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ITypeMatcher.SetTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+            <summary>
+            Replaces the current type match indices with the specified collection.
+            </summary>
+            <param name="matchIndices">The new type match indices to use.</param>
+            <remarks>
+            This method replaces all existing indices with the specified collection.
+            The cache is automatically cleared after this operation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ITypeMatcher.AddMatchRule(EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Adds a custom match rule to the type matcher.
+            </summary>
+            <param name="rule">The match rule to add.</param>
+            <remarks>
+            Rules are evaluated in the order they were added. The cache is automatically
+            cleared after this operation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ITypeMatcher.RemoveMatchRule(EasyToolKit.Core.TypeMatchRule)">
+            <summary>
+            Removes a match rule from the type matcher.
+            </summary>
+            <param name="rule">The match rule to remove.</param>
+            <remarks>
+            The cache is automatically cleared after this operation.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.ITypeMatcher.GetMatches(System.Type[])">
+            <summary>
+            Gets type matches for the specified target types.
+            Results are cached based on the target types to improve performance.
+            </summary>
+            <param name="targets">The target types to match against.</param>
+            <returns>An array of type match results, ordered by priority (highest first).</returns>
+            <remarks>
+            This method evaluates all registered match indices against the specified
+            target types using the registered match rules. Results are cached for
+            performance, so subsequent calls with the same target types will return
+            cached results.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.DefaultTypeMatchRuleProvider">
+            <summary>
+            Provides the default type matching rules.
+            </summary>
+            <remarks>
+            This class provides all default type matching rules in the correct order.
+            Rules are evaluated in the order returned by <see cref="M:EasyToolKit.Core.DefaultTypeMatchRuleProvider.GetRules"/>, so the
+            order is significant. More specific rules should come before more general ones.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.DefaultTypeMatchRuleProvider.GetRules">
+            <summary>
+            Gets all default type match rules in priority order.
+            </summary>
+            <returns>An enumerable of default match rules.</returns>
+            <remarks>
+            The rules are returned in the order they should be evaluated:
+            <list type="number">
+            <item><description>ExactMatch - Direct type equality</description></item>
+            <item><description>GenericSingleTargetMatch - Generic type definition matching</description></item>
+            <item><description>GenericConstraintsMatchRule - Generic constraint satisfaction</description></item>
+            <item><description>GenericParameterInference - Generic parameter inference</description></item>
+            <item><description>GenericTypeResolution - Generic type argument resolution for partially open generic types</description></item>
+            <item><description>NestedGenericTypeMatch - Nested generic type matching</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.ExactMatchRule">
+            <summary>
+            Provides a type matching rule that matches types exactly.
+            </summary>
+            <remarks>
+            This rule performs direct type equality checking. Both the type and all
+            target types must match exactly for the rule to succeed. This is the
+            most specific matching rule and is evaluated first.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Core.ExactMatchRule.Rule">
+            <summary>
+            Gets the exact match rule delegate.
+            </summary>
+            <value>A <see cref="T:EasyToolKit.Core.TypeMatchRule"/> delegate that performs exact type matching.</value>
+        </member>
+        <member name="M:EasyToolKit.Core.ExactMatchRule.ExactMatch(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
             <summary>
             Matches types exactly - both the type and all target types must match exactly.
             </summary>
@@ -4165,18 +4505,29 @@
             <param name="targets">The target types to match against.</param>
             <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
             <returns>The matched type if successful; otherwise, null.</returns>
+            <remarks>
+            This rule only matches non-generic types. Generic type definitions
+            are not matched by this rule.
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.GenericSingleTargetMatch(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+        <member name="T:EasyToolKit.Core.GenericConstraintsMatchRule">
             <summary>
-            Matches generic type definitions against single generic target types.
-            The target type must have the same generic type definition as the match index target.
+            Provides a type matching rule that validates generic parameter constraints.
             </summary>
-            <param name="matchIndex">The type match index to evaluate.</param>
-            <param name="targets">The target types to match against.</param>
-            <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
-            <returns>The constructed generic type if successful; otherwise, null.</returns>
+            <remarks>
+            This rule handles cases where all target types are generic parameters and
+            must satisfy the generic constraints of the match index type. This is
+            useful for validating that generic type arguments meet the required
+            constraints (class, struct, new(), base class, interface, etc.).
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.TargetsSatisfyGenericParameterConstraints(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+        <member name="F:EasyToolKit.Core.GenericConstraintsMatchRule.Rule">
+            <summary>
+            Gets the generic constraints match rule delegate.
+            </summary>
+            <value>A <see cref="T:EasyToolKit.Core.TypeMatchRule"/> delegate that performs generic constraints matching.</value>
+        </member>
+        <member name="M:EasyToolKit.Core.GenericConstraintsMatchRule.TargetsSatisfyGenericParameterConstraints(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
             <summary>
             Matches when all target types are generic parameters and satisfy the generic constraints
             of the match index type.
@@ -4185,8 +4536,29 @@
             <param name="targets">The target types to match against.</param>
             <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
             <returns>The constructed generic type if successful; otherwise, null.</returns>
+            <remarks>
+            This rule verifies that all target types in the match index are generic parameters
+            (e.g., <typeparamref name="T"/>, <typeparamref name="TKey"/>) and that the actual
+            target types satisfy all generic constraints defined on the match index type.
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.GenericParameterInference(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+        <member name="T:EasyToolKit.Core.GenericParameterInferenceRule">
+            <summary>
+            Provides a type matching rule that performs generic parameter inference.
+            </summary>
+            <remarks>
+            This rule handles complex generic type matching by inferring generic parameters
+            from the target types. It supports scenarios where some target types are generic
+            parameters and others are concrete types, allowing for flexible generic type resolution.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Core.GenericParameterInferenceRule.Rule">
+            <summary>
+            Gets the generic parameter inference rule delegate.
+            </summary>
+            <value>A <see cref="T:EasyToolKit.Core.TypeMatchRule"/> delegate that performs generic parameter inference.</value>
+        </member>
+        <member name="M:EasyToolKit.Core.GenericParameterInferenceRule.GenericParameterInference(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
             <summary>
             Performs generic parameter inference to match types.
             Infers generic parameters from the target types and constructs the appropriate generic type.
@@ -4195,8 +4567,128 @@
             <param name="targets">The target types to match against.</param>
             <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
             <returns>The inferred generic type if successful; otherwise, null.</returns>
+            <remarks>
+            This rule supports two inference modes:
+            <list type="bullet">
+            <item><description>Full inference: All targets are generic parameters (e.g., <c>List&lt;T&gt;</c> targets <c>T[]</c>)</description></item>
+            <item><description>Partial inference: Some targets are generic parameters, others are concrete (e.g., <c>Dictionary&lt;string, TValue&gt;</c> targets <c>string, TValue[]</c>)</description></item>
+            </list>
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.DefaultTypeMatchRules.NestedInSameGenericType(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+        <member name="T:EasyToolKit.Core.GenericSingleTargetMatchRule">
+            <summary>
+            Provides a type matching rule that matches generic type definitions against single generic target types.
+            </summary>
+            <remarks>
+            This rule handles cases where a generic type definition should match against a single
+            target type that has the same generic type definition. This is useful for matching
+            handlers or serializers that operate on generic types with the same structure.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Core.GenericSingleTargetMatchRule.Rule">
+            <summary>
+            Gets the generic single target match rule delegate.
+            </summary>
+            <value>A <see cref="T:EasyToolKit.Core.TypeMatchRule"/> delegate that performs generic single target matching.</value>
+        </member>
+        <member name="M:EasyToolKit.Core.GenericSingleTargetMatchRule.GenericSingleTargetMatch(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+            <summary>
+            Matches generic type definitions against single generic target types.
+            The target type must have the same generic type definition as the match index target.
+            </summary>
+            <param name="matchIndex">The type match index to evaluate.</param>
+            <param name="targets">The target types to match against.</param>
+            <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
+            <returns>The constructed generic type if successful; otherwise, null.</returns>
+            <remarks>
+            This rule requires that both the match index and the target are generic types
+            with the same generic type definition. The rule then constructs a new generic
+            type using the target's generic arguments.
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.GenericTypeResolutionRule">
+            <summary>
+            Provides a type matching rule that resolves generic type arguments for partially open generic types.
+            </summary>
+            <remarks>
+            This rule handles complex scenarios where a handler/serializer's generic parameters correspond to
+            specific type parameters within a partially concrete generic target type. It enables automatic
+            instantiation of handlers with the correct type arguments based on the actual runtime type.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Core.GenericTypeResolutionRule.Rule">
+            <summary>
+            Gets the generic type resolution rule delegate.
+            </summary>
+            <value>A <see cref="T:EasyToolKit.Core.TypeMatchRule"/> delegate that performs generic type resolution.</value>
+        </member>
+        <member name="M:EasyToolKit.Core.GenericTypeResolutionRule.GenericTypeResolution(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
+            <summary>
+            Resolves generic type arguments for handlers that target partially open generic types.
+            Handles complex scenarios where a handler's generic parameters correspond to specific type
+            parameters within a partially concrete generic target type.
+            </summary>
+            <param name="matchIndex">The type match index containing the handler type and its target generic type.</param>
+            <param name="targets">The target types to match against; expected to contain exactly one type (the actual value type).</param>
+            <param name="stopMatch">Reference parameter that can be set to true to stop further matching (not used in this implementation).</param>
+            <returns>
+            If the handler's target type is a (partially open) generic type and the actual value type
+            can provide the missing generic arguments, returns the concretely instantiated handler type.
+            Otherwise, returns null to indicate no match.
+            </returns>
+            <remarks>
+            <para>
+            This rule enables handlers to target complex generic types with mixed concrete and generic type parameters.
+            For example, consider a handler type that draws values of a generic collection with a fixed key type:
+            </para>
+            <code>
+            class SerializedDictionaryValueDrawer&lt;TValue&gt; : EasyValueDrawer&lt;SerializedDictionary&lt;string, TValue&gt;&gt;
+            </code>
+            <para>
+            Here, <c>SerializedDictionaryValueDrawer&lt;TValue&gt;</c> (matchIndex.Type) targets
+            <c>SerializedDictionary&lt;string, TValue&gt;</c> (matchIndex.Targets[0]),
+            which is a partially open generic type with a concrete key type (string) and a generic value type (TValue).
+            The target type is obtained via <see cref="M:EasyToolKit.Core.TypeExtensions.GetArgumentsOfInheritedOpenGenericType(System.Type,System.Type)"/> during initialization.
+            </para>
+            <para>
+            When the actual value type is <c>SerializedDictionary&lt;string, int&gt;</c> (targets[0]), this rule:
+            </para>
+            <list type="number">
+            <item><description>Validates there's exactly one target type and that the handler's target is a generic type definition.</description></item>
+            <item><description>If the target is a completely concrete type (no generic parameters), requires exact type equality.</description></item>
+            <item><description>Otherwise, calls <see cref="M:EasyToolKit.Core.TypeExtensions.ExtractGenericArgumentsFrom(System.Type,System.Type,System.Boolean)"/> to extract the missing generic arguments:
+            <c>ExtractGenericArgumentsFrom(SerializedDictionary&lt;string, TValue&gt;, SerializedDictionary&lt;string, int&gt;, false)</c>
+            returns <c>[int]</c>, which is the concrete type for the parameter TValue.</description></item>
+            <item><description>If no arguments are missing (types already match or are incompatible), returns null.</description></item>
+            <item><description>Checks that <c>SerializedDictionaryValueDrawer&lt;TValue&gt;</c>'s generic constraints are satisfied by <c>[int]</c> via <see cref="M:EasyToolKit.Core.TypeExtensions.AreGenericConstraintsSatisfiedBy(System.Type,System.Type[])"/>.</description></item>
+            <item><description>If all checks pass, constructs and returns <c>SerializedDictionaryValueDrawer&lt;int&gt;</c> using <see cref="M:System.Type.MakeGenericType(System.Type[])"/>.</description></item>
+            </list>
+            <para>
+            This mechanism allows handlers to be automatically instantiated with the correct type arguments
+            based on the actual runtime type of the property being inspected. It supports complex scenarios with multiple
+            generic parameters, such as <c>KeyValuePairDrawer&lt;TKey, TValue&gt; : EasyValueDrawer&lt;KeyValuePair&lt;int, TKey&gt;&gt;</c>
+            where only a subset of the target type's generic parameters correspond to the handler's own generic parameters.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:EasyToolKit.Core.NestedGenericTypeMatchRule">
+            <summary>
+            Provides a type matching rule that matches nested types within the same generic type definition.
+            </summary>
+            <remarks>
+            This rule handles cases where nested types are declared within generic types.
+            It matches when the declaring types of both the match index and the target have
+            the same generic type definition. This is useful for matching handlers or serializers
+            for nested types like <c>MyGenericClass&lt;T&gt;.NestedClass</c>.
+            </remarks>
+        </member>
+        <member name="F:EasyToolKit.Core.NestedGenericTypeMatchRule.Rule">
+            <summary>
+            Gets the nested generic type match rule delegate.
+            </summary>
+            <value>A <see cref="T:EasyToolKit.Core.TypeMatchRule"/> delegate that performs nested generic type matching.</value>
+        </member>
+        <member name="M:EasyToolKit.Core.NestedGenericTypeMatchRule.NestedInSameGenericType(EasyToolKit.Core.TypeMatchIndex,System.Type[],System.Boolean@)">
             <summary>
             Matches nested types that are declared within the same generic type definition.
             The declaring types must have the same generic type definition.
@@ -4205,135 +4697,332 @@
             <param name="targets">The target types to match against.</param>
             <param name="stopMatch">When set to true, stops further rule evaluation for this match index.</param>
             <returns>The constructed generic type if successful; otherwise, null.</returns>
+            <remarks>
+            This rule requires that:
+            <list type="bullet">
+            <item><description>All types (match index, its target, and the actual target) are nested</description></item>
+            <item><description>All declaring types are generic types</description></item>
+            <item><description>All declaring types have the same generic type definition</description></item>
+            <item><description>The generic constraints are satisfied by the target's generic arguments</description></item>
+            </list>
+            </remarks>
         </member>
         <member name="T:EasyToolKit.Core.TypeMatchIndex">
             <summary>
             Represents a type matching index that defines a type and its target types for matching.
             </summary>
+            <remarks>
+            Type match indices are used to register candidate types (e.g., handlers or serializers)
+            with the type matcher. Each index specifies the type to be matched, the target types
+            it should match against, and a priority value for ordering when multiple matches exist.
+            </remarks>
         </member>
         <member name="P:EasyToolKit.Core.TypeMatchIndex.Type">
             <summary>
             Gets or sets the type to be matched.
             </summary>
+            <value>
+            The candidate type (e.g., a handler or serializer type) that may match
+            against the specified target types.
+            </value>
         </member>
         <member name="P:EasyToolKit.Core.TypeMatchIndex.Priority">
             <summary>
             Gets or sets the priority of this match index (higher values have higher priority).
             </summary>
+            <value>
+            The priority value used to order match results. When multiple matches are found,
+            results are sorted by priority in descending order.
+            </value>
         </member>
         <member name="P:EasyToolKit.Core.TypeMatchIndex.Targets">
             <summary>
             Gets or sets the target types that this index should match against.
             </summary>
+            <value>
+            An array of types that define the matching criteria. For example, a generic
+            handler might specify generic parameter types as targets.
+            </value>
         </member>
         <member name="M:EasyToolKit.Core.TypeMatchIndex.#ctor(System.Type,System.Int32,System.Type[])">
             <summary>
-            Initializes a new instance of the TypeMatchIndex class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.TypeMatchIndex"/> class.
             </summary>
             <param name="type">The type to be matched.</param>
             <param name="priority">The priority of this match index.</param>
             <param name="targets">The target types to match against.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when <paramref name="targets"/> is null.
+            </exception>
         </member>
         <member name="T:EasyToolKit.Core.TypeMatchResult">
             <summary>
             Represents the result of a type matching operation.
             </summary>
+            <remarks>
+            Type match results contain detailed information about a successful match,
+            including the matched type, the targets that were matched, the rule that
+            produced the match, and the index that was used.
+            </remarks>
         </member>
         <member name="P:EasyToolKit.Core.TypeMatchResult.MatchIndex">
             <summary>
             Gets the match index that was used for this match.
             </summary>
+            <value>
+            The <see cref="T:EasyToolKit.Core.TypeMatchIndex"/> that defines the matched type and its priority.
+            </value>
         </member>
         <member name="P:EasyToolKit.Core.TypeMatchResult.MatchedType">
             <summary>
             Gets the actual type that was matched.
             </summary>
+            <value>
+            The concrete type that was constructed or matched. For generic types,
+            this is the closed generic type, not the generic type definition.
+            </value>
         </member>
         <member name="P:EasyToolKit.Core.TypeMatchResult.MatchTargets">
             <summary>
             Gets the target types that were matched against.
             </summary>
+            <value>
+            An array of target types that were used in the matching operation.
+            </value>
         </member>
         <member name="P:EasyToolKit.Core.TypeMatchResult.MatchRule">
             <summary>
             Gets the match rule that produced this result.
             </summary>
+            <value>
+            The <see cref="T:EasyToolKit.Core.TypeMatchRule"/> delegate that successfully matched
+            the index against the targets.
+            </value>
         </member>
         <member name="M:EasyToolKit.Core.TypeMatchResult.#ctor(EasyToolKit.Core.TypeMatchIndex,System.Type,System.Type[],EasyToolKit.Core.TypeMatchRule)">
             <summary>
-            Initializes a new instance of the TypeMatchResult class.
+            Initializes a new instance of the <see cref="T:EasyToolKit.Core.TypeMatchResult"/> class.
             </summary>
             <param name="matchIndex">The match index that was used.</param>
             <param name="matchedType">The actual type that was matched.</param>
             <param name="matchTargets">The target types that were matched against.</param>
             <param name="matchRule">The match rule that produced this result.</param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when any parameter is null.
+            </exception>
         </member>
         <member name="T:EasyToolKit.Core.TypeMatchRule">
-            <summary>
-            Represents a method that determines if a type match index matches against target types.
-            </summary>
-            <param name="matchIndex">The type match index to evaluate.</param>
-            <param name="targets">The target types to match against.</param>
-            <param name="stopMatch">When set to true by the rule, stops further rule evaluation for this match index.</param>
-            <returns>The matched type if successful; otherwise, null.</returns>
+             <summary>
+             Represents a method that determines if a type match index matches against target types.
+             </summary>
+             <param name="matchIndex">The type match index to evaluate.</param>
+             <param name="targets">The target types to match against.</param>
+             <param name="stopMatch">When set to true by the rule, stops further rule evaluation for this match index.</param>
+             <returns>The matched type if successful; otherwise, null.</returns>
+             <remarks>
+             <para>
+             Type match rules are used to implement custom matching logic. Each rule is called
+             with a match index and target types, and should return the matched type if the rule
+             successfully matches, or null if it does not.
+             </para>
+             <para>
+             The <paramref name="stopMatch"/> parameter allows a rule to indicate that no further
+             rules should be evaluated for this match index. This is useful when a rule has made
+             a definitive determination and subsequent rules would be redundant or incorrect.
+             </para>
+             <para>
+             For generic types, the returned type should be the fully constructed generic type,
+             not the generic type definition. Use <see cref="M:System.Type.MakeGenericType(System.Type[])"/> to
+             construct the closed generic type.
+             </para>
+             </remarks>
+             <example>
+             <code>
+             public static Type ExactMatch(TypeMatchIndex matchIndex, Type[] targets, ref bool stopMatch)
+             {
+                 if (matchIndex.Type.IsGenericTypeDefinition) return null;
+                 if (targets.Length != matchIndex.Targets.Length) return null;
+            
+                 for (int i = 0; i &lt; targets.Length; i++)
+                 {
+                     if (targets[i] != matchIndex.Targets[i]) return null;
+                 }
+            
+                 return matchIndex.Type;
+             }
+             </code>
+             </example>
         </member>
-        <member name="T:EasyToolKit.Core.TypeMatcher">
+        <member name="T:EasyToolKit.Core.TypeMatcherExtensions">
             <summary>
-            Provides a flexible type matching system that can match types against target types using configurable rules.
-            Supports exact matching, generic type matching, type inference, and custom matching rules.
+            Extension methods for type matcher operations.
             </summary>
+            <remarks>
+            This static class provides convenient extension methods for working with
+            type match results, making common operations more concise and readable.
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.#ctor(System.Boolean)">
+        <member name="M:EasyToolKit.Core.TypeMatcherExtensions.GetFirstMatch(EasyToolKit.Core.TypeMatchResult[])">
             <summary>
-            Initializes a new instance of the TypeMatcher class.
+            Gets the first matching type from the results.
             </summary>
-            <param name="addDefaultMatchRules">Whether to add the default type matching rules.</param>
+            <param name="results">The match results.</param>
+            <returns>The first matched type, or null if no matches.</returns>
+            <remarks>
+            This is a convenience method for getting the highest priority match
+            from a sorted array of match results.
+            </remarks>
+            <example>
+            <code>
+            var results = matcher.GetMatches(typeof(int));
+            Type bestMatch = results.GetFirstMatch();
+            </code>
+            </example>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.AddTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+        <member name="M:EasyToolKit.Core.TypeMatcherExtensions.Where(EasyToolKit.Core.TypeMatchResult[],System.Func{System.Type,System.Boolean})">
             <summary>
-            Adds type match indices to the current collection.
+            Filters match results by type predicate.
             </summary>
-            <param name="matchIndices">The type match indices to add.</param>
+            <param name="results">The match results.</param>
+            <param name="predicate">The predicate to filter by.</param>
+            <returns>Filtered match results.</returns>
+            <remarks>
+            This method filters the match results based on a predicate that
+            operates on the matched type.
+            </remarks>
+            <example>
+            <code>
+            var results = matcher.GetMatches(typeof(int));
+            var genericResults = results.Where(t => t.IsGenericType);
+            </code>
+            </example>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.SetTypeMatchIndices(System.Collections.Generic.IEnumerable{EasyToolKit.Core.TypeMatchIndex})">
+        <member name="T:EasyToolKit.Core.TypeMatcherFactory">
+             <summary>
+             Provides factory methods for creating type matchers.
+             </summary>
+             <remarks>
+             <para>
+             This static class serves as the main entry point for creating type matcher instances.
+             It provides simplified creation methods while hiding implementation details.
+             </para>
+             <para>
+             <b>Usage Examples:</b>
+             </para>
+             <example>
+             <code>
+             // Example 1: Create with default rules
+             var matcher1 = TypeMatcherFactory.CreateDefault();
+             matcher1.SetTypeMatchIndices(indices);
+            
+             // Example 2: Create without rules (add custom rules)
+             var matcher2 = TypeMatcherFactory.CreateEmpty();
+             matcher2.AddMatchRule(MyCustomRule);
+            
+             // Example 3: Create with custom rules
+             var matcher3 = TypeMatcherFactory.CreateWithRules(
+                 MyRule1,
+                 MyRule2
+             );
+             </code>
+             </example>
+             </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcherFactory.CreateDefault">
             <summary>
-            Replaces the current type match indices with the specified collection.
+            Creates a type matcher with default match rules.
             </summary>
-            <param name="matchIndices">The new type match indices to use.</param>
+            <returns>A configured type matcher instance.</returns>
+            <remarks>
+            The default rules include:
+            <list type="bullet">
+            <item><description>ExactMatch - Direct type equality</description></item>
+            <item><description>GenericSingleTargetMatch - Generic type definition matching</description></item>
+            <item><description>GenericConstraintsMatchRule - Generic constraint satisfaction</description></item>
+            <item><description>GenericParameterInference - Generic parameter inference</description></item>
+            <item><description>NestedGenericTypeMatch - Nested generic type matching</description></item>
+            </list>
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.AddMatchRule(EasyToolKit.Core.TypeMatchRule)">
+        <member name="M:EasyToolKit.Core.TypeMatcherFactory.CreateEmpty">
             <summary>
-            Adds a custom match rule to the type matcher.
+            Creates a type matcher without default match rules.
             </summary>
-            <param name="rule">The match rule to add.</param>
+            <returns>An empty type matcher instance.</returns>
+            <remarks>
+            Use this method when you want to add custom rules without the default rules.
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.RemoveMatchRule(EasyToolKit.Core.TypeMatchRule)">
+        <member name="M:EasyToolKit.Core.TypeMatcherFactory.CreateWithRules(EasyToolKit.Core.TypeMatchRule[])">
             <summary>
-            Removes a match rule from the type matcher.
+            Creates a type matcher with custom match rules.
             </summary>
-            <param name="rule">The match rule to remove.</param>
+            <param name="rules">The custom rules to add.</param>
+            <returns>A configured type matcher instance.</returns>
+            <remarks>
+            This method creates an empty matcher and adds the specified rules to it.
+            The default rules are not added.
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.GetMatches(System.Type[])">
+        <member name="T:EasyToolKit.Core.TypeMatcherCache">
             <summary>
-            Gets type matches for the specified target types.
-            Results are cached based on the target types to improve performance.
+            Manages caching for type matcher operations.
             </summary>
-            <param name="targets">The target types to match against.</param>
-            <returns>An array of type match results, ordered by priority (highest first).</returns>
+            <remarks>
+            This internal class provides centralized cache management for type matcher operations,
+            including the merged results cache shared across all type matcher instances.
+            </remarks>
         </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.GetMergedResults(System.Collections.Generic.IReadOnlyList{EasyToolKit.Core.TypeMatchResult[]})">
+        <member name="M:EasyToolKit.Core.TypeMatcherCache.ClearMergedResultsCache">
+            <summary>
+            Clears the merged results cache.
+            </summary>
+            <remarks>
+            This method should be called when match indices or rules change,
+            as cached results may no longer be valid.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcherCache.GetOrAddMergedResults(System.Int32,System.Func{EasyToolKit.Core.TypeMatchResult[]})">
+            <summary>
+            Gets cached merged results or adds them using the specified factory function.
+            </summary>
+            <param name="hashCode">The hash code representing the cache key.</param>
+            <param name="factory">The factory function to create the results if not cached.</param>
+            <returns>The cached or newly created merged results.</returns>
+            <remarks>
+            This method provides a thread-safe way to get or add cached results.
+            The hash code should uniquely identify the input data used to generate the results.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcherCache.TryGetMergedResults(System.Int32,EasyToolKit.Core.TypeMatchResult[]@)">
+            <summary>
+            Tries to get cached merged results for the specified hash code.
+            </summary>
+            <param name="hashCode">The hash code representing the cache key.</param>
+            <param name="results">The cached results, if found.</param>
+            <returns><c>true</c> if cached results were found; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="T:EasyToolKit.Core.TypeMatcherResults">
+            <summary>
+            Provides utility methods for working with type match results.
+            </summary>
+            <remarks>
+            This static class provides utility methods for merging and processing
+            type match results, including cached operations for performance optimization.
+            </remarks>
+        </member>
+        <member name="M:EasyToolKit.Core.TypeMatcherResults.GetMergedResults(System.Collections.Generic.IReadOnlyList{EasyToolKit.Core.TypeMatchResult[]})">
             <summary>
             Gets merged results from multiple type match result arrays.
             Results are merged and cached based on the input arrays to improve performance.
             </summary>
             <param name="resultsList">The list of type match result arrays to merge.</param>
             <returns>A merged array of type match results, ordered by priority (highest first).</returns>
-        </member>
-        <member name="M:EasyToolKit.Core.TypeMatcher.AddDefaultMatchRules">
-            <summary>
-            Adds the default type matching rules to the matcher.
-            These include exact matching, generic type matching, type inference, and nested type matching.
-            </summary>
+            <remarks>
+            This method merges multiple result arrays into a single array, sorted by priority.
+            The results are cached based on the hash of the input array list, so subsequent
+            calls with the same inputs will return cached results.
+            </remarks>
         </member>
         <member name="M:EasyToolKit.Core.MathUtility.Remap(System.Single,System.Single,System.Single,System.Single,System.Single)">
             <summary>

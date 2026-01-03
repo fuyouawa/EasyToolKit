@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace EasyToolKit.Core
+namespace EasyToolKit.Core.Implementations
 {
     /// <summary>
     /// Default implementation of <see cref="IExpressionEvaluatorBuilder{TResult}"/>.

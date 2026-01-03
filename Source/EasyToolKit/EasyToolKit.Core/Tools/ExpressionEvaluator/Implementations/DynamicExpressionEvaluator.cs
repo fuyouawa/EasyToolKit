@@ -2,7 +2,7 @@ using System;
 using EasyToolKit.ThirdParty.OdinSerializer;
 using JetBrains.Annotations;
 
-namespace EasyToolKit.Core
+namespace EasyToolKit.Core.Implementations
 {
     /// <summary>
     /// Evaluates dynamic expression paths using runtime reflection.

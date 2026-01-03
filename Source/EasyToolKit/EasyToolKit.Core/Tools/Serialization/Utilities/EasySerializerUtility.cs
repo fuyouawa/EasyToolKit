@@ -8,7 +8,7 @@ namespace EasyToolKit.Core
 {
     public static class EasySerializerUtility
     {
-        private static readonly TypeMatcher SerializerTypeMatcher = new TypeMatcher();
+        private static readonly ITypeMatcher SerializerTypeMatcher = TypeMatcherFactory.CreateDefault();
 
         private static readonly Dictionary<Type, IEasySerializer> SerializerByValueType =
             new Dictionary<Type, IEasySerializer>();
@@ -29,8 +29,6 @@ namespace EasyToolKit.Core
                 var argType = type.GetArgumentsOfInheritedOpenGenericType(typeof(EasySerializer<>));
                 return new TypeMatchIndex(type, config.Priority, argType);
             }));
-
-            SerializerTypeMatcher.AddMatchRule(GetMatchedSerializerType);
         }
 
         internal static IEasySerializer GetSerializer(Type valueType)
@@ -69,42 +67,6 @@ namespace EasyToolKit.Core
         {
             var serializer = (IEasySerializer)FormatterServices.GetUninitializedObject(serializerType);
             return serializer.CanSerialize(valueType);
-        }
-
-        private static Type GetMatchedSerializerType(TypeMatchIndex matchIndex, Type[] targets, ref bool stopMatch)
-        {
-            if (targets.Length != 1) return null;
-            if (!matchIndex.Targets[0].IsGenericTypeDefinition) return null;
-
-            var valueType = targets[0];
-            var argType = matchIndex.Targets[0];
-
-            // If the argument is not a generic parameter and is a concrete type without generic parameters,
-            // the element's target type must exactly match the value type.
-            if (!argType.IsGenericParameter && !argType.ContainsGenericParameters)
-            {
-                if (argType == valueType)
-                {
-                    return matchIndex.Type;
-                }
-
-                return null;
-            }
-
-            var config = matchIndex.Type.GetCustomAttribute<SerializerConfigurationAttribute>();
-            config ??= SerializerConfigurationAttribute.Default;
-
-            var missingArgs = argType.ResolveMissingGenericTypeArguments(valueType, config.AllowInherit);
-            if (missingArgs.Length == 0)
-                return null;
-
-            if (matchIndex.Type.AreGenericConstraintsSatisfiedBy(missingArgs))
-            {
-                var concreteType = matchIndex.Type.MakeGenericType(missingArgs);
-                return concreteType;
-            }
-
-            return null;
         }
     }
 }

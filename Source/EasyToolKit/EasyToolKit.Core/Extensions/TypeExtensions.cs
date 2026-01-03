@@ -346,15 +346,83 @@ namespace EasyToolKit.Core
         }
 
         /// <summary>
-        /// <para>根据源类型（可能包含泛型参数）和目标类型，从目标类型中提取出原类型缺失的泛型参数类型。</para>
-        /// <para>如果源类型是个泛型参数，则直接返回目标类型。</para>
+        /// Extracts generic type arguments from a target type based on a source type pattern.
         /// </summary>
-        /// <param name="sourceType"></param>
-        /// <param name="targetType"></param>
-        /// <param name="allowInheritance">是否允许通过继承关系匹配泛型定义。</param>
-        /// <returns></returns>
-        public static Type[] ResolveMissingGenericTypeArguments(this Type sourceType, Type targetType,
-            bool allowInheritance)
+        /// <param name="sourceType">The source type pattern, potentially containing generic parameters (e.g., <c>Dictionary&lt;int, T&gt;</c> or <c>IList&lt;T&gt;</c>).</param>
+        /// <param name="targetType">The target type to extract generic arguments from (e.g., <c>Dictionary&lt;int, float&gt;</c> or <c>List&lt;int&gt;</c>).</param>
+        /// <param name="allowInheritance">
+        /// If true, allows matching through inheritance relationships (e.g., <c>IList&lt;T&gt;</c> can match <c>List&lt;int&gt;</c>).
+        /// If false, requires exact generic type definition match.
+        /// </param>
+        /// <returns>
+        /// An array of extracted generic type arguments corresponding to the generic parameters in <paramref name="sourceType"/>.
+        /// Returns an empty array if no generic arguments can be extracted or if the types are incompatible.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="sourceType"/> or <paramref name="targetType"/> is null.</exception>
+        /// <remarks>
+        /// <para>
+        /// This method enables generic type inference by extracting concrete type arguments from a target type
+        /// that matches the structure of a source type pattern. It is particularly useful for scenarios involving
+        /// partially open generic types or generic handlers that need to be instantiated with concrete type arguments.
+        /// </para>
+        /// <para>
+        /// <b>Examples:</b>
+        /// </para>
+        /// <para>
+        /// Direct generic type matching:
+        /// <code><![CDATA[
+        /// // sourceType: Dictionary<int, T>
+        /// // targetType: Dictionary<int, float>
+        /// // Result: [float]
+        /// ExtractGenericArgumentsFrom(typeof(Dictionary<int, T>), typeof(Dictionary<int, float>))
+        /// ]]></code>
+        /// </para>
+        /// <para>
+        /// Generic parameter matching:
+        /// <code><![CDATA[
+        /// // sourceType: T (where T is a generic parameter)
+        /// // targetType: float
+        /// // Result: [float]
+        /// ExtractGenericArgumentsFrom(typeof(T), typeof(float))
+        /// ]]></code>
+        /// </para>
+        /// <para>
+        /// Inheritance-based matching (<paramref name="allowInheritance"/> = true):
+        /// <code><![CDATA[
+        /// // sourceType: IList<T>
+        /// // targetType: List<int>
+        /// // Result: [int]
+        /// ExtractGenericArgumentsFrom(typeof(IList<T>), typeof(List<int>), allowInheritance: true)
+        /// ]]></code>
+        /// </para>
+        /// <para>
+        /// <b>Extraction Logic:</b>
+        /// </para>
+        /// <list type="number">
+        /// <item><description>Array types: Returns the element type if both source and target are arrays with the same structure.</description></item>
+        /// <item><description>Generic parameters: If source type is a generic parameter, returns the target type directly.</description></item>
+        /// <item><description>Generic types: Compares generic type definitions and extracts corresponding type arguments.</description></item>
+        /// <item><description>Inheritance: When enabled, uses <see cref="GetArgumentsOfInheritedOpenGenericType"/> to find matching base types or interfaces.</description></item>
+        /// </list>
+        /// <para>
+        /// <b>Typical Usage:</b>
+        /// </para>
+        /// <para>
+        /// This method is commonly used in type matching and handler instantiation scenarios.
+        /// For example, in a generic handler system:
+        /// <code><![CDATA[
+        /// // In a generic handler system
+        /// class DictionaryDrawer<TKey, TValue> { }
+        /// // To instantiate DictionaryDrawer<string, int> from Dictionary<string, int>
+        /// var args = typeof(Dictionary<string, int>)
+        ///     .GetGenericTypeDefinition()
+        ///     .ExtractGenericArgumentsFrom(typeof(Dictionary<string, int>));
+        /// // Returns [string, int]
+        /// ]]></code>
+        /// </para>
+        /// </remarks>
+        public static Type[] ExtractGenericArgumentsFrom(this Type sourceType, Type targetType,
+            bool allowInheritance = false)
         {
             if (sourceType == null || targetType == null)
             {
