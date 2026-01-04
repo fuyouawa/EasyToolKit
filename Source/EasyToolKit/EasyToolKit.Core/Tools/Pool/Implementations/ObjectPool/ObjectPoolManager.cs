@@ -25,32 +25,14 @@ namespace EasyToolKit.Core.Implementations
         }
 
         /// <inheritdoc />
-        public IObjectPool<T> CreatePool<T>(string poolName, IObjectPoolDefinition<T> definition)
-            where T : class, new()
+        public IObjectPoolBuilder<T> BuildPool<T>(string poolName) where T : class, new()
         {
             if (string.IsNullOrWhiteSpace(poolName))
             {
                 throw new ArgumentException("Pool name cannot be null or whitespace.", nameof(poolName));
             }
 
-            if (_pools.ContainsKey(poolName))
-            {
-                throw new InvalidOperationException(
-                    $"Object pool with name '{poolName}' already exists.");
-            }
-
-            // Use default definition if none provided
-            definition ??= new ObjectPoolDefinition<T>
-            {
-                InitialCapacity = 0,
-                MaxCapacity = -1,
-                CallPoolItemCallbacks = true,
-                Factory = () => new T()
-            };
-
-            var pool = new ObjectPool<T>(poolName, definition);
-            _pools[poolName] = pool;
-            return pool;
+            return new ObjectPoolBuilder<T>(poolName, this);
         }
 
         /// <inheritdoc />
@@ -71,6 +53,20 @@ namespace EasyToolKit.Core.Implementations
 
             pool = null;
             return false;
+        }
+
+        internal IObjectPool<T> CreatePoolFromBuilder<T>(string poolName, IObjectPoolDefinition<T> definition)
+            where T : class, new()
+        {
+            if (_pools.ContainsKey(poolName))
+            {
+                throw new InvalidOperationException(
+                    $"Object pool with name '{poolName}' already exists.");
+            }
+
+            var pool = new ObjectPool<T>(poolName, definition);
+            _pools[poolName] = pool;
+            return pool;
         }
     }
 }

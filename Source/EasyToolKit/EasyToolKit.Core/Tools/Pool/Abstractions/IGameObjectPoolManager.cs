@@ -52,18 +52,14 @@ namespace EasyToolKit.Core
         IGameObjectPool GetPool(string poolName);
 
         /// <summary>
-        /// Creates a new GameObject pool with the specified name and original prefab.
+        /// Creates a builder for configuring and creating a new GameObject pool.
         /// </summary>
         /// <param name="poolName">The name of the pool.</param>
         /// <param name="original">The original prefab for instantiation.</param>
-        /// <param name="definition">The definition for the pool. If null, default configuration is used.</param>
-        /// <returns>The created pool.</returns>
+        /// <returns>A builder for configuring the pool.</returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown when <paramref name="poolName"/> or <paramref name="original"/> is null.
         /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when a pool with the specified name already exists.
-        /// </exception>
-        IGameObjectPool CreatePool(string poolName, GameObject original, IGameObjectPoolDefinition definition = null);
+        IGameObjectPoolBuilder BuildPool(string poolName, GameObject original);
     }
 }

@@ -8,17 +8,12 @@ namespace EasyToolKit.Core
     public interface IObjectPoolManager
     {
         /// <summary>
-        /// Creates a new object pool with the specified name and definition.
+        /// Creates a builder for configuring and creating a new object pool.
         /// </summary>
         /// <typeparam name="T">The type of objects to pool.</typeparam>
         /// <param name="poolName">The unique name for the pool.</param>
-        /// <param name="definition">The definition for the pool. If null, default configuration is used.</param>
-        /// <returns>The created pool.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when a pool with the specified name already exists.
-        /// </exception>
-        IObjectPool<T> CreatePool<T>(string poolName, IObjectPoolDefinition<T> definition = null)
-            where T : class, new();
+        /// <returns>A builder for configuring the pool.</returns>
+        IObjectPoolBuilder<T> BuildPool<T>(string poolName) where T : class, new();
 
         /// <summary>
         /// Attempts to get the pool with the specified name.

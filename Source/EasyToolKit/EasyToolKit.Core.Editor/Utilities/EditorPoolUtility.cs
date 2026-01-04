@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
@@ -7,7 +6,7 @@ namespace EasyToolKit.Core.Editor
 {
     public static class EditorPoolUtility
     {
-        private static readonly IObjectPoolManager ObjectPoolManager = Pools.ManagerFactory.CreateObjectPoolManager();
+        private static readonly IObjectPoolManager ObjectPoolManager = PoolManagerFactory.CreateObjectPoolManager();
 
         /// <summary>
         /// Fast getter for object pools with generic type constraint.
@@ -22,7 +21,7 @@ namespace EasyToolKit.Core.Editor
             {
                 if (!ObjectPoolManager.TryGetPool(typeof(T).FullName, out Pool))
                 {
-                    Pool = ObjectPoolManager.CreatePool<T>(typeof(T).FullName);
+                    Pool = ObjectPoolManager.BuildPool<T>(typeof(T).FullName).Create();
                 }
             }
         }
@@ -66,7 +65,8 @@ namespace EasyToolKit.Core.Editor
             var rentFunc = RentCache<TInterface>.Cache.GetOrAdd(type, t =>
             {
                 var rentWrapperMethod = typeof(EditorPoolUtility)
-                    .GetMethod(nameof(RentWrapper), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                    .GetMethod(nameof(RentWrapper),
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
                     .MakeGenericMethod(t);
 
                 var callExpression = Expression.Call(rentWrapperMethod);
@@ -94,7 +94,8 @@ namespace EasyToolKit.Core.Editor
             var releaseAction = ReleaseCache<TInterface>.Cache.GetOrAdd(instanceType, t =>
             {
                 var releaseWrapperMethod = typeof(EditorPoolUtility)
-                    .GetMethod(nameof(ReleaseWrapper), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                    .GetMethod(nameof(ReleaseWrapper),
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
                     .MakeGenericMethod(t);
 
                 var parameter = Expression.Parameter(typeof(TInterface), "instance");
@@ -120,12 +121,14 @@ namespace EasyToolKit.Core.Editor
 
         private static class RentCache<TInterface> where TInterface : class
         {
-            public static readonly ConcurrentDictionary<Type, Func<TInterface>> Cache = new ConcurrentDictionary<Type, Func<TInterface>>();
+            public static readonly ConcurrentDictionary<Type, Func<TInterface>> Cache =
+                new ConcurrentDictionary<Type, Func<TInterface>>();
         }
 
         private static class ReleaseCache<TInterface> where TInterface : class
         {
-            public static readonly ConcurrentDictionary<Type, Action<TInterface>> Cache = new ConcurrentDictionary<Type, Action<TInterface>>();
+            public static readonly ConcurrentDictionary<Type, Action<TInterface>> Cache =
+                new ConcurrentDictionary<Type, Action<TInterface>>();
         }
     }
 }

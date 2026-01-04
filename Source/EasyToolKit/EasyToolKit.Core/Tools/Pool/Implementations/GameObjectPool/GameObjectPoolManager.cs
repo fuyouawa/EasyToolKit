@@ -72,7 +72,7 @@ namespace EasyToolKit.Core.Implementations
         }
 
         /// <inheritdoc />
-        public IGameObjectPool CreatePool(string poolName, GameObject original, IGameObjectPoolDefinition definition)
+        public IGameObjectPoolBuilder BuildPool(string poolName, GameObject original)
         {
             if (poolName == null)
             {
@@ -84,31 +84,7 @@ namespace EasyToolKit.Core.Implementations
                 throw new ArgumentNullException(nameof(original));
             }
 
-            if (_pools.ContainsKey(poolName))
-            {
-                throw new InvalidOperationException(
-                    $"Game object pool '{poolName}' already exists.");
-            }
-
-            // Use default definition if none provided
-            definition ??= new GameObjectPoolDefinition
-            {
-                InitialCapacity = 0,
-                MaxCapacity = -1,
-                CallPoolItemCallbacks = true,
-                DefaultActiveLifetime = 0f,
-                DefaultIdleLifetime = 10f,
-                TickInterval = 0.5f
-            };
-
-            // Create a root GameObject for this pool
-            var poolRoot = new GameObject(poolName);
-            poolRoot.transform.SetParent(_rootTransform, false);
-
-            var pool = new GameObjectPool(poolName, original, definition, poolRoot.transform);
-            _pools.Add(poolName, pool);
-
-            return pool;
+            return new GameObjectPoolBuilder(poolName, original, this);
         }
 
         /// <inheritdoc />
@@ -118,6 +94,24 @@ namespace EasyToolKit.Core.Implementations
             {
                 pool.Tick(deltaTime);
             }
+        }
+
+        internal IGameObjectPool CreatePoolFromBuilder(string poolName, GameObject original, IGameObjectPoolDefinition definition)
+        {
+            if (_pools.ContainsKey(poolName))
+            {
+                throw new InvalidOperationException(
+                    $"Game object pool '{poolName}' already exists.");
+            }
+
+            // Create a root GameObject for this pool
+            var poolRoot = new GameObject(poolName);
+            poolRoot.transform.SetParent(_rootTransform, false);
+
+            var pool = new GameObjectPool(poolName, original, definition, poolRoot.transform);
+            _pools.Add(poolName, pool);
+
+            return pool;
         }
     }
 }
