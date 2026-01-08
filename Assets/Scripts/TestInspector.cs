@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using EasyToolKit.Inspector;
-using EasyToolKit.ThirdParty.OdinSerializer;
+using EasyToolKit.OdinSerializer;
 using EasyToolKit.TileWorldPro;
 using UnityEngine;
 using UnityEngine.Events;

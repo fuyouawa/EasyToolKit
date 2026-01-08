@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1081994611, guid: 81aeb58f16b246a49966556b632e412f, type: 3}
+  m_Script: {fileID: 11500000, guid: a0fb9b1464622bd4ab06a9621e9e2549, type: 3}
   m_Name: InspectorConfigAsset
   m_EditorClassIdentifier: 
   _drawMonoScriptInEditor: 1

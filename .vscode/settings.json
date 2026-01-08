@@ -26,10 +26,5 @@
         "**/Logs/**": true,
         "**/Build/**": true
     },
-    "dotrush.roslyn.projectOrSolutionFiles": [
-        "e:\\Code\\Unity\\EasyToolKit\\TileWorldPro\\TileWorldPro.sln",
-        "e:\\Code\\Unity\\EasyToolKit\\TileWorldPro\\EasyToolKit.TileWorldPro.csproj",
-        "e:\\Code\\Unity\\EasyToolKit\\TileWorldPro\\EasyToolKit.TileWorldPro.Editor.csproj"
-    ],
-    "dotnet.defaultSolution": "TileWorldPro.sln"
+    "dotnet.defaultSolution": "EasyToolKit.sln"
 }
