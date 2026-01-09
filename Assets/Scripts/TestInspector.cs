@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using EasyToolKit.Inspector;
+using EasyToolKit.Inspector.Attributes;
 using EasyToolKit.OdinSerializer;
 using EasyToolKit.TileWorldPro;
 using UnityEngine;

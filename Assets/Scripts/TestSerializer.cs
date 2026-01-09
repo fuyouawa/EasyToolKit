@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using EasyToolKit.Core;
+using EasyToolKit.Core.Diagnostics;
+using EasyToolKit.Core.Serialization;
 using UnityEngine;
 
 public class JJBBs
