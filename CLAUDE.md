@@ -104,6 +104,52 @@ public int Compare(Item left, Item right) => left.Id.CompareTo(right.Id);
 - OPTIONAL: Context is clear from class name
 - Default: Use suffix if uncertain about future API changes
 
+#### Chain Method Prefixes
+
+Chain methods configure object properties and return self for continuous operations. Categorized by operation type:
+
+**WithXxx (Direct Assignment)**
+- Directly set property to specified value
+- Used for: Builder patterns, extension methods, configuration
+- Examples: `WithName(value)`, `WithLevel(1)`, `WithPosition(vector3)`
+```csharp
+public PlayerBuilder WithName(string name)
+{
+    _name = name;
+    return this;
+}
+```
+
+**WithXxxBy (Incremental Operations)**
+- Modify current value by adding/multiplying
+- Parameter is a delta/change amount, not target value
+- Examples: `WithXOffsetBy(10)`, `WithScaleBy(1.5f)`, `WithMovedBy(delta)`
+```csharp
+public Rect WithXOffsetBy(this Rect rect, float deltaX)
+{
+    rect.x += deltaX;
+    return rect;
+}
+```
+
+**WithXxxXxx (Constrained Operations)**
+- Set value with constraints/validation/special processing
+- Examples: `WithXClamped(x, min, max)`, `WithWidthNormalized(0.5f)`, `WithPositionRounded(pos)`
+```csharp
+public Rect WithWidthClamped(this Rect rect, float width, float min, float max)
+{
+    rect.width = Mathf.Clamp(width, min, max);
+    return rect;
+}
+```
+
+**Design Principles:**
+1. All chain methods must return `this` for fluent API
+2. `WithXxx` - parameter is target value
+3. `WithXxxBy` - parameter is delta/change
+4. `WithXxxXxx` - special processing (Clamped, Normalized, Rounded, etc.)
+5. Method names must clearly express operation type to avoid ambiguity
+
 ## Class Member Organization
 
 ### Standard Classes
