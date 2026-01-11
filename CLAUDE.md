@@ -249,6 +249,18 @@ Basic format:
 /// <exception cref="ExceptionType">When this exception is thrown (user-relevant only).</exception>
 ```
 
+### XML Special Characters
+In XML documentation comments, `<` and `>` are special characters used for XML tags. When these characters appear in comments (e.g., generic types like `List<int>` or comparison operators), they must be escaped:
+- `<` → `&lt;`
+- `>` → `&gt;`
+
+```csharp
+/// <summary>
+/// Gets a collection of items of type &lt;T&gt; from the cache.
+/// </summary>
+/// <returns>A &lt;see cref="List&lt;T&gt;"/&gt; of cached items.</returns>
+```
+
 ### Exception Documentation
 - Document: Exceptions users may encounter in normal usage
 - Don't document: Defensive programming checks (null checks, argument validation)
@@ -310,6 +322,41 @@ throw new InvalidOperationException(
 - Use coroutines at the end of the class after all methods
 - Prefer `_camelCase` for private fields with leading underscore
 
+## Architecture Design Standards
+
+### Core Principles
+
+- **Dependency Inversion**: User code depends on interfaces, not implementations
+- **Layer Separation**: Abstractions (public) vs Implementations (internal `.Implementations` namespace)
+- **Extension-Friendly**: Provide extension points through interfaces and abstract classes
+
+### Module Structure
+
+```
+[Module]/
+    ├── [Entry].cs              # Entry point
+    ├── Abstractions/              # Public interfaces (IXxx.cs)
+    ├── Implementations/           # Internal implementations (.Implementations namespace)
+    ├── Models/                    # Public data structures
+    └── Extensions/                # Extension methods for fluent APIs
+```
+
+### Key Patterns
+
+- **Builder**: Fluent chain API for complex configuration (`WithXxx()` methods)
+- **Strategy**: Interface-based replaceable algorithms
+
+### Extension Methods
+
+Two purposes:
+1. **Chain APIs**: `WithXxx()` returns `this` for fluent configuration
+2. **Encapsulation**: Wrap low-level APIs into strongly-typed helpers
+
+### Design Principles
+
+- **SOLID**: SRP, OCP, LSP, ISP, DIP
+- **DRY/KISS/YAGNI**: Avoid duplication, keep simple, don't over-engineer
+
 ## Related Documentation
 
 For detailed specifications, refer to:
@@ -319,3 +366,4 @@ For detailed specifications, refer to:
 - [代码风格指南](Documents/CodingStandards/代码风格指南.md)
 - [注释规范](Documents/CodingStandards/注释规范.md)
 - [日志和错误信息规范](Documents/CodingStandards/日志和错误信息规范.md)
+- [框架架构设计](Documents/CodingStandards/框架架构设计.md)
