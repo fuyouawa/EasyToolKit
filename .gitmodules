@@ -10,3 +10,6 @@
 [submodule "Packages/com.easytoolkit.tileworldpro"]
 	path = Packages/com.easytoolkit.tileworldpro
 	url = git@github.com:easytoolkit-dev/com.easytoolkit.tileworldpro.git
+[submodule "Packages/com.easytoolkit.serialization"]
+	path = Packages/com.easytoolkit.serialization
+	url = git@github.com:easytoolkit-dev/com.easytoolkit.serialization.git

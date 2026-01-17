@@ -322,6 +322,25 @@ throw new InvalidOperationException(
 - Use coroutines at the end of the class after all methods
 - Prefer `_camelCase` for private fields with leading underscore
 
+## Unity Testing Standards
+
+### Test Organization
+- **Location**: `Assets/Tests/Editor/` with structure matching packages
+- **Naming**: `Test[FeatureName].cs`, namespace `Tests.[Module].[SubModule(Option)]`
+- **Assembly**: Create `Tests.Editor.asmdef` referencing tested packages
+
+### Test Structure
+- **Attributes**: `[TestFixture]` on classes, `[Test]` on methods
+- **Pattern**: AAA (Arrange-Act-Assert) with comments
+- **Naming**: `MethodName_Scenario_ExpectedResult()` (e.g., `CanMatch_ExactTypeMatch_ReturnsTrue`)
+- **Documentation**: XML summary comments on test classes and methods
+
+### Best Practices
+- Use `#region` to group related tests
+- Prefer specific assertions: `Assert.AreEqual(expected, actual, message)`
+- Keep tests focused on single behavior, avoid interdependence
+- Test public APIs and edge cases, not implementation details
+
 ## Architecture Design Standards
 
 ### Core Principles
@@ -366,4 +385,4 @@ For detailed specifications, refer to:
 - [代码风格指南](Documents/CodingStandards/代码风格指南.md)
 - [注释规范](Documents/CodingStandards/注释规范.md)
 - [日志和错误信息规范](Documents/CodingStandards/日志和错误信息规范.md)
-- [框架架构设计](Documents/CodingStandards/框架架构设计.md)
+- [框架架构规范](Documents/CodingStandards/框架架构规范.md)

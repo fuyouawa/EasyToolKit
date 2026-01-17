@@ -30,6 +30,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.easytoolkit.serialization": {
+      "version": "file:com.easytoolkit.serialization",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.easytoolkit.tileworldpro": {
       "version": "file:com.easytoolkit.tileworldpro",
       "depth": 0,
