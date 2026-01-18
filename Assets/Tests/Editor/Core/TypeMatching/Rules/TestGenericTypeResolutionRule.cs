@@ -209,5 +209,32 @@ namespace Tests.Core.TypeMatching.Rules
         }
 
         #endregion
+
+        [Test]
+        public void Test()
+        {
+            var rule = new GenericConstraintsMatchRule();
+            Type genericParam = typeof(ArrayHandler<>).GetGenericArgumentsRelativeTo(typeof(IHandler<>))[0];
+            var candidate = new TypeMatchCandidate(typeof(ArrayHandler<>), 0, new[] { genericParam });
+
+            // Act
+            var results = rule.CanMatch(candidate, new[] { typeof(TestClass) });
+
+            // Assert
+            Assert.IsFalse(results);
+        }
+        [Test]
+        public void Test2()
+        {
+            var rule = new GenericConstraintsMatchRule();
+            Type genericParam = typeof(ArrayHandler<>).GetGenericArgumentsRelativeTo(typeof(IHandler<>))[0];
+            var candidate = new TypeMatchCandidate(typeof(ArrayHandler<>), 0, new[] { genericParam });
+
+            // Act
+            var results = rule.CanMatch(candidate, new[] { typeof(List<int>) });
+
+            // Assert
+            Assert.IsFalse(results);
+        }
     }
 }

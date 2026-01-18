@@ -147,19 +147,5 @@ namespace Tests.Core.TypeMatching.Rules
             // Assert
             Assert.IsTrue(result);
         }
-
-        #region Test Helpers
-
-        /// <summary>
-        /// Test class with struct constraint on generic parameter.
-        /// </summary>
-        private class StructConstraintContainer<T> where T : struct { }
-
-        /// <summary>
-        /// Test class with new() constraint on generic parameter.
-        /// </summary>
-        private class NewConstraintContainer<T> where T : new() { }
-
-        #endregion
     }
 }
