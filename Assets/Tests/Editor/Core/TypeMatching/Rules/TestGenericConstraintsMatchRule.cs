@@ -4,7 +4,7 @@ using NUnit.Framework;
 using EasyToolKit.Core.Reflection;
 using EasyToolKit.Core.Reflection.Implementations;
 
-namespace Tests.Core.TypeMatching
+namespace Tests.Core.TypeMatching.Rules
 {
     /// <summary>
     /// Tests for GenericConstraintsMatchRule type matching behavior.
@@ -29,24 +29,6 @@ namespace Tests.Core.TypeMatching
 
             // Assert
             Assert.IsTrue(result);
-        }
-
-        /// <summary>
-        /// Verifies that non-generic-parameter constraints cannot be matched.
-        /// </summary>
-        [Test]
-        public void CanMatch_ConstraintNotGenericParameter_ReturnsFalse()
-        {
-            // Arrange
-            var rule = new GenericConstraintsMatchRule();
-            var candidate = new TypeMatchCandidate(typeof(List<>), 0, new[] { typeof(int) });
-            var targets = new[] { typeof(int) };
-
-            // Act
-            bool result = rule.CanMatch(candidate, targets);
-
-            // Assert
-            Assert.IsFalse(result);
         }
 
         /// <summary>

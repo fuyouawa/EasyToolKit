@@ -4,7 +4,7 @@ using NUnit.Framework;
 using EasyToolKit.Core.Reflection;
 using EasyToolKit.Core.Reflection.Implementations;
 
-namespace Tests.Core.TypeMatching
+namespace Tests.Core.TypeMatching.Rules
 {
     /// <summary>
     /// Tests for ExactMatchRule type matching behavior.
