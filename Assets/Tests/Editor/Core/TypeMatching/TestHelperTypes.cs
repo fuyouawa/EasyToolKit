@@ -97,4 +97,24 @@ namespace Tests.Core.TypeMatching
     /// Test class with new() constraint on generic parameter.
     /// </summary>
     public class NewConstraintContainer<T> where T : new() { }
+
+    /// <summary>
+    /// Handler with dual type parameters where T2 is constrained to be IList&lt;T1&gt;.
+    /// When matching against List&lt;int&gt;, T1 should be inferred as int and T2 as List&lt;int&gt;.
+    /// </summary>
+    /// <typeparam name="T1">The element type that T2's list contains.</typeparam>
+    /// <typeparam name="T2">A list type containing elements of type T1.</typeparam>
+    public class DualParameterListHandler<T1, T2> : IHandler<T1> where T2 : IList<T1>
+    {
+    }
+
+    /// <summary>
+    /// Handler with dual type parameters where T2 is constrained to be IEnumerable&lt;T1&gt;.
+    /// When matching against List&lt;string&gt;, T1 should be inferred as string and T2 as List&lt;string&gt;.
+    /// </summary>
+    /// <typeparam name="T1">The element type that T2's enumerable contains.</typeparam>
+    /// <typeparam name="T2">An enumerable type containing elements of type T1.</typeparam>
+    public class DualParameterEnumerableHandler<T1, T2> : IHandler<IList<T1>> where T2 : IEnumerable<T1>
+    {
+    }
 }

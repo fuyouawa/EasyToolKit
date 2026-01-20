@@ -42,19 +42,22 @@ namespace Tests.Core.Reflection
         }
 
         /// <summary>
-        /// Verifies that CreateStaticPropertyGetter throws ArgumentException when property has no getter.
+        /// Verifies that CreateStaticPropertyGetter can create a getter for a write-only property with private getter.
         /// </summary>
         [Test]
-        public void CreateStaticPropertyGetter_WriteOnlyProperty_ThrowsArgumentException()
+        public void CreateStaticPropertyGetter_WriteOnlyProperty_ReturnsPropertyValue()
         {
             // Arrange
             var propertyInfo = typeof(TestClass).GetProperty(nameof(TestClass.StaticWriteOnlyProperty),
                 MemberAccessFlags.PublicStatic);
+            var getter = ReflectionCompiler.CreateStaticPropertyGetter(propertyInfo);
 
-            // Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() =>
-                ReflectionCompiler.CreateStaticPropertyGetter(propertyInfo));
-            Assert.That(ex.Message, Does.Contain("does not have a getter"));
+            // Act - Set value using the property's public setter
+            TestClass.StaticWriteOnlyProperty = 42;
+
+            // Assert - Can read value using the compiled getter (accesses private getter)
+            var result = getter();
+            Assert.AreEqual(42, result);
         }
 
         /// <summary>
@@ -105,19 +108,21 @@ namespace Tests.Core.Reflection
         }
 
         /// <summary>
-        /// Verifies that CreateStaticPropertySetter throws ArgumentException when property has no setter.
+        /// Verifies that CreateStaticPropertySetter can create a setter for a read-only property with private setter.
         /// </summary>
         [Test]
-        public void CreateStaticPropertySetter_ReadOnlyProperty_ThrowsArgumentException()
+        public void CreateStaticPropertySetter_ReadOnlyProperty_SetsPropertyValue()
         {
             // Arrange
             var propertyInfo = typeof(TestClass).GetProperty(nameof(TestClass.StaticReadOnlyProperty),
                 MemberAccessFlags.PublicStatic);
+            var setter = ReflectionCompiler.CreateStaticPropertySetter(propertyInfo);
 
-            // Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() =>
-                ReflectionCompiler.CreateStaticPropertySetter(propertyInfo));
-            Assert.That(ex.Message, Does.Contain("does not have a setter"));
+            // Act - Set value using the compiled setter (accesses private setter)
+            setter(100);
+
+            // Assert - Can read value using the property's public getter
+            Assert.AreEqual(100, TestClass.StaticReadOnlyProperty);
         }
 
         /// <summary>

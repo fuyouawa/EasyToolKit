@@ -43,19 +43,23 @@ namespace Tests.Core.Reflection
         }
 
         /// <summary>
-        /// Verifies that CreateInstancePropertyGetter throws ArgumentException when property has no getter.
+        /// Verifies that CreateInstancePropertyGetter can create a getter for a write-only property with private getter.
         /// </summary>
         [Test]
-        public void CreateInstancePropertyGetter_WriteOnlyProperty_ThrowsArgumentException()
+        public void CreateInstancePropertyGetter_WriteOnlyProperty_ReturnsPropertyValue()
         {
             // Arrange
+            var testInstance = new TestClass();
             var propertyInfo = typeof(TestClass).GetProperty(nameof(TestClass.WriteOnlyProperty),
                 MemberAccessFlags.PublicInstance);
+            var getter = ReflectionCompiler.CreateInstancePropertyGetter(propertyInfo);
 
-            // Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() =>
-                ReflectionCompiler.CreateInstancePropertyGetter(propertyInfo));
-            Assert.That(ex.Message, Does.Contain("does not have a getter"));
+            // Act - Set value using the property's public setter
+            testInstance.WriteOnlyProperty = 42;
+
+            // Assert - Can read value using the compiled getter (accesses private getter)
+            var result = getter(testInstance);
+            Assert.AreEqual(42, result);
         }
 
         /// <summary>
@@ -108,19 +112,22 @@ namespace Tests.Core.Reflection
         }
 
         /// <summary>
-        /// Verifies that CreateInstancePropertySetter throws ArgumentException when property has no setter.
+        /// Verifies that CreateInstancePropertySetter can create a setter for a read-only property with private setter.
         /// </summary>
         [Test]
-        public void CreateInstancePropertySetter_ReadOnlyProperty_ThrowsArgumentException()
+        public void CreateInstancePropertySetter_ReadOnlyProperty_SetsPropertyValue()
         {
             // Arrange
+            var testInstance = new TestClass();
             var propertyInfo = typeof(TestClass).GetProperty(nameof(TestClass.ReadOnlyProperty),
                 MemberAccessFlags.PublicInstance);
+            var setter = ReflectionCompiler.CreateInstancePropertySetter(propertyInfo);
 
-            // Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() =>
-                ReflectionCompiler.CreateInstancePropertySetter(propertyInfo));
-            Assert.That(ex.Message, Does.Contain("does not have a setter"));
+            // Act - Set value using the compiled setter (accesses private setter)
+            setter(testInstance, 100);
+
+            // Assert - Can read value using the property's public getter
+            Assert.AreEqual(100, testInstance.ReadOnlyProperty);
         }
 
         /// <summary>

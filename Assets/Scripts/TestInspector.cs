@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EasyToolKit.Inspector.Attributes;
 using EasyToolKit.TileWorldPro;
 using UnityEngine;
@@ -73,6 +74,9 @@ public class TestInner4
 [ShowOdinSerializedPropertiesInInspector]
 public class TestInspector : MonoBehaviour
 {
+    public List<int> ss;
+
+
     [ShowInInspector]
     public TerrainDefinitionGroup Group;
 
