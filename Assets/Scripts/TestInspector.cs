@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EasyToolKit.Inspector.Attributes;
+using EasyToolKit.OdinSerializer;
 using EasyToolKit.TileWorldPro;
 using UnityEngine;
 
@@ -74,11 +75,8 @@ public class TestInner4
 [ShowOdinSerializedPropertiesInInspector]
 public class TestInspector : MonoBehaviour
 {
-    public List<int> ss;
-
-
-    [ShowInInspector]
-    public TerrainDefinitionGroup Group;
+    [OdinSerialize]
+    public TerrainDefinitionSet DefinitionSet;
 
     // public TestInner1 inner1;
 //     [LabelText("地形定义表")]

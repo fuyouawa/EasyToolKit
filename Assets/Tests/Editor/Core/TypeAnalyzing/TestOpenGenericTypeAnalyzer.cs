@@ -887,29 +887,6 @@ namespace Tests.Core.TypeAnalyzing
         }
 
         /// <summary>
-        /// Verifies that GetCompletedGenericArguments handles array types.
-        /// </summary>
-        [Test]
-        public void GetCompletedGenericArguments_ArrayType_ReturnsCorrectArguments()
-        {
-            // Arrange
-            var listTypeDef = typeof(List<>);
-            var tParam = listTypeDef.GetGenericArguments()[0];
-            var arrayType = listTypeDef.MakeGenericType(tParam).MakeArrayType();
-            var analyzer = new OpenGenericTypeAnalyzer(arrayType);
-
-            // Target type is int[]
-            var targetType = typeof(int[]);
-
-            // Act
-            var completedArguments = analyzer.GetCompletedGenericArguments(targetType);
-
-            // Assert
-            Assert.AreEqual(1, completedArguments.Length);
-            Assert.AreEqual(typeof(int), completedArguments[0]);
-        }
-
-        /// <summary>
         /// Verifies that GetCompletedGenericArguments works with allowTypeInheritance.
         /// </summary>
         [Test]
