@@ -48,7 +48,7 @@ namespace Tests.Core.TypeMatching
         public void GetMatches_GenericConstraintsMatchRule_GenericCandidate_ReturnsConstructedType()
         {
             // Arrange
-            var rule = new GenericConstraintsMatchRule();
+            var rule = new GenericParameterConstraintsMatchRule();
             var matcher = TypeMatcherFactory.Create(rule);
             Type genericParam = typeof(GenericHandler<>).GetGenericArgumentsRelativeTo(typeof(IHandler<>))[0];
             matcher.SetTypeMatchCandidates(new[]
@@ -72,7 +72,7 @@ namespace Tests.Core.TypeMatching
         public void GetMatches_GenericConstraintsMatchRule_StringTarget_ReturnsConstructedType()
         {
             // Arrange
-            var rule = new GenericConstraintsMatchRule();
+            var rule = new GenericParameterConstraintsMatchRule();
             var matcher = TypeMatcherFactory.Create(rule);
             Type genericParam = typeof(GenericHandler<>).GetGenericArgumentsRelativeTo(typeof(IHandler<>))[0];
             matcher.SetTypeMatchCandidates(new[]
@@ -97,7 +97,7 @@ namespace Tests.Core.TypeMatching
         public void GetMatches_GenericConstraintsMatchRule_ArrayHandlerWithListTarget_ReturnsNoMatch()
         {
             // Arrange
-            var rule = new GenericConstraintsMatchRule();
+            var rule = new GenericParameterConstraintsMatchRule();
             var matcher = TypeMatcherFactory.Create(rule);
             Type genericParam = typeof(ArrayHandler<>).GetGenericArgumentsRelativeTo(typeof(IHandler<>))[0];
             matcher.SetTypeMatchCandidates(new[]
@@ -110,82 +110,6 @@ namespace Tests.Core.TypeMatching
 
             // Assert
             Assert.AreEqual(0, results.Length, "Should return no matches because List<int> is not an array type (T[])");
-        }
-
-        #endregion
-
-        #region GenericTypeResolutionRule Tests
-
-        /// <summary>
-        /// Verifies that GenericTypeResolutionRule can resolve generic array type from target array type.
-        /// </summary>
-        [Test]
-        public void GetMatches_GenericTypeResolutionRule_ArrayConstraint_ReturnsConstructedType()
-        {
-            // Arrange
-            var rule = new GenericTypeResolutionRule();
-            var matcher = TypeMatcherFactory.Create(rule);
-            Type genericParam = typeof(ArrayHandler<>).GetGenericArgumentsRelativeTo(typeof(IHandler<>))[0];
-            matcher.SetTypeMatchCandidates(new[]
-            {
-                new TypeMatchCandidate(typeof(ArrayHandler<>), 0, new[] { genericParam })
-            });
-
-            // Act
-            var results = matcher.GetMatches(typeof(int[]));
-
-            // Assert
-            Assert.AreEqual(1, results.Length, "Should return exactly one match");
-            Assert.AreEqual(typeof(ArrayHandler<int>), results[0].MatchedType,
-                "Should construct ArrayHandler<int> from ArrayHandler<T> with int[] target");
-        }
-
-        /// <summary>
-        /// Verifies that GenericTypeResolutionRule can resolve generic List type from target List type.
-        /// </summary>
-        [Test]
-        public void GetMatches_GenericTypeResolutionRule_ListConstraint_ReturnsConstructedType()
-        {
-            // Arrange
-            var rule = new GenericTypeResolutionRule();
-            var matcher = TypeMatcherFactory.Create(rule);
-            Type genericParam = typeof(ListHandler<>).GetGenericArgumentsRelativeTo(typeof(IHandler<>))[0];
-            matcher.SetTypeMatchCandidates(new[]
-            {
-                new TypeMatchCandidate(typeof(ListHandler<>), 0, new[] { genericParam })
-            });
-
-            // Act
-            var results = matcher.GetMatches(typeof(List<int>));
-
-            // Assert
-            Assert.AreEqual(1, results.Length, "Should return exactly one match");
-            Assert.AreEqual(typeof(ListHandler<int>), results[0].MatchedType,
-                "Should construct ListHandler<int> from ListHandler<T> with List<int> target");
-        }
-
-        /// <summary>
-        /// Verifies that GenericTypeResolutionRule can resolve generic IList type from target List type.
-        /// </summary>
-        [Test]
-        public void GetMatches_GenericTypeResolutionRule_IListConstraint_ReturnsConstructedType()
-        {
-            // Arrange
-            var rule = new GenericTypeResolutionRule();
-            var matcher = TypeMatcherFactory.Create(rule);
-            Type genericParam = typeof(IListHandler<>).GetGenericArgumentsRelativeTo(typeof(IHandler<>))[0];
-            matcher.SetTypeMatchCandidates(new[]
-            {
-                new TypeMatchCandidate(typeof(IListHandler<>), 0, new[] { genericParam })
-            });
-
-            // Act
-            var results = matcher.GetMatches(typeof(List<int>));
-
-            // Assert
-            Assert.AreEqual(1, results.Length, "Should return exactly one match");
-            Assert.AreEqual(typeof(IListHandler<int>), results[0].MatchedType,
-                "Should construct IListHandler<int> from IListHandler<T> with List<int> target");
         }
 
         #endregion

@@ -98,23 +98,40 @@ namespace Tests.Core.TypeMatching
     /// </summary>
     public class NewConstraintContainer<T> where T : new() { }
 
-    /// <summary>
-    /// Handler with dual type parameters where T2 is constrained to be IList&lt;T1&gt;.
-    /// When matching against List&lt;int&gt;, T1 should be inferred as int and T2 as List&lt;int&gt;.
-    /// </summary>
-    /// <typeparam name="T1">The element type that T2's list contains.</typeparam>
-    /// <typeparam name="T2">A list type containing elements of type T1.</typeparam>
-    public class DualParameterListHandler<T1, T2> : IHandler<T1> where T2 : IList<T1>
+    public class DualParameterListHandler<T1, T2> : IHandler<T1> where T1 : IList<T2>
+    {
+    }
+
+    public class DualParameterEnumerableHandler<T1, T2> : IHandler<T1> where T1 : IEnumerable<T2>
     {
     }
 
     /// <summary>
-    /// Handler with dual type parameters where T2 is constrained to be IEnumerable&lt;T1&gt;.
-    /// When matching against List&lt;string&gt;, T1 should be inferred as string and T2 as List&lt;string&gt;.
+    /// Handler that expects a Dictionary&lt;TKey, TValue&gt; type as target.
     /// </summary>
-    /// <typeparam name="T1">The element type that T2's enumerable contains.</typeparam>
-    /// <typeparam name="T2">An enumerable type containing elements of type T1.</typeparam>
-    public class DualParameterEnumerableHandler<T1, T2> : IHandler<IList<T1>> where T2 : IEnumerable<T1>
+    /// <typeparam name="TKey">The key type of the dictionary.</typeparam>
+    /// <typeparam name="TValue">The value type of the dictionary.</typeparam>
+    public class DictionaryHandler<TKey, TValue> : IHandler<Dictionary<TKey, TValue>>
+    {
+    }
+
+    /// <summary>
+    /// Handler that expects an IDictionary&lt;TKey, TValue&gt; type as target.
+    /// </summary>
+    /// <typeparam name="TKey">The key type of the dictionary.</typeparam>
+    /// <typeparam name="TValue">The value type of the dictionary.</typeparam>
+    public class IDictionaryHandler<TKey, TValue> : IHandler<IDictionary<TKey, TValue>>
+    {
+    }
+
+    /// <summary>
+    /// Triple parameter handler where T1 is constrained to IDictionary&lt;TKey, TValue&gt;.
+    /// </summary>
+    /// <typeparam name="T1">The dictionary type (constrained to IDictionary&lt;TKey, TValue&gt;).</typeparam>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    public class TripleParameterDictionaryHandler<T1, TKey, TValue> : IHandler<T1>
+        where T1 : IDictionary<TKey, TValue>
     {
     }
 }

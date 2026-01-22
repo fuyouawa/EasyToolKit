@@ -19,8 +19,9 @@ namespace Tests.Editor.Inspector.Core
                 }
             };
             var tree = InspectorElements.TreeFactory.CreateTree(new object[] { testInstance }, null);
+            tree.BeginDraw();
+            tree.EndDraw();
             var root = tree.Root;
-            root.Update();
 
             Assert.AreEqual(1, root.LogicalChildren.Count);
 

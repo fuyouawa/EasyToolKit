@@ -481,6 +481,7 @@ namespace Tests.Editor.Inspector.Core
 
             // Act - add element and update
             testInstance.Integers.Add(3);
+            collectionElement.ValueEntry.MarkDirty();
             tree.BeginDraw();
             tree.EndDraw();
 

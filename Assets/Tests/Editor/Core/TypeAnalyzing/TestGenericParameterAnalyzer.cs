@@ -119,96 +119,6 @@ namespace Tests.Core.TypeAnalyzing
 
         #endregion
 
-        #region Special Constraints
-
-        /// <summary>
-        /// Verifies that SpecialConstraints is None when no constraints are applied.
-        /// </summary>
-        [Test]
-        public void SpecialConstraints_NoConstraints_ReturnsNone()
-        {
-            // Arrange
-            var genericParameter = typeof(SimpleGenericClass<>).GetGenericArguments()[0];
-
-            // Act
-            var analyzer = new GenericParameterAnalyzer(genericParameter);
-
-            // Assert
-            Assert.AreEqual(GenericParameterSpecialConstraints.None, analyzer.SpecialConstraints);
-        }
-
-        /// <summary>
-        /// Verifies that SpecialConstraints contains ReferenceType when class constraint is applied.
-        /// </summary>
-        [Test]
-        public void SpecialConstraints_ClassConstraint_ReturnsReferenceType()
-        {
-            // Arrange
-            var genericParameter = typeof(ClassConstrainedClass<>).GetGenericArguments()[0];
-
-            // Act
-            var analyzer = new GenericParameterAnalyzer(genericParameter);
-
-            // Assert
-            Assert.AreEqual(GenericParameterSpecialConstraints.ReferenceType, analyzer.SpecialConstraints);
-        }
-
-        /// <summary>
-        /// Verifies that SpecialConstraints contains ValueType and DefaultConstructor when struct constraint is applied.
-        /// </summary>
-        /// <remarks>
-        /// In C#, struct constraint implicitly includes default constructor constraint,
-        /// as all value types have parameterless constructors.
-        /// </remarks>
-        [Test]
-        public void SpecialConstraints_StructConstraint_ReturnsValueTypeAndDefaultConstructor()
-        {
-            // Arrange
-            var genericParameter = typeof(StructConstrainedClass<>).GetGenericArguments()[0];
-
-            // Act
-            var analyzer = new GenericParameterAnalyzer(genericParameter);
-
-            // Assert
-            var expected = GenericParameterSpecialConstraints.ValueType | GenericParameterSpecialConstraints.DefaultConstructor;
-            Assert.AreEqual(expected, analyzer.SpecialConstraints);
-        }
-
-        /// <summary>
-        /// Verifies that SpecialConstraints contains DefaultConstructor when new() constraint is applied.
-        /// </summary>
-        [Test]
-        public void SpecialConstraints_NewConstraint_ReturnsDefaultConstructor()
-        {
-            // Arrange
-            var genericParameter = typeof(NewConstrainedClass<>).GetGenericArguments()[0];
-
-            // Act
-            var analyzer = new GenericParameterAnalyzer(genericParameter);
-
-            // Assert
-            Assert.AreEqual(GenericParameterSpecialConstraints.DefaultConstructor, analyzer.SpecialConstraints);
-        }
-
-        /// <summary>
-        /// Verifies that SpecialConstraints contains multiple constraints when combined.
-        /// </summary>
-        [Test]
-        public void SpecialConstraints_ClassAndNewConstraints_ReturnsCombinedFlags()
-        {
-            // Arrange
-            var genericParameter = typeof(ClassAndNewConstrainedClass<>).GetGenericArguments()[0];
-
-            // Act
-            var analyzer = new GenericParameterAnalyzer(genericParameter);
-
-            // Assert
-            var expected = GenericParameterSpecialConstraints.ReferenceType | GenericParameterSpecialConstraints.DefaultConstructor;
-            Assert.AreEqual(expected, analyzer.SpecialConstraints);
-        }
-
-        #endregion
-
         #region Type Constraints
 
         /// <summary>
@@ -281,13 +191,13 @@ namespace Tests.Core.TypeAnalyzing
 
         #endregion
 
-        #region DependsOn
+        #region References
 
         /// <summary>
-        /// Verifies that DependsOn is empty when parameter has no dependencies.
+        /// Verifies that References is empty when parameter has no references.
         /// </summary>
         [Test]
-        public void DependsOn_NoDependencies_ReturnsEmptyList()
+        public void References_NoReferences_ReturnsEmptyList()
         {
             // Arrange
             var genericParameter = typeof(SimpleGenericClass<>).GetGenericArguments()[0];
@@ -296,14 +206,14 @@ namespace Tests.Core.TypeAnalyzing
             var analyzer = new GenericParameterAnalyzer(genericParameter);
 
             // Assert
-            Assert.AreEqual(0, analyzer.DependsOn.Count);
+            Assert.AreEqual(0, analyzer.References.Count);
         }
 
         /// <summary>
-        /// Verifies that DependsOn correctly identifies dependency when constraint uses another generic parameter.
+        /// Verifies that References correctly identifies reference when constraint uses another generic parameter.
         /// </summary>
         [Test]
-        public void DependsOn_ConstraintUsesGenericParameter_ReturnsDependency()
+        public void References_ConstraintUsesGenericParameter_ReturnsReference()
         {
             // Arrange
             var genericParameters = typeof(DependentGenericClass<,>).GetGenericArguments();
@@ -313,15 +223,15 @@ namespace Tests.Core.TypeAnalyzing
             var analyzer = new GenericParameterAnalyzer(tParameter);
 
             // Assert
-            Assert.AreEqual(1, analyzer.DependsOn.Count);
-            Assert.AreEqual(genericParameters[1], analyzer.DependsOn[0]);
+            Assert.AreEqual(1, analyzer.References.Count);
+            Assert.AreEqual(genericParameters[1], analyzer.References[0]);
         }
 
         /// <summary>
-        /// Verifies that DependsOn correctly identifies multiple dependencies.
+        /// Verifies that References correctly identifies multiple references.
         /// </summary>
         [Test]
-        public void DependsOn_MultipleDependencies_ReturnsAllDependencies()
+        public void References_MultipleReferences_ReturnsAllReferences()
         {
             // Arrange
             var genericParameters = typeof(MultiDependentGenericClass<,,>).GetGenericArguments();
@@ -331,16 +241,16 @@ namespace Tests.Core.TypeAnalyzing
             var analyzer = new GenericParameterAnalyzer(tParameter);
 
             // Assert
-            Assert.AreEqual(2, analyzer.DependsOn.Count);
-            Assert.IsTrue(analyzer.DependsOn.Contains(genericParameters[1]));
-            Assert.IsTrue(analyzer.DependsOn.Contains(genericParameters[2]));
+            Assert.AreEqual(2, analyzer.References.Count);
+            Assert.IsTrue(analyzer.References.Contains(genericParameters[1]));
+            Assert.IsTrue(analyzer.References.Contains(genericParameters[2]));
         }
 
         /// <summary>
-        /// Verifies that DependsOn correctly handles nested generic type constraints.
+        /// Verifies that References correctly handles nested generic type constraints.
         /// </summary>
         [Test]
-        public void DependsOn_NestedGenericConstraint_ReturnsDependency()
+        public void References_NestedGenericConstraint_ReturnsReference()
         {
             // Arrange
             var genericParameters = typeof(NestedDependentGenericClass<,>).GetGenericArguments();
@@ -350,19 +260,19 @@ namespace Tests.Core.TypeAnalyzing
             var analyzer = new GenericParameterAnalyzer(tParameter);
 
             // Assert
-            Assert.AreEqual(1, analyzer.DependsOn.Count);
-            Assert.AreEqual(genericParameters[1], analyzer.DependsOn[0]);
+            Assert.AreEqual(1, analyzer.References.Count);
+            Assert.AreEqual(genericParameters[1], analyzer.References[0]);
         }
 
         #endregion
 
-        #region DependedOnBy
+        #region ReferencedBy
 
         /// <summary>
-        /// Verifies that DependedOnBy is empty when no other parameters depend on this parameter.
+        /// Verifies that ReferencedBy is empty when no other parameters reference this parameter.
         /// </summary>
         [Test]
-        public void DependedOnBy_NoDependents_ReturnsEmptyList()
+        public void ReferencedBy_NoReferencers_ReturnsEmptyList()
         {
             // Arrange
             var genericParameters = typeof(DoubleGenericClass<,>).GetGenericArguments();
@@ -372,14 +282,14 @@ namespace Tests.Core.TypeAnalyzing
             var analyzer = new GenericParameterAnalyzer(uParameter);
 
             // Assert
-            Assert.AreEqual(0, analyzer.DependedOnBy.Count);
+            Assert.AreEqual(0, analyzer.ReferencedBy.Count);
         }
 
         /// <summary>
-        /// Verifies that DependedOnBy correctly identifies parameters that depend on this parameter.
+        /// Verifies that ReferencedBy correctly identifies parameters that reference this parameter.
         /// </summary>
         [Test]
-        public void DependedOnBy_ParameterIsDependency_ReturnsDependent()
+        public void ReferencedBy_ParameterIsReferenced_ReturnsReferencer()
         {
             // Arrange
             var genericParameters = typeof(DependentGenericClass<,>).GetGenericArguments();
@@ -389,9 +299,9 @@ namespace Tests.Core.TypeAnalyzing
             var analyzer = new GenericParameterAnalyzer(uParameter);
 
             // Assert
-            // T depends on U (T : List<U>), so U is depended on by T
-            Assert.AreEqual(1, analyzer.DependedOnBy.Count);
-            Assert.AreEqual(genericParameters[0], analyzer.DependedOnBy[0]);
+            // T references U (T : List<U>), so U is referenced by T
+            Assert.AreEqual(1, analyzer.ReferencedBy.Count);
+            Assert.AreEqual(genericParameters[0], analyzer.ReferencedBy[0]);
         }
 
         #endregion
@@ -415,10 +325,9 @@ namespace Tests.Core.TypeAnalyzing
             Assert.IsNotNull(info);
             Assert.AreEqual("T", info.Name);
             Assert.AreEqual(0, info.Position);
-            Assert.AreEqual(GenericParameterSpecialConstraints.None, info.SpecialConstraints);
             Assert.AreEqual(0, info.TypeConstraints.Count);
-            Assert.AreEqual(0, info.DependsOnParameters.Count);
-            Assert.AreEqual(0, info.DependedOnByParameters.Count);
+            Assert.AreEqual(0, info.ReferencedParameters.Count);
+            Assert.AreEqual(0, info.ReferencedByParameters.Count);
         }
 
         /// <summary>
@@ -457,8 +366,8 @@ namespace Tests.Core.TypeAnalyzing
 
             // Assert
             Assert.IsNotNull(info);
-            Assert.AreEqual(1, info.DependsOnParameters.Count);
-            Assert.AreEqual(genericParameters[1], info.DependsOnParameters[0]);
+            Assert.AreEqual(1, info.ReferencedParameters.Count);
+            Assert.AreEqual(genericParameters[1], info.ReferencedParameters[0]);
             Assert.IsTrue(info.HasDependencies);
         }
 
@@ -657,10 +566,10 @@ namespace Tests.Core.TypeAnalyzing
         }
 
         /// <summary>
-        /// Verifies that TryInferTypeFrom returns false when dependentParameter is not in DependedOnBy.
+        /// Verifies that TryInferTypeFrom returns false when dependentParameter is not in ReferencedBy.
         /// </summary>
         [Test]
-        public void TryInferTypeFrom_DependentParameterNotInDependedOnBy_ReturnsFalse()
+        public void TryInferTypeFrom_DependentParameterNotInReferencedBy_ReturnsFalse()
         {
             // Arrange
             var genericParameters = typeof(DoubleGenericClass<,>).GetGenericArguments();
