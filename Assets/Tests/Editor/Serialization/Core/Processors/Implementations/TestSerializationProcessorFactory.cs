@@ -48,7 +48,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
             Assert.AreEqual(typeof(int), processor.ValueType, "Processor ValueType should be int.");
-            Assert.IsInstanceOf<IntProcessor>(processor, "Processor should be IntProcessor instance.");
+            Assert.IsInstanceOf<Int32Processor>(processor, "Processor should be IntProcessor instance.");
         }
 
         /// <summary>

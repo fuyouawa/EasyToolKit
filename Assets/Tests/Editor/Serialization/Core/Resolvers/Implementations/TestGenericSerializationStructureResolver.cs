@@ -7,7 +7,7 @@ using Tests.Serialization;
 
 namespace Tests.Serialization.Core.Resolvers.Implementations
 {
-    /// <summary>Unit tests for GenericSerializationStructureResolver functionality.</summary>
+    /// <summary>
     [TestFixture]
     public class TestGenericSerializationStructureResolver
     {

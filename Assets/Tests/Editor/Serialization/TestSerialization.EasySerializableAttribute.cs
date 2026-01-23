@@ -5,7 +5,9 @@ using EasyToolKit.Serialization;
 
 namespace Tests.Serialization
 {
-    /// <summary>Unit tests for EasySerializableAttribute functionality.</summary>
+    /// <summary>
+    /// Unit tests for EasySerializableAttribute functionality.
+    /// </summary>
     [TestFixture]
     public class TestSerialization_EasySerializableAttribute
     {

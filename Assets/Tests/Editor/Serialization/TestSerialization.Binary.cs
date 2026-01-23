@@ -5,7 +5,9 @@ using EasyToolKit.Serialization;
 
 namespace Tests.Serialization
 {
-    /// <summary>Unit tests for binary serialization functionality.</summary>
+    /// <summary>
+    /// Unit tests for binary serialization functionality.
+    /// </summary>
     [TestFixture]
     public class TestSerialization_Binary
     {
@@ -111,6 +113,176 @@ namespace Tests.Serialization
 
             // Assert
             Assert.AreEqual(123.456789, result, 0.0000001);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a sbyte (int8) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_SByte_ReturnsOriginalValue()
+        {
+            // Arrange
+            sbyte original = 99;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            sbyte result = EasySerializer.DeserializeFromBinary<sbyte>(data);
+
+            // Assert
+            Assert.AreEqual(99, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a negative sbyte (int8) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_SByteNegative_ReturnsOriginalValue()
+        {
+            // Arrange
+            sbyte original = -128;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            sbyte result = EasySerializer.DeserializeFromBinary<sbyte>(data);
+
+            // Assert
+            Assert.AreEqual(-128, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a short (int16) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_Short_ReturnsOriginalValue()
+        {
+            // Arrange
+            short original = 10000;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            short result = EasySerializer.DeserializeFromBinary<short>(data);
+
+            // Assert
+            Assert.AreEqual(10000, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a negative short (int16) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_ShortNegative_ReturnsOriginalValue()
+        {
+            // Arrange
+            short original = -32768;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            short result = EasySerializer.DeserializeFromBinary<short>(data);
+
+            // Assert
+            Assert.AreEqual(-32768, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a long (int64) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_Long_ReturnsOriginalValue()
+        {
+            // Arrange
+            long original = 12345678901234;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            long result = EasySerializer.DeserializeFromBinary<long>(data);
+
+            // Assert
+            Assert.AreEqual(12345678901234, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a negative long (int64) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_LongNegative_ReturnsOriginalValue()
+        {
+            // Arrange
+            long original = -98765432109876;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            long result = EasySerializer.DeserializeFromBinary<long>(data);
+
+            // Assert
+            Assert.AreEqual(-98765432109876, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a byte (uint8) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_Byte_ReturnsOriginalValue()
+        {
+            // Arrange
+            byte original = 255;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            byte result = EasySerializer.DeserializeFromBinary<byte>(data);
+
+            // Assert
+            Assert.AreEqual(255, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a ushort (uint16) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_UShort_ReturnsOriginalValue()
+        {
+            // Arrange
+            ushort original = 65535;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            ushort result = EasySerializer.DeserializeFromBinary<ushort>(data);
+
+            // Assert
+            Assert.AreEqual(65535, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a uint (uint32) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_UInt_ReturnsOriginalValue()
+        {
+            // Arrange
+            uint original = 4294967295;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            uint result = EasySerializer.DeserializeFromBinary<uint>(data);
+
+            // Assert
+            Assert.AreEqual(4294967295u, result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a ulong (uint64) produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_ULong_ReturnsOriginalValue()
+        {
+            // Arrange
+            ulong original = 18446744073709551615;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            ulong result = EasySerializer.DeserializeFromBinary<ulong>(data);
+
+            // Assert
+            Assert.AreEqual(18446744073709551615ul, result);
         }
 
         #endregion
