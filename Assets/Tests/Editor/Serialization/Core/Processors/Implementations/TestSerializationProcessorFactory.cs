@@ -43,7 +43,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<int>();
+            var processor = factory.GetProcessor(typeof(int));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -61,7 +61,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<float>();
+            var processor = factory.GetProcessor(typeof(float));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -79,7 +79,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<double>();
+            var processor = factory.GetProcessor(typeof(double));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -97,7 +97,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<bool>();
+            var processor = factory.GetProcessor(typeof(bool));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -115,7 +115,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<string>();
+            var processor = factory.GetProcessor(typeof(string));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -137,7 +137,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<int[]>();
+            var processor = factory.GetProcessor(typeof(int[]));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -156,7 +156,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<string[]>();
+            var processor = factory.GetProcessor(typeof(string[]));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -176,7 +176,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<float[][]>();
+            var processor = factory.GetProcessor(typeof(float[][]));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -199,7 +199,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<List<int>>();
+            var processor = factory.GetProcessor(typeof(List<int>));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -217,7 +217,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<List<string>>();
+            var processor = factory.GetProcessor(typeof(List<string>));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -236,7 +236,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<List<List<int>>>();
+            var processor = factory.GetProcessor(typeof(List<List<int>>));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -258,7 +258,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<UnityEngine.Vector2>();
+            var processor = factory.GetProcessor(typeof(UnityEngine.Vector2));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -277,7 +277,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<UnityEngine.Vector3>();
+            var processor = factory.GetProcessor(typeof(UnityEngine.Vector3));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -296,7 +296,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<UnityEngine.Color>();
+            var processor = factory.GetProcessor(typeof(UnityEngine.Color));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -320,7 +320,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<int[]>();
+            var processor = factory.GetProcessor(typeof(int[]));
             var arrayProcessor = processor as ArrayProcessor<int>;
 
             // Assert
@@ -344,7 +344,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<TestSerializableClass>();
+            var processor = factory.GetProcessor(typeof(TestSerializableClass));
 
             // Assert
             Assert.IsNotNull(processor, "Processor should not be null.");
@@ -369,7 +369,7 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor = factory.GetProcessor<TestUnsupportedClass>();
+            var processor = factory.GetProcessor(typeof(TestUnsupportedClass));
 
             // Assert
             Assert.IsNull(processor, "Processor should be null for unsupported types.");
@@ -390,8 +390,8 @@ namespace Tests.Serialization.Core.Processors.Implementations
             var factory = new SerializationProcessorFactory();
 
             // Act
-            var processor1 = factory.GetProcessor<int>();
-            var processor2 = factory.GetProcessor<int>();
+            var processor1 = factory.GetProcessor(typeof(int));
+            var processor2 = factory.GetProcessor(typeof(int));
 
             // Assert
             Assert.IsNotNull(processor1, "First processor should not be null.");

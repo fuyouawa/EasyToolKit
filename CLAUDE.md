@@ -316,6 +316,7 @@ throw new InvalidOperationException(
 
 ## Unity-Specific Guidelines
 
+- **DO NOT create `.meta` files** - Unity automatically generates `.meta` files for all assets. Never manually create or include `.meta` files when writing new code or assets.
 - Serialized fields should be `[SerializeField] private` with public properties for access
 - Properties can include validation logic
 - Organize Unity lifecycle methods in proper call order

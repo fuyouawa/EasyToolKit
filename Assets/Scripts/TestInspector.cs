@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EasyToolKit.Core.Reflection;
 using EasyToolKit.Inspector.Attributes;
 using EasyToolKit.OdinSerializer;
 using EasyToolKit.TileWorldPro;
@@ -120,6 +121,19 @@ public class TestInspector : MonoBehaviour
     void Update()
     {
 
+    }
+
+    [Button]
+    public void Test()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            var evaluator = ExpressionEvaluatorFactory.CreateEvaluator(
+                "-t:StaticClassForExpressionEvaluator -p:GetStaticScore()", null);
+
+            // Act
+            var result = evaluator.Evaluate<int>(null);
+        }
     }
 
     private ValueDropdownList<TestBase> GetTestBaseDropdown()

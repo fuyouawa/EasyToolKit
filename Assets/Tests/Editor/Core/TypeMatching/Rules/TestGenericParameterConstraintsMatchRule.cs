@@ -350,8 +350,8 @@ namespace Tests.Core.TypeMatching.Rules
             Type result = rule.Match(candidate, targets);
 
             // Assert
-            Assert.AreEqual(typeof(DualParameterListHandler<IList<float>, float>), result,
-                "Should construct DualParameterListHandler<IList<float>, float>");
+            Assert.AreEqual(typeof(DualParameterListHandler<List<float>, float>), result,
+                "Should construct DualParameterListHandler<List<float>, float>");
         }
 
         /// <summary>
@@ -372,8 +372,8 @@ namespace Tests.Core.TypeMatching.Rules
             Type result = rule.Match(candidate, targets);
 
             // Assert
-            Assert.AreEqual(typeof(DualParameterEnumerableHandler<IEnumerable<uint>, uint>), result,
-                "Should construct DualParameterEnumerableHandler<IEnumerable<uint>, uint>");
+            Assert.AreEqual(typeof(DualParameterEnumerableHandler<uint[], uint>), result,
+                "Should construct DualParameterEnumerableHandler<uint[], uint>");
         }
 
         /// <summary>
@@ -576,8 +576,8 @@ namespace Tests.Core.TypeMatching.Rules
             Type result = rule.Match(candidate, targets);
 
             // Assert
-            Assert.AreEqual(typeof(TripleParameterDictionaryHandler<IDictionary<double, short>, double, short>), result,
-                "Should construct TripleParameterDictionaryHandler<IDictionary<double, short>, double, short>");
+            Assert.AreEqual(typeof(TripleParameterDictionaryHandler<Dictionary<double, short>, double, short>), result,
+                "Should construct TripleParameterDictionaryHandler<Dictionary<double, short>, double, short>");
         }
 
         /// <summary>

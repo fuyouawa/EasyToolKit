@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using EasyToolKit.Serialization;
+using EasyToolKit.Serialization.Implementations;
 using Tests.Serialization;
 
 namespace Tests.Serialization.Core.Resolvers.Implementations
@@ -19,7 +20,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void CanResolve_BasicValueType_ReturnsFalse()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             bool canResolveInt = resolver.CanResolve(typeof(int));
@@ -39,7 +40,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void CanResolve_StringType_ReturnsFalse()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             bool canResolve = resolver.CanResolve(typeof(string));
@@ -55,7 +56,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void CanResolve_EnumType_ReturnsFalse()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             bool canResolve = resolver.CanResolve(typeof(TestEnum));
@@ -71,7 +72,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void CanResolve_UnityObjectType_ReturnsFalse()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             bool canResolveGameObject = resolver.CanResolve(typeof(UnityEngine.GameObject));
@@ -89,7 +90,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void CanResolve_ClassWithEasySerializable_ReturnsTrue()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             bool canResolve = resolver.CanResolve(typeof(DefaultMemberFlagsClass));
@@ -105,7 +106,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void CanResolve_ClassWithoutAttribute_ReturnsTrue()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             bool canResolve = resolver.CanResolve(typeof(TestDataClass));
@@ -125,7 +126,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_DefaultMemberFlags_ReturnsAllFields_NotProperties()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(DefaultMemberFlagsClass));
@@ -151,7 +152,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_PublicFieldsOnly_ReturnsPublicFields_Only()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(PublicFieldsOnlyClass));
@@ -174,7 +175,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_PublicPropertiesOnly_ReturnsPublicProperties_Only()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(PublicPropertiesOnlyClass));
@@ -197,7 +198,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_AllPublic_ReturnsPublicFieldsAndProperties()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(AllPublicClass));
@@ -221,7 +222,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_NonPublicFieldsOnly_ReturnsNonPublicFields_Only()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(NonPublicFieldsOnlyClass));
@@ -243,7 +244,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_AllFields_ReturnsAllFields_ByVisibility()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(AllFieldsClass));
@@ -266,7 +267,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_AllProperties_ReturnsAllProperties_ByVisibility()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(AllPropertiesClass));
@@ -289,7 +290,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_AllMembers_ReturnsAllFieldsAndProperties()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(AllMembersClass));
@@ -314,7 +315,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_RequireSerializeFieldOnNonPublic_OnlySerializeFieldFieldsIncluded()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(RequireSerializeFieldClass));
@@ -334,7 +335,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_NotRequireSerializeFieldOnNonPublic_AllFieldsIncludedByFlags()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(NotRequireSerializeFieldClass));
@@ -356,7 +357,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_MemberDefinition_HasCorrectProperties()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(PublicFieldsOnlyClass));
@@ -378,7 +379,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_FieldMember_MemberTypeIsFieldType()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(PublicFieldsOnlyClass));
@@ -396,7 +397,7 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
         public void Resolve_PropertyMember_MemberTypeIsPropertyType()
         {
             // Arrange
-            var resolver = CreateResolver();
+            var resolver = new GenericSerializationStructureResolver();
 
             // Act
             var members = resolver.Resolve(typeof(PublicPropertiesOnlyClass));
@@ -405,30 +406,6 @@ namespace Tests.Serialization.Core.Resolvers.Implementations
             // Assert
             Assert.IsNotNull(intPropertyMember, "Should find PublicProperty member");
             Assert.AreEqual(typeof(int), intPropertyMember.MemberType, "MemberType should be int");
-        }
-
-        #endregion
-
-        #region Helper Methods
-
-        /// <summary>
-        /// Creates an instance of GenericSerializationStructureResolver for testing.
-        /// Uses reflection to find and instantiate the internal resolver type.
-        /// </summary>
-        private ISerializationStructureResolver CreateResolver()
-        {
-            // Find the resolver type by searching all loaded assemblies
-            // GenericSerializationStructureResolver is in EasyToolKit.Serialization.Implementations namespace
-            var resolverType = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .FirstOrDefault(t => t.FullName == "EasyToolKit.Serialization.Implementations.GenericSerializationStructureResolver");
-
-            if (resolverType == null)
-            {
-                throw new InvalidOperationException("GenericSerializationStructureResolver type not found in loaded assemblies");
-            }
-
-            return (ISerializationStructureResolver)Activator.CreateInstance(resolverType);
         }
 
         #endregion
