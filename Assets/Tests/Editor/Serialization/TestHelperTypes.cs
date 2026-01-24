@@ -22,6 +22,7 @@ namespace Tests.Serialization
         public bool IsActive;
         public UnityEngine.Vector3 Position;
         public List<int> Scores;
+        public byte[] Data;
     }
 
 

@@ -576,7 +576,8 @@ namespace Tests.Serialization
                 Health = 75.5f,
                 IsActive = true,
                 Position = new UnityEngine.Vector3(1, 2, 3),
-                Scores = new List<int> { 100, 200, 300 }
+                Scores = new List<int> { 100, 200, 300 },
+                Data = new byte[] { 11, 22, 33, 44, 55 }
             };
 
             // Act
@@ -595,6 +596,11 @@ namespace Tests.Serialization
             Assert.AreEqual(100, result.Scores[0]);
             Assert.AreEqual(200, result.Scores[1]);
             Assert.AreEqual(300, result.Scores[2]);
+            Assert.AreEqual(11, result.Data[0]);
+            Assert.AreEqual(22, result.Data[1]);
+            Assert.AreEqual(33, result.Data[2]);
+            Assert.AreEqual(44, result.Data[3]);
+            Assert.AreEqual(55, result.Data[4]);
         }
 
         /// <summary>
@@ -611,7 +617,8 @@ namespace Tests.Serialization
                 Health = 100f,
                 IsActive = false,
                 Position = UnityEngine.Vector3.zero,
-                Scores = null
+                Scores = null,
+                Data = null
             };
 
             // Act
@@ -625,6 +632,7 @@ namespace Tests.Serialization
             Assert.IsFalse(result.IsActive);
             Assert.AreEqual(UnityEngine.Vector3.zero, result.Position);
             Assert.IsNull(result.Scores);
+            Assert.AreEqual(Array.Empty<byte>(), result.Data);
         }
 
         #endregion
