@@ -356,4 +356,32 @@ namespace Tests.Serialization
             derivedField = derivedValue;
         }
     }
+
+    /// <summary>Test unmanaged struct for FormatGenericPrimitive testing.</summary>
+    public struct TestUnmanagedStruct
+    {
+        public int X;
+        public float Y;
+        public byte Z;
+
+        public TestUnmanagedStruct(int x, float y, byte z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TestUnmanagedStruct other &&
+                   X == other.X &&
+                   Y.Equals(other.Y) &&
+                   Z == other.Z;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
+    }
 }

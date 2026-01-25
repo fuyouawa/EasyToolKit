@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using EasyToolKit.OdinSerializer;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using EasyToolKit.Serialization;
 using Debug = UnityEngine.Debug;
+using SerializationUtility = EasyToolKit.OdinSerializer.SerializationUtility;
 
 /// <summary>
 /// Editor window for profiling serialization performance.
@@ -69,6 +71,7 @@ public class SerializationProfilerWindow : EditorWindow
         DrawComplexObjectTests();
         DrawNestedObjectTests();
         DrawLargeDataSetTests();
+        DrawComparisonTests();
         DrawRunAllTestsButton();
 
         EditorGUILayout.EndScrollView();
@@ -394,6 +397,151 @@ public class SerializationProfilerWindow : EditorWindow
     }
 
     /// <summary>
+    /// Draws comparison tests between EasySerializer and OdinSerializer.
+    /// </summary>
+    private void DrawComparisonTests()
+    {
+        DrawSection("Comparison: EasySerializer vs OdinSerializer", () =>
+        {
+            DrawComparisonButton("Int32", () =>
+            {
+                int value = 42;
+                RunComparisonBenchmark("Int32", iterations, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+
+            DrawComparisonButton("Float", () =>
+            {
+                float value = 3.14159f;
+                RunComparisonBenchmark("Float", iterations, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+
+            DrawComparisonButton("String (50 chars)", () =>
+            {
+                string value = new string('A', 50);
+                RunComparisonBenchmark("String", iterations, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+
+            DrawComparisonButton("Int Array [100]", () =>
+            {
+                int[] value = new int[100];
+                for (int i = 0; i < 100; i++) value[i] = i;
+                RunComparisonBenchmark("IntArray", iterations, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+
+            DrawComparisonButton("Int List [100]", () =>
+            {
+                var value = new List<int>();
+                for (int i = 0; i < 100; i++) value.Add(i);
+                RunComparisonBenchmark("IntList", iterations, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+
+            DrawComparisonButton("Vector3", () =>
+            {
+                Vector3 value = new Vector3(1.5f, 2.5f, 3.5f);
+                RunComparisonBenchmark("Vector3", iterations, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+
+            DrawComparisonButton("Simple Class", () =>
+            {
+                var value = new SimpleTestData
+                {
+                    Id = 100,
+                    Name = "TestPlayer",
+                    Score = 1234.56f
+                };
+                RunComparisonBenchmark("SimpleClass", iterations, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+
+            DrawComparisonButton("Complex Class", () =>
+            {
+                var value = new ComplexTestData
+                {
+                    Id = 100,
+                    Name = "TestPlayer",
+                    Health = 75.5f,
+                    Mana = 50.0f,
+                    IsActive = true,
+                    Position = new Vector3(1, 2, 3),
+                    Rotation = new Vector3(0, 90, 0),
+                    Inventory = new List<int> { 1, 2, 3, 4, 5 },
+                    Tags = new[] { "Player", "Active", "Test" }
+                };
+                RunComparisonBenchmark("ComplexClass", iterations, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+
+            DrawComparisonButton("Large Array [1000]", () =>
+            {
+                int[] value = new int[1000];
+                for (int i = 0; i < 1000; i++) value[i] = i;
+                RunComparisonBenchmark("LargeArray", iterations / 10, () =>
+                {
+                    List<UnityEngine.Object> refs = null;
+                    return EasySerializer.SerializeToBinary(ref value, ref refs);
+                }, () =>
+                {
+                    return SerializationUtility.SerializeValue(value, DataFormat.Binary);
+                });
+            });
+        });
+    }
+
+    /// <summary>
     /// Draws a button to run all tests sequentially.
     /// </summary>
     private void DrawRunAllTestsButton()
@@ -430,6 +578,79 @@ public class SerializationProfilerWindow : EditorWindow
         {
             action?.Invoke();
         }
+    }
+
+    /// <summary>
+    /// Draws a comparison button with EasySerializer vs OdinSerializer label.
+    /// </summary>
+    private void DrawComparisonButton(string label, Action action)
+    {
+        if (GUILayout.Button($"Compare: {label}"))
+        {
+            action?.Invoke();
+        }
+    }
+
+    /// <summary>
+    /// Runs a comparison benchmark between EasySerializer and OdinSerializer.
+    /// </summary>
+    /// <param name="testName">The name of the test.</param>
+    /// <param name="iterationCount">The number of iterations to run.</param>
+    /// <param name="easySerializerAction">The serialization action for EasySerializer.</param>
+    /// <param name="odinSerializerAction">The serialization action for OdinSerializer.</param>
+    private void RunComparisonBenchmark(string testName, int iterationCount, Func<byte[]> easySerializerAction, Func<byte[]> odinSerializerAction)
+    {
+        UnityEngine.Debug.Log($"[Comparison] {testName} - Starting comparison ({iterationCount} iterations)");
+
+        // Test EasySerializer
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        var easyStopwatch = Stopwatch.StartNew();
+        byte[] easyData = null;
+        for (int i = 0; i < iterationCount; i++)
+        {
+            easyData = easySerializerAction();
+        }
+        easyStopwatch.Stop();
+
+        // Test OdinSerializer
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        var odinStopwatch = Stopwatch.StartNew();
+        byte[] odinData = null;
+        for (int i = 0; i < iterationCount; i++)
+        {
+            odinData = odinSerializerAction();
+        }
+        odinStopwatch.Stop();
+
+        // Calculate and display results
+        double easyAvgMs = (double)easyStopwatch.ElapsedMilliseconds / iterationCount;
+        double odinAvgMs = (double)odinStopwatch.ElapsedMilliseconds / iterationCount;
+        double speedupRatio = odinAvgMs / easyAvgMs;
+
+        UnityEngine.Debug.Log($"[Comparison] {testName} Results:");
+        UnityEngine.Debug.Log($"  EasySerializer: {easyStopwatch.ElapsedMilliseconds}ms total, {easyAvgMs:F4}ms avg, Size: {easyData?.Length ?? 0} bytes");
+        UnityEngine.Debug.Log($"  OdinSerializer: {odinStopwatch.ElapsedMilliseconds}ms total, {odinAvgMs:F4}ms avg, Size: {odinData?.Length ?? 0} bytes");
+
+        if (speedupRatio > 1.0)
+        {
+            UnityEngine.Debug.Log($"  EasySerializer is {speedupRatio:F2}x FASTER");
+        }
+        else if (speedupRatio < 1.0)
+        {
+            UnityEngine.Debug.Log($"  EasySerializer is {1.0 / speedupRatio:F2}x SLOWER");
+        }
+        else
+        {
+            UnityEngine.Debug.Log($"  Performance is EQUAL");
+        }
+
+        GC.Collect();
     }
 
     /// <summary>
@@ -496,6 +717,10 @@ public class SerializationProfilerWindow : EditorWindow
         // Large data sets
         Debug.Log("\n--- Large Data Sets ---");
         RunAllTestsInCurrentSection(DrawLargeDataSetTests);
+
+        // Comparison tests
+        Debug.Log("\n--- Comparison Tests ---");
+        RunAllTestsInCurrentSection(DrawComparisonTests);
 
         Debug.Log("\n=== All Tests Complete ===");
     }
