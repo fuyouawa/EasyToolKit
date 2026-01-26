@@ -73,7 +73,7 @@ public class TestInner4
 }
 
 [EasyInspector]
-[ShowOdinSerializedPropertiesInInspector]
+[ShowEasySerializeFieldsInInspector]
 public class TestInspector : MonoBehaviour
 {
     [OdinSerialize]

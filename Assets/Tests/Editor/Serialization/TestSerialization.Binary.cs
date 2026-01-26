@@ -636,5 +636,278 @@ namespace Tests.Serialization
         }
 
         #endregion
+
+        #region Dictionary
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a dictionary with int keys and string values produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_IntStringDictionary_ReturnsOriginalValue()
+        {
+            // Arrange
+            var original = new Dictionary<int, string>
+            {
+                { 1, "One" },
+                { 2, "Two" },
+                { 3, "Three" }
+            };
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<int, string> result = EasySerializer.DeserializeFromBinary<Dictionary<int, string>>(data);
+
+            // Assert
+            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual("One", result[1]);
+            Assert.AreEqual("Two", result[2]);
+            Assert.AreEqual("Three", result[3]);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a dictionary with string keys and int values produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_StringIntDictionary_ReturnsOriginalValue()
+        {
+            // Arrange
+            var original = new Dictionary<string, int>
+            {
+                { "Apple", 1 },
+                { "Banana", 2 },
+                { "Cherry", 3 }
+            };
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<string, int> result = EasySerializer.DeserializeFromBinary<Dictionary<string, int>>(data);
+
+            // Assert
+            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual(1, result["Apple"]);
+            Assert.AreEqual(2, result["Banana"]);
+            Assert.AreEqual(3, result["Cherry"]);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing an empty dictionary produces null.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_EmptyDictionary_ReturnsNull()
+        {
+            // Arrange
+            var original = new Dictionary<int, string>();
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<int, string> result = EasySerializer.DeserializeFromBinary<Dictionary<int, string>>(data);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a null dictionary produces null.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_NullDictionary_ReturnsNull()
+        {
+            // Arrange
+            Dictionary<int, string> original = null;
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<int, string> result = EasySerializer.DeserializeFromBinary<Dictionary<int, string>>(data);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a dictionary with enum keys produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_EnumKeyDictionary_ReturnsOriginalValue()
+        {
+            // Arrange
+            var original = new Dictionary<TestEnum, string>
+            {
+                { TestEnum.OptionA, "A" },
+                { TestEnum.OptionB, "B" },
+                { TestEnum.OptionC, "C" }
+            };
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<TestEnum, string> result = EasySerializer.DeserializeFromBinary<Dictionary<TestEnum, string>>(data);
+
+            // Assert
+            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual("A", result[TestEnum.OptionA]);
+            Assert.AreEqual("B", result[TestEnum.OptionB]);
+            Assert.AreEqual("C", result[TestEnum.OptionC]);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a dictionary with enum values produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_EnumValueDictionary_ReturnsOriginalValue()
+        {
+            // Arrange
+            var original = new Dictionary<string, TestEnum>
+            {
+                { "First", TestEnum.OptionA },
+                { "Second", TestEnum.OptionB },
+                { "Third", TestEnum.OptionC }
+            };
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<string, TestEnum> result = EasySerializer.DeserializeFromBinary<Dictionary<string, TestEnum>>(data);
+
+            // Assert
+            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual(TestEnum.OptionA, result["First"]);
+            Assert.AreEqual(TestEnum.OptionB, result["Second"]);
+            Assert.AreEqual(TestEnum.OptionC, result["Third"]);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a dictionary with float values produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_FloatValueDictionary_ReturnsOriginalValue()
+        {
+            // Arrange
+            var original = new Dictionary<int, float>
+            {
+                { 1, 1.1f },
+                { 2, 2.2f },
+                { 3, 3.3f }
+            };
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<int, float> result = EasySerializer.DeserializeFromBinary<Dictionary<int, float>>(data);
+
+            // Assert
+            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual(1.1f, result[1], 0.0001f);
+            Assert.AreEqual(2.2f, result[2], 0.0001f);
+            Assert.AreEqual(3.3f, result[3], 0.0001f);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a dictionary with List values produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_ListValueDictionary_ReturnsOriginalValue()
+        {
+            // Arrange
+            var original = new Dictionary<string, List<int>>
+            {
+                { "GroupA", new List<int> { 1, 2, 3 } },
+                { "GroupB", new List<int> { 4, 5, 6 } }
+            };
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<string, List<int>> result = EasySerializer.DeserializeFromBinary<Dictionary<string, List<int>>>(data);
+
+            // Assert
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(3, result["GroupA"].Count);
+            Assert.AreEqual(1, result["GroupA"][0]);
+            Assert.AreEqual(2, result["GroupA"][1]);
+            Assert.AreEqual(3, result["GroupA"][2]);
+            Assert.AreEqual(3, result["GroupB"].Count);
+            Assert.AreEqual(4, result["GroupB"][0]);
+            Assert.AreEqual(5, result["GroupB"][1]);
+            Assert.AreEqual(6, result["GroupB"][2]);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a dictionary with array values produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_ArrayValueDictionary_ReturnsOriginalValue()
+        {
+            // Arrange
+            var original = new Dictionary<int, int[]>
+            {
+                { 1, new[] { 10, 20, 30 } },
+                { 2, new[] { 40, 50, 60 } }
+            };
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<int, int[]> result = EasySerializer.DeserializeFromBinary<Dictionary<int, int[]>>(data);
+
+            // Assert
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(3, result[1].Length);
+            Assert.AreEqual(10, result[1][0]);
+            Assert.AreEqual(20, result[1][1]);
+            Assert.AreEqual(30, result[1][2]);
+            Assert.AreEqual(3, result[2].Length);
+            Assert.AreEqual(40, result[2][0]);
+            Assert.AreEqual(50, result[2][1]);
+            Assert.AreEqual(60, result[2][2]);
+        }
+
+        /// <summary>
+        /// Verifies that serializing and deserializing a large dictionary produces the original value.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_LargeDictionary_ReturnsOriginalValue()
+        {
+            // Arrange
+            var original = new Dictionary<int, string>();
+            for (int i = 0; i < 1000; i++)
+            {
+                original[i] = $"Value{i}";
+            }
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<int, string> result = EasySerializer.DeserializeFromBinary<Dictionary<int, string>>(data);
+
+            // Assert
+            Assert.AreEqual(1000, result.Count);
+            Assert.AreEqual("Value0", result[0]);
+            Assert.AreEqual("Value500", result[500]);
+            Assert.AreEqual("Value999", result[999]);
+        }
+
+        /// <summary>
+        /// Verifies that dictionary preserves all key-value pairs correctly through serialization.
+        /// </summary>
+        [Test]
+        public void SerializeDeserialize_DictionaryWithDuplicateValues_PreservesAllKeys()
+        {
+            // Arrange
+            var original = new Dictionary<int, string>
+            {
+                { 1, "Same" },
+                { 2, "Same" },
+                { 3, "Same" }
+            };
+
+            // Act
+            byte[] data = EasySerializer.SerializeToBinary(ref original);
+            Dictionary<int, string> result = EasySerializer.DeserializeFromBinary<Dictionary<int, string>>(data);
+
+            // Assert
+            Assert.AreEqual(3, result.Count);
+            Assert.IsTrue(result.ContainsKey(1));
+            Assert.IsTrue(result.ContainsKey(2));
+            Assert.IsTrue(result.ContainsKey(3));
+            Assert.AreEqual("Same", result[1]);
+            Assert.AreEqual("Same", result[2]);
+            Assert.AreEqual("Same", result[3]);
+        }
+
+        #endregion
     }
 }

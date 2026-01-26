@@ -122,7 +122,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             int original = 12345;
 
             // Act
@@ -144,7 +144,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             int original = -99999;
 
             // Act
@@ -166,7 +166,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             float original = 3.14159f;
 
             // Act
@@ -188,7 +188,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             double original = 123.45678901234;
 
             // Act
@@ -210,7 +210,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             bool original = true;
 
             // Act
@@ -232,7 +232,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             bool original = false;
 
             // Act
@@ -254,7 +254,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             long original = 98765432101234;
 
             // Act
@@ -280,7 +280,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             string original = "Hello, World!";
 
             // Act
@@ -302,7 +302,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             string original = string.Empty;
 
             // Act
@@ -324,7 +324,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             string original = null;
 
             // Act
@@ -346,7 +346,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             string original = "Hello 世界! 🌍";
 
             // Act
@@ -372,7 +372,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             byte[] original = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             // Act
@@ -398,7 +398,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             byte[] original = Array.Empty<byte>();
 
             // Act
@@ -421,7 +421,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             byte[] original = null;
 
             // Act
@@ -448,7 +448,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             sbyte[] original = { -128, -1, 0, 1, 127 };
 
             // Act
@@ -474,7 +474,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             short[] original = { -32768, -100, 0, 100, 32767 };
 
             // Act
@@ -500,7 +500,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             int[] original = { -2147483648, -1000000, 0, 1000000, 2147483647 };
 
             // Act
@@ -526,7 +526,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             long[] original = { -9223372036854775808, -10000000000, 0, 10000000000, 9223372036854775807 };
 
             // Act
@@ -552,7 +552,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             ushort[] original = { 0, 100, 32767, 65535 };
 
             // Act
@@ -578,7 +578,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             uint[] original = { 0, 1000000, 2147483648, 4294967295 };
 
             // Act
@@ -604,7 +604,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             ulong[] original = { 0, 10000000000, 9223372036854775808, 18446744073709551615 };
 
             // Act
@@ -630,7 +630,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
 
             // Act
             sbyte[] sbyteArray = null;
@@ -685,7 +685,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
 
             // Act
             sbyte[] sbyteArray = Array.Empty<sbyte>();
@@ -732,7 +732,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
 
             // Create arrays with 10000 elements each
             int[] intArray = new int[10000];
@@ -841,7 +841,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             int value = 42;
             writeFormatter.Format(ref value);
             byte[] buffer = writeFormatter.ToArray();
@@ -862,7 +862,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             int value = 42;
             writeFormatter.Format(ref value);
             byte[] buffer = writeFormatter.ToArray();
@@ -890,7 +890,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             int original = 65535;
 
             // Act
@@ -911,7 +911,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
 
             byte byteValue = 255;
             sbyte sbyteValue = -128;
@@ -965,7 +965,7 @@ namespace Tests.Serialization
         public void BinaryReadingFormatter_ReadPastEnd_ThrowsEndOfStreamException()
         {
             // Arrange
-            var formatter = new BinaryReadingFormatter();
+            IReadingFormatter formatter = new BinaryReadingFormatter();
             // Use settings without type tags to test insufficient buffer scenario
             formatter.Settings = new BinaryFormatterSettings { Options = BinaryFormatterOptions.None };
             formatter.SetBuffer(new byte[] { 1, 2 }); // Too small for an int
@@ -985,9 +985,9 @@ namespace Tests.Serialization
         public void BinaryReadingFormatter_ReadEmptyBuffer_ThrowsEndOfStreamException()
         {
             // Arrange
-            var formatter = new BinaryReadingFormatter();
+            IReadingFormatter formatter = new BinaryReadingFormatter();
             // Use settings without type tags to test empty buffer scenario
-            formatter.Settings = new BinaryFormatterSettings { Options = BinaryFormatterOptions.None };
+            formatter.Settings = new BinaryFormatterSettings { Options = BinaryFormatterOptions.None, ReturnDefaultOnStreamEnd = false};
             formatter.SetBuffer(Array.Empty<byte>());
 
             // Act & Assert
@@ -1012,7 +1012,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             var original = new TestUnmanagedStruct(42, 3.14f, 255);
 
             // Act
@@ -1036,7 +1036,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             TestEnum original = TestEnum.OptionC;
 
             // Act
@@ -1062,7 +1062,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             var original = new TestUnmanagedStruct[]
             {
                 new(1, 1.1f, 10),
@@ -1098,7 +1098,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             var original = new TestEnum[] { TestEnum.OptionA, TestEnum.OptionB, TestEnum.OptionC, TestEnum.OptionA };
 
             // Act
@@ -1125,7 +1125,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             TestUnmanagedStruct[] original = null;
 
             // Act
@@ -1147,7 +1147,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             var original = Array.Empty<TestUnmanagedStruct>();
 
             // Act
@@ -1170,7 +1170,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
             var original = new TestUnmanagedStruct[1000];
             for (int i = 0; i < 1000; i++)
             {
@@ -1206,7 +1206,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var writeFormatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
 
             int intValue = 42;
             float floatValue = 3.14f;
@@ -1241,7 +1241,7 @@ namespace Tests.Serialization
         {
             // Arrange
             var formatter = new BinaryWritingFormatter();
-            var readFormatter = new BinaryReadingFormatter();
+            IReadingFormatter readFormatter = new BinaryReadingFormatter();
 
             // Act - First use
             int value1 = 100;

@@ -238,6 +238,9 @@ Required for:
 - Important protected members
 - Complex private members
 
+**Formatting Rules:**
+- **MUST use multi-line format** - Opening `<summary>` and closing `</summary>` tags MUST be on separate lines
+
 Basic format:
 ```csharp
 /// <summary>
