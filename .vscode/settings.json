@@ -26,5 +26,5 @@
         "**/Logs/**": true,
         "**/Build/**": true
     },
-    "dotnet.defaultSolution": "EasyToolKit.sln"
+    "dotnet.defaultSolution": "EasyToolkit.sln"
 }

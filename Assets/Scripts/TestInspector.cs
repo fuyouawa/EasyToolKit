@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using EasyToolKit.Core.Reflection;
-using EasyToolKit.Inspector.Attributes;
-using EasyToolKit.OdinSerializer;
-using EasyToolKit.TileWorldPro;
+using EasyToolkit.Core.Reflection;
+using EasyToolkit.Inspector.Attributes;
+using EasyToolkit.OdinSerializer;
+using EasyToolkit.TileWorldPro;
 using UnityEngine;
 
 [Serializable]

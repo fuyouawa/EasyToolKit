@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using EasyToolKit.OdinSerializer;
+using EasyToolkit.OdinSerializer;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using EasyToolKit.Serialization;
+using EasyToolkit.Serialization;
 using Debug = UnityEngine.Debug;
-using SerializationUtility = EasyToolKit.OdinSerializer.SerializationUtility;
+using SerializationUtility = EasyToolkit.OdinSerializer.SerializationUtility;
 
 /// <summary>
 /// Editor window for profiling serialization performance.
@@ -17,7 +17,7 @@ public class SerializationProfilerWindow : EditorWindow
 {
     #region Menu Entry
 
-    [MenuItem("Tools/EasyToolKit/Serialization Profiler")]
+    [MenuItem("Tools/EasyToolkit/Serialization Profiler")]
     private static void ShowWindow()
     {
         var window = GetWindow<SerializationProfilerWindow>();

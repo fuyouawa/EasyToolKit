@@ -11,16 +11,13 @@
       "version": "file:com.easytoolkit.core",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {
-        "com.easytoolkit.odinserializer": "1.0.0"
-      }
+      "dependencies": {}
     },
     "com.easytoolkit.inspector": {
       "version": "file:com.easytoolkit.inspector",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.easytoolkit.odinserializer": "1.0.0",
         "com.easytoolkit.core": "1.0.0"
       }
     },
@@ -44,6 +41,14 @@
         "com.easytoolkit.odinserializer": "1.0.0",
         "com.easytoolkit.core": "1.0.0",
         "com.easytoolkit.inspector": "1.0.0"
+      }
+    },
+    "com.easytoolkit.tweening": {
+      "version": "file:com.easytoolkit.tweening",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.easytoolkit.core": "1.0.0"
       }
     },
     "com.github-glitchenzo.nugetforunity": {

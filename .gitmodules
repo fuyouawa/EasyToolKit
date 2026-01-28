@@ -13,3 +13,6 @@
 [submodule "Packages/com.easytoolkit.serialization"]
 	path = Packages/com.easytoolkit.serialization
 	url = git@github.com:easytoolkit-dev/com.easytoolkit.serialization.git
+[submodule "Packages/com.easytoolkit.tweening"]
+	path = Packages/com.easytoolkit.tweening
+	url = git@github.com:easytoolkit-dev/com.easytoolkit.tweening.git

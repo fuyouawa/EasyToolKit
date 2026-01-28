@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using EasyToolKit.Serialization;
+using EasyToolkit.Serialization;
 
 namespace Tests.Serialization
 {

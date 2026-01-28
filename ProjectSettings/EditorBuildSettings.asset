@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Plugins/EasyToolKit/TileWorldPro/Assets/Demo/Scene/Demo.unity
+    path: Assets/Plugins/EasyToolkit/TileWorldPro/Assets/Demo/Scene/Demo.unity
     guid: ca07060d37b7d654388bfaafe913f037
   m_configObjects: {}

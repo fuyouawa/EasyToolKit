@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using EasyToolKit.Core.Reflection;
-using EasyToolKit.Core.Reflection.Implementations;
+using EasyToolkit.Core.Reflection;
+using EasyToolkit.Core.Reflection.Implementations;
 
 namespace Tests.Core.TypeAnalyzing
 {

@@ -29,17 +29,17 @@ MonoBehaviour:
     SerializationNodes:
     - Name: _terrainDefinitionSet
       Entry: 7
-      Data: 0|EasyToolKit.TileWorldPro.TerrainDefinitionSet, EasyToolKit.TileWorldPro.Runtime
+      Data: 0|EasyToolkit.TileWorldPro.TerrainDefinitionSet, EasyToolkit.TileWorldPro.Runtime
     - Name: _nodes
       Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[EasyToolKit.TileWorldPro.TerrainDefinitionNode,
-        EasyToolKit.TileWorldPro.Runtime]], mscorlib
+      Data: 1|System.Collections.Generic.List`1[[EasyToolkit.TileWorldPro.TerrainDefinitionNode,
+        EasyToolkit.TileWorldPro.Runtime]], mscorlib
     - Name: 
       Entry: 12
       Data: 2
     - Name: 
       Entry: 7
-      Data: 2|EasyToolKit.TileWorldPro.TerrainDefinitionGroup, EasyToolKit.TileWorldPro.Runtime
+      Data: 2|EasyToolkit.TileWorldPro.TerrainDefinitionGroup, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: bb7ac66413ce472ebca08492bd78f0b2
@@ -66,14 +66,14 @@ MonoBehaviour:
       Data: 
     - Name: _nodes
       Entry: 7
-      Data: 3|System.Collections.Generic.List`1[[EasyToolKit.TileWorldPro.TerrainDefinitionNode,
-        EasyToolKit.TileWorldPro.Runtime]], mscorlib
+      Data: 3|System.Collections.Generic.List`1[[EasyToolkit.TileWorldPro.TerrainDefinitionNode,
+        EasyToolkit.TileWorldPro.Runtime]], mscorlib
     - Name: 
       Entry: 12
       Data: 2
     - Name: 
       Entry: 7
-      Data: 4|EasyToolKit.TileWorldPro.TerrainDefinition, EasyToolKit.TileWorldPro.Runtime
+      Data: 4|EasyToolkit.TileWorldPro.TerrainDefinition, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: 975c8a6cf5bf4ae59ce9d6e6b0239465
@@ -115,7 +115,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 5|EasyToolKit.TileWorldPro.TerrainDefinitionGroup, EasyToolKit.TileWorldPro.Runtime
+      Data: 5|EasyToolkit.TileWorldPro.TerrainDefinitionGroup, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: 0d137f6ca1db481f82617de5cbd86f3c
@@ -142,14 +142,14 @@ MonoBehaviour:
       Data: 
     - Name: _nodes
       Entry: 7
-      Data: 6|System.Collections.Generic.List`1[[EasyToolKit.TileWorldPro.TerrainDefinitionNode,
-        EasyToolKit.TileWorldPro.Runtime]], mscorlib
+      Data: 6|System.Collections.Generic.List`1[[EasyToolkit.TileWorldPro.TerrainDefinitionNode,
+        EasyToolkit.TileWorldPro.Runtime]], mscorlib
     - Name: 
       Entry: 12
       Data: 4
     - Name: 
       Entry: 7
-      Data: 7|EasyToolKit.TileWorldPro.TerrainDefinition, EasyToolKit.TileWorldPro.Runtime
+      Data: 7|EasyToolkit.TileWorldPro.TerrainDefinition, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: cf4e8c0e2fb1442a852dbb571b79ddf4
@@ -191,7 +191,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 8|EasyToolKit.TileWorldPro.TerrainDefinition, EasyToolKit.TileWorldPro.Runtime
+      Data: 8|EasyToolkit.TileWorldPro.TerrainDefinition, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: f7b821d6291b403cad04428b880d44c1
@@ -233,7 +233,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 9|EasyToolKit.TileWorldPro.TerrainDefinition, EasyToolKit.TileWorldPro.Runtime
+      Data: 9|EasyToolkit.TileWorldPro.TerrainDefinition, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: 3674f31a90614366afcd55ac8b146fbf
@@ -275,7 +275,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 10|EasyToolKit.TileWorldPro.TerrainDefinition, EasyToolKit.TileWorldPro.Runtime
+      Data: 10|EasyToolkit.TileWorldPro.TerrainDefinition, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: 5f7e30e025d94210be80036e2ee05706
@@ -335,7 +335,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 11|EasyToolKit.TileWorldPro.TerrainDefinitionGroup, EasyToolKit.TileWorldPro.Runtime
+      Data: 11|EasyToolkit.TileWorldPro.TerrainDefinitionGroup, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: 639b75f798b44a7f826a9b4bf95115f6
@@ -362,14 +362,14 @@ MonoBehaviour:
       Data: 
     - Name: _nodes
       Entry: 7
-      Data: 12|System.Collections.Generic.List`1[[EasyToolKit.TileWorldPro.TerrainDefinitionNode,
-        EasyToolKit.TileWorldPro.Runtime]], mscorlib
+      Data: 12|System.Collections.Generic.List`1[[EasyToolkit.TileWorldPro.TerrainDefinitionNode,
+        EasyToolkit.TileWorldPro.Runtime]], mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 7
-      Data: 13|EasyToolKit.TileWorldPro.TerrainDefinition, EasyToolKit.TileWorldPro.Runtime
+      Data: 13|EasyToolkit.TileWorldPro.TerrainDefinition, EasyToolkit.TileWorldPro.Runtime
     - Name: _guid
       Entry: 2
       Data: 43c32da7b6fe40549ab61d358e432b71
@@ -429,7 +429,7 @@ MonoBehaviour:
       Data: 
     - Name: _dataStore
       Entry: 7
-      Data: 14|EasyToolKit.TileWorldPro.BuiltInTileWorldDataStore, EasyToolKit.TileWorldPro.Runtime
+      Data: 14|EasyToolkit.TileWorldPro.BuiltInTileWorldDataStore, EasyToolkit.TileWorldPro.Runtime
     - Name: _serializedChunks
       Entry: 7
       Data: 15|System.Byte[], mscorlib

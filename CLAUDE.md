@@ -1,10 +1,10 @@
-# EasyToolKit Coding Standards for Claude Code
+# EasyToolkit Coding Standards for Claude Code
 
-This document outlines the coding standards that must be followed when working with the EasyToolKit Unity project.
+This document outlines the coding standards that must be followed when working with the EasyToolkit Unity project.
 
 ## Project Overview
 
-EasyToolKit is a Unity framework/library project divided into multiple Unity packages. The codebase is written in C# and follows strict coding standards to maintain consistency and readability.
+EasyToolkit is a Unity framework/library project divided into multiple Unity packages. The codebase is written in C# and follows strict coding standards to maintain consistency and readability.
 
 ## Code Language Standards
 

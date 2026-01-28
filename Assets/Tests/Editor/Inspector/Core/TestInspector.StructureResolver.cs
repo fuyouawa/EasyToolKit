@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using EasyToolKit.Inspector.Editor;
-using EasyToolKit.Inspector.Editor.Implementations;
+using EasyToolkit.Inspector.Editor;
+using EasyToolkit.Inspector.Editor.Implementations;
 using NUnit.Framework;
 
 namespace Tests.Editor.Inspector.Core

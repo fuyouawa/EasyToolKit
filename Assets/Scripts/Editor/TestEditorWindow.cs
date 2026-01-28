@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using EasyToolKit.Inspector.Attributes;
-using EasyToolKit.Inspector.Editor;
+using EasyToolkit.Inspector.Attributes;
+using EasyToolkit.Inspector.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ public class JJBB
 
 public class TestEditorWindow : EasyEditorWindow
 {
-    [MenuItem("Tools/EasyToolKit/Test/Open Editor Window")]
+    [MenuItem("Tools/EasyToolkit/Test/Open Editor Window")]
     public static void Open()
     {
         GetWindow<TestEditorWindow>("Test Editor Window");

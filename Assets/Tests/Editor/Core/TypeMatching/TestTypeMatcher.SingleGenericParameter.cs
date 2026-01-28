@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using EasyToolKit.Core.Reflection;
-using EasyToolKit.Core.Reflection.Implementations;
+using EasyToolkit.Core.Reflection;
+using EasyToolkit.Core.Reflection.Implementations;
 using NUnit.Framework;
 
 namespace Tests.Core.TypeMatching

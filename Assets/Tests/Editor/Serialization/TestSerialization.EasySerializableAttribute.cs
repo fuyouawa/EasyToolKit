@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using EasyToolKit.Serialization;
+using EasyToolkit.Serialization;
 
 namespace Tests.Serialization
 {

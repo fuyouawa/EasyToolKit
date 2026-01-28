@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using EasyToolKit.Core.Reflection;
+using EasyToolkit.Core.Reflection;
 
 namespace Tests.Core.TypeAnalyzing
 {

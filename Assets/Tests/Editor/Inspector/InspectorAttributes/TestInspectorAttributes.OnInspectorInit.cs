@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using EasyToolKit.Core.Reflection;
-using EasyToolKit.Inspector.Attributes;
-using EasyToolKit.Inspector.Editor;
-using EasyToolKit.Inspector.Editor.Implementations;
+using EasyToolkit.Core.Reflection;
+using EasyToolkit.Inspector.Attributes;
+using EasyToolkit.Inspector.Editor;
+using EasyToolkit.Inspector.Editor.Implementations;
 using NUnit.Framework;
 
 namespace Tests.Editor.Inspector.InspectorAttributes

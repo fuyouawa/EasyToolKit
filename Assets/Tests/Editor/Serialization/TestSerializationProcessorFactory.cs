@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using EasyToolKit.Serialization.Processors;
+using EasyToolkit.Serialization.Processors;
 
 namespace Tests.Serialization
 {

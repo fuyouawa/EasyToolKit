@@ -1,6 +1,6 @@
 using System;
 using NUnit.Framework;
-using EasyToolKit.Core.Reflection;
+using EasyToolkit.Core.Reflection;
 
 namespace Tests.Core.Reflection
 {

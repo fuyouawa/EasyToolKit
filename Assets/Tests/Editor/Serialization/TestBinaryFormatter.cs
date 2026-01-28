@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using EasyToolKit.Serialization;
-using EasyToolKit.Serialization.Formatters;
-using EasyToolKit.Serialization.Formatters.Implementations;
+using EasyToolkit.Serialization;
+using EasyToolkit.Serialization.Formatters;
+using EasyToolkit.Serialization.Formatters.Implementations;
 
 namespace Tests.Serialization
 {

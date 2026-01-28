@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using EasyToolKit.Inspector.Editor;
+using EasyToolkit.Inspector.Editor;
 using NUnit.Framework;
 
 namespace Tests.Editor.Inspector.Core
